@@ -1,15 +1,9 @@
 import './App.scss';
-import { useState, useEffect } from "react";
-import { getCreatures } from "./services/creatureServices";
 
 function App() {
 
-  //constants
-
   //sets creatures state
   const [creatures, setCreatures] = useState([]);
-
-  //functions
 
   //retrieves creatures on load
   const loadAsyncData = async () => {
@@ -21,19 +15,16 @@ function App() {
     }
   }
 
-
   //calls data retrieval on load
   useEffect(() => {
-
     loadAsyncData();
-
   }, []);
 
   return (
     <>
 
       <div>
-        <h1>Hello World</h1>
+        <h1>Creatures</h1>
       </div>
 
       <div>

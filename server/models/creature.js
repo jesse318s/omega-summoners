@@ -5,6 +5,10 @@ const creatureSchema = new Schema({
     name: {
         type: String,
         required: true,
+    },
+    img_path: { 
+        type: String,
+        required: true,
     }
 });
 

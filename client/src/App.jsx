@@ -1,4 +1,6 @@
+import { useState, useEffect } from 'react';
 import './App.scss';
+import { getCreatures } from './services/creatureServices';
 
 function App() {
 
@@ -32,7 +34,8 @@ function App() {
           <div
             key={creature._id}
           >
-            {creature.name}
+            {creature.name}<br />
+            <img src={creature.img_path} alt={creature.name} />
           </div>
         ))}
       </div>

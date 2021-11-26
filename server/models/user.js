@@ -8,8 +8,14 @@ const userSchema = new Schema({
     name: {
         type: String,
     },
-    img_path: { 
+    avatar: {
         type: String,
+    },
+    experience: {
+        type: Number,
+    },
+    creature: {
+        type: Schema.Types.ObjectId
     }
 });
 

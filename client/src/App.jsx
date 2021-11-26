@@ -1,54 +1,84 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from "react";
 import './App.scss';
-import { getCreatures } from './services/creatureServices';
 import Userfront from "@userfront/react";
-
+import { Navigate } from "react-router-dom";
+import { getUsers, addUser } from './services/userServices';
 
 Userfront.init("rbvqd5nd");
 
-const SignupForm = Userfront.build({ toolId: "odnabd" });
-const LoginForm = Userfront.build({ toolId: "knblro" });
+const LogoutButton = Userfront.build({ toolId: "rodmkm" });
 
 function App() {
 
-  //sets creatures state
-  const [creatures, setCreatures] = useState([]);
+  const [user, setUser] = useState([]);
 
-  //retrieves creatures on load
+  const [userfrontId, setUserfrontId] = useState(0);
+
+  const checkAuth = async () => {
+    if (!Userfront.accessToken()) {
+      return (
+        <Navigate
+          to={{
+            pathname: "/",
+            state: { from: window.location },
+          }}
+        />
+      );
+    }
+  }
+
   const loadAsyncData = async () => {
     try {
-      const { data } = await getCreatures();
-      setCreatures(data);
+      const { data } = await getUsers();
+      setUserfrontId(Userfront.user.userId);
+      const userData = data.filter(user => user.userfrontId === userfrontId);
+      if (userfrontId !== userData && userfrontId !== 0) {
+
+        const creatureArray = [
+          "619fe14576cc938733d9f695",
+          "619ff05376cc938733d9f696"
+        ];
+
+        const randomCreature = creatureArray[Math.floor(Math.random() * creatureArray.length)];
+
+        const newUser = {
+          userfrontId: userfrontId,
+          name: Userfront.user.name,
+          creature: randomCreature
+        }
+
+        addUser(newUser);
+
+      }
+      const newUserData = data.filter(user => user.userfrontId === userfrontId);
+      setUser(newUserData);
     } catch (error) {
       console.log(error);
     }
   }
 
-  //calls data retrieval on load
   useEffect(() => {
+
+    checkAuth();
     loadAsyncData();
-  }, []);
+
+  });
 
   return (
     <>
-
       <div>
-        <h1>Creatures</h1>
+        Home<br />
+        <LogoutButton />
       </div>
 
       <div>
-        {creatures.map((creature) => (
-          <div
-            key={creature._id}
-          >
-            {creature.name}<br />
-            <img src={creature.img_path} alt={creature.name} />
+        {user.map((user) => (
+          <div>
+            {user.name}<br />
+            <img src={user.creature.img_path} alt={user.creature.name} />
           </div>
         ))}
       </div>
-
-      <SignupForm />
-      <LoginForm />
 
     </>
   );

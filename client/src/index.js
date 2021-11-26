@@ -10,8 +10,8 @@ import Reset from './reset';
 ReactDOM.render(
   <BrowserRouter>
     <Routes>
-      <Route path="" element={<App />} />
-      <Route path="home" element={<Home />} />
+      <Route path="" element={<Home />} />
+      <Route path="app" element={<App />} />
       <Route path="reset" element={<Reset />} />
     </Routes>
   </BrowserRouter>,

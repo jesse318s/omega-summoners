@@ -1,86 +1,54 @@
-import React, { useEffect, useState } from "react";
+import { useState, useEffect } from 'react';
+import { getCreatures } from './services/creatureServices';
 import Userfront from "@userfront/react";
-import { Navigate } from "react-router-dom";
-import { getUsers, addUser } from './services/userServices';
 
 Userfront.init("rbvqd5nd");
 
-const LogoutButton = Userfront.build({ toolId: "rodmkm" });
+const SignupForm = Userfront.build({ toolId: "odnabd" });
+const LoginForm = Userfront.build({ toolId: "knblro" });
 
 function Home() {
 
-    const [users, setUsers] = useState([]);
+    //sets creatures state
+    const [creatures, setCreatures] = useState([]);
 
-    const [userfrontId, setUserfrontId] = useState(0);
-
-    const checkAuth = async () => {
-        if (!Userfront.accessToken()) {
-            return (
-                <Navigate
-                    to={{
-                        pathname: "/",
-                        state: { from: window.location },
-                    }}
-                />
-            );
-        }
-    }
-
+    //retrieves creatures on load
     const loadAsyncData = async () => {
         try {
-            const { data } = await getUsers();
-            setUserfrontId(Userfront.user.userId);
-            const userData = data.filter(user => user.userfrontId === userfrontId);
-            if (userfrontId !== userData && userfrontId !== 0) {
-
-                const pathArray = [
-                    "img/creature/dragon_creature.png",
-                    "img/creature/gryphon_creature.png"
-                ];
-
-                const randomPath = pathArray[Math.floor(Math.random() * pathArray.length)];
-
-                const newUser = {
-                    userfrontId: userfrontId,
-                    name: Userfront.user.name,
-                    img_path: randomPath,
-                }
-
-                addUser(newUser);
-                setUsers(userData);
-
-            }
-            const newUserData = data.filter(user => user.userfrontId === userfrontId);
-            setUsers(newUserData);
+            const { data } = await getCreatures();
+            setCreatures(data);
         } catch (error) {
             console.log(error);
         }
     }
 
+    //calls data retrieval on load
     useEffect(() => {
-
-        checkAuth();
         loadAsyncData();
+    }, []);
 
-    });
 
     return (
         <>
+
             <div>
-                Home<br />
-                <LogoutButton />
+                <h1>Creatures</h1>
             </div>
 
             <div>
-                {users.map((user) => (
+                {creatures.map((creature) => (
                     <div
-                        key={user._id}
+                        key={creature._id}
                     >
-                        {user.name}<br />
-                        <img src={user.img_path} alt={user.name} />
+                        {creature.name}<br />
+                        <img src={creature.img_path} alt={creature.name} />
                     </div>
                 ))}
             </div>
+
+            <SignupForm />
+            <LoginForm />
+
         </>
     );
 }

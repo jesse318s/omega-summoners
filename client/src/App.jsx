@@ -100,8 +100,7 @@ function App() {
         ))}
       </div>
 
-      {/* user creature details */}
-      <div>
+      {/* <div>
         {userCreature.map((creature) => (
           <div
             key={creature._id}
@@ -109,7 +108,7 @@ function App() {
             <img src={creature.img_path} alt={creature.name} />
           </div>
         ))}
-      </div>
+      </div> */}
     </>
   );
 }

@@ -26,7 +26,7 @@ router.put("/:id", async (req, res) => {
             { _id: req.params.id },
             req.body
         );
-        res.send(article);
+        res.send(creature);
     } catch (error) {
         res.send(error);
     }

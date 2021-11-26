@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Userfront from "@userfront/react";
 import { Navigate } from "react-router-dom";
-import { getUsers } from './services/userServices';
+import { getUsers, addUser } from './services/userServices';
 
 Userfront.init("rbvqd5nd");
 
@@ -29,8 +29,29 @@ function Home() {
     const loadAsyncData = async () => {
         try {
             const { data } = await getUsers();
-            setUsers(data);
             setUserfrontId(Userfront.user.userId);
+            const userData = data.filter(user => user.userfrontId === userfrontId);
+            if (userfrontId !== userData && userfrontId !== 0) {
+
+                const pathArray = [
+                    "img/creature/dragon_creature.png",
+                    "img/creature/gryphon_creature.png"
+                ];
+
+                const randomPath = pathArray[Math.floor(Math.random() * pathArray.length)];
+
+                const newUser = {
+                    userfrontId: userfrontId,
+                    name: Userfront.user.name,
+                    img_path: randomPath,
+                }
+
+                addUser(newUser);
+                setUsers(userData);
+
+            }
+            const newUserData = data.filter(user => user.userfrontId === userfrontId);
+            setUsers(newUserData);
         } catch (error) {
             console.log(error);
         }
@@ -41,7 +62,7 @@ function Home() {
         checkAuth();
         loadAsyncData();
 
-    }, []);
+    });
 
     return (
         <>
@@ -55,9 +76,7 @@ function Home() {
                     <div
                         key={user._id}
                     >
-                        {userfrontId}<br />
                         {user.name}<br />
-                        {user.creature}
                         <img src={user.img_path} alt={user.name} />
                     </div>
                 ))}

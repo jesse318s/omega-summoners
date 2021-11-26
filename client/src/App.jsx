@@ -16,9 +16,9 @@ function App() {
   // sets user and userfront id state
   const [user, setUser] = useState([]);
   const [userfrontId, setUserfrontId] = useState(0);
-
-  // sets creatures and user creature state
+  // sets creatures 
   const [creatures, setCreatures] = useState([]);
+  // sets user creature state
   const [userCreature, setUserCreature] = useState([]);
 
   // checks for userfront authentication

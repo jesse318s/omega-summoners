@@ -11,7 +11,7 @@ function Home() {
 
     const [users, setUsers] = useState([]);
 
-    const [userid, setUserid] = useState(0);
+    const [userfrontId, setUserfrontId] = useState(0);
 
     const checkAuth = async () => {
         if (!Userfront.accessToken()) {
@@ -30,7 +30,7 @@ function Home() {
         try {
             const { data } = await getUsers();
             setUsers(data);
-            setUserid(Userfront.user.userId);
+            setUserfrontId(Userfront.user.userId);
         } catch (error) {
             console.log(error);
         }
@@ -55,7 +55,7 @@ function Home() {
                     <div
                         key={user._id}
                     >
-                        {userid}<br />
+                        {userfrontId}<br />
                         {user.name}<br />
                         {user.creature}
                         <img src={user.img_path} alt={user.name} />

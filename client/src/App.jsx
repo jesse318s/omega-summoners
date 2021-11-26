@@ -1,6 +1,13 @@
 import { useState, useEffect } from 'react';
 import './App.scss';
 import { getCreatures } from './services/creatureServices';
+import Userfront from "@userfront/react";
+
+
+Userfront.init("rbvqd5nd");
+
+const SignupForm = Userfront.build({ toolId: "odnabd" });
+const LoginForm = Userfront.build({ toolId: "knblro" });
 
 function App() {
 
@@ -39,6 +46,9 @@ function App() {
           </div>
         ))}
       </div>
+
+      <SignupForm />
+      <LoginForm />
 
     </>
   );

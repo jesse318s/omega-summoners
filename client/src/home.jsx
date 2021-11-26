@@ -2,13 +2,15 @@ import { useState, useEffect } from 'react';
 import { getCreatures } from './services/creatureServices';
 import Userfront from "@userfront/react";
 
+// initialize Userfront
 Userfront.init("rbvqd5nd");
 
+// initialize signup and login form
 const SignupForm = Userfront.build({ toolId: "odnabd" });
 const LoginForm = Userfront.build({ toolId: "knblro" });
 
+// landing page component
 function Home() {
-
     //sets creatures state
     const [creatures, setCreatures] = useState([]);
 
@@ -27,14 +29,14 @@ function Home() {
         loadAsyncData();
     }, []);
 
-
     return (
         <>
-
+            {/* title */}
             <div>
                 <h1>Creatures</h1>
             </div>
 
+            {/* creatures */}
             <div>
                 {creatures.map((creature) => (
                     <div
@@ -48,7 +50,6 @@ function Home() {
 
             <SignupForm />
             <LoginForm />
-
         </>
     );
 }

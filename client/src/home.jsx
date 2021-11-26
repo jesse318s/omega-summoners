@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import Userfront from "@userfront/react";
 import { Navigate } from "react-router-dom";
+import { getUsers } from './services/userServices';
 
 Userfront.init("rbvqd5nd");
 

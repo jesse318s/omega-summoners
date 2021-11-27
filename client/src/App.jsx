@@ -82,7 +82,7 @@ function App() {
     loadAsyncDataCreatures();
     loadAsyncDataUser();
   });
-  
+
 
   return (
     <>

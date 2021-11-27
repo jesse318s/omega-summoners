@@ -68,9 +68,7 @@ function App() {
 
       const newUserData = data.filter(user => user.userfrontId === userfrontId);
       setUser(newUserData);
-      // updates user creature state
-      const userCreatureData = creatures.filter(creature => creature._id === user[0].creature);
-      setUserCreature(userCreatureData);
+      setUserCreature(creatures.filter(creature => creature._id === user[0].creature));
     } catch (error) {
       console.log(error);
     }
@@ -101,6 +99,7 @@ function App() {
           </div>
         ))}
       </div>
+
 
       <div>
         {userCreature.map((creature) => (

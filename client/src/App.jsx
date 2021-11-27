@@ -68,7 +68,7 @@ function App() {
       }
     }
     loadAsyncDataUser();
-    // loads player data
+    // loads player creature data
     const loadAsyncDataPlayer = async () => {
       try {
         const { data } = await getCreatures();
@@ -82,15 +82,15 @@ function App() {
     loadAsyncDataPlayer();
   }, [player, userfrontId]);
 
-  // assigns random creature to player creature state and updates player creature value in database
+  // generates random creature, updates player creature in database, and then updates player creature state
   useEffect(() => {
     const checkAsyncDataCreature = async () => {
       try {
         if (player[0].creatureId === null) {
           const { data } = await getCreatures();
           const randomCreature = data[Math.floor(Math.random() * data.length)];
-          setPlayerCreature(randomCreature);
           updateUser(player[0]._id, { creatureId: randomCreature._id });
+          setPlayerCreature(randomCreature);
         }
       }
       catch (error) {

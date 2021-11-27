@@ -74,7 +74,7 @@ function App() {
       }
     }
     loadAsyncData();
-  }, [player, userfrontId]);
+  }, [player, userfrontId, creatures]);
 
   return (
     <>

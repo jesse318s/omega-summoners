@@ -97,8 +97,7 @@ function App() {
           <div
             key={user._id}
           >
-            {user.name}<br />
-            {user.creature}
+            {user.name}
           </div>
         ))}
       </div>
@@ -108,7 +107,8 @@ function App() {
           <div
             key={creature._id}
           >
-            <img src={creature.img_path} alt={creature.name} />
+            <img src={creature.img_path} alt={creature.name} /><br />
+            {creature.name}
           </div>
         ))}
       </div>

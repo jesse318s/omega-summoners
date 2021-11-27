@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { getCreatures } from './services/creatureServices';
 import Userfront from "@userfront/react";
+import { getCreatures } from './services/creatureServices';
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");

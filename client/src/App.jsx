@@ -16,12 +16,12 @@ function App() {
   // sets user and userfront id state
   const [user, setUser] = useState([]);
   const [userfrontId, setUserfrontId] = useState(0);
-  // sets creatures 
+  // sets creatures state
   const [creatures, setCreatures] = useState([]);
   // sets user creature state
   const [userCreature, setUserCreature] = useState([]);
 
-  // checks for userfront authentication
+  // checks for userfront authentication and redirects user if not authenticated
   const checkAuth = async () => {
     if (!Userfront.accessToken()) {
       return (
@@ -35,7 +35,7 @@ function App() {
     }
   }
 
-  // retrieves creatures
+  // retrieves creatures and sets creatures state
   const loadAsyncDataCreatures = async () => {
     try {
       const { data } = await getCreatures();
@@ -45,14 +45,13 @@ function App() {
     }
   }
 
-  // retrieves user data, generates new user if needed, updates user state
+  // retrieves user data, generates new user if needed, and updates user state
   const loadAsyncDataUser = async () => {
     try {
       const { data } = await getUsers();
       setUserfrontId(Userfront.user.userId);
       const userData = data.filter(user => user.userfrontId === userfrontId);
 
-      // checks for user data and generates new user if none exists
       try {
         if (userfrontId !== userData && userfrontId !== 0) {
           const randomCreature = creatures[Math.floor(Math.random() * creatures.length)];
@@ -70,8 +69,8 @@ function App() {
       const newUserData = data.filter(user => user.userfrontId === userfrontId);
       setUser(newUserData);
       // updates user creature state
-      const creatureData = creatures.filter(creature => creature._id === user[0].creature);
-      setUserCreature(creatureData);
+      const userCreatureData = creatures.filter(creature => creature._id === user[0].creature);
+      setUserCreature(userCreatureData);
     } catch (error) {
       console.log(error);
     }
@@ -83,6 +82,7 @@ function App() {
     loadAsyncDataCreatures();
     loadAsyncDataUser();
   });
+  
 
   return (
     <>

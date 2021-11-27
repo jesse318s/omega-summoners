@@ -45,7 +45,7 @@ function App() {
     }
   }
 
-  // retrieves user data, generates new user if needed, updates user state, and then updates user creature state
+  // retrieves user data, generates new user if needed, updates user state
   const loadAsyncDataUser = async () => {
     try {
       const { data } = await getUsers();
@@ -69,7 +69,9 @@ function App() {
 
       const newUserData = data.filter(user => user.userfrontId === userfrontId);
       setUser(newUserData);
-      setUserCreature(creatures.filter(creature => creature._id === user[0].creature));
+      // updates user creature state
+      const creatureData = creatures.filter(creature => creature._id === user[0].creature);
+      setUserCreature(creatureData);
     } catch (error) {
       console.log(error);
     }
@@ -101,7 +103,7 @@ function App() {
         ))}
       </div>
 
-      {/* <div>
+      <div>
         {userCreature.map((creature) => (
           <div
             key={creature._id}
@@ -109,7 +111,7 @@ function App() {
             <img src={creature.img_path} alt={creature.name} />
           </div>
         ))}
-      </div> */}
+      </div>
     </>
   );
 }

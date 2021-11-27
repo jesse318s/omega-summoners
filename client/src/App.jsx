@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import './App.scss';
 import Userfront from "@userfront/react";
 import { Navigate } from "react-router-dom";
-import { getUsers, addUser } from './services/userServices';
+import { getUsers, addUser, updateUser } from './services/userServices';
 import { getCreatures } from './services/creatureServices';
 
 // initialize Userfront
@@ -82,12 +82,23 @@ function App() {
     loadAsyncDataPlayer();
   }, [player, userfrontId]);
 
-  // // create function to update player data
-  // useEffect(() => {
-  //   const checkAsyncDataCreature = async () => {
-  //   }
-  //   checkAsyncDataCreature();
-  // }, []);
+  // assigns random creature to player creature state and updates player creature value in database
+  useEffect(() => {
+    const checkAsyncDataCreature = async () => {
+      try {
+        if (player[0].creatureId === null) {
+          const { data } = await getCreatures();
+          const randomCreature = data[Math.floor(Math.random() * data.length)];
+          setPlayerCreature(randomCreature);
+          updateUser(player[0]._id, { creatureId: randomCreature._id });
+        }
+      }
+      catch (error) {
+        console.log(error);
+      }
+    }
+    checkAsyncDataCreature();
+  }, [player]);
 
   return (
     <>

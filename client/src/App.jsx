@@ -14,15 +14,13 @@ const LogoutButton = Userfront.build({ toolId: "rodmkm" });
 // main app component
 function App() {
   // sets user and userfront id state
-  const [user, setUser] = useState([]);
+  const [player, setPlayer] = useState([]);
   const [userfrontId, setUserfrontId] = useState(0);
   // sets creatures state
   const [creatures, setCreatures] = useState([]);
-  // sets user creature state
-  const [userCreature, setUserCreature] = useState([]);
 
   // checks for userfront authentication and redirects user if not authenticated
-  const checkAuth = async () => {
+  const checkAuth = () => {
     if (!Userfront.accessToken()) {
       return (
         <Navigate
@@ -35,52 +33,48 @@ function App() {
     }
   }
 
-  // retrieves creatures and sets creatures state
-  const loadAsyncDataCreatures = async () => {
-    try {
-      const { data } = await getCreatures();
-      setCreatures(data);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  // calls authentication on load
+  useEffect(() => {
+    checkAuth();
+  }, []);
 
-  // retrieves user data, generates new user if needed, and updates user state
-  const loadAsyncDataUser = async () => {
-    try {
-      const { data } = await getUsers();
-      setUserfrontId(Userfront.user.userId);
-      const userData = data.filter(user => user.userfrontId === userfrontId);
-
+  // calls data retrieval on load
+  useEffect(() => {
+    // retrieves user data, generates new user if needed, and updates user state
+    const loadAsyncData = async () => {
+      // retrieves creature data and updates creatures state
       try {
-        if (userfrontId !== userData && userfrontId !== 0) {
-          const randomCreature = creatures[Math.floor(Math.random() * creatures.length)];
-          const newUser = {
-            userfrontId: userfrontId,
-            name: Userfront.user.name,
-            creature: randomCreature
+        const { data } = await getCreatures();
+        setCreatures(data);
+      }
+      catch (error) {
+        console.log(error);
+      }
+      try {
+        const { data } = await getUsers();
+        setUserfrontId(Userfront.user.userId);
+        const userData = data.filter(user => user.userfrontId === userfrontId);
+
+        try {
+          if (userfrontId !== userData && userfrontId !== 0) {
+            const newUser = {
+              userfrontId: userfrontId,
+              name: Userfront.user.name,
+            }
+            await addUser(newUser);
           }
-          await addUser(newUser);
+        } catch (error) {
+          console.log(error);
         }
+
+        const newUserData = data.filter(user => user.userfrontId === userfrontId);
+        setPlayer(newUserData);
       } catch (error) {
         console.log(error);
       }
-
-      const newUserData = data.filter(user => user.userfrontId === userfrontId);
-      setUser(newUserData);
-      setUserCreature(creatures.filter(creature => creature._id === user[0].creature));
-    } catch (error) {
-      console.log(error);
     }
-  }
-
-  // calls authentication and data retrieval on load
-  useEffect(() => {
-    checkAuth();
-    loadAsyncDataCreatures();
-    loadAsyncDataUser();
-  });
-
+    loadAsyncData();
+  }, [player, userfrontId]);
 
   return (
     <>
@@ -91,7 +85,7 @@ function App() {
 
       {/* user details */}
       <div>
-        {user.map((user) => (
+        {player.map((user) => (
           <div
             key={user._id}
           >
@@ -100,13 +94,12 @@ function App() {
         ))}
       </div>
 
-
+      {/* creatures */}
       <div>
-        {userCreature.map((creature) => (
+        {creatures.map((creature) => (
           <div
             key={creature._id}
           >
-            <img src={creature.img_path} alt={creature.name} /><br />
             {creature.name}
           </div>
         ))}

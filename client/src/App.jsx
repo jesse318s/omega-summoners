@@ -38,18 +38,9 @@ function App() {
     checkAuth();
   }, []);
 
-  // calls data retrieval on load
+  // retrieves user data, generates new user if needed, and updates user state
   useEffect(() => {
-    // retrieves user data, generates new user if needed, and updates user state
-    const loadAsyncData = async () => {
-      // retrieves creature data and updates creatures state
-      try {
-        const { data } = await getCreatures();
-        setCreatures(data);
-      }
-      catch (error) {
-        console.log(error);
-      }
+    const loadAsyncDataUser = async () => {
       try {
         const { data } = await getUsers();
         setUserfrontId(Userfront.user.userId);
@@ -73,8 +64,22 @@ function App() {
         console.log(error);
       }
     }
-    loadAsyncData();
-  }, [player, userfrontId, creatures]);
+    loadAsyncDataUser();
+  }, [player, userfrontId]);
+
+  // retrieves creature data and updates creatures state
+  useEffect(() => {
+    const loadAsyncDataCreatures = async () => {
+      try {
+        const { data } = await getCreatures();
+        setCreatures(data);
+      }
+      catch (error) {
+        console.log(error);
+      }
+    }
+    loadAsyncDataCreatures();
+  }, [creatures]);
 
   return (
     <>

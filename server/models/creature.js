@@ -6,7 +6,7 @@ const creatureSchema = new Schema({
         type: String,
         required: true,
     },
-    img_path: { 
+    imgPath: { 
         type: String,
         required: true,
     }

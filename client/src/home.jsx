@@ -43,7 +43,7 @@ function Home() {
                         key={creature._id}
                     >
                         {creature.name}<br />
-                        <img src={creature.img_path} alt={creature.name} />
+                        <img src={creature.imgPath} alt={creature.name} />
                     </div>
                 ))}
             </div>

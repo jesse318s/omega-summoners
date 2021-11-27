@@ -8,13 +8,13 @@ const userSchema = new Schema({
     name: {
         type: String,
     },
-    avatar: {
+    avatarPath: {
         type: String,
     },
     experience: {
         type: Number,
     },
-    creature: {
+    creatureId: {
         type: Schema.Types.ObjectId,
     }
 });

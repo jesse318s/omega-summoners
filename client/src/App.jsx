@@ -16,8 +16,8 @@ function App() {
   // sets user and userfront id state
   const [player, setPlayer] = useState([]);
   const [userfrontId, setUserfrontId] = useState(0);
-  // sets creatures state
-  const [creatures, setCreatures] = useState([]);
+  // sets player creature state
+  const [playerCreature, setPlayerCreature] = useState([]);
 
   // checks for userfront authentication and redirects user if not authenticated
   const checkAuth = () => {
@@ -38,7 +38,7 @@ function App() {
     checkAuth();
   }, []);
 
-  // retrieves user data, generates new user if needed, and updates user state
+  // retrieves user data, generates new user if needed, and updates user state on load
   useEffect(() => {
     const loadAsyncDataUser = async () => {
       try {
@@ -51,6 +51,9 @@ function App() {
             const newUser = {
               userfrontId: userfrontId,
               name: Userfront.user.name,
+              avatarPath: null,
+              experience: 0,
+              creatureId: null,
             }
             await addUser(newUser);
           }
@@ -65,21 +68,21 @@ function App() {
       }
     }
     loadAsyncDataUser();
-  }, [player, userfrontId]);
-
-  // retrieves creature data and updates creatures state
-  useEffect(() => {
-    const loadAsyncDataCreatures = async () => {
+    // loads player data
+    const loadAsyncDataPlayer = async () => {
       try {
         const { data } = await getCreatures();
-        setCreatures(data);
+        const playerCreatureData = data.filter(creature => creature._id === player[0].creatureId);
+        setPlayerCreature(playerCreatureData);
       }
       catch (error) {
         console.log(error);
       }
     }
-    loadAsyncDataCreatures();
-  }, [creatures]);
+    loadAsyncDataPlayer();
+  }, [player, userfrontId]);
+
+  // create function to update player data
 
   return (
     <>
@@ -99,12 +102,13 @@ function App() {
         ))}
       </div>
 
-      {/* creatures */}
+      {/* player details */}
       <div>
-        {creatures.map((creature) => (
+        {playerCreature.map((creature) => (
           <div
             key={creature._id}
           >
+            <img src={creature.imgPath} alt={creature.name} />
             {creature.name}
           </div>
         ))}

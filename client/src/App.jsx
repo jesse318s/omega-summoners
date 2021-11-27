@@ -45,7 +45,7 @@ function App() {
     }
   }
 
-  // retrieves user data and then updates user state
+  // retrieves user data, generates new user if needed, updates user state, and then updates user creature state
   const loadAsyncDataUser = async () => {
     try {
       const { data } = await getUsers();
@@ -69,6 +69,7 @@ function App() {
 
       const newUserData = data.filter(user => user.userfrontId === userfrontId);
       setUser(newUserData);
+      setUserCreature(creatures.filter(creature => creature._id === user[0].creature));
     } catch (error) {
       console.log(error);
     }

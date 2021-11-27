@@ -88,8 +88,8 @@ function App() {
       try {
         if (player[0].creatureId === null) {
           const { data } = await getCreatures();
-          const randomCreature = data[Math.floor(Math.random() * data.length)];
-          updateUser(player[0]._id, { creatureId: randomCreature._id });
+          const randomCreature = data[Math.floor(Math.random() * data.length)]._id;
+          updateUser(player[0]._id, { creatureId: randomCreature });
           setPlayerCreature(randomCreature);
         }
       }

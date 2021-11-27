@@ -82,7 +82,12 @@ function App() {
     loadAsyncDataPlayer();
   }, [player, userfrontId]);
 
-  // create function to update player data
+  // // create function to update player data
+  // useEffect(() => {
+  //   const checkAsyncDataCreature = async () => {
+  //   }
+  //   checkAsyncDataCreature();
+  // }, []);
 
   return (
     <>

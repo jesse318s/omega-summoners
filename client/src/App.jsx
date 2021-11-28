@@ -15,7 +15,7 @@ const LogoutButton = Userfront.build({ toolId: "rodmkm" });
 function App() {
   // navigate hook
   const navigate = useNavigate();
-  
+
   // sets user and userfront id state
   const [player, setPlayer] = useState([{ _id: 0, userfrontId: 0, name: "", avatarPath: "", experience: 0, creatureId: 0 }]);
   const [userfrontId] = useState(Userfront.user.userId);
@@ -35,7 +35,7 @@ function App() {
 
   useEffect(() => {
     // retrieves user data, generates new user if needed, and updates user state on load
-    const loadAsyncDataUser = async () => {
+    const loadAsyncDataPlayer = async () => {
       try {
         const { data } = await getUsers();
         const userData = data.filter(user => user.userfrontId === userfrontId);
@@ -61,9 +61,9 @@ function App() {
         console.log(error);
       }
     }
-    loadAsyncDataUser();
+    loadAsyncDataPlayer();
     // loads player creature data
-    const loadAsyncDataPlayer = async () => {
+    const loadAsyncDataPlayerCreature = async () => {
       try {
         const { data } = await getCreatures();
         const playerCreatureData = data.filter(creature => creature._id === player[0].creatureId);
@@ -73,9 +73,9 @@ function App() {
         console.log(error);
       }
     }
-    loadAsyncDataPlayer();
+    loadAsyncDataPlayerCreature();
     // generates random creature, updates player creature in database, and then updates player creature state
-    const checkAsyncDataCreature = async () => {
+    const checkAsyncDataPlayerCreature = async () => {
       try {
         if (player[0].creatureId === null) {
           const { data } = await getCreatures();
@@ -88,7 +88,7 @@ function App() {
         console.log(error);
       }
     }
-    checkAsyncDataCreature();
+    checkAsyncDataPlayerCreature();
   }, [player, userfrontId]);
 
   return (
@@ -98,7 +98,7 @@ function App() {
         <LogoutButton />
       </div>
 
-      {/* user details */}
+      {/* player details */}
       <div>
         {player.map((user) => (
           <div
@@ -109,7 +109,7 @@ function App() {
         ))}
       </div>
 
-      {/* player details */}
+      {/* player creature */}
       <div>
         {playerCreature.map((creature) => (
           <div

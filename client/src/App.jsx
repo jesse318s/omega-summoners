@@ -91,37 +91,42 @@ function App() {
     loadAsyncDataPlayerCreature();
   }, [player, userfrontId]);
 
-  return (
-    <>
-      {/* nav */}
-      <div>
-        <LogoutButton />
-      </div>
+  const renderCheck = playerCreature;
 
-      {/* player details */}
-      <div>
-        {player.map((user) => (
-          <div
-            key={user._id}
-          >
-            {user.name}
-          </div>
-        ))}
-      </div>
+  if (renderCheck) {
+    return (
+      <>
+        {/* nav */}
+        <div>
+          <LogoutButton />
+        </div>
 
-      {/* player creature */}
-      <div>
-        {playerCreature.map((creature) => (
-          <div
-            key={creature._id}
-          >
-            <img src={creature.imgPath} alt={creature.name} />
-            {creature.name}
-          </div>
-        ))}
-      </div>
-    </>
-  );
+        {/* player details */}
+        <div>
+          {player.map((user) => (
+            <div
+              key={user._id}
+            >
+              {user.name}
+            </div>
+          ))}
+        </div>
+
+        {/* player creature */}
+        <div>
+          {playerCreature.map((creature) => (
+            <div
+              key={creature._id}
+            >
+              <img src={creature.imgPath} alt={creature.name} />
+              {creature.name}
+            </div>
+          ))}
+        </div>
+      </>
+    );
+  }
+  else return (<></>);
 }
 
 export default App;

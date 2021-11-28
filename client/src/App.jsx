@@ -46,7 +46,7 @@ function App() {
         const userData = data.filter(user => user.userfrontId === userfrontId);
 
         try {
-          if (userfrontId !== userData && userfrontId !== 0) {
+          if (userfrontId !== userData.userfrontId) {
             const newUser = {
               userfrontId: userfrontId,
               name: Userfront.user.name,

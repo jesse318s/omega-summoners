@@ -14,18 +14,17 @@ function Home() {
     //sets creatures state
     const [creatures, setCreatures] = useState([]);
 
-    //retrieves creatures on load
-    const loadAsyncData = async () => {
-        try {
-            const { data } = await getCreatures();
-            setCreatures(data);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
     //calls data retrieval on load
     useEffect(() => {
+        //retrieves creatures on load
+        const loadAsyncData = async () => {
+            try {
+                const { data } = await getCreatures();
+                setCreatures(data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
         loadAsyncData();
     }, []);
 

@@ -14,7 +14,7 @@ const LogoutButton = Userfront.build({ toolId: "rodmkm" });
 // main app component
 function App() {
   // sets user and userfront id state
-  const [player, setPlayer] = useState([{ _id: 0, userfrontId: 0, name: "", avatarPath: "", experience: 0, creatureId: 0 }]);
+  const [player, setPlayer] = useState([{ _id: 0, userfrontId: 0, name: "", avatarPath: "", experience: 0, creatureId: "" }]);
   const [userfrontId, setUserfrontId] = useState(0);
   // sets player creature state
   const [playerCreature, setPlayerCreature] = useState([{ _id: 0, name: "", imgPath: "" }]);
@@ -50,9 +50,9 @@ function App() {
             const newUser = {
               userfrontId: userfrontId,
               name: Userfront.user.name,
-              avatarPath: null,
+              avatarPath: "",
               experience: 0,
-              creatureId: null,
+              creatureId: "",
             }
             await addUser(newUser);
           }
@@ -61,7 +61,7 @@ function App() {
         }
 
         const newUserData = data.filter(user => user.userfrontId === userfrontId);
-        setPlayer(newUserData);
+        setPlayer(newUserData);//needs creature id
       } catch (error) {
         console.log(error);
       }
@@ -75,7 +75,7 @@ function App() {
         setPlayerCreature(playerCreatureData);
       }
       catch (error) {
-        console.log(error);
+        console.log(error);//ERROR
       }
     }
     loadAsyncDataPlayer();
@@ -90,7 +90,7 @@ function App() {
         }
       }
       catch (error) {
-        console.log(error);
+        console.log(error);//ERROR
       }
     }
     checkAsyncDataCreature();

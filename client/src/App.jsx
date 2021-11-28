@@ -62,18 +62,6 @@ function App() {
       }
     }
     loadAsyncDataPlayer();
-    // loads player creature data
-    const loadAsyncDataPlayerCreature = async () => {
-      try {
-        const { data } = await getCreatures();
-        const playerCreatureData = data.filter(creature => creature._id === player[0].creatureId);
-        setPlayerCreature(playerCreatureData);
-      }
-      catch (error) {
-        console.log(error);
-      }
-    }
-    loadAsyncDataPlayerCreature();
     // generates random creature, updates player creature in database, and then updates player creature state
     const checkAsyncDataPlayerCreature = async () => {
       try {
@@ -89,6 +77,18 @@ function App() {
       }
     }
     checkAsyncDataPlayerCreature();
+    // loads player creature data
+    const loadAsyncDataPlayerCreature = async () => {
+      try {
+        const { data } = await getCreatures();
+        const playerCreatureData = data.filter(creature => creature._id === player[0].creatureId);
+        setPlayerCreature(playerCreatureData);
+      }
+      catch (error) {
+        console.log(error);
+      }
+    }
+    loadAsyncDataPlayerCreature();
   }, [player, userfrontId]);
 
   return (

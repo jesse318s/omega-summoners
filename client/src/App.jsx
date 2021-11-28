@@ -15,6 +15,7 @@ const LogoutButton = Userfront.build({ toolId: "rodmkm" });
 function App() {
   // navigate hook
   const navigate = useNavigate();
+  
   // sets user and userfront id state
   const [player, setPlayer] = useState([{ _id: 0, userfrontId: 0, name: "", avatarPath: "", experience: 0, creatureId: 0 }]);
   const [userfrontId] = useState(Userfront.user.userId);
@@ -26,7 +27,7 @@ function App() {
     // checks for userfront authentication and redirects user if not authenticated
     const checkAuth = () => {
       if (!Userfront.accessToken()) {
-        navigate('/')
+        navigate('/');
       }
     }
     checkAuth();

@@ -1,6 +1,4 @@
-import { useState, useEffect } from 'react';
 import Userfront from "@userfront/react";
-import { getCreatures } from './services/creatureServices';
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
@@ -11,42 +9,12 @@ const LoginForm = Userfront.build({ toolId: "knblro" });
 
 // landing page component
 function Home() {
-    //sets creatures state
-    const [creatures, setCreatures] = useState([]);
-
-    //calls data retrieval on load
-    useEffect(() => {
-        //retrieves creatures on load
-        const loadAsyncData = async () => {
-            try {
-                const { data } = await getCreatures();
-                setCreatures(data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        loadAsyncData();
-    }, []);
-
     return (
         <>
             {/* title */}
-            <div>
-                <h1>Creatures</h1>
-            </div>
+            <h1>Welcome to Omega Summoners!</h1>
 
-            {/* creatures */}
-            <div>
-                {creatures.map((creature) => (
-                    <div
-                        key={creature._id}
-                    >
-                        {creature.name}<br />
-                        <img src={creature.imgPath} alt={creature.name} />
-                    </div>
-                ))}
-            </div>
-
+            {/* signup and login form */}
             <SignupForm />
             <LoginForm />
         </>

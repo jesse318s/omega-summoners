@@ -15,7 +15,7 @@ const LogoutButton = Userfront.build({ toolId: "rodmkm" });
 function App() {
   // sets user and userfront id state
   const [player, setPlayer] = useState([{ _id: 0, userfrontId: 0, name: "", avatarPath: "", experience: 0, creatureId: 0 }]);
-  const [userfrontId, setUserfrontId] = useState(0);
+  const [userfrontId] = useState(Userfront.user.userId);
   // sets player creature state
   const [playerCreature, setPlayerCreature] = useState([{ _id: 0, name: "", imgPath: "" }]);
 
@@ -42,7 +42,6 @@ function App() {
     const loadAsyncDataUser = async () => {
       try {
         const { data } = await getUsers();
-        setUserfrontId(Userfront.user.userId);
         const userData = data.filter(user => user.userfrontId === userfrontId);
 
         try {
@@ -50,7 +49,7 @@ function App() {
             const newUser = {
               userfrontId: userfrontId,
               name: Userfront.user.name,
-              avatarPath: null,
+              avatarPath: "",
               experience: 0,
               creatureId: null,
             }

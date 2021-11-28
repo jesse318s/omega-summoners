@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import './App.scss';
 import Userfront from "@userfront/react";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getUsers, addUser, updateUser } from './services/userServices';
 import { getCreatures } from './services/creatureServices';
 
@@ -13,6 +13,8 @@ const LogoutButton = Userfront.build({ toolId: "rodmkm" });
 
 // main app component
 function App() {
+  // navigate hook
+  const navigate = useNavigate();
   // sets user and userfront id state
   const [player, setPlayer] = useState([{ _id: 0, userfrontId: 0, name: "", avatarPath: "", experience: 0, creatureId: 0 }]);
   const [userfrontId] = useState(Userfront.user.userId);
@@ -24,18 +26,11 @@ function App() {
     // checks for userfront authentication and redirects user if not authenticated
     const checkAuth = () => {
       if (!Userfront.accessToken()) {
-        return (
-          <Navigate
-            to={{
-              pathname: "/",
-              state: { from: window.location },
-            }}
-          />
-        );
+        navigate('/')
       }
     }
     checkAuth();
-  }, []);
+  });
 
   useEffect(() => {
     // retrieves user data, generates new user if needed, and updates user state on load

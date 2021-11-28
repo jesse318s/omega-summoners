@@ -91,9 +91,7 @@ function App() {
     loadAsyncDataPlayerCreature();
   }, [player, userfrontId]);
 
-  const renderCheck = playerCreature;
-
-  if (renderCheck) {
+  if (playerCreature) {
     return (
       <>
         {/* nav */}

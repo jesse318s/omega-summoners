@@ -14,32 +14,31 @@ const LogoutButton = Userfront.build({ toolId: "rodmkm" });
 // main app component
 function App() {
   // sets user and userfront id state
-  const [player, setPlayer] = useState([]);
+  const [player, setPlayer] = useState([{ _id: 0, userfrontId: 0, name: "", avatarPath: "", experience: 0, creatureId: 0 }]);
   const [userfrontId, setUserfrontId] = useState(0);
   // sets player creature state
-  const [playerCreature, setPlayerCreature] = useState([]);
-
-  // checks for userfront authentication and redirects user if not authenticated
-  const checkAuth = () => {
-    if (!Userfront.accessToken()) {
-      return (
-        <Navigate
-          to={{
-            pathname: "/",
-            state: { from: window.location },
-          }}
-        />
-      );
-    }
-  }
+  const [playerCreature, setPlayerCreature] = useState([{ _id: 0, name: "", imgPath: "" }]);
 
   // calls authentication on load
   useEffect(() => {
+    // checks for userfront authentication and redirects user if not authenticated
+    const checkAuth = () => {
+      if (!Userfront.accessToken()) {
+        return (
+          <Navigate
+            to={{
+              pathname: "/",
+              state: { from: window.location },
+            }}
+          />
+        );
+      }
+    }
     checkAuth();
   }, []);
 
-  // retrieves user data, generates new user if needed, and updates user state on load
   useEffect(() => {
+    // retrieves user data, generates new user if needed, and updates user state on load
     const loadAsyncDataUser = async () => {
       try {
         const { data } = await getUsers();
@@ -80,10 +79,7 @@ function App() {
       }
     }
     loadAsyncDataPlayer();
-  }, [player, userfrontId]);
-
-  // generates random creature, updates player creature in database, and then updates player creature state
-  useEffect(() => {
+    // generates random creature, updates player creature in database, and then updates player creature state
     const checkAsyncDataCreature = async () => {
       try {
         if (player[0].creatureId === null) {
@@ -98,7 +94,7 @@ function App() {
       }
     }
     checkAsyncDataCreature();
-  }, [player]);
+  }, [player, userfrontId]);
 
   return (
     <>

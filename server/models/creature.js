@@ -8,6 +8,12 @@ const creatureSchema = new Schema({
     },
     imgPath: { 
         type: String,
+    },
+    hp: {
+        type: Number,
+    },
+    attack: {
+        type: Number,
     }
 });
 

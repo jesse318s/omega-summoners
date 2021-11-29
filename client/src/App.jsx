@@ -24,10 +24,15 @@ function App() {
   const [avatarOptionStatus, setAvatarOptionStatus] = useState(false);
   const [nameOptionStatus, setNameOptionStatus] = useState(false);
   // sets player creature state
-  const [playerCreature, setPlayerCreature] = useState([{ _id: 0, name: "", imgPath: "" }]);
+  const [playerCreature, setPlayerCreature] = useState([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0 }]);
   // sets battle and enemy creature state
   const [battleStatus, setBattleStatus] = useState(false);
   const [enemyCreature, setEnemyCreature] = useState([{ _id: 0, name: "", imgPath: "" }]);
+  // sets player and enemy creature hp and attack state
+  const [playerCreatureHP, setPlayerCreatureHP] = useState(0);
+  const [playerCreatureAttack, setPlayerCreatureAttack] = useState(0);
+  const [enemyCreatureHP, setEnemyCreatureHP] = useState(0);
+  const [enemyCreatureAttack, setEnemyCreatureAttack] = useState(0);
 
   // calls authentication on load
   useEffect(() => {
@@ -122,9 +127,13 @@ function App() {
   const loadAsyncDataBattle = async () => {
     try {
       setBattleStatus(true);
+      setPlayerCreatureHP(playerCreature[0].hp);
+      setPlayerCreatureAttack(playerCreature[0].attack);
       const { data } = await getCreatures();
       const enemyCreatureData = data.filter(creature => creature._id === "61a468eced68cee6f9504bc0");
       setEnemyCreature(enemyCreatureData);
+      setEnemyCreatureHP(enemyCreatureData[0].hp);
+      setEnemyCreatureAttack(enemyCreatureData[0].attack);
     }
     catch (error) {
       console.log(error);
@@ -169,7 +178,7 @@ function App() {
                 {nameOptionStatus ? <form>
                   <label for="name">Player name:</label>
                   <input type="text" name="name" placeholder={player[0].name} onChange={(e) => selectName(e.target.value)} />
-                </form> : <div></div>}
+                </form> : null}
               </ul>
             </div>
             : <div></div>}
@@ -194,7 +203,11 @@ function App() {
               <div
                 key={creature._id}
               >
-                <img src={creature.imgPath} alt={creature.name} /><br />
+                <img src={creature.imgPath} alt={creature.name} />
+                {battleStatus ?
+                  <h4>HP: {playerCreatureHP}</h4>
+                  : null
+                }
                 <h4>{Userfront.user.name}'s {creature.name}</h4>
               </div>
             ))}
@@ -207,12 +220,13 @@ function App() {
                 <div
                   key={creature._id}
                 >
-                  <img src={creature.imgPath} alt={creature.name} /><br />
+                  <img src={creature.imgPath} alt={creature.name} />
+                  <h4>HP: {enemyCreatureHP}</h4>
                   <h4>Enemy {creature.name}</h4>
                 </div>
               ))}
             </div>
-            : <div></div>}
+            : null}
         </main>
       </>
     );

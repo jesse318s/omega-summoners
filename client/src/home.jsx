@@ -15,10 +15,10 @@ function Home() {
                 {/* title and nav */}
                 <h1>Welcome to Omega Summoners!</h1>
                 <nav>
-                    <ol>
+                    <ul>
                         <li><a href="#login">Login</a></li>
                         <li><a href="#about">About</a></li>
-                    </ol>
+                    </ul>
                 </nav>
             </header>
 

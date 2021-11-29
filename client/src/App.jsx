@@ -112,10 +112,15 @@ function App() {
     return (
       <>
         <header>
-          {/* nav */}
-          <div>
-            <LogoutButton />
-          </div>
+          {/* title and nav */}
+          <nav>
+            <ul>
+              <li><a href="/">Home</a></li>
+              <li><LogoutButton /></li>
+              <li><button>Set Avatar</button></li>
+              <li><button onClick={loadAsyncEnemyData}>Battle Hellspawn</button></li>
+            </ul>
+          </nav>
         </header>
 
         <main>
@@ -125,7 +130,7 @@ function App() {
               <div
                 key={user._id}
               >
-                {user.name}
+                <h4>{user.name}</h4>
               </div>
             ))}
           </div>
@@ -137,8 +142,7 @@ function App() {
                 key={creature._id}
               >
                 <img src={creature.imgPath} alt={creature.name} /><br />
-                <p>{creature.name}</p>
-                <button onClick={loadAsyncEnemyData}>Battle Hellspawn</button>
+                <h4>{creature.name}</h4>
               </div>
             ))}
           </div>
@@ -151,7 +155,7 @@ function App() {
                   key={creature._id}
                 >
                   <img src={creature.imgPath} alt={creature.name} /><br />
-                  <p>{creature.name}</p>
+                  <h4>{creature.name}</h4>
                 </div>
               ))}
             </div>

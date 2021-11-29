@@ -19,11 +19,14 @@ function App() {
   // sets user and userfront id state
   const [player, setPlayer] = useState([{ _id: 0, userfrontId: 0, name: "", avatarPath: "", experience: 0, creatureId: 0 }]);
   const [userfrontId] = useState(Userfront.user.userId);
+  // sets player options states
+  const [playerOptionsStatus, setPlayerOptionsStatus] = useState(false);
+  const [avatarOptionStatus, setAvatarOptionStatus] = useState(false);
+  const [nameOptionStatus, setNameOptionStatus] = useState(false);
   // sets player creature state
   const [playerCreature, setPlayerCreature] = useState([{ _id: 0, name: "", imgPath: "" }]);
-  // sets battle state
+  // sets battle and enemy creature state
   const [battleStatus, setBattleStatus] = useState(false);
-  // sets enemy creature state
   const [enemyCreature, setEnemyCreature] = useState([{ _id: 0, name: "", imgPath: "" }]);
 
   // calls authentication on load
@@ -49,7 +52,7 @@ function App() {
             const newUser = {
               userfrontId: userfrontId,
               name: Userfront.user.name,
-              avatarPath: "",
+              avatarPath: "img/avatar/m_warrior_avatar.png",
               experience: 0,
               creatureId: null,
             }
@@ -108,10 +111,18 @@ function App() {
     }
   }
 
-  // loads player options
-  const displayPlayerOptions = async () => {
+  const selectAvatar = async (avatarPath) => {
     try {
+      await updateUser(player[0]._id, { avatarPath: avatarPath });
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
 
+  const selectName = async (name) => {
+    try {
+      await updateUser(player[0]._id, { name: name });
     }
     catch (error) {
       console.log(error);
@@ -126,33 +137,63 @@ function App() {
           <nav>
             <ul>
               <li><LogoutButton /></li>
-              <li><button onClick={displayPlayerOptions}>Player Options</button></li>
-              <li><button onClick={loadAsyncDataEnemy}>Battle Hellspawn</button></li>
+              <li><button onClick={() => setPlayerOptionsStatus(!playerOptionsStatus)}>Player Options</button></li>
             </ul>
           </nav>
         </header>
 
         <main>
+          {/* player options */}
+          {playerOptionsStatus ?
+            <div>
+              <h3>Player Options</h3>
+              <ul>
+                <li><button onClick={() => { setAvatarOptionStatus(!avatarOptionStatus) }}>Change Avatar</button></li>
+                {avatarOptionStatus ? <div>
+                  <div onClick={() => selectAvatar("img/avatar/f_mage_avatar.png")}>
+                    <img src={"img/avatar/f_mage_avatar.png"} alt={"f_mage"} width="100" height="100" />Avatar 1</div>
+                  <div onClick={() => selectAvatar("img/avatar/m_mage_avatar.png")}>
+                    <img src={"img/avatar/m_mage_avatar.png"} alt={"m_mage"} width="100" height="100" />Avatar 2</div>
+                  <div onClick={() => selectAvatar("img/avatar/f_rogue_avatar.png")}>
+                    <img src={"img/avatar/f_rogue_avatar.png"} alt={"f_rogue"} width="100" height="100" />Avatar 3</div>
+                  <div onClick={() => selectAvatar("img/avatar/m_rogue_avatar.png")}>
+                    <img src={"img/avatar/m_rogue_avatar.png"} alt={"m_rogue"} width="100" height="100" />Avatar 4</div>
+                  <div onClick={() => selectAvatar("img/avatar/f_warrior_avatar.png")}>
+                    <img src={"img/avatar/f_warrior_avatar.png"} alt={"f_warrior"} width="100" height="100" />Avatar 5</div>
+                  <div onClick={() => selectAvatar("img/avatar/m_warrior_avatar.png")}>
+                    <img src={"img/avatar/m_warrior_avatar.png"} alt={"m_warrior"} width="100" height="100" />Avatar 6</div></div>
+                  : <div></div>}
+                <li><button onClick={() => { setNameOptionStatus(!nameOptionStatus) }}>Change Name</button></li>
+                {nameOptionStatus ? <form>
+                  <label for="name">Player name:</label>
+                  <input type="text" name="name" placeholder={player[0].name} onChange={(e) => selectName(e.target.value)} />
+                </form> : <div></div>}
+              </ul>
+            </div>
+            : <div></div>}
+
           {/* player details */}
           <div>
-            {player.map((user) => (
+            {player.map((player) => (
               <div
-                key={user._id}
+                key={player._id}
               >
-                <h4>{user.name}</h4>
-                <h4>Experience: {user.experience}</h4>
+                <img src={player.avatarPath} alt={player.name} width="100" height="100" />
+                <h2>{player.name}</h2>
+                <h4>Experience: {player.experience}</h4>
               </div>
             ))}
           </div>
 
           {/* player creature */}
+          <button onClick={loadAsyncDataEnemy}>Battle Hellspawn</button>
           <div>
             {playerCreature.map((creature) => (
               <div
                 key={creature._id}
               >
                 <img src={creature.imgPath} alt={creature.name} /><br />
-                <h4>{creature.name}</h4>
+                <h4>{Userfront.user.name}'s {creature.name}</h4>
               </div>
             ))}
           </div>
@@ -165,7 +206,7 @@ function App() {
                   key={creature._id}
                 >
                   <img src={creature.imgPath} alt={creature.name} /><br />
-                  <h4>{creature.name}</h4>
+                  <h4>Enemy {creature.name}</h4>
                 </div>
               ))}
             </div>

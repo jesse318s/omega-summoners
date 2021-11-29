@@ -138,7 +138,7 @@ function App() {
               >
                 <img src={creature.imgPath} alt={creature.name} /><br />
                 <p>{creature.name}</p>
-                <button onClick={loadAsyncEnemyData} >Battle Hellspawn</button>
+                <button onClick={loadAsyncEnemyData}>Battle Hellspawn</button>
               </div>
             ))}
           </div>

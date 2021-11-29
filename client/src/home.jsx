@@ -40,7 +40,7 @@ function Home() {
                 {/* footer */}
                 <footer>
                     <p>
-                        &copy; 2021 Omega Summoners by Jesse Sites
+                        &copy; 2021 Jesse Sites. All Rights Reserved.
                     </p>
                 </footer>
             </main>

@@ -96,12 +96,22 @@ function App() {
   }, [player, userfrontId]);
 
   // loads player creature data
-  const loadAsyncEnemyData = async () => {
+  const loadAsyncDataEnemy = async () => {
     try {
       setBattleStatus(true);
       const { data } = await getCreatures();
       const enemyCreatureData = data.filter(creature => creature._id === "61a468eced68cee6f9504bc0");
       setEnemyCreature(enemyCreatureData);
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
+
+  // loads player options
+  const displayPlayerOptions = async () => {
+    try {
+
     }
     catch (error) {
       console.log(error);
@@ -116,8 +126,8 @@ function App() {
           <nav>
             <ul>
               <li><LogoutButton /></li>
-              <li><button>Set Avatar</button></li>
-              <li><button onClick={loadAsyncEnemyData}>Battle Hellspawn</button></li>
+              <li><button onClick={displayPlayerOptions}>Player Options</button></li>
+              <li><button onClick={loadAsyncDataEnemy}>Battle Hellspawn</button></li>
             </ul>
           </nav>
         </header>
@@ -130,6 +140,7 @@ function App() {
                 key={user._id}
               >
                 <h4>{user.name}</h4>
+                <h4>Experience: {user.experience}</h4>
               </div>
             ))}
           </div>

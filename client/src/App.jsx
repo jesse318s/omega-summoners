@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import './App.scss';
 import Userfront from "@userfront/react";
 import { useNavigate } from "react-router-dom";
@@ -21,6 +21,10 @@ function App() {
   const [userfrontId] = useState(Userfront.user.userId);
   // sets player creature state
   const [playerCreature, setPlayerCreature] = useState([{ _id: 0, name: "", imgPath: "" }]);
+  // sets battle state
+  const [battleStatus, setBattleStatus] = useState(false);
+  // sets enemy creature state
+  const [enemyCreature, setEnemyCreature] = useState([{ _id: 0, name: "", imgPath: "" }]);
 
   // calls authentication on load
   useEffect(() => {
@@ -91,6 +95,19 @@ function App() {
     loadAsyncDataPlayerCreature();
   }, [player, userfrontId]);
 
+  // loads player creature data
+  const loadAsyncEnemyData = async () => {
+    try {
+      setBattleStatus(true);
+      const { data } = await getCreatures();
+      const enemyCreatureData = data.filter(creature => creature._id === "61a468eced68cee6f9504bc0");
+      setEnemyCreature(enemyCreatureData);
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
+
   if (playerCreature) {
     return (
       <>
@@ -116,11 +133,26 @@ function App() {
             <div
               key={creature._id}
             >
-              <img src={creature.imgPath} alt={creature.name} />
-              {creature.name}
+              <img src={creature.imgPath} alt={creature.name} /><br />
+              <p>{creature.name}</p>
+              <button onClick={loadAsyncEnemyData} >Battle Hellspawn</button>
             </div>
           ))}
         </div>
+
+        {/* enemy creature */}
+        {battleStatus ?
+          <div>
+            {enemyCreature.map((creature) => (
+              <div
+                key={creature._id}
+              >
+                <img src={creature.imgPath} alt={creature.name} /><br />
+                <p>{creature.name}</p>
+              </div>
+            ))}
+          </div>
+          : <div></div>}
       </>
     );
   }

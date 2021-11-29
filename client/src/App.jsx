@@ -140,6 +140,22 @@ function App() {
     }
   }
 
+  const attackEnemy = async () => {
+    setEnemyCreatureHP(enemyCreatureHP - playerCreatureAttack);
+    if (enemyCreatureHP - playerCreatureAttack <= 0) {
+      setBattleStatus(false);
+      setEnemyCreatureHP(enemyCreature[0].hp);
+      await updateUser(player[0]._id, { experience: player[0].experience + 5 });
+    }
+    if (Math.random() > 0.2) {
+      if (playerCreatureHP - enemyCreatureAttack * 1.5 <= 0) {
+        setBattleStatus(false);
+        setPlayerCreatureHP(playerCreature[0].hp);
+      }
+      setPlayerCreatureHP(playerCreatureHP - enemyCreatureAttack * 1.5);
+    }
+  }
+
   if (playerCreature) {
     return (
       <>
@@ -206,9 +222,11 @@ function App() {
                 <img src={creature.imgPath} alt={creature.name} />
                 {battleStatus ?
                   <h4>HP: {playerCreatureHP}</h4>
-                  : null
-                }
+                  : null}
                 <h4>{Userfront.user.name}'s {creature.name}</h4>
+                {battleStatus ?
+                  <button onClick={() => { attackEnemy() }}>Attack</button>
+                  : null}
               </div>
             ))}
           </div>

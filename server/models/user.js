@@ -4,9 +4,11 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
     userfrontId: {
         type: Number,
+        required: true,
     },
     name: {
         type: String,
+        required: true,
     },
     avatarPath: {
         type: String,

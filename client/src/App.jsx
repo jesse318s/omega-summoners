@@ -98,19 +98,7 @@ function App() {
     loadAsyncDataPlayerCreature();
   }, [player, userfrontId]);
 
-  // loads player creature data
-  const loadAsyncDataEnemy = async () => {
-    try {
-      setBattleStatus(true);
-      const { data } = await getCreatures();
-      const enemyCreatureData = data.filter(creature => creature._id === "61a468eced68cee6f9504bc0");
-      setEnemyCreature(enemyCreatureData);
-    }
-    catch (error) {
-      console.log(error);
-    }
-  }
-
+  // updates player avatar path in database
   const selectAvatar = async (avatarPath) => {
     try {
       await updateUser(player[0]._id, { avatarPath: avatarPath });
@@ -120,9 +108,23 @@ function App() {
     }
   }
 
+  // updates player name in database
   const selectName = async (name) => {
     try {
       await updateUser(player[0]._id, { name: name });
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
+
+  // loads battle data
+  const loadAsyncDataBattle = async () => {
+    try {
+      setBattleStatus(true);
+      const { data } = await getCreatures();
+      const enemyCreatureData = data.filter(creature => creature._id === "61a468eced68cee6f9504bc0");
+      setEnemyCreature(enemyCreatureData);
     }
     catch (error) {
       console.log(error);
@@ -186,7 +188,7 @@ function App() {
           </div>
 
           {/* player creature */}
-          <button onClick={loadAsyncDataEnemy}>Battle Hellspawn</button>
+          <button onClick={loadAsyncDataBattle}>Battle Hellspawn</button>
           <div>
             {playerCreature.map((creature) => (
               <div

@@ -4,11 +4,10 @@ const Schema = mongoose.Schema;
 const creatureSchema = new Schema({
     name: {
         type: String,
-        required: true,
+        required: true
     },
     imgPath: { 
         type: String,
-        required: true,
     }
 });
 

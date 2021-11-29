@@ -115,7 +115,6 @@ function App() {
           {/* title and nav */}
           <nav>
             <ul>
-              <li><a href="/">Home</a></li>
               <li><LogoutButton /></li>
               <li><button>Set Avatar</button></li>
               <li><button onClick={loadAsyncEnemyData}>Battle Hellspawn</button></li>

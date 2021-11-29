@@ -111,48 +111,52 @@ function App() {
   if (playerCreature) {
     return (
       <>
-        {/* nav */}
-        <div>
-          <LogoutButton />
-        </div>
-
-        {/* player details */}
-        <div>
-          {player.map((user) => (
-            <div
-              key={user._id}
-            >
-              {user.name}
-            </div>
-          ))}
-        </div>
-
-        {/* player creature */}
-        <div>
-          {playerCreature.map((creature) => (
-            <div
-              key={creature._id}
-            >
-              <img src={creature.imgPath} alt={creature.name} /><br />
-              <p>{creature.name}</p>
-              <button onClick={loadAsyncEnemyData} >Battle Hellspawn</button>
-            </div>
-          ))}
-        </div>
-
-        {/* enemy creature */}
-        {battleStatus ?
+        <header>
+          {/* nav */}
           <div>
-            {enemyCreature.map((creature) => (
+            <LogoutButton />
+          </div>
+        </header>
+
+        <main>
+          {/* player details */}
+          <div>
+            {player.map((user) => (
+              <div
+                key={user._id}
+              >
+                {user.name}
+              </div>
+            ))}
+          </div>
+
+          {/* player creature */}
+          <div>
+            {playerCreature.map((creature) => (
               <div
                 key={creature._id}
               >
                 <img src={creature.imgPath} alt={creature.name} /><br />
                 <p>{creature.name}</p>
+                <button onClick={loadAsyncEnemyData} >Battle Hellspawn</button>
               </div>
             ))}
           </div>
-          : <div></div>}
+
+          {/* enemy creature */}
+          {battleStatus ?
+            <div>
+              {enemyCreature.map((creature) => (
+                <div
+                  key={creature._id}
+                >
+                  <img src={creature.imgPath} alt={creature.name} /><br />
+                  <p>{creature.name}</p>
+                </div>
+              ))}
+            </div>
+            : <div></div>}
+        </main>
       </>
     );
   }

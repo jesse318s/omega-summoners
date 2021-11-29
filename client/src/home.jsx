@@ -12,7 +12,7 @@ function Home() {
     return (
         <>
             <header>
-                {/* title */}
+                {/* title and nav */}
                 <h1>Welcome to Omega Summoners!</h1>
                 <nav>
                     <ol>

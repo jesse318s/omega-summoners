@@ -115,7 +115,7 @@ function Home() {
                         />
                     </label><br />
                     <label>
-                        Account name (custom field):
+                        Account name:
                         <input
                             name="accountName"
                             type="text"

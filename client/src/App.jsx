@@ -53,7 +53,7 @@ function App() {
           if (userfrontId !== userData.userfrontId) {
             const newUser = {
               userfrontId: userfrontId,
-              name: Userfront.user.name,
+              name: Userfront.user.data.accountName,
               avatarPath: "img/avatar/m_warrior_avatar.png",
               experience: 0,
               creatureId: "",

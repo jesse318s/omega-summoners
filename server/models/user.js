@@ -17,7 +17,7 @@ const userSchema = new Schema({
         type: Number,
     },
     creatureId: {
-        type: Schema.Types.ObjectId,
+        type: String,
     }
 });
 

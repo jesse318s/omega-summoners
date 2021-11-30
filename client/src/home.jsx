@@ -7,11 +7,13 @@ Userfront.init("rbvqd5nd");
 // landing page component
 function Home() {
 
+    // sets form value state
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [accountName, setAccountName] = useState("");
     const [passwordVerify, setPasswordVerify] = useState("");
 
+    // updates sign up form state on form input change
     const handleInputChangeSignup = (e) => {
         try {
             e.preventDefault();
@@ -33,26 +35,29 @@ function Home() {
         }
     }
 
+    // verifies password input and creates new userfront user
     const handleSubmitSignup = (e) => {
         try {
             if (password !== passwordVerify) {
                 alert("Passwords do not match");
-                return;} else {
-            e.preventDefault();
-            Userfront.signup({
-                method: "password",
-                email: email,
-                password: password,
-                data: {
-                    accountName: accountName,
-                }
-            });
-        }
+                return;
+            } else {
+                e.preventDefault();
+                Userfront.signup({
+                    method: "password",
+                    email: email,
+                    password: password,
+                    data: {
+                        accountName: accountName,
+                    },
+                });
+            }
         } catch (error) {
             console.log(error);
         }
     }
 
+    // updates login form state on form input change
     const handleInputChangeLogin = (e) => {
         try {
             e.preventDefault();
@@ -68,6 +73,7 @@ function Home() {
         }
     }
 
+    // logs in userfront user
     const handleSubmitLogin = (e) => {
         try {
             e.preventDefault();

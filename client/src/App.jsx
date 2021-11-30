@@ -14,7 +14,7 @@ function App() {
   const navigate = useNavigate();
 
   // sets user and userfront id state
-  const [player, setPlayer] = useState([{ _id: 0, userfrontId: 0, name: "", avatarPath: "", experience: 0, creatureId: 0 }]);
+  const [player, setPlayer] = useState([{ _id: 0, userfrontId: 0, name: "", avatarPath: "", experience: 0, creatureId: "" }]);
   const [userfrontId] = useState(Userfront.user.userId);
   // sets player options states
   const [playerOptionsStatus, setPlayerOptionsStatus] = useState(false);
@@ -56,7 +56,7 @@ function App() {
               name: Userfront.user.name,
               avatarPath: "img/avatar/m_warrior_avatar.png",
               experience: 0,
-              creatureId: null,
+              creatureId: "",
             }
             await addUser(newUser);
           }
@@ -74,7 +74,7 @@ function App() {
     // generates random creature, updates player creature in database, and then updates player creature state
     const checkAsyncDataPlayerCreature = async () => {
       try {
-        if (player[0].creatureId === null) {
+        if (player[0].creatureId === "" || player[0].creatureId === undefined) {
           const { data } = await getCreatures();
           const randomCreature = data[Math.floor(Math.random() * data.length)]._id;
           updateUser(player[0]._id, { creatureId: randomCreature });

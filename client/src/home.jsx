@@ -10,7 +10,6 @@ function Home() {
     // sets form value state
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [accountName, setAccountName] = useState("");
     const [passwordVerify, setPasswordVerify] = useState("");
 
     // updates sign up form state on form input change
@@ -23,9 +22,6 @@ function Home() {
             } else if (e.target.name === "password") {
                 const password = e.target.value;
                 setPassword(password);
-            } else if (e.target.name === "accountName") {
-                const accountName = e.target.value;
-                setAccountName(accountName);
             } else {
                 const passwordVerify = e.target.value;
                 setPasswordVerify(passwordVerify);
@@ -39,17 +35,14 @@ function Home() {
     const handleSubmitSignup = (e) => {
         try {
             if (password !== passwordVerify) {
-                alert("Passwords do not match");
+                alert("Passwords do not match.");
                 return;
             } else {
                 e.preventDefault();
                 Userfront.signup({
                     method: "password",
                     email: email,
-                    password: password,
-                    data: {
-                        accountName: accountName,
-                    },
+                    password: password
                 });
             }
         } catch (error) {
@@ -111,16 +104,6 @@ function Home() {
                             type="email"
                             value={email}
                             autoComplete="email"
-                            onChange={handleInputChangeSignup}
-                        />
-                    </label><br />
-                    <label>
-                        Account name:
-                        <input
-                            name="accountName"
-                            type="text"
-                            value={accountName}
-                            autoComplete="username"
                             onChange={handleInputChangeSignup}
                         />
                     </label><br />

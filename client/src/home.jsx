@@ -35,6 +35,9 @@ function Home() {
 
     const handleSubmitSignup = (e) => {
         try {
+            if (password !== passwordVerify) {
+                alert("Passwords do not match");
+                return;} else {
             e.preventDefault();
             Userfront.signup({
                 method: "password",
@@ -44,6 +47,7 @@ function Home() {
                     accountName: accountName,
                 }
             });
+        }
         } catch (error) {
             console.log(error);
         }

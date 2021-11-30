@@ -223,7 +223,12 @@ function App() {
                 {battleStatus ?
                   <h4>HP: {playerCreatureHP}</h4>
                   : null}
-                <h4>{Userfront.user.name}'s {creature.name}</h4>
+                {player.map((player) => (
+                  <div
+                    key={player._id}
+                  >
+                    <h4>{player.name}'s {creature.name}</h4></div>))}
+
                 {battleStatus ?
                   <button onClick={() => { attackEnemy() }}>Attack</button>
                   : null}

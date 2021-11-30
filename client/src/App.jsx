@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
 import './App.scss';
-import Userfront from "@userfront/react";
+import Userfront from "@userfront/core";
 import { useNavigate } from "react-router-dom";
 import { getUsers, addUser, updateUser } from './services/userServices';
 import { getCreatures } from './services/creatureServices';
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
-
-// initialize logout button
-const LogoutButton = Userfront.build({ toolId: "rodmkm" });
 
 // main app component
 function App() {
@@ -163,7 +160,7 @@ function App() {
           {/* title and nav */}
           <nav>
             <ul>
-              <li><LogoutButton /></li>
+              <li><button onClick={() => Userfront.logout()}>Logout</button></li>
               <li><button onClick={() => setPlayerOptionsStatus(!playerOptionsStatus)}>Player Options</button></li>
             </ul>
           </nav>

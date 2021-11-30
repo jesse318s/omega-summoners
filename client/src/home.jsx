@@ -100,6 +100,7 @@ function Home() {
                             name="email"
                             type="email"
                             value={email}
+                            autoComplete="email"
                             onChange={handleInputChangeSignup}
                         />
                     </label><br />
@@ -109,6 +110,7 @@ function Home() {
                             name="accountName"
                             type="text"
                             value={accountName}
+                            autoComplete="username"
                             onChange={handleInputChangeSignup}
                         />
                     </label><br />
@@ -117,6 +119,7 @@ function Home() {
                         <input
                             name="password"
                             type="password"
+                            autoComplete="new-password"
                             value={password}
                             onChange={handleInputChangeSignup}
                         />
@@ -126,13 +129,14 @@ function Home() {
                         <input
                             name="passwordVerify"
                             type="password"
+                            autoComplete="current-password"
                             value={passwordVerify}
                             onChange={handleInputChangeSignup}
                         />
                     </label><br />
                     <button type="submit">Sign up</button>
                 </form>
-                
+
                 {/* login form */}
                 <div id="login">
                     <h3>Login</h3>
@@ -143,6 +147,7 @@ function Home() {
                                 name="email"
                                 type="email"
                                 value={email}
+                                autoComplete="email"
                                 onChange={handleInputChangeLogin}
                             />
                         </label><br />
@@ -151,6 +156,7 @@ function Home() {
                             <input
                                 name="password"
                                 type="password"
+                                autoComplete="new-password"
                                 value={password}
                                 onChange={handleInputChangeLogin}
                             />

@@ -27,9 +27,7 @@ function App() {
   const [enemyCreature, setEnemyCreature] = useState([{ _id: 0, name: "", imgPath: "" }]);
   // sets player and enemy creature hp and attack state
   const [playerCreatureHP, setPlayerCreatureHP] = useState(0);
-  const [playerCreatureAttack, setPlayerCreatureAttack] = useState(0);
   const [enemyCreatureHP, setEnemyCreatureHP] = useState(0);
-  const [enemyCreatureAttack, setEnemyCreatureAttack] = useState(0);
 
   // calls authentication on load
   useEffect(() => {
@@ -125,12 +123,10 @@ function App() {
     try {
       setBattleStatus(true);
       setPlayerCreatureHP(playerCreature[0].hp);
-      setPlayerCreatureAttack(playerCreature[0].attack);
       const { data } = await getCreatures();
       const enemyCreatureData = data.filter(creature => creature._id === "61a468eced68cee6f9504bc0");
       setEnemyCreature(enemyCreatureData);
       setEnemyCreatureHP(enemyCreatureData[0].hp);
-      setEnemyCreatureAttack(enemyCreatureData[0].attack);
     }
     catch (error) {
       console.log(error);
@@ -138,17 +134,21 @@ function App() {
   }
 
   const attackEnemy = async () => {
-    setEnemyCreatureHP(enemyCreatureHP - playerCreatureAttack);
-    if (enemyCreatureHP - playerCreatureAttack <= 0) {
-      setBattleStatus(false);
-      setEnemyCreatureHP(enemyCreature[0].hp);
-      await updateUser(player[0]._id, { experience: player[0].experience + 5 });
-    } else if (Math.random() > 0.2) {
-      setPlayerCreatureHP(playerCreatureHP - enemyCreatureAttack * 1.5);
-      if (playerCreatureHP - enemyCreatureAttack * 1.5 <= 0) {
+    try {
+      setEnemyCreatureHP(enemyCreatureHP - playerCreature[0].attack);
+      if (enemyCreatureHP - playerCreature[0].attack <= 0) {
         setBattleStatus(false);
-        setPlayerCreatureHP(playerCreature[0].hp);
+        setEnemyCreatureHP(enemyCreature[0].hp);
+        await updateUser(player[0]._id, { experience: player[0].experience + 5 });
+      } else if (Math.random() > 0.2) {
+        setPlayerCreatureHP(playerCreatureHP - enemyCreature[0].attack * 1.5);
+        if (playerCreatureHP - enemyCreature[0].attack * 1.5 <= 0) {
+          setBattleStatus(false);
+          setPlayerCreatureHP(playerCreature[0].hp);
+        }
       }
+    } catch (error) {
+      console.log(error);
     }
   }
 

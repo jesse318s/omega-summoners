@@ -143,13 +143,12 @@ function App() {
       setBattleStatus(false);
       setEnemyCreatureHP(enemyCreature[0].hp);
       await updateUser(player[0]._id, { experience: player[0].experience + 5 });
-    }
-    if (Math.random() > 0.2) {
+    } else if (Math.random() > 0.2) {
+      setPlayerCreatureHP(playerCreatureHP - enemyCreatureAttack * 1.5);
       if (playerCreatureHP - enemyCreatureAttack * 1.5 <= 0) {
         setBattleStatus(false);
         setPlayerCreatureHP(playerCreature[0].hp);
       }
-      setPlayerCreatureHP(playerCreatureHP - enemyCreatureAttack * 1.5);
     }
   }
 

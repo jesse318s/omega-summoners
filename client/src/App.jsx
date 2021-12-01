@@ -65,6 +65,11 @@ function App() {
       }
     }
     loadAsyncDataPlayer();
+  }, [player, userfrontId]);
+
+  // working
+  useEffect(() => {
+    if (player[0]) {
     // generates random creature, updates player creature in database, and then updates player creature state
     const checkAsyncDataPlayerCreature = async () => {
       try {
@@ -92,7 +97,8 @@ function App() {
       }
     }
     loadAsyncDataPlayerCreature();
-  }, [player, userfrontId]);
+}
+  });
 
   // updates player avatar path in database
   const selectAvatar = async (avatarPath) => {

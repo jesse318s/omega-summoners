@@ -72,7 +72,7 @@ function App() {
     // generates random creature, updates player creature in database, and then updates player creature state
     const checkAsyncDataPlayerCreature = async () => {
       try {
-        if (player[0].creatureId === "" || player[0].creatureId === undefined) {
+        if (player[0].creatureId === "") {
           const { data } = await getCreatures();
           const randomCreature = data[Math.floor(Math.random() * data.length)]._id;
           updateUser(player[0]._id, { creatureId: randomCreature });

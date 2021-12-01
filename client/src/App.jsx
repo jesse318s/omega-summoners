@@ -29,7 +29,6 @@ function App() {
   const [playerCreatureHP, setPlayerCreatureHP] = useState(0);
   const [enemyCreatureHP, setEnemyCreatureHP] = useState(0);
 
-  // calls authentication on load
   useEffect(() => {
     // checks for userfront authentication and redirects user if not authenticated
     const checkAuth = () => {
@@ -41,7 +40,7 @@ function App() {
   });
 
   useEffect(() => {
-    // retrieves user data, generates new user if needed, and updates user state on load
+    // retrieves user data, generates new user if needed, and updates user state
     const loadAsyncDataPlayer = async () => {
       try {
         const { data } = await getUsers();
@@ -65,40 +64,36 @@ function App() {
       }
     }
     loadAsyncDataPlayer();
-  }, [player, userfrontId]);
-
-  // working
-  useEffect(() => {
     if (player[0]) {
-    // generates random creature, updates player creature in database, and then updates player creature state
-    const checkAsyncDataPlayerCreature = async () => {
-      try {
-        if (player[0].creatureId === "") {
-          const { data } = await getCreatures();
-          const randomCreature = data[Math.floor(Math.random() * data.length)]._id;
-          updateUser(player[0]._id, { creatureId: randomCreature });
-          setPlayerCreature(player[0].creatureId);
+      // generates random creature, updates player creature in database, and then updates player creature state
+      const checkAsyncDataPlayerCreature = async () => {
+        try {
+          if (player[0].creatureId === "") {
+            const { data } = await getCreatures();
+            const randomCreature = data[Math.floor(Math.random() * data.length)]._id;
+            updateUser(player[0]._id, { creatureId: randomCreature });
+            setPlayerCreature(player[0].creatureId);
+          }
+        }
+        catch (error) {
+          console.log(error);
         }
       }
-      catch (error) {
-        console.log(error);
+      checkAsyncDataPlayerCreature();
+      // loads player creature data
+      const loadAsyncDataPlayerCreature = async () => {
+        try {
+          const { data } = await getCreatures();
+          const playerCreatureData = data.filter(creature => creature._id === player[0].creatureId);
+          setPlayerCreature(playerCreatureData);
+        }
+        catch (error) {
+          console.log(error);
+        }
       }
+      loadAsyncDataPlayerCreature();
     }
-    checkAsyncDataPlayerCreature();
-    // loads player creature data
-    const loadAsyncDataPlayerCreature = async () => {
-      try {
-        const { data } = await getCreatures();
-        const playerCreatureData = data.filter(creature => creature._id === player[0].creatureId);
-        setPlayerCreature(playerCreatureData);
-      }
-      catch (error) {
-        console.log(error);
-      }
-    }
-    loadAsyncDataPlayerCreature();
-}
-  });
+  }, [player, userfrontId]);
 
   // updates player avatar path in database
   const selectAvatar = async (avatarPath) => {

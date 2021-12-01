@@ -46,24 +46,20 @@ function App() {
       try {
         const { data } = await getUsers();
         const userData = data.filter(user => user.userfrontId === userfrontId);
-
-        try {
-          if (userfrontId !== userData.userfrontId) {
-            const newUser = {
-              userfrontId: userfrontId,
-              name: Userfront.user.email,
-              avatarPath: "img/avatar/m_warrior_avatar.png",
-              experience: 0,
-              creatureId: "",
-            }
-            await addUser(newUser);
+        if (userfrontId !== userData.userfrontId) {
+          const newUser = {
+            userfrontId: userfrontId,
+            name: Userfront.user.email,
+            avatarPath: "img/avatar/m_warrior_avatar.png",
+            experience: 0,
+            creatureId: "",
           }
-        } catch (error) {
-          console.log(error);
+          await addUser(newUser);
+          const newUserData = data.filter(user => user.userfrontId === userfrontId);
+          setPlayer(newUserData)
+        } else {
+          setPlayer(userData);
         }
-
-        const newUserData = data.filter(user => user.userfrontId === userfrontId);
-        setPlayer(newUserData);
       } catch (error) {
         console.log(error);
       }
@@ -188,7 +184,7 @@ function App() {
                   : <div></div>}
                 <li><button onClick={() => { setNameOptionStatus(!nameOptionStatus) }}>Change Name</button></li>
                 {nameOptionStatus ? <form>
-                  <label for="name">Player name:</label>
+                  <label htmlFor="name">Player name:</label>
                   <input type="text" name="name" placeholder={player[0].name} onChange={(e) => selectName(e.target.value)} />
                 </form> : null}
               </ul>

@@ -124,7 +124,7 @@ function App() {
       setBattleStatus(true);
       setPlayerCreatureHP(playerCreature[0].hp);
       const { data } = await getCreatures();
-      const enemyCreatureData = data.filter(creature => creature._id === "61a468eced68cee6f9504bc0");
+      const enemyCreatureData = [data[Math.floor(Math.random() * data.length)]];
       setEnemyCreature(enemyCreatureData);
       setEnemyCreatureHP(enemyCreatureData[0].hp);
     }

@@ -10,10 +10,10 @@ Userfront.init("rbvqd5nd");
 
 // main app component
 function App() {
-  // navigate hook
+  // navigation hook
   const navigate = useNavigate();
 
-  // sets user and userfront id state
+  // sets player and userfront id state
   const [player, setPlayer] = useState([{ _id: 0, userfrontId: 0, name: "", avatarPath: "", experience: 0, creatureId: "" }]);
   const [userfrontId] = useState(Userfront.user.userId);
   // sets player options states
@@ -25,12 +25,12 @@ function App() {
   // sets battle and enemy creature state
   const [battleStatus, setBattleStatus] = useState(false);
   const [enemyCreature, setEnemyCreature] = useState([{ _id: 0, name: "", imgPath: "" }]);
-  // sets player and enemy creature hp and attack state
+  // sets player and enemy creature hp state
   const [playerCreatureHP, setPlayerCreatureHP] = useState(0);
   const [enemyCreatureHP, setEnemyCreatureHP] = useState(0);
 
   useEffect(() => {
-    // checks for userfront authentication and redirects user if not authenticated
+    // checks for userfront authentication and redirects visitor if not authenticated
     const checkAuth = () => {
       if (!Userfront.accessToken()) {
         navigate('/');
@@ -40,7 +40,21 @@ function App() {
   });
 
   useEffect(() => {
-    // retrieves user data, generates new user if needed, and updates user state
+    // generates random creature, updates player creature in database, and then updates player creature state
+    const genAsyncPlayerCreature = async () => {
+      try {
+        if (player[0].creatureId === "") {
+          const { data } = await getCreatures();
+          const randomCreature = data[Math.floor(Math.random() * data.length)]._id;
+          updateUser(player[0]._id, { creatureId: randomCreature });
+          setPlayerCreature(player[0].creatureId);
+        }
+      }
+      catch (error) {
+        console.log(error);
+      }
+    }
+    // retrieves user data, generates new user if needed, and updates player state
     const loadAsyncDataPlayer = async () => {
       try {
         const { data } = await getUsers();
@@ -56,6 +70,9 @@ function App() {
           await addUser(newUser);
           const newUserData = data.filter(user => user.userfrontId === userfrontId);
           setPlayer(newUserData)
+
+          if (player[0]) { genAsyncPlayerCreature(); }
+
         } else {
           setPlayer(userData);
         }
@@ -65,21 +82,6 @@ function App() {
     }
     loadAsyncDataPlayer();
     if (player[0]) {
-      // generates random creature, updates player creature in database, and then updates player creature state
-      const checkAsyncDataPlayerCreature = async () => {
-        try {
-          if (player[0].creatureId === "") {
-            const { data } = await getCreatures();
-            const randomCreature = data[Math.floor(Math.random() * data.length)]._id;
-            updateUser(player[0]._id, { creatureId: randomCreature });
-            setPlayerCreature(player[0].creatureId);
-          }
-        }
-        catch (error) {
-          console.log(error);
-        }
-      }
-      checkAsyncDataPlayerCreature();
       // loads player creature data
       const loadAsyncDataPlayerCreature = async () => {
         try {

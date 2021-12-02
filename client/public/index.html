@@ -24,6 +24,21 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>Omega Summoners</title>
+    <script>
+      var hostLong = "www.omega-summoners.herokuapp.com";
+      var hostShort = "omega-summoners.herokuapp.com";
+      if (
+        hostLong == window.location.host &&
+        window.location.protocol != "https:"
+      ) {
+        window.location.protocol = "https";
+      } else if (
+        hostShort == window.location.host &&
+        window.location.protocol != "https:"
+      ) {
+        window.location.protocol = "https";
+      }
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

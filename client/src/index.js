@@ -5,14 +5,13 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import Home from './home';
-import Reset from './reset';
 
 ReactDOM.render(
   <BrowserRouter>
+    {/* routes for rendering components */}
     <Routes>
-      <Route path="" element={<App />} />
-      <Route path="home" element={<Home />} />
-      <Route path="reset" element={<Reset />} />
+      <Route path="" element={<Home />} />
+      <Route path="app" element={<App />} />
     </Routes>
   </BrowserRouter>,
   document.getElementById('root')

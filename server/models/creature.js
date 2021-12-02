@@ -4,11 +4,16 @@ const Schema = mongoose.Schema;
 const creatureSchema = new Schema({
     name: {
         type: String,
-        required: true,
+        required: true
     },
-    img_path: { 
+    imgPath: { 
         type: String,
-        required: true,
+    },
+    hp: {
+        type: Number,
+    },
+    attack: {
+        type: Number,
     }
 });
 

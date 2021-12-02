@@ -1,40 +1,178 @@
-import React, { useEffect } from "react";
-import Userfront from "@userfront/react";
-import { Navigate } from "react-router-dom";
+import { useState } from "react";
+import Userfront from "@userfront/core";
 
+// initialize Userfront
 Userfront.init("rbvqd5nd");
 
-const LogoutButton = Userfront.build({ toolId: "rodmkm" });
-
+// landing page component
 function Home() {
 
-    const checkAuth = async () => {
-        if (!Userfront.accessToken()) {
-            return (
-                <Navigate
-                    to={{
-                        pathname: "/",
-                        state: { from: window.location },
-                    }}
-                />
-            );
+    // sets form value state
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [passwordVerify, setPasswordVerify] = useState("");
+
+    // updates sign up form state on form input change
+    const handleInputChangeSignup = (e) => {
+        try {
+            e.preventDefault();
+            if (e.target.name === "email") {
+                const email = e.target.value;
+                setEmail(email);
+            } else if (e.target.name === "password") {
+                const password = e.target.value;
+                setPassword(password);
+            } else {
+                const passwordVerify = e.target.value;
+                setPasswordVerify(passwordVerify);
+            }
+        } catch (error) {
+            console.log(error);
         }
     }
 
+    // verifies password input and creates new userfront user
+    const handleSubmitSignup = (e) => {
+        try {
+            if (password !== passwordVerify) {
+                alert("Passwords do not match.");
+                return;
+            } else {
+                e.preventDefault();
+                Userfront.signup({
+                    method: "password",
+                    email: email,
+                    password: password
+                });
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
-    //calls data retrieval on load
-    useEffect(() => {
+    // updates login form state on form input change
+    const handleInputChangeLogin = (e) => {
+        try {
+            e.preventDefault();
+            if (e.target.name === "email") {
+                const email = e.target.value;
+                setEmail(email);
+            } else {
+                const password = e.target.value;
+                setPassword(password);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
-        checkAuth();
-
-    }, []);
+    // logs in userfront user
+    const handleSubmitLogin = (e) => {
+        try {
+            e.preventDefault();
+            Userfront.login({
+                method: "password",
+                email: email,
+                password: password
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     return (
         <>
-            <div>
-                Home<br />
-                <LogoutButton />
-            </div>
+            <header>
+                {/* title and nav */}
+                <h1>Welcome to Omega Summoners!</h1>
+                <nav>
+                    <ul>
+                        <li><a href="#login">Login</a></li>
+                        <li><a href="#about">About</a></li>
+                    </ul>
+                </nav>
+            </header>
+
+            <main>
+                {/* sign up form */}
+                <h3>Sign up</h3>
+                <form onSubmit={handleSubmitSignup}>
+                    <label>
+                        Email address:
+                        <input
+                            name="email"
+                            type="email"
+                            value={email}
+                            autoComplete="email"
+                            onChange={handleInputChangeSignup}
+                        />
+                    </label><br />
+                    <label>
+                        Password:
+                        <input
+                            name="password"
+                            type="password"
+                            autoComplete="new-password"
+                            value={password}
+                            onChange={handleInputChangeSignup}
+                        />
+                    </label><br />
+                    <label>
+                        Verify password:
+                        <input
+                            name="passwordVerify"
+                            type="password"
+                            autoComplete="current-password"
+                            value={passwordVerify}
+                            onChange={handleInputChangeSignup}
+                        />
+                    </label><br />
+                    <button type="submit">Sign up</button>
+                </form>
+
+                {/* login form */}
+                <div id="login">
+                    <h3>Login</h3>
+                    <form onSubmit={handleSubmitLogin}>
+                        <label>
+                            Email:
+                            <input
+                                name="email"
+                                type="email"
+                                value={email}
+                                autoComplete="email"
+                                onChange={handleInputChangeLogin}
+                            />
+                        </label><br />
+                        <label>
+                            Password:
+                            <input
+                                name="password"
+                                type="password"
+                                autoComplete="new-password"
+                                value={password}
+                                onChange={handleInputChangeLogin}
+                            />
+                        </label><br />
+                        <button type="submit">Login</button><br />
+                    </form>
+                </div>
+
+                {/* about section */}
+                <div id="about">
+                    <h2>About</h2>
+                    <p>
+                        Omega Summoners is a pet sim MMORPG meant for all platforms.
+                    </p>
+                </div>
+
+                {/* footer */}
+                <footer>
+                    <p>
+                        &copy; 2021 Jesse Sites. All Rights Reserved.
+                    </p>
+                </footer>
+            </main>
         </>
     );
 }

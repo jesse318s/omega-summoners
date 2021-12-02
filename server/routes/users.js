@@ -1,11 +1,11 @@
-const Creature = require("../models/creature");
+const User = require("../models/user");
 const express = require("express");
 const router = express.Router();
 
 router.post("/", async (req, res) => {
     try {
-        const creature = await new Creature(req.body).save();
-        res.send(creature);
+        const user = await new User(req.body).save();
+        res.send(user);
     } catch (error) {
         res.send(error);
     }
@@ -13,8 +13,8 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
     try {
-        const creatures = await Creature.find();
-        res.send(creatures);
+        const users = await User.find();
+        res.send(users);
     } catch (error) {
         res.send(error);
     }
@@ -22,11 +22,11 @@ router.get("/", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
     try {
-        const creature = await Creature.findOneAndUpdate(
+        const user = await User.findOneAndUpdate(
             { _id: req.params.id },
             req.body
         );
-        res.send(creature);
+        res.send(user);
     } catch (error) {
         res.send(error);
     }
@@ -34,8 +34,8 @@ router.put("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
     try {
-        const creature = await Creature.findByIdAndDelete(req.params.id);
-        res.send(creature);
+        const user = await User.findByIdAndDelete(req.params.id);
+        res.send(user);
     } catch (error) {
         res.send(error);
     }

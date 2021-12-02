@@ -63,7 +63,7 @@ function App() {
           const newUser = {
             userfrontId: userfrontId,
             name: Userfront.user.email,
-            avatarPath: "img/avatar/m_warrior_avatar.png",
+            avatarPath: "img/avatar/m_mage_avatar.png",
             experience: 0,
             creatureId: "",
           }

@@ -215,10 +215,10 @@ function Home() {
                 <section className="mx-2" id="about">
                     <h2 className="mt-4 text-light">About</h2>
                     <p className="text-light">
-                        Omega Summoners is a simple, online RPG meant for all platforms. It is not recommended for children, or those with photosensitive epilepsy.<br />
-                        Greek mythology takes a special place in the game.
+                        Omega Summoners is a simple, online RPG meant for all platforms. Greek mythology takes a special place in the game.
                         The player is a mortal, chosen by the gods to summon creatures from the heavens, and must fight the evil that escapes from the depths of the Underworld.
-                        The gameplay is simple, and the player can battle enemies, or perform a variety of tasks to gain power and riches.
+                        The gameplay is simple, and the player can battle enemies, or perform a variety of tasks to gain power and riches.<br />
+                        Omega Summoners is not recommended for children under the age of 13, or those with photosensitive epilepsy.
                     </p>
                 </section>
 

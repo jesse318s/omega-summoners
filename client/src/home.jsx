@@ -133,7 +133,7 @@ function Home() {
             <main>
                 {/* title and home */}
                 <section className="home_section">
-                    <h1 className="home_title blink">Welcome to Omega Summoners!</h1>
+                    <h1 className="mx-2 home_title blink">Welcome to Omega Summoners!</h1>
                 </section>
 
                 {/* login form */}
@@ -212,7 +212,7 @@ function Home() {
                 </section>
 
                 {/* about section */}
-                <section id="about">
+                <section className="mx-2" id="about">
                     <h2 className="mt-4 text-light">About</h2>
                     <p className="text-light">
                         Omega Summoners is a simple, online RPG meant for all platforms. It is not recommended for children, or those with photosensitive epilepsy.<br />

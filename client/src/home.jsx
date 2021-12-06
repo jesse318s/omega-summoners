@@ -80,6 +80,15 @@ function Home() {
         }
     }
 
+    // sends email to reset userfront password for current user email
+    const resetPassword = () => {
+        try {
+            Userfront.sendResetLink(email);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <>
             <header>
@@ -163,7 +172,8 @@ function Home() {
                                     onChange={handleInputChangeLogin}
                                 />
                             </label><br />
-                            <button className="btn btn-primary my-1" type="submit button">Login</button><br />
+                            <button className="btn btn-primary my-1" type="submit button">Login</button>
+                            <button className="btn btn-primary my-1 ms-1" type="button" onClick={resetPassword}>Reset Password</button><br />
                         </form>
                     </div>
                 </section>

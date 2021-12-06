@@ -1,5 +1,39 @@
 body {
-  font-family: "Segoe UI";
+  font-family: "Helvetica Greek";
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-image: radial-gradient(circle, #333333, #222222);
 }
 
 // styles
+@import url('https://fonts.googleapis.com/css?family=Sarpanch:400,700&display=swap');
+
+.home_section {
+  margin: 0;
+  display: grid;
+  grid-template-areas: ". . ." ". text ." ". . .";
+  grid-template-rows: 1fr auto 1fr;
+  grid-template-columns: 1fr auto 1fr;
+  height: 100vh;
+}
+
+.home_title {
+  transform: skew(#{-12}deg) rotate(#{-12}deg);
+  grid-area: text;
+  font-family: "Sarpanch";
+  font-size: 10vmin;
+  color: darkred;
+  text-shadow: 1vmin 1vmin 0 royalblue, -1vmin -1vmin 0 black;
+}
+
+.blink {
+  animation: blinker 2s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 50%;
+  }
+}

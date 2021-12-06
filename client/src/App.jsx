@@ -156,7 +156,7 @@ function App() {
       <>
         <header>
           {/* title and nav */}
-          <nav>
+          <nav className="text-light">
             <ul>
               <li><button onClick={() => Userfront.logout()}>Logout</button></li>
               <li><button onClick={() => setPlayerOptionsStatus(!playerOptionsStatus)}>Player Options</button></li>
@@ -167,7 +167,7 @@ function App() {
         <main>
           {/* player options */}
           {playerOptionsStatus ?
-            <div>
+            <div className="text-light">
               <h3>Player Options</h3>
               <ul>
                 <li><button onClick={() => { setAvatarOptionStatus(!avatarOptionStatus) }}>Change Avatar</button></li>
@@ -195,7 +195,7 @@ function App() {
             : <div></div>}
 
           {/* player details */}
-          <div>
+          <div className="text-light">
             {player.map((player) => (
               <div
                 key={player._id}
@@ -209,7 +209,7 @@ function App() {
 
           {/* player creature */}
           <button onClick={loadAsyncDataBattle}>Battle Hellspawn</button>
-          <div>
+          <div className="text-light">
             {playerCreature.map((creature) => (
               <div
                 key={creature._id}
@@ -233,7 +233,7 @@ function App() {
 
           {/* enemy creature */}
           {battleStatus ?
-            <div>
+            <div className="text-light">
               {enemyCreature.map((creature) => (
                 <div
                   key={creature._id}

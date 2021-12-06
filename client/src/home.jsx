@@ -104,7 +104,7 @@ function Home() {
                         <div className="collapse navbar-collapse" id="navbarSupportedContent">
                             {/* Navbar brand */}
                             <a className="navbar-brand" href="/">
-                                <img src="favicon.ico" alt="favicon" />
+                                <img src="favicon.ico" alt="favicon" width="48px" height="48px" />
                             </a>
                             {/* Left links */}
                             <ul className="navbar-nav me-auto">
@@ -121,7 +121,7 @@ function Home() {
 
                         {/* Right elements */}
                         <div className="d-flex align-items-center">
-                        <a className="mx-2 font-weight-bold" href="#login">Login / Sign up</a>
+                            <a className="mx-2 font-weight-bold" href="#login">Login / Sign up</a>
                         </div>
                         {/* Right elements */}
                     </div>

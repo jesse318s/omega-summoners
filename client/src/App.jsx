@@ -155,19 +155,55 @@ function App() {
     return (
       <>
         <header>
-          {/* title and nav */}
-          <nav className="text-light">
-            <ul>
-              <li><button onClick={() => Userfront.logout()}>Logout</button></li>
-              <li><button onClick={() => setPlayerOptionsStatus(!playerOptionsStatus)}>Player Options</button></li>
-            </ul>
+          {/* Navbar */}
+          <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top text-start">
+            {/* Container wrapper */}
+            <div className="container-fluid">
+              {/* Toggle button */}
+              <button
+                className="navbar-toggler"
+                type="button"
+                data-mdb-toggle="collapse"
+                data-mdb-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+              >
+                <i className="fas fa-bars"></i>
+              </button>
+
+              {/* Collapsible wrapper */}
+              <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                {/* Navbar brand */}
+                <a className="navbar-brand" href="app">
+                  <img src="favicon.ico" alt="favicon" width="48px" height="48px" />
+                </a>
+                {/* Left links */}
+                <ul className="navbar-nav me-auto">
+                  <li className="nav-item font-weight-bold">
+                    <button className="btn btn-warning" onClick={() => Userfront.logout()}>Logout</button>
+                  </li>
+                </ul>
+                {/* Left links */}
+              </div>
+              {/* Collapsible wrapper */}
+
+              {/* Right elements */}
+              <div className="d-flex align-items-center">
+
+              </div>
+              {/* Right elements */}
+            </div>
+            {/* Container wrapper */}
           </nav>
+          {/* Navbar */}
         </header>
 
-        <main>
+        <main className="game_section">
           {/* player options */}
+          <button className="btn btn-light" onClick={() => setPlayerOptionsStatus(!playerOptionsStatus)}>Player Options</button>
           {playerOptionsStatus ?
-            <div className="text-light">
+            <div className="text-light player_options">
               <h3>Player Options</h3>
               <ul>
                 <li><button onClick={() => { setAvatarOptionStatus(!avatarOptionStatus) }}>Change Avatar</button></li>
@@ -195,7 +231,7 @@ function App() {
             : <div></div>}
 
           {/* player details */}
-          <div className="text-light">
+          <div className="text-light mt-2">
             {player.map((player) => (
               <div
                 key={player._id}

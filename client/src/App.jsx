@@ -181,7 +181,7 @@ function App() {
                 {/* Left links */}
                 <ul className="navbar-nav me-auto">
                   <li className="nav-item font-weight-bold">
-                    <button className="btn btn-warning" onClick={() => Userfront.logout()}>Logout</button>
+                    <button className="btn btn-warning my-1" onClick={() => Userfront.logout()}>Logout</button>
                   </li>
                 </ul>
                 {/* Left links */}
@@ -190,7 +190,7 @@ function App() {
 
               {/* Right elements */}
               <div className="d-flex align-items-center">
-
+                <button className="btn btn-light my-1" onClick={() => setPlayerOptionsStatus(!playerOptionsStatus)}>Player Options</button>
               </div>
               {/* Right elements */}
             </div>
@@ -201,9 +201,8 @@ function App() {
 
         <main className="game_section">
           {/* player options */}
-          <button className="btn btn-light" onClick={() => setPlayerOptionsStatus(!playerOptionsStatus)}>Player Options</button>
           {playerOptionsStatus ?
-            <div className="text-light player_options">
+            <div className="text-light">
               <h3>Player Options</h3>
               <ul>
                 <li><button onClick={() => { setAvatarOptionStatus(!avatarOptionStatus) }}>Change Avatar</button></li>

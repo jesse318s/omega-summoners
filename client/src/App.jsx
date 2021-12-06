@@ -120,12 +120,14 @@ function App() {
   // loads battle data
   const loadAsyncDataBattle = async () => {
     try {
-      setBattleStatus(true);
-      setPlayerCreatureHP(playerCreature[0].hp);
-      const { data } = await getCreatures();
-      const enemyCreatureData = [data[Math.floor(Math.random() * data.length)]];
-      setEnemyCreature(enemyCreatureData);
-      setEnemyCreatureHP(enemyCreatureData[0].hp);
+      if (battleStatus === false) {
+        setBattleStatus(true);
+        setPlayerCreatureHP(playerCreature[0].hp);
+        const { data } = await getCreatures();
+        const enemyCreatureData = [data[Math.floor(Math.random() * data.length)]];
+        setEnemyCreature(enemyCreatureData);
+        setEnemyCreatureHP(enemyCreatureData[0].hp);
+      }
     }
     catch (error) {
       console.log(error);
@@ -138,13 +140,15 @@ function App() {
       setEnemyCreatureHP(enemyCreatureHP - playerCreature[0].attack);
       if (enemyCreatureHP - playerCreature[0].attack <= 0) {
         setBattleStatus(false);
-        setEnemyCreatureHP(enemyCreature[0].hp);
+        setPlayerCreatureHP(playerCreature[0].hp);
+        setEnemyCreature([{ _id: 0, name: "", imgPath: "" }]);
         await updateUser(player[0]._id, { experience: player[0].experience + 5 });
       } else if (Math.random() > 0.2) {
         setPlayerCreatureHP(playerCreatureHP - enemyCreature[0].attack * 1.5);
         if (playerCreatureHP - enemyCreature[0].attack * 1.5 <= 0) {
           setBattleStatus(false);
           setPlayerCreatureHP(playerCreature[0].hp);
+          setEnemyCreature([{ _id: 0, name: "", imgPath: "" }]);
         }
       }
     } catch (error) {
@@ -204,7 +208,7 @@ function App() {
         <main className="game_section">
           {/* player options */}
           {playerOptionsStatus ?
-            <div className="text-light">
+            <div className="player_options">
               <h3>Player Options</h3>
               <ul>
                 <li><button onClick={() => { setAvatarOptionStatus(!avatarOptionStatus) }}>Change Avatar</button></li>
@@ -232,21 +236,25 @@ function App() {
             : <div></div>}
 
           {/* player details */}
-          <div className="text-light mt-2">
+          <div className="player_details">
             {player.map((player) => (
               <div
                 key={player._id}
               >
-                <img src={player.avatarPath} alt={player.name} width="100" height="100" />
+                <img src={player.avatarPath}
+                  alt={player.name}
+                  className="player_avatar"
+                  width="96"
+                  height="96" />
                 <h2>{player.name}</h2>
                 <h4>Experience: {player.experience}</h4>
               </div>
             ))}
+            <button className="btn btn-light" onClick={loadAsyncDataBattle}>Battle Hellspawn</button>
           </div>
 
           {/* player creature */}
-          <button onClick={loadAsyncDataBattle}>Battle Hellspawn</button>
-          <div className="text-light">
+          <div className="player_creature">
             {playerCreature.map((creature) => (
               <div
                 key={creature._id}
@@ -262,7 +270,7 @@ function App() {
                     <h4>{player.name}'s {creature.name}</h4></div>))}
 
                 {battleStatus ?
-                  <button onClick={() => { attackEnemy() }}>Attack</button>
+                  <button className="btn btn-light" onClick={() => { attackEnemy() }}>Attack</button>
                   : null}
               </div>
             ))}
@@ -270,7 +278,7 @@ function App() {
 
           {/* enemy creature */}
           {battleStatus ?
-            <div className="text-light">
+            <div className="enemy_creature">
               {enemyCreature.map((creature) => (
                 <div
                   key={creature._id}

@@ -3,3 +3,34 @@
 .game_section {
   margin-top: 80px;
 }
+
+.player_details {
+  color: white;
+}
+
+.player_avatar {
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.player_options {
+  color: white;
+}
+
+.player_creature {
+  float: left;
+  margin: 5px;
+  padding: 5px;
+  border: 1px solid black;
+  border-radius: 5px;
+  color: white;
+}
+
+.enemy_creature {
+  float: right;
+  margin: 5px;
+  padding: 5px;
+  border: 1px solid black;
+  border-radius: 5px;
+  color: white;
+}

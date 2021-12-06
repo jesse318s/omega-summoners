@@ -142,6 +142,7 @@ function App() {
         setBattleStatus(false);
         setPlayerCreatureHP(playerCreature[0].hp);
         setEnemyCreature([{ _id: 0, name: "", imgPath: "" }]);
+        setEnemyCreatureHP(0);
         await updateUser(player[0]._id, { experience: player[0].experience + 5 });
       } else if (Math.random() > 0.2) {
         setPlayerCreatureHP(playerCreatureHP - enemyCreature[0].attack * 1.5);
@@ -149,6 +150,7 @@ function App() {
           setBattleStatus(false);
           setPlayerCreatureHP(playerCreature[0].hp);
           setEnemyCreature([{ _id: 0, name: "", imgPath: "" }]);
+          setEnemyCreatureHP(0);
         }
       }
     } catch (error) {

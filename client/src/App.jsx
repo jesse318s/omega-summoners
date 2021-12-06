@@ -132,6 +132,7 @@ function App() {
     }
   }
 
+  // attacks enemy creature and registers enemy counter attack
   const attackEnemy = async () => {
     try {
       setEnemyCreatureHP(enemyCreatureHP - playerCreature[0].attack);
@@ -151,6 +152,7 @@ function App() {
     }
   }
 
+  // renders if a player creature is detected
   if (playerCreature) {
     return (
       <>

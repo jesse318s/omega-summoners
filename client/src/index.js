@@ -6,6 +6,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import Home from './home';
+import Reset from './reset';
 
 ReactDOM.render(
   <BrowserRouter>
@@ -13,6 +14,7 @@ ReactDOM.render(
     <Routes>
       <Route path="" element={<Home />} />
       <Route path="app" element={<App />} />
+      <Route path="reset" element={<Reset />} />
     </Routes>
   </BrowserRouter>,
   document.getElementById('root')

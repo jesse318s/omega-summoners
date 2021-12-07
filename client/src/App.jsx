@@ -157,7 +157,6 @@ function App() {
       setTimeout(() => {
         setEnemyAttackStatus(false);
       }, 500);
-      clearTimeout();
     } catch (error) {
       console.log(error);
     }
@@ -168,24 +167,30 @@ function App() {
   const attackEnemy = async () => {
     try {
       playerAttackAnimation();
-      setEnemyCreatureHP(enemyCreatureHP - playerCreature[0].attack);
       if (enemyCreatureHP - playerCreature[0].attack <= 0) {
-        setBattleStatus(false);
-        setPlayerCreatureHP(playerCreature[0].hp);
-        setEnemyCreature([{ _id: 0, name: "", imgPath: "" }]);
-        setEnemyCreatureHP(0);
+        setTimeout(() => {
+          setBattleStatus(false);
+          setEnemyCreature([{ _id: 0, name: "", imgPath: "" }]);
+          setEnemyCreatureHP(0);
+        }, 500);
         await updateUser(player[0]._id, { experience: player[0].experience + 5 });
-      } else if (Math.random() > 0.2) {
+      } else {
+        setTimeout(() => { setEnemyCreatureHP(enemyCreatureHP - playerCreature[0].attack) }, 250);
+      }
+      if (battleStatus && (Math.random() > 0.2)) {
         setTimeout(() => {
           enemyAttackAnimation();
         }, 500);
-        clearTimeout();
-        setPlayerCreatureHP(playerCreatureHP - enemyCreature[0].attack * 1.5);
         if (playerCreatureHP - enemyCreature[0].attack * 1.5 <= 0) {
-          setBattleStatus(false);
-          setPlayerCreatureHP(playerCreature[0].hp);
-          setEnemyCreature([{ _id: 0, name: "", imgPath: "" }]);
-          setEnemyCreatureHP(0);
+          setTimeout(() => {
+            setBattleStatus(false);
+            setEnemyCreature([{ _id: 0, name: "", imgPath: "" }]);
+            setEnemyCreatureHP(0);
+          }, 750);
+        } else {
+          setTimeout(() => {
+            setPlayerCreatureHP(playerCreatureHP - enemyCreature[0].attack * 1.5);
+          }, 750);
         }
       }
     } catch (error) {

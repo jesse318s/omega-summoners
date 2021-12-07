@@ -168,10 +168,6 @@ function App() {
   const attackEnemy = async () => {
     try {
       playerAttackAnimation();
-      setTimeout(() => {
-        enemyAttackAnimation();
-      }, 500);
-      clearTimeout();
       setEnemyCreatureHP(enemyCreatureHP - playerCreature[0].attack);
       if (enemyCreatureHP - playerCreature[0].attack <= 0) {
         setBattleStatus(false);
@@ -180,6 +176,10 @@ function App() {
         setEnemyCreatureHP(0);
         await updateUser(player[0]._id, { experience: player[0].experience + 5 });
       } else if (Math.random() > 0.2) {
+        setTimeout(() => {
+          enemyAttackAnimation();
+        }, 500);
+        clearTimeout();
         setPlayerCreatureHP(playerCreatureHP - enemyCreature[0].attack * 1.5);
         if (playerCreatureHP - enemyCreature[0].attack * 1.5 <= 0) {
           setBattleStatus(false);

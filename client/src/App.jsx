@@ -285,7 +285,7 @@ function App() {
                 <div
                   key={creature._id}
                 >
-                  <img src={creature.imgPath} alt={creature.name} />
+                  <img className="enemy_creature_img" src={creature.imgPath} alt={creature.name} />
                   <h4>HP: {enemyCreatureHP}</h4>
                   <h4>Enemy {creature.name}</h4>
                 </div>

@@ -294,7 +294,9 @@ function App() {
               <div
                 key={creature._id}
               >
-                {playerAttackStatus ? <img src={creature.imgPath.slice(0, -4) + "_attack.png"} alt={creature.name} /> : <img src={creature.imgPath} alt={creature.name} />}
+                {playerAttackStatus ? <img src={creature.imgPath.slice(0, -4) + "_attack.png"} alt={creature.name} />
+                  : enemyAttackStatus ? <img src={creature.imgPath.slice(0, -4) + "_hurt.png"} alt={creature.name} /> : <img src={creature.imgPath} alt={creature.name} />
+                }
                 {battleStatus ?
                   <h4>HP: {playerCreatureHP}</h4>
                   : null}
@@ -319,7 +321,8 @@ function App() {
                   key={creature._id}
                 >
                   {enemyAttackStatus ? <img className="enemy_creature_img" src={creature.imgPath.slice(0, -4) + "_attack.png"} alt={creature.name} />
-                    : <img className="enemy_creature_img" src={creature.imgPath} alt={creature.name} />}
+                    : playerAttackStatus ? <img className="enemy_creature_img" src={creature.imgPath.slice(0, -4) + "_hurt.png"} alt={creature.name} />
+                      : <img className="enemy_creature_img" src={creature.imgPath} alt={creature.name} />}
                   <h4>HP: {enemyCreatureHP}</h4>
                   <h4>Enemy {creature.name}</h4>
                 </div>

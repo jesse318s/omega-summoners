@@ -124,8 +124,8 @@ function App() {
   const loadAsyncDataBattle = async () => {
     try {
       if (battleStatus === false) {
-        setBattleStatus(true);
         setPlayerCreatureHP(playerCreature[0].hp);
+        setBattleStatus(true);
         const { data } = await getCreatures();
         const enemyCreatureData = [data[Math.floor(Math.random() * data.length)]];
         setEnemyCreature(enemyCreatureData);

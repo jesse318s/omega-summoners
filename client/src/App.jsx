@@ -74,7 +74,9 @@ function App() {
           const newUserData = data.filter(user => user.userfrontId === userfrontId);
           setPlayer(newUserData)
 
-          if (player[0]) { genAsyncPlayerCreature(); }
+          if (player[0]) {
+            genAsyncPlayerCreature();
+          }
 
         } else {
           setPlayer(userData);
@@ -125,11 +127,11 @@ function App() {
     try {
       if (battleStatus === false) {
         setPlayerCreatureHP(playerCreature[0].hp);
-        setBattleStatus(true);
         const { data } = await getCreatures();
         const enemyCreatureData = [data[Math.floor(Math.random() * data.length)]];
         setEnemyCreature(enemyCreatureData);
         setEnemyCreatureHP(enemyCreatureData[0].hp);
+        setBattleStatus(true);
       }
     }
     catch (error) {
@@ -163,7 +165,7 @@ function App() {
   }
 
 
-  // attacks enemy creature and registers enemy counter attack
+  // attacks enemy creature and initiates chance of enemy counter attack
   const attackEnemy = async () => {
     try {
       playerAttackAnimation();
@@ -175,12 +177,15 @@ function App() {
         }, 500);
         await updateUser(player[0]._id, { experience: player[0].experience + 5 });
       } else {
-        setTimeout(() => { setEnemyCreatureHP(enemyCreatureHP - playerCreature[0].attack) }, 250);
+        setTimeout(() => {
+          setEnemyCreatureHP(enemyCreatureHP - playerCreature[0].attack)
+        }, 250);
       }
       if (battleStatus && (Math.random() > 0.2)) {
         setTimeout(() => {
           enemyAttackAnimation();
         }, 500);
+
         if (playerCreatureHP - enemyCreature[0].attack * 1.5 <= 0) {
           setTimeout(() => {
             setBattleStatus(false);
@@ -192,6 +197,7 @@ function App() {
             setPlayerCreatureHP(playerCreatureHP - enemyCreature[0].attack * 1.5);
           }, 750);
         }
+        
       }
     } catch (error) {
       console.log(error);
@@ -300,7 +306,7 @@ function App() {
                 key={creature._id}
               >
                 {playerAttackStatus ? <img src={creature.imgPath.slice(0, -4) + "_attack.png"} alt={creature.name} />
-                  : enemyAttackStatus ? <img src={creature.imgPath.slice(0, -4) + "_hurt.png"} alt={creature.name} /> : <img src={creature.imgPath} alt={creature.name} />
+                  : enemyAttackStatus && (enemyCreatureHP !== 0) ? <img src={creature.imgPath.slice(0, -4) + "_hurt.png"} alt={creature.name} /> : <img src={creature.imgPath} alt={creature.name} />
                 }
                 {battleStatus ?
                   <h4>HP: {playerCreatureHP}</h4>

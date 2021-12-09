@@ -43,14 +43,13 @@ function App() {
   });
 
   useEffect(() => {
-    // generates random creature, updates player creature in database, and then updates player creature state
+    // generates random creature and updates player creature in database
     const genAsyncPlayerCreature = async () => {
       try {
         if (player[0].creatureId === "") {
           const { data } = await getCreatures();
           const randomCreature = data[Math.floor(Math.random() * data.length)]._id;
           updateUser(player[0]._id, { creatureId: randomCreature });
-          setPlayerCreature(player[0].creatureId);
         }
       }
       catch (error) {
@@ -164,23 +163,9 @@ function App() {
     }
   }
 
-
-  // attacks enemy creature and initiates chance of enemy counter attack
-  const attackEnemy = async () => {
+  // initiates chance of enemy counter attack
+  const enemyCounterAttack = () => {
     try {
-      playerAttackAnimation();
-      if (enemyCreatureHP - playerCreature[0].attack <= 0) {
-        setTimeout(() => {
-          setBattleStatus(false);
-          setEnemyCreature([{ _id: 0, name: "", imgPath: "" }]);
-          setEnemyCreatureHP(0);
-        }, 500);
-        await updateUser(player[0]._id, { experience: player[0].experience + 5 });
-      } else {
-        setTimeout(() => {
-          setEnemyCreatureHP(enemyCreatureHP - playerCreature[0].attack)
-        }, 250);
-      }
       if (battleStatus && (Math.random() > 0.2)) {
         setTimeout(() => {
           enemyAttackAnimation();
@@ -197,8 +182,30 @@ function App() {
             setPlayerCreatureHP(playerCreatureHP - enemyCreature[0].attack * 1.5);
           }, 750);
         }
-        
+
       }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  // attacks enemy creature
+  const attackEnemy = async () => {
+    try {
+      playerAttackAnimation();
+      if (enemyCreatureHP - playerCreature[0].attack <= 0) {
+        setTimeout(() => {
+          setBattleStatus(false);
+          setEnemyCreature([{ _id: 0, name: "", imgPath: "" }]);
+          setEnemyCreatureHP(0);
+        }, 500);
+        await updateUser(player[0]._id, { experience: player[0].experience + 5 });
+      } else {
+        setTimeout(() => {
+          setEnemyCreatureHP(enemyCreatureHP - playerCreature[0].attack)
+        }, 250);
+      }
+      enemyCounterAttack();
     } catch (error) {
       console.log(error);
     }

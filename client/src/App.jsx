@@ -203,7 +203,7 @@ function App() {
         playerAttackAnimation();
         setTimeout(() => {
           setBattleStatus(false);
-          setEnemyCreature([{ _id: 0, name: "", imgPath: "" }]);
+          setEnemyCreature([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0, speed: 0 }]);
           setEnemyCreatureHP(0);
         }, 500);
         await updateUser(player[0]._id, { experience: player[0].experience + 5 });

@@ -31,6 +31,9 @@ function App() {
   // sets player and enemy creature hp state
   const [playerCreatureHP, setPlayerCreatureHP] = useState(0);
   const [enemyCreatureHP, setEnemyCreatureHP] = useState(0);
+  // sets player and enemy creature speed chance state
+  const [chancePlayer, setChancePlayer] = useState(false);
+  const [chanceEnemy, setChanceEnemy] = useState(false);
 
   useEffect(() => {
     // checks for userfront authentication and redirects visitor if not authenticated
@@ -166,7 +169,12 @@ function App() {
   // initiates chance of enemy counter attack
   const enemyCounterAttack = () => {
     try {
-      if (battleStatus && (Math.random() >= playerCreature[0].speed / 100 - enemyCreature[0].speed / 100)) {
+      if (enemyCreature[0].speed === playerCreature[0].speed) {
+        setChanceEnemy(Math.random() >= 0.5);
+      } else {
+        setChanceEnemy(Math.random() >= playerCreature[0].speed / 100 - enemyCreature[0].speed / 100)
+      }
+      if (battleStatus && (chanceEnemy === true)) {
         setTimeout(() => {
           enemyAttackAnimation();
         }, 500);
@@ -196,10 +204,16 @@ function App() {
     }
   }
 
+
   // initiates chance to attack enemy creature
   const attackEnemy = async () => {
     try {
-      if (enemyCreatureHP - playerCreature[0].attack <= 0 && (Math.random() >= enemyCreature[0].speed / 100 - playerCreature[0].speed / 100)) {
+      if (playerCreature[0].speed === enemyCreature[0].speed) {
+        setChancePlayer(Math.random() >= 0.5);
+      } else {
+        setChancePlayer(Math.random() >= enemyCreature[0].speed / 100 - playerCreature[0].speed / 100)
+      }
+      if (enemyCreatureHP - playerCreature[0].attack <= 0 && (chancePlayer === true)) {
         playerAttackAnimation();
         setTimeout(() => {
           setBattleStatus(false);
@@ -207,7 +221,7 @@ function App() {
           setEnemyCreatureHP(0);
         }, 500);
         await updateUser(player[0]._id, { experience: player[0].experience + 5 });
-      } else if (Math.random() >= enemyCreature[0].speed / 100 - playerCreature[0].speed / 100) {
+      } else if (chancePlayer) {
         playerAttackAnimation();
         setTimeout(() => {
           setEnemyCreatureHP(enemyCreatureHP - playerCreature[0].attack)

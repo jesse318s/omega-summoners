@@ -21,10 +21,10 @@ function App() {
   const [avatarOptionStatus, setAvatarOptionStatus] = useState(false);
   const [nameOptionStatus, setNameOptionStatus] = useState(false);
   // sets player creature state
-  const [playerCreature, setPlayerCreature] = useState([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0 }]);
+  const [playerCreature, setPlayerCreature] = useState([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0, speed: 0 }]);
   // sets battle and enemy creature state
   const [battleStatus, setBattleStatus] = useState(false);
-  const [enemyCreature, setEnemyCreature] = useState([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0 }]);
+  const [enemyCreature, setEnemyCreature] = useState([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0, speed: 0 }]);
   // sets player and enemy creature attack state
   const [playerAttackStatus, setPlayerAttackStatus] = useState(false);
   const [enemyAttackStatus, setEnemyAttackStatus] = useState(false);
@@ -166,20 +166,27 @@ function App() {
   // initiates chance of enemy counter attack
   const enemyCounterAttack = () => {
     try {
-      if (battleStatus && (Math.random() > 0.2)) {
+      if (battleStatus && (Math.random() >= playerCreature[0].speed / 100 - enemyCreature[0].speed / 100)) {
         setTimeout(() => {
           enemyAttackAnimation();
         }, 500);
 
-        if (playerCreatureHP - enemyCreature[0].attack * 1.5 <= 0) {
+        if (playerCreatureHP - enemyCreature[0].attack <= 0) {
           setTimeout(() => {
             setBattleStatus(false);
-            setEnemyCreature([{ _id: 0, name: "", imgPath: "" }]);
+            setEnemyCreature([{
+              _id: 0,
+              name: "",
+              imgPath: "",
+              hp: 0,
+              attack: 0,
+              speed: 0
+            }]);
             setEnemyCreatureHP(0);
           }, 750);
         } else {
           setTimeout(() => {
-            setPlayerCreatureHP(playerCreatureHP - enemyCreature[0].attack * 1.5);
+            setPlayerCreatureHP(playerCreatureHP - enemyCreature[0].attack);
           }, 750);
         }
 
@@ -189,18 +196,19 @@ function App() {
     }
   }
 
-  // attacks enemy creature
+  // initiates chance to attack enemy creature
   const attackEnemy = async () => {
     try {
-      playerAttackAnimation();
-      if (enemyCreatureHP - playerCreature[0].attack <= 0) {
+      if (enemyCreatureHP - playerCreature[0].attack <= 0 && (Math.random() >= enemyCreature[0].speed / 100 - playerCreature[0].speed / 100)) {
+        playerAttackAnimation();
         setTimeout(() => {
           setBattleStatus(false);
           setEnemyCreature([{ _id: 0, name: "", imgPath: "" }]);
           setEnemyCreatureHP(0);
         }, 500);
         await updateUser(player[0]._id, { experience: player[0].experience + 5 });
-      } else {
+      } else if (Math.random() >= enemyCreature[0].speed / 100 - playerCreature[0].speed / 100) {
+        playerAttackAnimation();
         setTimeout(() => {
           setEnemyCreatureHP(enemyCreatureHP - playerCreature[0].attack)
         }, 250);

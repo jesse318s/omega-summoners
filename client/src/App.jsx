@@ -279,14 +279,14 @@ function App() {
                   <img className="player_avatar" src={"img/avatar/f_warrior_avatar.png"} alt={"f_warrior"} width="96" height="96" /> Avatar 5</div>
                 <div className="my-1" onClick={() => selectAvatar("img/avatar/m_warrior_avatar.png")}>
                   <img className="player_avatar" src={"img/avatar/m_warrior_avatar.png"} alt={"m_warrior"} width="96" height="96" /> Avatar 6</div></div>
-                : <div></div>}
-              <button className="btn btn-light my-2" onClick={() => { setNameOptionStatus(!nameOptionStatus) }}>Change Name</button>
+                : null}
+              <button className="btn btn-light my-2 ms-2" onClick={() => { setNameOptionStatus(!nameOptionStatus) }}>Change Name</button>
               {nameOptionStatus ? <form>
                 <label htmlFor="name">Player name:&nbsp;</label>
                 <input type="text" name="name" placeholder={player[0].name} onChange={(e) => selectName(e.target.value)} />
               </form> : null}
             </div>
-            : <div></div>}
+            : null}
 
           {/* player details */}
           <div className="player_details">

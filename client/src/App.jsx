@@ -21,12 +21,12 @@ function App() {
   const [avatarOptionStatus, setAvatarOptionStatus] = useState(false);
   const [nameOptionStatus, setNameOptionStatus] = useState(false);
   // sets player creature state
-  const [playerCreature, setPlayerCreature] = useState([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0, speed: 0 }]);
+  const [playerCreature, setPlayerCreature] = useState([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0, speed: 0, defense: 0 }]);
   // sets creature stats state
   const [creatureStatsStatus, setCreatureStatsStatus] = useState(false);
   // sets battle and enemy creature state
   const [battleStatus, setBattleStatus] = useState(false);
-  const [enemyCreature, setEnemyCreature] = useState([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0, speed: 0 }]);
+  const [enemyCreature, setEnemyCreature] = useState([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0, speed: 0, defense: 0 }]);
   // sets player and enemy creature attack state
   const [playerAttackStatus, setPlayerAttackStatus] = useState(false);
   const [enemyAttackStatus, setEnemyAttackStatus] = useState(false);
@@ -194,7 +194,7 @@ function App() {
           enemyAttackAnimation();
         }, 500);
 
-        if (playerCreatureHP - enemyCreature[0].attack <= 0) {
+        if (playerCreatureHP - (enemyCreature[0].attack - enemyCreature[0].attack * (playerCreature[0].defense / 100)) <= 0) {
           setTimeout(() => {
             setBattleStatus(false);
             setEnemyCreature([{
@@ -203,13 +203,14 @@ function App() {
               imgPath: "",
               hp: 0,
               attack: 0,
-              speed: 0
+              speed: 0,
+              defense: 0
             }]);
             setEnemyCreatureHP(0);
           }, 750);
         } else {
           setTimeout(() => {
-            setPlayerCreatureHP(playerCreatureHP - enemyCreature[0].attack);
+            setPlayerCreatureHP(playerCreatureHP - (enemyCreature[0].attack - enemyCreature[0].attack * (playerCreature[0].defense / 100)));
           }, 750);
         }
 
@@ -227,7 +228,7 @@ function App() {
       } else {
         setChancePlayer(Math.random() >= enemyCreature[0].speed / 100 - playerCreature[0].speed / 100)
       }
-      if (enemyCreatureHP - playerCreature[0].attack <= 0 && chancePlayer) {
+      if (enemyCreatureHP - (playerCreature[0].attack - playerCreature[0].attack * (enemyCreature[0].defense / 100)) <= 0 && chancePlayer) {
         playerAttackAnimation();
         setTimeout(() => {
           setBattleStatus(false);
@@ -238,7 +239,7 @@ function App() {
       } else if (chancePlayer) {
         playerAttackAnimation();
         setTimeout(() => {
-          setEnemyCreatureHP(enemyCreatureHP - playerCreature[0].attack);
+          setEnemyCreatureHP(enemyCreatureHP - (playerCreature[0].attack - playerCreature[0].attack * (enemyCreature[0].defense / 100)));
         }, 250);
       }
       enemyCounterAttack();
@@ -365,10 +366,11 @@ function App() {
                         : null}
                     {creatureStatsStatus ?
                       <div>
-                        {battleStatus ? <h5>HP: {playerCreatureHP}</h5>
+                        {battleStatus ? <h5>HP: {playerCreatureHP} / {creature.hp}</h5>
                           : null}
                         <h5>Attack: {creature.attack}</h5>
                         <h5>Speed: {creature.speed}</h5>
+                        <h5>Defense: {creature.defense}</h5>
                       </div>
                       : null}
                   </div>))}
@@ -391,11 +393,12 @@ function App() {
                     : playerAttackStatus ? <img className="enemy_creature_img" src={creature.imgPath.slice(0, -4) + "_hurt.png"} alt={creature.name} width="128px" height="128px" />
                       : <img className="enemy_creature_img" src={creature.imgPath} alt={creature.name} width="128px" height="128px" />}
                   <h4>Enemy {creature.name}</h4>
-                  <h5>HP: {enemyCreatureHP}</h5>
+                  <h5>HP: {enemyCreatureHP} / {creature.hp}</h5>
                   {creatureStatsStatus ?
                     <div>
                       <h5>Attack: {creature.attack}</h5>
                       <h5>Speed: {creature.speed}</h5>
+                      <h5>Defense: {creature.defense}</h5>
                     </div>
                     : null}
                 </div>

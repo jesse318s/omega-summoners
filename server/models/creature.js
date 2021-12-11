@@ -14,6 +14,12 @@ const creatureSchema = new Schema({
     },
     attack: {
         type: Number,
+    },
+    speed: {
+        type: Number,
+    },
+    defense: {
+        type: Number,
     }
 });
 

@@ -14,14 +14,16 @@ function App() {
   const navigate = useNavigate();
 
   // sets player and userfront id state
-  const [player, setPlayer] = useState([{ _id: 0, userfrontId: 0, name: "", avatarPath: "", experience: 0, creatureId: "" }]);
+  const [player, setPlayer] = useState([{ _id: 0, userfrontId: 0, name: "", avatarPath: "", experience: 0, creatureId: "", displayCreatureStats: false }]);
   const [userfrontId] = useState(Userfront.user.userId);
   // sets player options states
-  const [playerOptionsStatus, setPlayerOptionsStatus] = useState(false);
+  const [optionsStatus, setOptionsStatus] = useState(false);
   const [avatarOptionStatus, setAvatarOptionStatus] = useState(false);
   const [nameOptionStatus, setNameOptionStatus] = useState(false);
   // sets player creature state
   const [playerCreature, setPlayerCreature] = useState([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0, speed: 0 }]);
+  // sets creature stats state
+  const [creatureStatsStatus, setCreatureStatsStatus] = useState(false);
   // sets battle and enemy creature state
   const [battleStatus, setBattleStatus] = useState(false);
   const [enemyCreature, setEnemyCreature] = useState([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0, speed: 0 }]);
@@ -68,13 +70,14 @@ function App() {
           const newUser = {
             userfrontId: userfrontId,
             name: Userfront.user.email,
-            avatarPath: "img/avatar/m_mage_avatar.png",
+            avatarPath: "img/avatar/placeholder_avatar.png",
             experience: 0,
             creatureId: "",
+            displayCreatureStats: false
           }
           await addUser(newUser);
           const newUserData = data.filter(user => user.userfrontId === userfrontId);
-          setPlayer(newUserData)
+          setPlayer(newUserData);
 
           if (player[0]) {
             genAsyncPlayerCreature();
@@ -88,6 +91,7 @@ function App() {
       }
     }
     loadAsyncDataPlayer();
+    // if a player exists
     if (player[0]) {
       // loads player creature data
       const loadAsyncDataPlayerCreature = async () => {
@@ -95,6 +99,7 @@ function App() {
           const { data } = await getCreatures();
           const playerCreatureData = data.filter(creature => creature._id === player[0].creatureId);
           setPlayerCreature(playerCreatureData);
+          setCreatureStatsStatus(player[0].displayCreatureStats);
         }
         catch (error) {
           console.log(error);
@@ -103,6 +108,16 @@ function App() {
       loadAsyncDataPlayerCreature();
     }
   }, [player, userfrontId]);
+
+  // toggles display creature stats in database
+  const toggleDisplayCreatureStats = async () => {
+    try {
+      await updateUser(player[0]._id, { displayCreatureStats: !creatureStatsStatus });
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
 
   // updates player avatar path in database
   const selectAvatar = async (avatarPath) => {
@@ -127,7 +142,7 @@ function App() {
   // loads battle data
   const loadAsyncDataBattle = async () => {
     try {
-      if (battleStatus === false) {
+      if (!battleStatus) {
         setPlayerCreatureHP(playerCreature[0].hp);
         const { data } = await getCreatures();
         const enemyCreatureData = [data[Math.floor(Math.random() * data.length)]];
@@ -172,9 +187,9 @@ function App() {
       if (enemyCreature[0].speed === playerCreature[0].speed) {
         setChanceEnemy(Math.random() >= 0.5);
       } else {
-        setChanceEnemy(Math.random() >= playerCreature[0].speed / 100 - enemyCreature[0].speed / 100)
+        setChanceEnemy(Math.random() >= playerCreature[0].speed / 100 - enemyCreature[0].speed / 100);
       }
-      if (battleStatus && (chanceEnemy === true)) {
+      if (battleStatus && chanceEnemy) {
         setTimeout(() => {
           enemyAttackAnimation();
         }, 500);
@@ -204,7 +219,6 @@ function App() {
     }
   }
 
-
   // initiates chance to attack enemy creature
   const attackEnemy = async () => {
     try {
@@ -213,7 +227,7 @@ function App() {
       } else {
         setChancePlayer(Math.random() >= enemyCreature[0].speed / 100 - playerCreature[0].speed / 100)
       }
-      if (enemyCreatureHP - playerCreature[0].attack <= 0 && (chancePlayer === true)) {
+      if (enemyCreatureHP - playerCreature[0].attack <= 0 && chancePlayer) {
         playerAttackAnimation();
         setTimeout(() => {
           setBattleStatus(false);
@@ -224,7 +238,7 @@ function App() {
       } else if (chancePlayer) {
         playerAttackAnimation();
         setTimeout(() => {
-          setEnemyCreatureHP(enemyCreatureHP - playerCreature[0].attack)
+          setEnemyCreatureHP(enemyCreatureHP - playerCreature[0].attack);
         }, 250);
       }
       enemyCounterAttack();
@@ -273,7 +287,7 @@ function App() {
 
               {/* Right elements */}
               <div className="d-flex align-items-center">
-                <button className="btn btn-light my-1" onClick={() => setPlayerOptionsStatus(!playerOptionsStatus)}>Player Options</button>
+                <button className="btn btn-light my-1" onClick={() => setOptionsStatus(!optionsStatus)}>Options</button>
               </div>
               {/* Right elements */}
             </div>
@@ -283,35 +297,38 @@ function App() {
         </header>
 
         <main className="game_section">
-          {/* player options */}
-          {playerOptionsStatus ?
-            <div className="player_options">
+          {/* options */}
+          {optionsStatus ?
+            <div className="options">
+              <h3>Game Options</h3>
+              <button className="btn btn-light my-2" onClick={() => { toggleDisplayCreatureStats() }}>Toggle Creature Stats</button>
               <h3>Player Options</h3>
               <button className="btn btn-light my-2" onClick={() => { setAvatarOptionStatus(!avatarOptionStatus) }}>Change Avatar</button>
               {avatarOptionStatus ? <div>
                 <div className="my-1" onClick={() => selectAvatar("img/avatar/f_mage_avatar.png")}>
-                  <img className="player_avatar" src={"img/avatar/f_mage_avatar.png"} alt={"f_mage"} width="96" height="96" /> Avatar 1</div>
+                  <img className="player_avatar avatar_option" src={"img/avatar/f_mage_avatar.png"} alt={"f_mage"} width="96" height="96" /> Avatar 1</div>
                 <div className="my-1" onClick={() => selectAvatar("img/avatar/m_mage_avatar.png")}>
-                  <img className="player_avatar" src={"img/avatar/m_mage_avatar.png"} alt={"m_mage"} width="96" height="96" /> Avatar 2</div>
+                  <img className="player_avatar avatar_option" src={"img/avatar/m_mage_avatar.png"} alt={"m_mage"} width="96" height="96" /> Avatar 2</div>
                 <div className="my-1" onClick={() => selectAvatar("img/avatar/f_rogue_avatar.png")}>
-                  <img className="player_avatar" src={"img/avatar/f_rogue_avatar.png"} alt={"f_rogue"} width="96" height="96" /> Avatar 3</div>
+                  <img className="player_avatar avatar_option" src={"img/avatar/f_rogue_avatar.png"} alt={"f_rogue"} width="96" height="96" /> Avatar 3</div>
                 <div className="my-1" onClick={() => selectAvatar("img/avatar/m_rogue_avatar.png")}>
-                  <img className="player_avatar" src={"img/avatar/m_rogue_avatar.png"} alt={"m_rogue"} width="96" height="96" /> Avatar 4</div>
+                  <img className="player_avatar avatar_option" src={"img/avatar/m_rogue_avatar.png"} alt={"m_rogue"} width="96" height="96" /> Avatar 4</div>
                 <div className="my-1" onClick={() => selectAvatar("img/avatar/f_warrior_avatar.png")}>
-                  <img className="player_avatar" src={"img/avatar/f_warrior_avatar.png"} alt={"f_warrior"} width="96" height="96" /> Avatar 5</div>
+                  <img className="player_avatar avatar_option" src={"img/avatar/f_warrior_avatar.png"} alt={"f_warrior"} width="96" height="96" /> Avatar 5</div>
                 <div className="my-1" onClick={() => selectAvatar("img/avatar/m_warrior_avatar.png")}>
-                  <img className="player_avatar" src={"img/avatar/m_warrior_avatar.png"} alt={"m_warrior"} width="96" height="96" /> Avatar 6</div></div>
-                : <div></div>}
-              <button className="btn btn-light my-2" onClick={() => { setNameOptionStatus(!nameOptionStatus) }}>Change Name</button>
+                  <img className="player_avatar avatar_option" src={"img/avatar/m_warrior_avatar.png"} alt={"m_warrior"} width="96" height="96" /> Avatar 6</div>
+              </div>
+                : null}
+              <button className="btn btn-light my-2 ms-1" onClick={() => { setNameOptionStatus(!nameOptionStatus) }}>Change Name</button>
               {nameOptionStatus ? <form>
                 <label htmlFor="name">Player name:&nbsp;</label>
                 <input type="text" name="name" placeholder={player[0].name} onChange={(e) => selectName(e.target.value)} />
               </form> : null}
             </div>
-            : <div></div>}
+            : null}
 
-          {/* player details */}
-          <div className="player_details">
+          {/* player */}
+          <div className="player">
             {player.map((player) => (
               <div
                 key={player._id}
@@ -325,7 +342,7 @@ function App() {
                 <h4>Experience: {player.experience}</h4>
               </div>
             ))}
-            <button className="btn btn-light" onClick={loadAsyncDataBattle}>Battle Hellspawn</button>
+            <button className="game_button" onClick={loadAsyncDataBattle}>Battle Hellspawn</button>
           </div>
 
           {/* player creature */}
@@ -334,20 +351,30 @@ function App() {
               <div
                 key={creature._id}
               >
-                {playerAttackStatus ? <img src={creature.imgPath.slice(0, -4) + "_attack.png"} alt={creature.name} />
-                  : enemyAttackStatus && (enemyCreatureHP !== 0) ? <img src={creature.imgPath.slice(0, -4) + "_hurt.png"} alt={creature.name} /> : <img src={creature.imgPath} alt={creature.name} />
+                {playerAttackStatus ? <img src={creature.imgPath.slice(0, -4) + "_attack.png"} alt={creature.name} width="128px" height="128px" />
+                  : enemyAttackStatus && (enemyCreatureHP !== 0) ? <img src={creature.imgPath.slice(0, -4) + "_hurt.png"} alt={creature.name} width="128px" height="128px" />
+                    : <img src={creature.imgPath} alt={creature.name} width="128px" height="128px" />
                 }
-                {battleStatus ?
-                  <h4>HP: {playerCreatureHP}</h4>
-                  : null}
                 {player.map((player) => (
                   <div
                     key={player._id}
                   >
-                    <h4>{player.name}'s {creature.name}</h4></div>))}
+                    <h4>{player.name}'s {creature.name}</h4>
+                    {!battleStatus ? <h5>HP: {creature.hp}</h5>
+                      : !creatureStatsStatus ? <h5>HP: {playerCreatureHP}</h5>
+                        : null}
+                    {creatureStatsStatus ?
+                      <div>
+                        {battleStatus ? <h5>HP: {playerCreatureHP}</h5>
+                          : null}
+                        <h5>Attack: {creature.attack}</h5>
+                        <h5>Speed: {creature.speed}</h5>
+                      </div>
+                      : null}
+                  </div>))}
 
                 {battleStatus ?
-                  <button className="btn btn-light" onClick={() => { attackEnemy(); }}>Attack</button>
+                  <button className="game_button" onClick={() => { attackEnemy(); }}>Attack</button>
                   : null}
               </div>
             ))}
@@ -360,11 +387,17 @@ function App() {
                 <div
                   key={creature._id}
                 >
-                  {enemyAttackStatus ? <img className="enemy_creature_img" src={creature.imgPath.slice(0, -4) + "_attack.png"} alt={creature.name} />
-                    : playerAttackStatus ? <img className="enemy_creature_img" src={creature.imgPath.slice(0, -4) + "_hurt.png"} alt={creature.name} />
-                      : <img className="enemy_creature_img" src={creature.imgPath} alt={creature.name} />}
-                  <h4>HP: {enemyCreatureHP}</h4>
+                  {enemyAttackStatus ? <img className="enemy_creature_img" src={creature.imgPath.slice(0, -4) + "_attack.png"} alt={creature.name} width="128px" height="128px" />
+                    : playerAttackStatus ? <img className="enemy_creature_img" src={creature.imgPath.slice(0, -4) + "_hurt.png"} alt={creature.name} width="128px" height="128px" />
+                      : <img className="enemy_creature_img" src={creature.imgPath} alt={creature.name} width="128px" height="128px" />}
                   <h4>Enemy {creature.name}</h4>
+                  <h5>HP: {enemyCreatureHP}</h5>
+                  {creatureStatsStatus ?
+                    <div>
+                      <h5>Attack: {creature.attack}</h5>
+                      <h5>Speed: {creature.speed}</h5>
+                    </div>
+                    : null}
                 </div>
               ))}
             </div>

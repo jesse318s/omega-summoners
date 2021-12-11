@@ -18,6 +18,9 @@ const userSchema = new Schema({
     },
     creatureId: {
         type: String,
+    },
+    displayCreatureStats: {
+        type: Boolean,
     }
 });
 

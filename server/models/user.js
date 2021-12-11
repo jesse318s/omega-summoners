@@ -16,6 +16,9 @@ const userSchema = new Schema({
     experience: {
         type: Number,
     },
+    drachmas: {
+        type: Number,
+    },
     creatureId: {
         type: String,
     },

@@ -14,7 +14,7 @@ function App() {
   const navigate = useNavigate();
 
   // sets player and userfront id state
-  const [player, setPlayer] = useState([{ _id: 0, userfrontId: 0, name: "", avatarPath: "", experience: 0, creatureId: "", displayCreatureStats: false }]);
+  const [player, setPlayer] = useState([{ _id: 0, userfrontId: 0, name: "", avatarPath: "", experience: 0, drachmas: 0, creatureId: "", displayCreatureStats: false }]);
   const [userfrontId] = useState(Userfront.user.userId);
   // sets player options states
   const [optionsStatus, setOptionsStatus] = useState(false);
@@ -72,6 +72,7 @@ function App() {
             name: Userfront.user.email,
             avatarPath: "img/avatar/placeholder_avatar.png",
             experience: 0,
+            drachmas: 0,
             creatureId: "",
             displayCreatureStats: false
           }
@@ -235,7 +236,7 @@ function App() {
           setEnemyCreature([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0, speed: 0 }]);
           setEnemyCreatureHP(0);
         }, 500);
-        await updateUser(player[0]._id, { experience: player[0].experience + 5 });
+        await updateUser(player[0]._id, { experience: player[0].experience + 5, drachmas: player[0].drachmas + 3 });
       } else if (chancePlayer) {
         playerAttackAnimation();
         setTimeout(() => {
@@ -339,8 +340,9 @@ function App() {
                   className="player_avatar"
                   width="96"
                   height="96" />
-                <h2>{player.name}</h2>
-                <h4>Experience: {player.experience}</h4>
+                <h4>{player.name}</h4>
+                <h5>Experience: {player.experience}</h5>
+                <h5>Drachmas: {player.drachmas} <i className="fas fa-coins" /></h5>
               </div>
             ))}
             <button className="game_button" onClick={loadAsyncDataBattle}>Battle Hellspawn</button>
@@ -362,7 +364,7 @@ function App() {
                   >
                     <h4>{player.name}'s {creature.name}</h4>
                     {!battleStatus ? <h5>HP: {creature.hp}</h5>
-                      : !creatureStatsStatus ? <h5>HP: {playerCreatureHP}</h5>
+                      : !creatureStatsStatus ? <h5>HP: {playerCreatureHP} / {creature.hp}</h5>
                         : null}
                     {creatureStatsStatus ?
                       <div>

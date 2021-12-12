@@ -1,24 +1,29 @@
-// styles
-.game_section {
+body {
   margin-top: 80px;
 }
 
-.game_button {
-  align-items: center;
-  background-color: rgba(240, 240, 240, 0.65);
-  border: 1px solid #DFDFDF;
-  border-radius: 16px;
-  box-sizing: border-box;
-  color: #000000;
+// styles
+
+.options {
+  margin-bottom: 10px;
+  color: white;
+}
+
+.avatar_option {
   cursor: pointer;
-  display: flex;
+}
+
+.game_button {
+  background-color: rgba(240, 240, 240, 0.65);
+  border: 1px solid white;
+  border-radius: 16px;
+  color: black;
+  cursor: pointer;
   font-size: 18px;
-  justify-content: center;
   line-height: 28px;
   max-width: 100%;
   padding: 10px 22px;
-  text-decoration: none;
-  transition: all .2s;
+  transition: all 0.2s;
   user-select: none;
   touch-action: manipulation;
   width: 100%;
@@ -30,12 +35,16 @@
 }
 
 .game_button:hover {
-  background-color: #FFFFFF;
-  border-color: rgba(0, 0, 0, 0.19);
+  background-color: white;
+  border-color: black;
 }
 
-.avatar_option {
-  cursor: pointer;
+.progress_bar_container {
+  width: 100px;
+  margin: 0 auto;
+  background-color: white;
+  border: 1px solid #000000;
+  border-radius: 5px;
 }
 
 .player {
@@ -47,9 +56,10 @@
   border-radius: 5px;
 }
 
-.options {
-  margin-bottom: 10px;
-  color: white;
+.experience_progress_bar {
+  padding-top: 10px;
+  background-color: #04aa6d;
+  border-radius: 5px 0 0 5px;
 }
 
 .player_creature {
@@ -72,13 +82,4 @@
 
 .enemy_creature_img {
   transform: scaleX(-1);
-}
-
-// media queries
-@media (min-width: 768px) {
-  .game_button {
-    font-size: 20px;
-    min-width: 200px;
-    padding: 10px 16px;
-  }
 }

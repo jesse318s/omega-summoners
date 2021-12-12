@@ -308,7 +308,7 @@ function App() {
           {/* Navbar */}
         </header>
 
-        <main className="game_section">
+        <main>
           {/* options */}
           {optionsStatus ?
             <div className="options">
@@ -351,7 +351,13 @@ function App() {
                   width="96"
                   height="96" />
                 <h4>{player.name}</h4>
-                <h5>Experience: {player.experience}</h5>
+                <h5>
+                  Level {Math.floor(player.experience / 100 / 2.5)}
+                  <div className="progress_bar_container">
+                    <div className="experience_progress_bar"
+                      style={{ width: ((player.experience / 100 / 2.5 - Math.floor(player.experience / 100 / 2.5)).toFixed(2)).replace("0.", '') + "%" }} />
+                  </div>
+                </h5>
                 <h5>Drachmas: {player.drachmas} <i className="fas fa-coins" /></h5>
               </div>
             ))}
@@ -364,6 +370,9 @@ function App() {
               <div
                 key={creature._id}
               >
+                {battleStatus ?
+                  <button className="game_button" onClick={() => { attackEnemy() }}>Attack</button>
+                  : null}
                 {playerAttackStatus ? <img src={creature.imgPath.slice(0, -4) + "_attack.png"} alt={creature.name} width="128px" height="128px" />
                   : enemyAttackStatus && (enemyCreatureHP !== 0) ? <img src={creature.imgPath.slice(0, -4) + "_hurt.png"} alt={creature.name} width="128px" height="128px" />
                     : <img src={creature.imgPath} alt={creature.name} width="128px" height="128px" />
@@ -387,10 +396,6 @@ function App() {
                       </div>
                       : null}
                   </div>))}
-
-                {battleStatus ?
-                  <button className="game_button" onClick={() => { attackEnemy(); }}>Attack</button>
-                  : null}
               </div>
             ))}
           </div>

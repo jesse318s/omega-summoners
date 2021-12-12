@@ -33,10 +33,7 @@ function App() {
   // sets player and enemy creature hp state
   const [playerCreatureHP, setPlayerCreatureHP] = useState(0);
   const [enemyCreatureHP, setEnemyCreatureHP] = useState(0);
-  // sets player and enemy creature speed chance state
-  const [chancePlayer, setChancePlayer] = useState(false);
-  const [chanceEnemy, setChanceEnemy] = useState(false);
-  // sets player crit modifier state
+  // sets crit modifier state
   const [criticalAttackMultiplier, setCriticalAttackMultiplier] = useState(1);
 
   useEffect(() => {
@@ -187,10 +184,11 @@ function App() {
   // initiates chance of enemy counter attack
   const enemyCounterAttack = () => {
     try {
+      var chanceEnemy = false;
       if (enemyCreature[0].speed === playerCreature[0].speed) {
-        setChanceEnemy(Math.random() >= 0.5);
+        chanceEnemy = Math.random() >= 0.5;
       } else {
-        setChanceEnemy(Math.random() >= playerCreature[0].speed / 100 - enemyCreature[0].speed / 100);
+        chanceEnemy = Math.random() >= playerCreature[0].speed / 100 - enemyCreature[0].speed / 100;
       }
       if (battleStatus && chanceEnemy) {
         setTimeout(() => {
@@ -230,10 +228,11 @@ function App() {
   // initiates chance to attack enemy creature
   const attackEnemy = async () => {
     try {
+      var chancePlayer = false;
       if (playerCreature[0].speed === enemyCreature[0].speed) {
-        setChancePlayer(Math.random() >= 0.5);
+        chancePlayer = Math.random() >= 0.5;
       } else {
-        setChancePlayer(Math.random() >= enemyCreature[0].speed / 100 - playerCreature[0].speed / 100)
+        chancePlayer = Math.random() >= enemyCreature[0].speed / 100 - playerCreature[0].speed / 100;
       }
       if (Math.random() <= playerCreature[0].critical / 100) {
         setCriticalAttackMultiplier(1.5);

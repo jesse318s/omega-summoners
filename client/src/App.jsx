@@ -21,12 +21,12 @@ function App() {
   const [avatarOptionStatus, setAvatarOptionStatus] = useState(false);
   const [nameOptionStatus, setNameOptionStatus] = useState(false);
   // sets player creature state
-  const [playerCreature, setPlayerCreature] = useState([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0, speed: 0, defense: 0 }]);
+  const [playerCreature, setPlayerCreature] = useState([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0, speed: 0, defense: 0, critical: 0 }]);
   // sets creature stats state
   const [creatureStatsStatus, setCreatureStatsStatus] = useState(false);
   // sets battle and enemy creature state
   const [battleStatus, setBattleStatus] = useState(false);
-  const [enemyCreature, setEnemyCreature] = useState([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0, speed: 0, defense: 0 }]);
+  const [enemyCreature, setEnemyCreature] = useState([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0, speed: 0, defense: 0, critical: 0 }]);
   // sets player and enemy creature attack state
   const [playerAttackStatus, setPlayerAttackStatus] = useState(false);
   const [enemyAttackStatus, setEnemyAttackStatus] = useState(false);
@@ -36,6 +36,8 @@ function App() {
   // sets player and enemy creature speed chance state
   const [chancePlayer, setChancePlayer] = useState(false);
   const [chanceEnemy, setChanceEnemy] = useState(false);
+  // sets player crit modifier state
+  const [criticalAttackMultiplier, setCriticalAttackMultiplier] = useState(1);
 
   useEffect(() => {
     // checks for userfront authentication and redirects visitor if not authenticated
@@ -194,8 +196,11 @@ function App() {
         setTimeout(() => {
           enemyAttackAnimation();
         }, 500);
+        if (Math.random() <= enemyCreature[0].critical / 100) {
+          setCriticalAttackMultiplier(1.5);
+        }
 
-        if (playerCreatureHP - (enemyCreature[0].attack - enemyCreature[0].attack * (playerCreature[0].defense / 100)) <= 0) {
+        if (playerCreatureHP - (enemyCreature[0].attack - enemyCreature[0].attack * (playerCreature[0].defense / 100)) * criticalAttackMultiplier <= 0) {
           setTimeout(() => {
             setBattleStatus(false);
             setEnemyCreature([{
@@ -205,7 +210,8 @@ function App() {
               hp: 0,
               attack: 0,
               speed: 0,
-              defense: 0
+              defense: 0,
+              critical: 0
             }]);
             setEnemyCreatureHP(0);
           }, 750);
@@ -229,20 +235,24 @@ function App() {
       } else {
         setChancePlayer(Math.random() >= enemyCreature[0].speed / 100 - playerCreature[0].speed / 100)
       }
-      if (enemyCreatureHP - (playerCreature[0].attack - playerCreature[0].attack * (enemyCreature[0].defense / 100)) <= 0 && chancePlayer) {
+      if (Math.random() <= playerCreature[0].critical / 100) {
+        setCriticalAttackMultiplier(1.5);
+      }
+      if (enemyCreatureHP - (playerCreature[0].attack - playerCreature[0].attack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier <= 0 && chancePlayer) {
         playerAttackAnimation();
         setTimeout(() => {
           setBattleStatus(false);
-          setEnemyCreature([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0, speed: 0 }]);
+          setEnemyCreature([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0, speed: 0, defense: 0, critical: 0 }]);
           setEnemyCreatureHP(0);
         }, 500);
         await updateUser(player[0]._id, { experience: player[0].experience + 5, drachmas: player[0].drachmas + 3 });
       } else if (chancePlayer) {
         playerAttackAnimation();
         setTimeout(() => {
-          setEnemyCreatureHP(enemyCreatureHP - (playerCreature[0].attack - playerCreature[0].attack * (enemyCreature[0].defense / 100)));
+          setEnemyCreatureHP(enemyCreatureHP - (playerCreature[0].attack - playerCreature[0].attack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier);
         }, 250);
       }
+      setCriticalAttackMultiplier(1);
       enemyCounterAttack();
     } catch (error) {
       console.log(error);
@@ -373,6 +383,7 @@ function App() {
                         <h5>Attack: {creature.attack}</h5>
                         <h5>Speed: {creature.speed}</h5>
                         <h5>Defense: {creature.defense}</h5>
+                        <h5>Critical: {creature.critical}</h5>
                       </div>
                       : null}
                   </div>))}
@@ -401,6 +412,7 @@ function App() {
                       <h5>Attack: {creature.attack}</h5>
                       <h5>Speed: {creature.speed}</h5>
                       <h5>Defense: {creature.defense}</h5>
+                      <h5>Critical: {creature.critical}</h5>
                     </div>
                     : null}
                 </div>

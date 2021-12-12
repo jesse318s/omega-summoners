@@ -20,6 +20,9 @@ const creatureSchema = new Schema({
     },
     defense: {
         type: Number,
+    },
+    critical: {
+        type: Number,
     }
 });
 

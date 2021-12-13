@@ -24,6 +24,12 @@ const userSchema = new Schema({
     },
     displayCreatureStats: {
         type: Boolean,
+    },
+    relics: {
+        type: Array,
+    },
+    chosenRelic: {
+        type: Number,
     }
 });
 

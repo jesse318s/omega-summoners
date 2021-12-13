@@ -10,16 +10,50 @@ Userfront.init("rbvqd5nd");
 
 // main app component
 function App() {
+
+  // relic objects
+  const relics = [
+    {
+      id: 1,
+      name: "The Bolt of Zeus",
+      img: "img/relic/relic1.png",
+      effectClass: "relic1",
+      hpMod: 0,
+      attackMod: 10,
+      speedMod: 0,
+      defenseMod: 0,
+      criticalMod: 10,
+      price: 0,
+    },
+    {
+      id: 2,
+      name: "The Goblet of Dionysus",
+      img: "img/relic/relic2.png",
+      effectClass: "relic2",
+      hpMod: 10,
+      attackMod: 0,
+      speedMod: 0,
+      defenseMod: 10,
+      criticalMod: 0,
+      price: 250,
+    }
+  ];
+
   // navigation hook
   const navigate = useNavigate();
 
   // sets player and userfront id state
-  const [player, setPlayer] = useState([{ _id: 0, userfrontId: 0, name: "", avatarPath: "", experience: 0, drachmas: 0, creatureId: "", displayCreatureStats: false }]);
+  const [player, setPlayer] = useState([{
+    _id: 0, userfrontId: 0, name: "", avatarPath: "", experience: 0, drachmas: 0, relics: [], chosenRelic: 0, creatureId: "", displayCreatureStats: false
+  }]);
   const [userfrontId] = useState(Userfront.user.userId);
   // sets player options states
   const [optionsStatus, setOptionsStatus] = useState(false);
   const [avatarOptionStatus, setAvatarOptionStatus] = useState(false);
   const [nameOptionStatus, setNameOptionStatus] = useState(false);
+  // sets relics and store state
+  const [relicsStatus, setRelicsStatus] = useState(false);
+  const [storeStatus, setStoreStatus] = useState(false);
   // sets player creature state
   const [playerCreature, setPlayerCreature] = useState([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0, speed: 0, defense: 0, critical: 0 }]);
   // sets creature stats state
@@ -33,8 +67,14 @@ function App() {
   // sets player and enemy creature hp state
   const [playerCreatureHP, setPlayerCreatureHP] = useState(0);
   const [enemyCreatureHP, setEnemyCreatureHP] = useState(0);
-  // sets crit modifier state
+  // sets critical modifier state
   const [criticalAttackMultiplier, setCriticalAttackMultiplier] = useState(1);
+  // sets relics state
+  const [relicsData] = useState(relics);
+  // sets player relics state
+  const [playerRelics, setPlayerRelics] = useState([]);
+  // sets chosen relic state
+  const [chosenRelic, setChosenRelic] = useState({});
 
   useEffect(() => {
     // checks for userfront authentication and redirects visitor if not authenticated
@@ -72,6 +112,8 @@ function App() {
             avatarPath: "img/avatar/placeholder_avatar.png",
             experience: 0,
             drachmas: 0,
+            relics: [1],
+            chosenRelic: 1,
             creatureId: "",
             displayCreatureStats: false
           }
@@ -107,7 +149,23 @@ function App() {
       }
       loadAsyncDataPlayerCreature();
     }
-  }, [player, userfrontId]);
+    // if player relics exist
+    if (player[0] && player[0].relics) {
+      // loads player relics data
+      const loadDataPlayerRelics = () => {
+        try {
+          const playerRelicsData = relicsData.filter(relic => player[0].relics.includes(relic.id));
+          setPlayerRelics(playerRelicsData);
+          const chosenRelicData = playerRelicsData.filter(relic => relic.id === player[0].chosenRelic);
+          setChosenRelic(chosenRelicData);
+        }
+        catch (error) {
+          console.log(error);
+        }
+      }
+      loadDataPlayerRelics();
+    }
+  }, [player, userfrontId, relicsData]);
 
   // toggles display creature stats in database
   const toggleDisplayCreatureStats = async () => {
@@ -133,6 +191,28 @@ function App() {
   const selectName = async (name) => {
     try {
       await updateUser(player[0]._id, { name: name });
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
+
+  // updates player chosen relic in database
+  const selectRelic = async (relicId) => {
+    try {
+      await updateUser(player[0]._id, { chosenRelic: relicId });
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
+
+  // updates player relics in database
+  const buyRelic = async (relicId, relicPrice) => {
+    try {
+      if (player[0].drachmas >= relicPrice && !player[0].relics.includes(relicId)) {
+        await updateUser(player[0]._id, { drachmas: player[0].drachmas - relicPrice, relics: [...player[0].relics, relicId] });
+      }
     }
     catch (error) {
       console.log(error);
@@ -184,11 +264,13 @@ function App() {
   // initiates chance of enemy counter attack
   const enemyCounterAttack = () => {
     try {
+      const playerCreatureSpeed = playerCreature[0].speed + chosenRelic[0].speedMod;
+      const playerCreatureDefense = playerCreature[0].defense + chosenRelic[0].defenseMod;
       var chanceEnemy = false;
-      if (enemyCreature[0].speed === playerCreature[0].speed) {
+      if (enemyCreature[0].speed === playerCreatureSpeed) {
         chanceEnemy = Math.random() >= 0.5;
       } else {
-        chanceEnemy = Math.random() >= playerCreature[0].speed / 100 - enemyCreature[0].speed / 100;
+        chanceEnemy = Math.random() >= playerCreatureSpeed / 100 - enemyCreature[0].speed / 100;
       }
       if (battleStatus && chanceEnemy) {
         setTimeout(() => {
@@ -198,7 +280,7 @@ function App() {
           setCriticalAttackMultiplier(1.5);
         }
 
-        if (playerCreatureHP - (enemyCreature[0].attack - enemyCreature[0].attack * (playerCreature[0].defense / 100)) * criticalAttackMultiplier <= 0) {
+        if (playerCreatureHP - (enemyCreature[0].attack - enemyCreature[0].attack * (playerCreatureDefense / 100)) * criticalAttackMultiplier <= 0) {
           setTimeout(() => {
             setBattleStatus(false);
             setEnemyCreature([{
@@ -215,7 +297,7 @@ function App() {
           }, 750);
         } else {
           setTimeout(() => {
-            setPlayerCreatureHP(playerCreatureHP - (enemyCreature[0].attack - enemyCreature[0].attack * (playerCreature[0].defense / 100)));
+            setPlayerCreatureHP(playerCreatureHP - (enemyCreature[0].attack - enemyCreature[0].attack * (playerCreatureDefense / 100)));
           }, 750);
         }
 
@@ -228,16 +310,19 @@ function App() {
   // initiates chance to attack enemy creature
   const attackEnemy = async () => {
     try {
+      const playerCreatureAttack = playerCreature[0].attack + chosenRelic[0].attackMod;
+      const playerCreatureSpeed = playerCreature[0].speed + chosenRelic[0].speedMod;
+      const playerCreatureCritical = playerCreature[0].critical + chosenRelic[0].criticalMod;
       var chancePlayer = false;
-      if (playerCreature[0].speed === enemyCreature[0].speed) {
+      if (playerCreatureSpeed === enemyCreature[0].speed) {
         chancePlayer = Math.random() >= 0.5;
       } else {
-        chancePlayer = Math.random() >= enemyCreature[0].speed / 100 - playerCreature[0].speed / 100;
+        chancePlayer = Math.random() >= enemyCreature[0].speed / 100 - playerCreatureSpeed / 100;
       }
-      if (Math.random() <= playerCreature[0].critical / 100) {
+      if (Math.random() <= playerCreatureCritical / 100) {
         setCriticalAttackMultiplier(1.5);
       }
-      if (enemyCreatureHP - (playerCreature[0].attack - playerCreature[0].attack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier <= 0 && chancePlayer) {
+      if (enemyCreatureHP - (playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier <= 0 && chancePlayer) {
         playerAttackAnimation();
         setTimeout(() => {
           setBattleStatus(false);
@@ -248,7 +333,7 @@ function App() {
       } else if (chancePlayer) {
         playerAttackAnimation();
         setTimeout(() => {
-          setEnemyCreatureHP(enemyCreatureHP - (playerCreature[0].attack - playerCreature[0].attack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier);
+          setEnemyCreatureHP(enemyCreatureHP - (playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier);
         }, 250);
       }
       setCriticalAttackMultiplier(1);
@@ -258,8 +343,8 @@ function App() {
     }
   }
 
-  // renders if a player creature is detected
-  if (playerCreature) {
+  // renders if a player creature is detected and a relic is bestowed
+  if (playerCreature && chosenRelic[0]) {
     return (
       <>
         <header>
@@ -298,7 +383,7 @@ function App() {
 
               {/* Right elements */}
               <div className="d-flex align-items-center">
-                <button className="btn btn-light my-1" onClick={() => setOptionsStatus(!optionsStatus)}>Options</button>
+                <button className="btn btn-light my-1" onClick={() => { setOptionsStatus(!optionsStatus); setAvatarOptionStatus(false); setNameOptionStatus(false); }}>Options</button>
               </div>
               {/* Right elements */}
             </div>
@@ -330,7 +415,7 @@ function App() {
                   <img className="player_avatar avatar_option" src={"img/avatar/m_warrior_avatar.png"} alt={"m_warrior"} width="96" height="96" /> Avatar 6</div>
               </div>
                 : null}
-              <button className="btn btn-light my-2 ms-1" onClick={() => { setNameOptionStatus(!nameOptionStatus) }}>Change Name</button>
+              <button className="btn btn-light my-2 ms-1" onClick={() => setNameOptionStatus(!nameOptionStatus)}>Change Name</button>
               {nameOptionStatus ? <form>
                 <label htmlFor="name">Player name:&nbsp;</label>
                 <input type="text" name="name" placeholder={player[0].name} onChange={(e) => selectName(e.target.value)} />
@@ -351,15 +436,60 @@ function App() {
                   height="96" />
                 <h4>{player.name}</h4>
                 <h5>
-                  Level {Math.floor(player.experience / 100 / 2.5)}
+                  Level {Math.floor(Math.sqrt(player.experience) * 0.25)}
                   <div className="progress_bar_container">
                     <div className="experience_progress_bar"
-                      style={{ width: ((player.experience / 100 / 2.5 - Math.floor(player.experience / 100 / 2.5)).toFixed(2)).replace("0.", '') + "%" }} />
+                      style={{ width: ((Math.sqrt(player.experience) * 0.25 - Math.floor(Math.sqrt(player.experience) * 0.25)).toFixed(2)).replace("0.", '') + "%" }} />
                   </div>
                 </h5>
                 <h5>Drachmas: {player.drachmas} <i className="fas fa-coins" /></h5>
               </div>
             ))}
+            {!battleStatus ? <div><div className="item_options_container">
+              <button className="game_button item_option" onClick={() => { setRelicsStatus(!relicsStatus); setStoreStatus(false) }}>Relics</button>
+              <button className="game_button item_option" onClick={() => { setStoreStatus(!storeStatus); setRelicsStatus(false) }}>Temple</button>
+            </div></div>
+              : null}
+            {relicsStatus && !battleStatus ? <div>
+              <h4>Player Relics</h4>
+              {playerRelics.map((relic) => (
+                <div
+                  key={relic.id}
+                  onClick={() => selectRelic(relic.id)}
+                >
+                  {relic.id === player[0].chosenRelic ?
+                    <img className="relic_option relic_chosen"
+                      src={relic.img}
+                      alt={relic.name}
+                      width="48px"
+                      height="48px" />
+                    : <img className="relic_option"
+                      src={relic.img}
+                      alt={relic.name}
+                      width="48px"
+                      height="48px" />}
+                  {relic.name} {relic.id === player[0].chosenRelic ? <i className="fas fa-check" /> : null}
+                </div>))}
+            </div>
+              : null
+            }
+            {storeStatus && !battleStatus ? <div>
+              <h4>Temple Relics</h4>
+              {relicsData.map((relic) => (
+                <div
+                  key={relic.id}
+                  onClick={() => buyRelic(relic.id, relic.price)}
+                >
+                  <img className="relic_option"
+                    src={relic.img}
+                    alt={relic.name}
+                    width="48px"
+                    height="48px" />
+                  {relic.name} - {relic.price} <i className="fas fa-coins" />
+                </div>))}
+            </div>
+              : null
+            }
             <button className="game_button" onClick={loadAsyncDataBattle}>Battle Hellspawn</button>
           </div>
 
@@ -372,26 +502,28 @@ function App() {
                 {battleStatus ?
                   <button className="game_button" onClick={() => { attackEnemy() }}>Attack</button>
                   : null}
-                {playerAttackStatus ? <img src={creature.imgPath.slice(0, -4) + "_attack.png"} alt={creature.name} width="128px" height="128px" />
-                  : enemyAttackStatus && (enemyCreatureHP !== 0) ? <img src={creature.imgPath.slice(0, -4) + "_hurt.png"} alt={creature.name} width="128px" height="128px" />
-                    : <img src={creature.imgPath} alt={creature.name} width="128px" height="128px" />
+                {playerAttackStatus
+                  ? <img className={chosenRelic[0].effectClass} src={creature.imgPath.slice(0, -4) + "_attack.png"} alt={creature.name} width="128px" height="128px" />
+                  : enemyAttackStatus && (enemyCreatureHP !== 0)
+                    ? <img className={chosenRelic[0].effectClass} src={creature.imgPath.slice(0, -4) + "_hurt.png"} alt={creature.name} width="128px" height="128px" />
+                    : <img className={chosenRelic[0].effectClass} src={creature.imgPath} alt={creature.name} width="128px" height="128px" />
                 }
                 {player.map((player) => (
                   <div
                     key={player._id}
                   >
                     <h4>{player.name}'s {creature.name}</h4>
-                    {!battleStatus ? <h5>HP: {creature.hp}</h5>
-                      : !creatureStatsStatus ? <h5>HP: {playerCreatureHP} / {creature.hp}</h5>
+                    {!battleStatus ? <h5>HP: {creature.hp + chosenRelic[0].hpMod}</h5>
+                      : !creatureStatsStatus ? <h5>HP: {playerCreatureHP} / {creature.hp + chosenRelic[0].hpMod}</h5>
                         : null}
                     {creatureStatsStatus ?
                       <div>
                         {battleStatus ? <h5>HP: {playerCreatureHP} / {creature.hp}</h5>
                           : null}
-                        <h5>Attack: {creature.attack}</h5>
-                        <h5>Speed: {creature.speed}</h5>
-                        <h5>Defense: {creature.defense}</h5>
-                        <h5>Critical: {creature.critical}</h5>
+                        <h5>Attack: {creature.attack + chosenRelic[0].attackMod}</h5>
+                        <h5>Speed: {creature.speed + chosenRelic[0].speedMod}</h5>
+                        <h5>Defense: {creature.defense + chosenRelic[0].defenseMod}</h5>
+                        <h5>Critical: {creature.critical + chosenRelic[0].criticalMod}</h5>
                       </div>
                       : null}
                   </div>))}

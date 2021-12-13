@@ -223,7 +223,7 @@ function App() {
   const loadAsyncDataBattle = async () => {
     try {
       if (!battleStatus) {
-        setPlayerCreatureHP(playerCreature[0].hp);
+        setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod);
         const { data } = await getCreatures();
         const enemyCreatureData = [data[Math.floor(Math.random() * data.length)]];
         setEnemyCreature(enemyCreatureData);
@@ -518,7 +518,7 @@ function App() {
                         : null}
                     {creatureStatsStatus ?
                       <div>
-                        {battleStatus ? <h5>HP: {playerCreatureHP} / {creature.hp}</h5>
+                        {battleStatus ? <h5>HP: {playerCreatureHP} / {creature.hp + chosenRelic[0].hpMod}</h5>
                           : null}
                         <h5>Attack: {creature.attack + chosenRelic[0].attackMod}</h5>
                         <h5>Speed: {creature.speed + chosenRelic[0].speedMod}</h5>

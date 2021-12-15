@@ -5,6 +5,7 @@ import Userfront from "@userfront/core";
 Userfront.init("rbvqd5nd");
 
 function Reset() {
+
     // sets form value state
     const [password, setPassword] = useState("");
     const [passwordVerify, setPasswordVerify] = useState("");
@@ -35,7 +36,9 @@ function Reset() {
                 e.preventDefault();
                 Userfront.resetPassword({
                     password: password,
-                })
+                }).catch((error) => {
+                    alert(error.message);
+                });
             }
         } catch (error) {
             console.log(error);
@@ -44,7 +47,7 @@ function Reset() {
 
     return (
         <>
-        {/* password reset form */}
+            {/* password reset form */}
             <div>
                 <form className="text-light text-start" onSubmit={handleSubmit}>
                     <label className="mt-5">

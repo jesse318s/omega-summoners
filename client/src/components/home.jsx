@@ -12,6 +12,39 @@ function Home() {
     const [password, setPassword] = useState("");
     const [passwordVerify, setPasswordVerify] = useState("");
 
+    // updates login form state on form input change
+    const handleInputChangeLogin = (e) => {
+        try {
+            e.preventDefault();
+            if (e.target.name === "email") {
+                const email = e.target.value;
+                setEmail(email);
+            } else {
+                const password = e.target.value;
+                setPassword(password);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    // logs in userfront user
+    const handleSubmitLogin = (e) => {
+        try {
+            e.preventDefault();
+            Userfront.login({
+                method: "password",
+                email: email,
+                password: password
+            }).catch((error) => {
+                alert(error.message);
+            });
+        } catch (error) {
+            console.log(error);
+            alert(error.message);
+        }
+    }
+
     // updates sign up form state on form input change
     const handleInputChangeSignup = (e) => {
         try {
@@ -43,38 +76,10 @@ function Home() {
                     method: "password",
                     email: email,
                     password: password
+                }).catch((error) => {
+                    alert(error.message);
                 });
             }
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    // updates login form state on form input change
-    const handleInputChangeLogin = (e) => {
-        try {
-            e.preventDefault();
-            if (e.target.name === "email") {
-                const email = e.target.value;
-                setEmail(email);
-            } else {
-                const password = e.target.value;
-                setPassword(password);
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    // logs in userfront user
-    const handleSubmitLogin = (e) => {
-        try {
-            e.preventDefault();
-            Userfront.login({
-                method: "password",
-                email: email,
-                password: password
-            });
         } catch (error) {
             console.log(error);
         }
@@ -83,7 +88,9 @@ function Home() {
     // sends email to reset userfront password for current user email
     const resetPassword = () => {
         try {
-            Userfront.sendResetLink(email);
+            Userfront.sendResetLink(email).catch((error) => {
+                alert(error.message);
+            });
         } catch (error) {
             console.log(error);
         }

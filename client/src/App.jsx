@@ -15,27 +15,42 @@ function App() {
   const relics = [
     {
       id: 1,
-      name: "The Bolt of Zeus",
+      name: "Gust of Hermes",
+      description: "Grants the user a tiny speed boost.",
       img: "img/relic/relic1.png",
       effectClass: "relic1",
       hpMod: 0,
-      attackMod: 10,
-      speedMod: 0,
+      attackMod: 0,
+      speedMod: 5,
       defenseMod: 0,
-      criticalMod: 10,
+      criticalMod: 0,
       price: 0,
     },
     {
       id: 2,
-      name: "The Goblet of Dionysus",
+      name: "Spark of Zeus",
+      description: "Grants the user a small attack boost.",
       img: "img/relic/relic2.png",
       effectClass: "relic2",
+      hpMod: 0,
+      attackMod: 10,
+      speedMod: 0,
+      defenseMod: 0,
+      criticalMod: 0,
+      price: 500,
+    },
+    {
+      id: 3,
+      name: "Cup of Dionysus",
+      description: "Grants the user a small HP boost.",
+      img: "img/relic/relic3.png",
+      effectClass: "relic3",
       hpMod: 10,
       attackMod: 0,
       speedMod: 0,
-      defenseMod: 10,
+      defenseMod: 0,
       criticalMod: 0,
-      price: 250,
+      price: 500,
     }
   ];
 
@@ -51,9 +66,9 @@ function App() {
   const [optionsStatus, setOptionsStatus] = useState(false);
   const [avatarOptionStatus, setAvatarOptionStatus] = useState(false);
   const [nameOptionStatus, setNameOptionStatus] = useState(false);
-  // sets relics and store state
+  // sets relics and temple state
   const [relicsStatus, setRelicsStatus] = useState(false);
-  const [storeStatus, setStoreStatus] = useState(false);
+  const [templeStatus, setTempleStatus] = useState(false);
   // sets player creature state
   const [playerCreature, setPlayerCreature] = useState([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0, speed: 0, defense: 0, critical: 0 }]);
   // sets creature stats state
@@ -165,7 +180,7 @@ function App() {
       }
       loadDataPlayerRelics();
     }
-  }, [player, userfrontId, relicsData]);
+  }, [userfrontId, player, relicsData]);
 
   // toggles display creature stats in database
   const toggleDisplayCreatureStats = async () => {
@@ -243,7 +258,6 @@ function App() {
       setTimeout(() => {
         setPlayerAttackStatus(false);
       }, 500);
-      clearTimeout();
     } catch (error) {
       console.log(error);
     }
@@ -264,23 +278,25 @@ function App() {
   // initiates chance of enemy counter attack
   const enemyCounterAttack = () => {
     try {
-      const playerCreatureSpeed = playerCreature[0].speed + chosenRelic[0].speedMod;
-      const playerCreatureDefense = playerCreature[0].defense + chosenRelic[0].defenseMod;
+      setCriticalAttackMultiplier(1);
+      const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
+      const playerCreatureDefense = (playerCreature[0].defense + chosenRelic[0].defenseMod) / 100;
       var chanceEnemy = false;
-      if (enemyCreature[0].speed === playerCreatureSpeed) {
+      if (enemyCreature[0].speed / 100 === playerCreatureSpeed) {
         chanceEnemy = Math.random() >= 0.5;
       } else {
-        chanceEnemy = Math.random() >= playerCreatureSpeed / 100 - enemyCreature[0].speed / 100;
+        chanceEnemy = Math.random() >= playerCreatureSpeed - enemyCreature[0].speed / 100;
       }
       if (battleStatus && chanceEnemy) {
         setTimeout(() => {
           enemyAttackAnimation();
         }, 500);
+
         if (Math.random() <= enemyCreature[0].critical / 100) {
           setCriticalAttackMultiplier(1.5);
         }
 
-        if (playerCreatureHP - (enemyCreature[0].attack - enemyCreature[0].attack * (playerCreatureDefense / 100)) * criticalAttackMultiplier <= 0) {
+        if (playerCreatureHP - (enemyCreature[0].attack - enemyCreature[0].attack * (playerCreatureDefense)) * criticalAttackMultiplier <= 0) {
           setTimeout(() => {
             setBattleStatus(false);
             setEnemyCreature([{
@@ -294,10 +310,11 @@ function App() {
               critical: 0
             }]);
             setEnemyCreatureHP(0);
-          }, 750);
+            alert("Your creature died!");
+          }, 1000);
         } else {
           setTimeout(() => {
-            setPlayerCreatureHP(playerCreatureHP - (enemyCreature[0].attack - enemyCreature[0].attack * (playerCreatureDefense / 100)));
+            setPlayerCreatureHP(playerCreatureHP - (enemyCreature[0].attack - enemyCreature[0].attack * (playerCreatureDefense)));
           }, 750);
         }
 
@@ -310,16 +327,20 @@ function App() {
   // initiates chance to attack enemy creature
   const attackEnemy = async () => {
     try {
+      setCriticalAttackMultiplier(1);
       const playerCreatureAttack = playerCreature[0].attack + chosenRelic[0].attackMod;
-      const playerCreatureSpeed = playerCreature[0].speed + chosenRelic[0].speedMod;
-      const playerCreatureCritical = playerCreature[0].critical + chosenRelic[0].criticalMod;
+      const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
+      const playerCreatureCritical = (playerCreature[0].critical + chosenRelic[0].criticalMod) / 100;
       var chancePlayer = false;
-      if (playerCreatureSpeed === enemyCreature[0].speed) {
+      if (playerCreatureSpeed === enemyCreature[0].speed / 100) {
         chancePlayer = Math.random() >= 0.5;
       } else {
-        chancePlayer = Math.random() >= enemyCreature[0].speed / 100 - playerCreatureSpeed / 100;
+        chancePlayer = Math.random() >= enemyCreature[0].speed / 100 - playerCreatureSpeed;
       }
-      if (Math.random() <= playerCreatureCritical / 100) {
+      if (!chancePlayer) {
+        alert("Your creature was too slow!");
+      }
+      if (Math.random() <= playerCreatureCritical) {
         setCriticalAttackMultiplier(1.5);
       }
       if (enemyCreatureHP - (playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier <= 0 && chancePlayer) {
@@ -330,14 +351,17 @@ function App() {
           setEnemyCreatureHP(0);
         }, 500);
         await updateUser(player[0]._id, { experience: player[0].experience + 5, drachmas: player[0].drachmas + 3 });
-      } else if (chancePlayer) {
-        playerAttackAnimation();
-        setTimeout(() => {
-          setEnemyCreatureHP(enemyCreatureHP - (playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier);
-        }, 250);
+      } else {
+
+        if (chancePlayer) {
+          playerAttackAnimation();
+          setTimeout(() => {
+            setEnemyCreatureHP(enemyCreatureHP - (playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier);
+          }, 250);
+        }
+
+        enemyCounterAttack();
       }
-      setCriticalAttackMultiplier(1);
-      enemyCounterAttack();
     } catch (error) {
       console.log(error);
     }
@@ -383,7 +407,8 @@ function App() {
 
               {/* Right elements */}
               <div className="d-flex align-items-center">
-                <button className="btn btn-light my-1" onClick={() => { setOptionsStatus(!optionsStatus); setAvatarOptionStatus(false); setNameOptionStatus(false); }}>Options</button>
+                <button className="btn btn-light my-1"
+                  onClick={() => { setOptionsStatus(!optionsStatus); setAvatarOptionStatus(false); setNameOptionStatus(false); }}>Options</button>
               </div>
               {/* Right elements */}
             </div>
@@ -402,17 +427,23 @@ function App() {
               <button className="btn btn-light my-2" onClick={() => { setAvatarOptionStatus(!avatarOptionStatus) }}>Change Avatar</button>
               {avatarOptionStatus ? <div>
                 <div className="my-1" onClick={() => selectAvatar("img/avatar/f_mage_avatar.png")}>
-                  <img className="player_avatar avatar_option" src={"img/avatar/f_mage_avatar.png"} alt={"f_mage"} width="96" height="96" /> Avatar 1</div>
+                  <img className="player_avatar avatar_option" src={"img/avatar/f_mage_avatar.png"} alt={"f_mage"} width="96" height="96" />
+                  <p className="avatar_option">Avatar 1</p></div>
                 <div className="my-1" onClick={() => selectAvatar("img/avatar/m_mage_avatar.png")}>
-                  <img className="player_avatar avatar_option" src={"img/avatar/m_mage_avatar.png"} alt={"m_mage"} width="96" height="96" /> Avatar 2</div>
+                  <img className="player_avatar avatar_option" src={"img/avatar/m_mage_avatar.png"} alt={"m_mage"} width="96" height="96" />
+                  <p className="avatar_option">Avatar 2</p></div>
                 <div className="my-1" onClick={() => selectAvatar("img/avatar/f_rogue_avatar.png")}>
-                  <img className="player_avatar avatar_option" src={"img/avatar/f_rogue_avatar.png"} alt={"f_rogue"} width="96" height="96" /> Avatar 3</div>
+                  <img className="player_avatar avatar_option" src={"img/avatar/f_rogue_avatar.png"} alt={"f_rogue"} width="96" height="96" />
+                  <p className="avatar_option">Avatar 3</p></div>
                 <div className="my-1" onClick={() => selectAvatar("img/avatar/m_rogue_avatar.png")}>
-                  <img className="player_avatar avatar_option" src={"img/avatar/m_rogue_avatar.png"} alt={"m_rogue"} width="96" height="96" /> Avatar 4</div>
+                  <img className="player_avatar avatar_option" src={"img/avatar/m_rogue_avatar.png"} alt={"m_rogue"} width="96" height="96" />
+                  <p className="avatar_option">Avatar 4</p></div>
                 <div className="my-1" onClick={() => selectAvatar("img/avatar/f_warrior_avatar.png")}>
-                  <img className="player_avatar avatar_option" src={"img/avatar/f_warrior_avatar.png"} alt={"f_warrior"} width="96" height="96" /> Avatar 5</div>
+                  <img className="player_avatar avatar_option" src={"img/avatar/f_warrior_avatar.png"} alt={"f_warrior"} width="96" height="96" />
+                  <p className="avatar_option">Avatar 5</p></div>
                 <div className="my-1" onClick={() => selectAvatar("img/avatar/m_warrior_avatar.png")}>
-                  <img className="player_avatar avatar_option" src={"img/avatar/m_warrior_avatar.png"} alt={"m_warrior"} width="96" height="96" /> Avatar 6</div>
+                  <img className="player_avatar avatar_option" src={"img/avatar/m_warrior_avatar.png"} alt={"m_warrior"} width="96" height="96" />
+                  <p className="avatar_option">Avatar 6</p></div>
               </div>
                 : null}
               <button className="btn btn-light my-2 ms-1" onClick={() => setNameOptionStatus(!nameOptionStatus)}>Change Name</button>
@@ -446,51 +477,49 @@ function App() {
               </div>
             ))}
             {!battleStatus ? <div><div className="item_options_container">
-              <button className="game_button item_option" onClick={() => { setRelicsStatus(!relicsStatus); setStoreStatus(false) }}>Relics</button>
-              <button className="game_button item_option" onClick={() => { setStoreStatus(!storeStatus); setRelicsStatus(false) }}>Temple</button>
+              <button className="game_button item_option" onClick={() => { setRelicsStatus(!relicsStatus); setTempleStatus(false) }}>Relics</button>
+              <button className="game_button item_option" onClick={() => { setTempleStatus(!templeStatus); setRelicsStatus(false) }}>Temple</button>
             </div></div>
               : null}
-            {relicsStatus && !battleStatus ? <div>
+            {relicsStatus ? <div>
               <h4>Player Relics</h4>
               {playerRelics.map((relic) => (
                 <div
+                  className="relic_option"
                   key={relic.id}
-                  onClick={() => selectRelic(relic.id)}
                 >
-                  {relic.id === player[0].chosenRelic ?
-                    <img className="relic_option relic_chosen"
-                      src={relic.img}
-                      alt={relic.name}
-                      width="48px"
-                      height="48px" />
-                    : <img className="relic_option"
-                      src={relic.img}
-                      alt={relic.name}
-                      width="48px"
-                      height="48px" />}
-                  {relic.name} {relic.id === player[0].chosenRelic ? <i className="fas fa-check" /> : null}
+                  <button className="game_button_small" onClick={() => selectRelic(relic.id)}>Use</button>
+                  <img onClick={() => alert(relic.description)}
+                    className="relic_option_img"
+                    src={relic.img}
+                    alt={relic.name}
+                    width="48px"
+                    height="48px" /><span className="relic_info" onClick={() => alert(relic.description)}>?</span><br />
+                  {relic.name} {relic.id === player[0].chosenRelic ? <i className="fas fa-check fa-lg" /> : null}
                 </div>))}
             </div>
               : null
             }
-            {storeStatus && !battleStatus ? <div>
+            {templeStatus ? <div>
               <h4>Temple Relics</h4>
               {relicsData.map((relic) => (
                 <div
+                  className="relic_option"
                   key={relic.id}
-                  onClick={() => buyRelic(relic.id, relic.price)}
                 >
-                  <img className="relic_option"
+                  <button className="game_button_small" onClick={() => buyRelic(relic.id, relic.price)}>Buy</button>
+                  <img onClick={() => alert(relic.description)}
+                    className="relic_option_img"
                     src={relic.img}
                     alt={relic.name}
                     width="48px"
-                    height="48px" />
+                    height="48px" /><span className="relic_info" onClick={() => alert(relic.description)}>?</span><br />
                   {relic.name} - {relic.price} <i className="fas fa-coins" />
                 </div>))}
             </div>
               : null
             }
-            <button className="game_button" onClick={loadAsyncDataBattle}>Battle Hellspawn</button>
+            <button className="game_button" onClick={() => { loadAsyncDataBattle(); setTempleStatus(false); setRelicsStatus(false) }}>Battle Hellspawn</button>
           </div>
 
           {/* player creature */}
@@ -503,10 +532,22 @@ function App() {
                   <button className="game_button" onClick={() => { attackEnemy() }}>Attack</button>
                   : null}
                 {playerAttackStatus
-                  ? <img className={chosenRelic[0].effectClass} src={creature.imgPath.slice(0, -4) + "_attack.png"} alt={creature.name} width="128px" height="128px" />
+                  ? <img className={chosenRelic[0].effectClass}
+                    src={creature.imgPath.slice(0, -4) + "_attack.png"}
+                    alt={creature.name}
+                    width="128px"
+                    height="128px" />
                   : enemyAttackStatus && (enemyCreatureHP !== 0)
-                    ? <img className={chosenRelic[0].effectClass} src={creature.imgPath.slice(0, -4) + "_hurt.png"} alt={creature.name} width="128px" height="128px" />
-                    : <img className={chosenRelic[0].effectClass} src={creature.imgPath} alt={creature.name} width="128px" height="128px" />
+                    ? <img className={chosenRelic[0].effectClass}
+                      src={creature.imgPath.slice(0, -4) + "_hurt.png"}
+                      alt={creature.name}
+                      width="128px"
+                      height="128px" />
+                    : <img className={chosenRelic[0].effectClass}
+                      src={creature.imgPath}
+                      alt={creature.name}
+                      width="128px"
+                      height="128px" />
                 }
                 {player.map((player) => (
                   <div
@@ -538,9 +579,21 @@ function App() {
                 <div
                   key={creature._id}
                 >
-                  {enemyAttackStatus ? <img className="enemy_creature_img" src={creature.imgPath.slice(0, -4) + "_attack.png"} alt={creature.name} width="128px" height="128px" />
-                    : playerAttackStatus ? <img className="enemy_creature_img" src={creature.imgPath.slice(0, -4) + "_hurt.png"} alt={creature.name} width="128px" height="128px" />
-                      : <img className="enemy_creature_img" src={creature.imgPath} alt={creature.name} width="128px" height="128px" />}
+                  {enemyAttackStatus ? <img className="enemy_creature_img"
+                    src={creature.imgPath.slice(0, -4) + "_attack.png"}
+                    alt={creature.name}
+                    width="128px"
+                    height="128px" />
+                    : playerAttackStatus ? <img className="enemy_creature_img"
+                      src={creature.imgPath.slice(0, -4) + "_hurt.png"}
+                      alt={creature.name}
+                      width="128px"
+                      height="128px" />
+                      : <img className="enemy_creature_img"
+                        src={creature.imgPath}
+                        alt={creature.name}
+                        width="128px"
+                        height="128px" />}
                   <h4>Enemy {creature.name}</h4>
                   <h5>HP: {enemyCreatureHP} / {creature.hp}</h5>
                   {creatureStatsStatus ?

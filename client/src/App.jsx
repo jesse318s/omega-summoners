@@ -17,7 +17,7 @@ function App() {
       id: 1,
       name: "Gust of Hermes",
       description: "Grants the user a tiny speed boost.",
-      img: "img/relic/relic1.png",
+      img: "img/relic/relic1.webp",
       effectClass: "relic1",
       hpMod: 0,
       attackMod: 0,
@@ -30,7 +30,7 @@ function App() {
       id: 2,
       name: "Spark of Zeus",
       description: "Grants the user a small attack boost.",
-      img: "img/relic/relic2.png",
+      img: "img/relic/relic2.webp",
       effectClass: "relic2",
       hpMod: 0,
       attackMod: 10,
@@ -43,7 +43,7 @@ function App() {
       id: 3,
       name: "Cup of Dionysus",
       description: "Grants the user a small HP boost.",
-      img: "img/relic/relic3.png",
+      img: "img/relic/relic3.webp",
       effectClass: "relic3",
       hpMod: 10,
       attackMod: 0,
@@ -84,12 +84,16 @@ function App() {
   const [enemyCreatureHP, setEnemyCreatureHP] = useState(0);
   // sets critical modifier state
   const [criticalAttackMultiplier, setCriticalAttackMultiplier] = useState(1);
+  // sets player speed chance state
+  const [chancePlayer, setChancePlayer] = useState(false);
   // sets relics state
   const [relicsData] = useState(relics);
   // sets player relics state
   const [playerRelics, setPlayerRelics] = useState([]);
   // sets chosen relic state
   const [chosenRelic, setChosenRelic] = useState({});
+  // sets combat alert state
+  const [combatAlert, setCombatAlert] = useState("");
 
   useEffect(() => {
     // checks for userfront authentication and redirects visitor if not authenticated
@@ -243,6 +247,7 @@ function App() {
         const enemyCreatureData = [data[Math.floor(Math.random() * data.length)]];
         setEnemyCreature(enemyCreatureData);
         setEnemyCreatureHP(enemyCreatureData[0].hp);
+        setCombatAlert("The battle has begun!");
         setBattleStatus(true);
       }
     }
@@ -287,6 +292,21 @@ function App() {
       } else {
         chanceEnemy = Math.random() >= playerCreatureSpeed - enemyCreature[0].speed / 100;
       }
+      if (!chanceEnemy && chancePlayer) {
+        setTimeout(() => {
+          setCombatAlert("Enemy was too slow!");
+        }, 750);
+      }
+      if (!chanceEnemy && !chancePlayer) {
+        setTimeout(() => {
+          setCombatAlert("Both fighters were too slow!");
+        }, 750);
+      }
+      if (chanceEnemy && chancePlayer) {
+        setTimeout(() => {
+          setCombatAlert("The battle continues!");
+        }, 750);
+      }
       if (battleStatus && chanceEnemy) {
         setTimeout(() => {
           enemyAttackAnimation();
@@ -296,7 +316,7 @@ function App() {
           setCriticalAttackMultiplier(1.5);
         }
 
-        if (playerCreatureHP - (enemyCreature[0].attack - enemyCreature[0].attack * (playerCreatureDefense)) * criticalAttackMultiplier <= 0) {
+        if (playerCreatureHP - ((enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalAttackMultiplier) <= 0) {
           setTimeout(() => {
             setBattleStatus(false);
             setEnemyCreature([{
@@ -314,7 +334,7 @@ function App() {
           }, 1000);
         } else {
           setTimeout(() => {
-            setPlayerCreatureHP(playerCreatureHP - (enemyCreature[0].attack - enemyCreature[0].attack * (playerCreatureDefense)));
+            setPlayerCreatureHP(playerCreatureHP - (enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalAttackMultiplier);
           }, 750);
         }
 
@@ -331,19 +351,20 @@ function App() {
       const playerCreatureAttack = playerCreature[0].attack + chosenRelic[0].attackMod;
       const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
       const playerCreatureCritical = (playerCreature[0].critical + chosenRelic[0].criticalMod) / 100;
-      var chancePlayer = false;
       if (playerCreatureSpeed === enemyCreature[0].speed / 100) {
-        chancePlayer = Math.random() >= 0.5;
+        setChancePlayer(Math.random() >= 0.5);
       } else {
-        chancePlayer = Math.random() >= enemyCreature[0].speed / 100 - playerCreatureSpeed;
+        setChancePlayer(Math.random() >= enemyCreature[0].speed / 100 - playerCreatureSpeed);
       }
       if (!chancePlayer) {
-        alert("Your creature was too slow!");
+        setTimeout(() => {
+          setCombatAlert("Your summon was too slow!");
+        }, 750);
       }
       if (Math.random() <= playerCreatureCritical) {
         setCriticalAttackMultiplier(1.5);
       }
-      if (enemyCreatureHP - (playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier <= 0 && chancePlayer) {
+      if (enemyCreatureHP - ((playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier) <= 0 && chancePlayer) {
         playerAttackAnimation();
         setTimeout(() => {
           setBattleStatus(false);
@@ -481,6 +502,8 @@ function App() {
               <button className="game_button item_option" onClick={() => { setTempleStatus(!templeStatus); setRelicsStatus(false) }}>Temple</button>
             </div></div>
               : null}
+            {battleStatus ? <div><h5 className="combat_alert">{combatAlert}</h5></div>
+              : null}
             {relicsStatus ? <div>
               <h4>Player Relics</h4>
               {playerRelics.map((relic) => (
@@ -519,7 +542,8 @@ function App() {
             </div>
               : null
             }
-            <button className="game_button" onClick={() => { loadAsyncDataBattle(); setTempleStatus(false); setRelicsStatus(false) }}>Battle Hellspawn</button>
+            {!battleStatus ? <button className="game_button" onClick={() => { loadAsyncDataBattle(); setTempleStatus(false); setRelicsStatus(false) }}>Battle Hellspawn</button>
+              : null}
           </div>
 
           {/* player creature */}

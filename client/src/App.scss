@@ -127,6 +127,13 @@ body {
   filter: drop-shadow(0 10px 15px purple);
 }
 
+.combat_alert {
+  border: 1px solid orange;
+  border-radius: 5px;
+  line-height: 39px;
+  height: 39px;
+}
+
 .player_creature {
   float: left;
   margin: 5px;

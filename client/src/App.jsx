@@ -330,7 +330,7 @@ function App() {
               critical: 0
             }]);
             setEnemyCreatureHP(0);
-            alert("Your creature died!");
+            alert("Your summon died!");
           }, 1000);
         } else {
           setTimeout(() => {

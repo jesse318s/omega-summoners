@@ -5,6 +5,7 @@ import Userfront from "@userfront/core";
 Userfront.init("rbvqd5nd");
 
 function Reset() {
+    
     // sets form value state
     const [password, setPassword] = useState("");
     const [passwordVerify, setPasswordVerify] = useState("");

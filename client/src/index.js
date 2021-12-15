@@ -5,8 +5,8 @@ import 'mdb-ui-kit';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
-import Home from './home';
-import Reset from './reset';
+import Home from './components/home';
+import Reset from './components/reset';
 
 ReactDOM.render(
   <BrowserRouter>

@@ -69,7 +69,6 @@ function Home() {
         try {
             if (password !== passwordVerify) {
                 alert("Passwords do not match.");
-                return;
             } else {
                 e.preventDefault();
                 Userfront.signup({

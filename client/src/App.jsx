@@ -94,6 +94,8 @@ function App() {
   const [chosenRelic, setChosenRelic] = useState({});
   // sets combat alert state
   const [combatAlert, setCombatAlert] = useState("");
+  // sets battle decision state
+  const [battleUndecided, setBattleUndecided] = useState(false);
 
   useEffect(() => {
     // checks for userfront authentication and redirects visitor if not authenticated
@@ -207,9 +209,9 @@ function App() {
   }
 
   // updates player name in database
-  const selectName = async (name) => {
+  const selectName = async (e) => {
     try {
-      await updateUser(player[0]._id, { name: name });
+      await updateUser(player[0]._id, { name: e });
     }
     catch (error) {
       console.log(error);
@@ -249,6 +251,7 @@ function App() {
         setEnemyCreatureHP(enemyCreatureData[0].hp);
         setCombatAlert("The battle has begun!");
         setBattleStatus(true);
+        setBattleUndecided(true);
       }
     }
     catch (error) {
@@ -304,7 +307,7 @@ function App() {
       }
       if (chanceEnemy && chancePlayer) {
         setTimeout(() => {
-          setCombatAlert("The battle continues!");
+          setCombatAlert("The battle continues...");
         }, 750);
       }
       if (battleStatus && chanceEnemy) {
@@ -317,6 +320,11 @@ function App() {
         }
 
         if (playerCreatureHP - ((enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalAttackMultiplier) <= 0) {
+          setBattleUndecided(false);
+          setTimeout(() => {
+            setPlayerCreatureHP(0);
+            setCombatAlert("Defeat!");
+          }, 750);
           setTimeout(() => {
             setBattleStatus(false);
             setEnemyCreature([{
@@ -330,8 +338,7 @@ function App() {
               critical: 0
             }]);
             setEnemyCreatureHP(0);
-            alert("Your summon died!");
-          }, 1000);
+          }, 2750);
         } else {
           setTimeout(() => {
             setPlayerCreatureHP(playerCreatureHP - (enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalAttackMultiplier);
@@ -347,41 +354,52 @@ function App() {
   // initiates chance to attack enemy creature
   const attackEnemy = async () => {
     try {
-      setCriticalAttackMultiplier(1);
-      const playerCreatureAttack = playerCreature[0].attack + chosenRelic[0].attackMod;
-      const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
-      const playerCreatureCritical = (playerCreature[0].critical + chosenRelic[0].criticalMod) / 100;
-      if (playerCreatureSpeed === enemyCreature[0].speed / 100) {
-        setChancePlayer(Math.random() >= 0.5);
-      } else {
-        setChancePlayer(Math.random() >= enemyCreature[0].speed / 100 - playerCreatureSpeed);
-      }
-      if (!chancePlayer) {
-        setTimeout(() => {
-          setCombatAlert("Your summon was too slow!");
-        }, 750);
-      }
-      if (Math.random() <= playerCreatureCritical) {
-        setCriticalAttackMultiplier(1.5);
-      }
-      if (enemyCreatureHP - ((playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier) <= 0 && chancePlayer) {
-        playerAttackAnimation();
-        setTimeout(() => {
-          setBattleStatus(false);
-          setEnemyCreature([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0, speed: 0, defense: 0, critical: 0 }]);
-          setEnemyCreatureHP(0);
-        }, 500);
-        await updateUser(player[0]._id, { experience: player[0].experience + 5, drachmas: player[0].drachmas + 3 });
-      } else {
+      if (!playerAttackStatus && !enemyAttackStatus && battleUndecided) {
+        setCriticalAttackMultiplier(1);
+        const playerCreatureAttack = playerCreature[0].attack + chosenRelic[0].attackMod;
+        const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
+        const playerCreatureCritical = (playerCreature[0].critical + chosenRelic[0].criticalMod) / 100;
 
-        if (chancePlayer) {
-          playerAttackAnimation();
-          setTimeout(() => {
-            setEnemyCreatureHP(enemyCreatureHP - (playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier);
-          }, 250);
+        if (playerCreatureSpeed === enemyCreature[0].speed / 100) {
+          setChancePlayer(Math.random() >= 0.5);
+        } else {
+          setChancePlayer(Math.random() >= enemyCreature[0].speed / 100 - playerCreatureSpeed);
         }
 
-        enemyCounterAttack();
+        if (!chancePlayer) {
+          setTimeout(() => {
+            setCombatAlert("Your summon was too slow!");
+          }, 750);
+        }
+
+        if (Math.random() <= playerCreatureCritical) {
+          setCriticalAttackMultiplier(1.5);
+        }
+
+        if (enemyCreatureHP - ((playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier) <= 0 && chancePlayer) {
+          setBattleUndecided(false);
+          playerAttackAnimation();
+          await setTimeout(() => {
+            setEnemyCreatureHP(0);
+            setCombatAlert("Victory!");
+            updateUser(player[0]._id, { experience: player[0].experience + 5, drachmas: player[0].drachmas + 3 });
+          }, 250);
+          setTimeout(() => {
+            setBattleStatus(false);
+            setEnemyCreature([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0, speed: 0, defense: 0, critical: 0 }]);
+            setPlayerCreatureHP(0);
+          }, 2250);
+        } else {
+
+          if (chancePlayer) {
+            playerAttackAnimation();
+            setTimeout(() => {
+              setEnemyCreatureHP(enemyCreatureHP - (playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier);
+            }, 250);
+          }
+
+          enemyCounterAttack();
+        }
       }
     } catch (error) {
       console.log(error);

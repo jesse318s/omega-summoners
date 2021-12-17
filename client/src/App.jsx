@@ -112,19 +112,6 @@ function App() {
   });
 
   useEffect(() => {
-    // generates random creature and updates player creature in database
-    const genAsyncPlayerCreature = async () => {
-      try {
-        if (player[0].creatureId === "") {
-          const { data } = await getCreatures();
-          const randomCreature = data[Math.floor(Math.random() * data.length)]._id;
-          updateUser(player[0]._id, { creatureId: randomCreature });
-        }
-      }
-      catch (error) {
-        console.log(error);
-      }
-    }
     // retrieves user data, generates new user if needed, and updates player state
     const loadAsyncDataPlayer = async () => {
       try {
@@ -146,10 +133,6 @@ function App() {
           const newUserData = data.filter(user => user.userfrontId === userfrontId);
           setPlayer(newUserData);
 
-          if (player[0]) {
-            genAsyncPlayerCreature();
-          }
-
         } else {
           setPlayer(userData);
         }
@@ -162,8 +145,22 @@ function App() {
 
   useEffect(() => {
     try {
+      // generates random creature and updates player creature in database
+      const genAsyncPlayerCreature = async () => {
+        try {
+          if (player[0].creatureId === "") {
+            const { data } = await getCreatures();
+            const randomCreature = data[Math.floor(Math.random() * data.length)]._id;
+            updateUser(player[0]._id, { creatureId: randomCreature });
+          }
+        }
+        catch (error) {
+          console.log(error);
+        }
+      }
       // if there is a player
       if (player[0]) {
+        genAsyncPlayerCreature();
         // loads player creature data
         const loadAsyncDataPlayerCreature = async () => {
           const { data } = await getCreatures();

@@ -223,7 +223,7 @@ function App() {
   const toggleDisplayCreatureStats = async () => {
     try {
       await updateUser(player[0]._id, { displayCreatureStats: !creatureStatsStatus });
-      loadAsyncDataPlayer();
+      await loadAsyncDataPlayer();
     }
     catch (error) {
       console.log(error);
@@ -234,7 +234,7 @@ function App() {
   const selectAvatar = async (avatarPath) => {
     try {
       await updateUser(player[0]._id, { avatarPath: avatarPath });
-      loadAsyncDataPlayer();
+      await loadAsyncDataPlayer();
     }
     catch (error) {
       console.log(error);
@@ -245,7 +245,7 @@ function App() {
   const selectName = async (e) => {
     try {
       await updateUser(player[0]._id, { name: e });
-      loadAsyncDataPlayer();
+      await loadAsyncDataPlayer();
     }
     catch (error) {
       console.log(error);
@@ -256,7 +256,7 @@ function App() {
   const selectRelic = async (relicId) => {
     try {
       await updateUser(player[0]._id, { chosenRelic: relicId });
-      loadAsyncDataPlayer();
+      await loadAsyncDataPlayer();
     }
     catch (error) {
       console.log(error);
@@ -268,7 +268,7 @@ function App() {
     try {
       if (player[0].drachmas >= relicPrice && !player[0].relics.includes(relicId)) {
         await updateUser(player[0]._id, { drachmas: player[0].drachmas - relicPrice, relics: [...player[0].relics, relicId] });
-        loadAsyncDataPlayer();
+        await loadAsyncDataPlayer();
       }
     }
     catch (error) {

@@ -17,7 +17,7 @@ function App() {
       id: 1,
       name: "Gust of Hermes",
       description: "Grants the user a tiny speed boost.",
-      img: "img/relic/relic1.webp",
+      imgPath: "img/relic/relic1.webp",
       effectClass: "relic1",
       hpMod: 0,
       attackMod: 0,
@@ -30,7 +30,7 @@ function App() {
       id: 2,
       name: "Spark of Zeus",
       description: "Grants the user a small attack boost.",
-      img: "img/relic/relic2.webp",
+      imgPath: "img/relic/relic2.webp",
       effectClass: "relic2",
       hpMod: 0,
       attackMod: 10,
@@ -43,7 +43,7 @@ function App() {
       id: 3,
       name: "Cup of Dionysus",
       description: "Grants the user a small HP boost.",
-      img: "img/relic/relic3.webp",
+      imgPath: "img/relic/relic3.webp",
       effectClass: "relic3",
       hpMod: 10,
       attackMod: 0,
@@ -89,11 +89,17 @@ function App() {
   // sets relics state
   const [relicsData] = useState(relics);
   // sets player relics state
-  const [playerRelics, setPlayerRelics] = useState([]);
+  const [playerRelics, setPlayerRelics] = useState([{
+    id: 0, name: "", description: "", imgPath: "", effectClass: "", hpMod: 0, attackMod: 0, speedMod: 0, defenseMod: 0, criticalMod: 0, price: 0
+  }]);
   // sets chosen relic state
-  const [chosenRelic, setChosenRelic] = useState({});
+  const [chosenRelic, setChosenRelic] = useState({
+    id: 0, name: "", description: "", imgPath: "", effectClass: "", hpMod: 0, attackMod: 0, speedMod: 0, defenseMod: 0, criticalMod: 0, price: 0
+  });
   // sets combat alert state
   const [combatAlert, setCombatAlert] = useState("");
+  // sets battle decision state
+  const [battleUndecided, setBattleUndecided] = useState(false);
 
   useEffect(() => {
     // checks for userfront authentication and redirects visitor if not authenticated
@@ -106,21 +112,8 @@ function App() {
   });
 
   useEffect(() => {
-    // generates random creature and updates player creature in database
-    const genAsyncPlayerCreature = async () => {
-      try {
-        if (player[0].creatureId === "") {
-          const { data } = await getCreatures();
-          const randomCreature = data[Math.floor(Math.random() * data.length)]._id;
-          updateUser(player[0]._id, { creatureId: randomCreature });
-        }
-      }
-      catch (error) {
-        console.log(error);
-      }
-    }
     // retrieves user data, generates new user if needed, and updates player state
-    const loadAsyncDataPlayer = async () => {
+    const loadAsyncDataPlayerNew = async () => {
       try {
         const { data } = await getUsers();
         const userData = data.filter(user => user.userfrontId === userfrontId);
@@ -140,56 +133,88 @@ function App() {
           const newUserData = data.filter(user => user.userfrontId === userfrontId);
           setPlayer(newUserData);
 
-          if (player[0]) {
-            genAsyncPlayerCreature();
-          }
-
-        } else {
-          setPlayer(userData);
         }
       } catch (error) {
         console.log(error);
       }
     }
-    loadAsyncDataPlayer();
-    // if a player exists
-    if (player[0]) {
-      // loads player creature data
-      const loadAsyncDataPlayerCreature = async () => {
+    loadAsyncDataPlayerNew();
+  }, [userfrontId]);
+
+  useEffect(() => {
+    try {
+      // generates random creature and updates player creature in database
+      const genAsyncPlayerCreature = async () => {
+        // retrieves user data, generates new user if needed, and updates player state
+        const loadAsyncDataPlayer = async () => {
+          try {
+            const { data } = await getUsers();
+            const userData = data.filter(user => user.userfrontId === userfrontId);
+            setPlayer(userData);
+          } catch (error) {
+            console.log(error);
+          }
+        }
         try {
+          if (player[0].creatureId === "") {
+            const { data } = await getCreatures();
+            const randomCreature = data[Math.floor(Math.random() * data.length)]._id;
+            updateUser(player[0]._id, { creatureId: randomCreature });
+            await loadAsyncDataPlayer();
+          }
+        }
+        catch (error) {
+          console.log(error);
+        }
+      }
+      // if there is a player
+      if (player[0]) {
+        genAsyncPlayerCreature();
+        // loads player creature data
+        const loadAsyncDataPlayerCreature = async () => {
           const { data } = await getCreatures();
           const playerCreatureData = data.filter(creature => creature._id === player[0].creatureId);
           setPlayerCreature(playerCreatureData);
           setCreatureStatsStatus(player[0].displayCreatureStats);
         }
-        catch (error) {
-          console.log(error);
-        }
+        loadAsyncDataPlayerCreature();
       }
-      loadAsyncDataPlayerCreature();
+    } catch (error) {
+      console.log(error);
     }
-    // if player relics exist
-    if (player[0] && player[0].relics) {
-      // loads player relics data
-      const loadDataPlayerRelics = () => {
-        try {
+    try {
+      // if there is a player and player relics
+      if (player[0] && player[0].relics) {
+        // loads player relics data
+        const loadDataPlayerRelics = () => {
           const playerRelicsData = relicsData.filter(relic => player[0].relics.includes(relic.id));
           setPlayerRelics(playerRelicsData);
           const chosenRelicData = playerRelicsData.filter(relic => relic.id === player[0].chosenRelic);
           setChosenRelic(chosenRelicData);
         }
-        catch (error) {
-          console.log(error);
-        }
+        loadDataPlayerRelics();
       }
-      loadDataPlayerRelics();
+    } catch (error) {
+      console.log(error);
     }
-  }, [userfrontId, player, relicsData]);
+  }, [player, userfrontId, relicsData]);
+
+  // retrieves user data, generates new user if needed, and updates player state
+  const loadAsyncDataPlayer = async () => {
+    try {
+      const { data } = await getUsers();
+      const userData = data.filter(user => user.userfrontId === userfrontId);
+      setPlayer(userData);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   // toggles display creature stats in database
   const toggleDisplayCreatureStats = async () => {
     try {
       await updateUser(player[0]._id, { displayCreatureStats: !creatureStatsStatus });
+      await loadAsyncDataPlayer();
     }
     catch (error) {
       console.log(error);
@@ -200,6 +225,7 @@ function App() {
   const selectAvatar = async (avatarPath) => {
     try {
       await updateUser(player[0]._id, { avatarPath: avatarPath });
+      await loadAsyncDataPlayer();
     }
     catch (error) {
       console.log(error);
@@ -207,9 +233,10 @@ function App() {
   }
 
   // updates player name in database
-  const selectName = async (name) => {
+  const selectName = async (e) => {
     try {
-      await updateUser(player[0]._id, { name: name });
+      await updateUser(player[0]._id, { name: e });
+      await loadAsyncDataPlayer();
     }
     catch (error) {
       console.log(error);
@@ -220,6 +247,7 @@ function App() {
   const selectRelic = async (relicId) => {
     try {
       await updateUser(player[0]._id, { chosenRelic: relicId });
+      await loadAsyncDataPlayer();
     }
     catch (error) {
       console.log(error);
@@ -231,6 +259,7 @@ function App() {
     try {
       if (player[0].drachmas >= relicPrice && !player[0].relics.includes(relicId)) {
         await updateUser(player[0]._id, { drachmas: player[0].drachmas - relicPrice, relics: [...player[0].relics, relicId] });
+        await loadAsyncDataPlayer();
       }
     }
     catch (error) {
@@ -249,6 +278,7 @@ function App() {
         setEnemyCreatureHP(enemyCreatureData[0].hp);
         setCombatAlert("The battle has begun!");
         setBattleStatus(true);
+        setBattleUndecided(true);
       }
     }
     catch (error) {
@@ -304,7 +334,7 @@ function App() {
       }
       if (chanceEnemy && chancePlayer) {
         setTimeout(() => {
-          setCombatAlert("The battle continues!");
+          setCombatAlert("The battle continues...");
         }, 750);
       }
       if (battleStatus && chanceEnemy) {
@@ -317,6 +347,11 @@ function App() {
         }
 
         if (playerCreatureHP - ((enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalAttackMultiplier) <= 0) {
+          setBattleUndecided(false);
+          setTimeout(() => {
+            setPlayerCreatureHP(0);
+            setCombatAlert("Defeat!");
+          }, 750);
           setTimeout(() => {
             setBattleStatus(false);
             setEnemyCreature([{
@@ -330,8 +365,7 @@ function App() {
               critical: 0
             }]);
             setEnemyCreatureHP(0);
-            alert("Your summon died!");
-          }, 1000);
+          }, 2750);
         } else {
           setTimeout(() => {
             setPlayerCreatureHP(playerCreatureHP - (enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalAttackMultiplier);
@@ -347,41 +381,55 @@ function App() {
   // initiates chance to attack enemy creature
   const attackEnemy = async () => {
     try {
-      setCriticalAttackMultiplier(1);
-      const playerCreatureAttack = playerCreature[0].attack + chosenRelic[0].attackMod;
-      const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
-      const playerCreatureCritical = (playerCreature[0].critical + chosenRelic[0].criticalMod) / 100;
-      if (playerCreatureSpeed === enemyCreature[0].speed / 100) {
-        setChancePlayer(Math.random() >= 0.5);
-      } else {
-        setChancePlayer(Math.random() >= enemyCreature[0].speed / 100 - playerCreatureSpeed);
-      }
-      if (!chancePlayer) {
-        setTimeout(() => {
-          setCombatAlert("Your summon was too slow!");
-        }, 750);
-      }
-      if (Math.random() <= playerCreatureCritical) {
-        setCriticalAttackMultiplier(1.5);
-      }
-      if (enemyCreatureHP - ((playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier) <= 0 && chancePlayer) {
-        playerAttackAnimation();
-        setTimeout(() => {
-          setBattleStatus(false);
-          setEnemyCreature([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0, speed: 0, defense: 0, critical: 0 }]);
-          setEnemyCreatureHP(0);
-        }, 500);
-        await updateUser(player[0]._id, { experience: player[0].experience + 5, drachmas: player[0].drachmas + 3 });
-      } else {
+      if (!playerAttackStatus && !enemyAttackStatus && battleUndecided) {
+        setCriticalAttackMultiplier(1);
+        const playerCreatureAttack = playerCreature[0].attack + chosenRelic[0].attackMod;
+        const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
+        const playerCreatureCritical = (playerCreature[0].critical + chosenRelic[0].criticalMod) / 100;
 
-        if (chancePlayer) {
-          playerAttackAnimation();
-          setTimeout(() => {
-            setEnemyCreatureHP(enemyCreatureHP - (playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier);
-          }, 250);
+        if (playerCreatureSpeed === enemyCreature[0].speed / 100) {
+          setChancePlayer(Math.random() >= 0.5);
+        } else {
+          setChancePlayer(Math.random() >= enemyCreature[0].speed / 100 - playerCreatureSpeed);
         }
 
-        enemyCounterAttack();
+        if (!chancePlayer) {
+          setTimeout(() => {
+            setCombatAlert("Your summon was too slow!");
+          }, 750);
+        }
+
+        if (Math.random() <= playerCreatureCritical) {
+          setCriticalAttackMultiplier(1.5);
+        }
+
+        if (enemyCreatureHP - ((playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier) <= 0 && chancePlayer) {
+          setBattleUndecided(false);
+          playerAttackAnimation();
+          await setTimeout(() => {
+            setEnemyCreatureHP(0);
+            setCombatAlert("Victory!");
+            updateUser(player[0]._id, { experience: player[0].experience + 5, drachmas: player[0].drachmas + 3 });
+          }, 250);
+          setTimeout(() => {
+            setBattleStatus(false);
+            setEnemyCreature([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0, speed: 0, defense: 0, critical: 0 }]);
+            setPlayerCreatureHP(0);
+          }, 2250);
+          await setTimeout(() => {
+            loadAsyncDataPlayer();
+          }, 2250);
+        } else {
+
+          if (chancePlayer) {
+            playerAttackAnimation();
+            setTimeout(() => {
+              setEnemyCreatureHP(enemyCreatureHP - (playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier);
+            }, 250);
+          }
+
+          enemyCounterAttack();
+        }
       }
     } catch (error) {
       console.log(error);
@@ -389,7 +437,7 @@ function App() {
   }
 
   // renders if a player creature is detected and a relic is bestowed
-  if (playerCreature && chosenRelic[0]) {
+  if (chosenRelic[0]) {
     return (
       <>
         <header>
@@ -514,7 +562,7 @@ function App() {
                   <button className="game_button_small" onClick={() => selectRelic(relic.id)}>Use</button>
                   <img onClick={() => alert(relic.description)}
                     className="relic_option_img"
-                    src={relic.img}
+                    src={relic.imgPath}
                     alt={relic.name}
                     width="48px"
                     height="48px" /><span className="relic_info" onClick={() => alert(relic.description)}>?</span><br />
@@ -533,7 +581,7 @@ function App() {
                   <button className="game_button_small" onClick={() => buyRelic(relic.id, relic.price)}>Buy</button>
                   <img onClick={() => alert(relic.description)}
                     className="relic_option_img"
-                    src={relic.img}
+                    src={relic.imgPath}
                     alt={relic.name}
                     width="48px"
                     height="48px" /><span className="relic_info" onClick={() => alert(relic.description)}>?</span><br />

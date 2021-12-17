@@ -41,7 +41,6 @@ function Home() {
             });
         } catch (error) {
             console.log(error);
-            alert(error.message);
         }
     }
 
@@ -136,7 +135,11 @@ function Home() {
 
                         {/* Right elements */}
                         <div className="d-flex align-items-center">
-                            <a className="mx-2 font-weight-bold" href="#login">Login / Sign up</a>
+                            <ul className="navbar-nav">
+                                <li className="nav-item font-weight-bold">
+                                    <a className="mx-2 nav-link" href="#login">Login / Sign up</a>
+                                </li>
+                            </ul>
                         </div>
                         {/* Right elements */}
                     </div>
@@ -178,8 +181,8 @@ function Home() {
                                     onChange={handleInputChangeLogin}
                                 />
                             </label><br />
-                            <button className="btn btn-primary my-1" type="submit button">Login</button>
-                            <button className="btn btn-primary my-1 ms-1" type="button" onClick={resetPassword}>Reset Password</button><br />
+                            <button className="btn btn-primary my-1" type="submit">Login</button>
+                            <button className="btn btn-primary my-1 ms-1" onClick={resetPassword}>Reset Password</button><br />
                         </form>
                     </div>
                 </section>
@@ -222,7 +225,7 @@ function Home() {
                                     onChange={handleInputChangeSignup}
                                 />
                             </label><br />
-                            <button className="btn btn-primary my-1" type="submit button">Sign up</button>
+                            <button className="btn btn-primary my-1" type="submit">Sign up</button>
                         </form>
                     </div>
                 </section>

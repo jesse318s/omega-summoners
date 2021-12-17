@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Userfront from "@userfront/core";
+import { Link } from "react-router-dom";
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
@@ -30,7 +31,7 @@ function Reset() {
     const handleSubmit = (e) => {
         try {
             if (password !== passwordVerify) {
-                alert("Passwords do not match.");
+                alert("Passwords do not match. Please request another password reset at the login page.");
             } else {
                 e.preventDefault();
                 Userfront.resetPassword({
@@ -47,31 +48,30 @@ function Reset() {
     return (
         <>
             {/* password reset form */}
-            <div>
-                <form className="text-light text-start" onSubmit={handleSubmit}>
-                    <label className="mt-5">
-                        Password:
-                        <input
-                            className="mx-1"
-                            name="password"
-                            type="password"
-                            value={password}
-                            onChange={handleInputChange}
-                        />
-                    </label><br />
-                    <label className="mt-1">
-                        Re-type password:
-                        <input
-                            className="mx-1"
-                            name="passwordVerify"
-                            type="password"
-                            value={passwordVerify}
-                            onChange={handleInputChange}
-                        />
-                    </label><br />
-                    <button className="btn btn-primary mt-1" type="submit">Reset password</button>
-                </form>
-            </div>
+            <Link to="/"><button className="btn btn-primary">Home</button></Link>
+            <form className="text-light text-start" onSubmit={handleSubmit}>
+                <label className="mt-5">
+                    Password:
+                    <input
+                        className="mx-1"
+                        name="password"
+                        type="password"
+                        value={password}
+                        onChange={handleInputChange}
+                    />
+                </label><br />
+                <label className="mt-1">
+                    Re-type password:
+                    <input
+                        className="mx-1"
+                        name="passwordVerify"
+                        type="password"
+                        value={passwordVerify}
+                        onChange={handleInputChange}
+                    />
+                </label><br />
+                <button className="btn btn-primary mt-1" type="submit">Reset password</button>
+            </form>
         </>
     );
 }

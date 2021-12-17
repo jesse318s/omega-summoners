@@ -141,7 +141,7 @@ function App() {
       }
     }
     loadAsyncDataPlayer();
-  }, [player, userfrontId]);
+  }, [userfrontId]);
 
   useEffect(() => {
     try {
@@ -200,10 +200,40 @@ function App() {
     }
   }
 
+  // retrieves user data, generates new user if needed, and updates player state
+  const loadAsyncDataPlayer = async () => {
+    try {
+      const { data } = await getUsers();
+      const userData = data.filter(user => user.userfrontId === userfrontId);
+      if (userfrontId !== userData.userfrontId) {
+        const newUser = {
+          userfrontId: userfrontId,
+          name: Userfront.user.email,
+          avatarPath: "img/avatar/placeholder_avatar.png",
+          experience: 0,
+          drachmas: 0,
+          relics: [1],
+          chosenRelic: 1,
+          creatureId: "",
+          displayCreatureStats: false
+        }
+        await addUser(newUser);
+        const newUserData = data.filter(user => user.userfrontId === userfrontId);
+        setPlayer(newUserData);
+
+      } else {
+        setPlayer(userData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   // updates player avatar path in database
   const selectAvatar = async (avatarPath) => {
     try {
       await updateUser(player[0]._id, { avatarPath: avatarPath });
+      loadAsyncDataPlayer();//working example
     }
     catch (error) {
       console.log(error);

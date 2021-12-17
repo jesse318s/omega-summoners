@@ -1,5 +1,5 @@
 body {
-  font-family: "Helvetica Greek";
+  font-family: "Helvetica Neue, Helvetica";
   display: flex;
   justify-content: center;
   align-items: center;
@@ -8,8 +8,6 @@ body {
 }
 
 // styles
-@import url('https://fonts.googleapis.com/css?family=Sarpanch:400,700&display=swap');
-
 .home_section {
   display: grid;
   grid-template-areas: ". . ." ". text ." ". . .";
@@ -21,7 +19,7 @@ body {
 .home_title {
   transform: skew(#{-12}deg) rotate(#{-12}deg);
   grid-area: text;
-  font-family: "Sarpanch";
+  font-family: "Helvetica";
   font-size: 10vmin;
   color: darkred;
   text-shadow: 1vmin 1vmin 0 royalblue, -1vmin -1vmin 0 black;

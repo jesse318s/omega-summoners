@@ -112,52 +112,52 @@ function App() {
   });
 
   useEffect(() => {
-      // generates random creature and updates player creature in database
-      const genAsyncPlayerCreature = async () => {
-        try {
-          if (player[0].creatureId === "") {
-            const { data } = await getCreatures();
-            const randomCreature = data[Math.floor(Math.random() * data.length)]._id;
-            updateUser(player[0]._id, { creatureId: randomCreature });
-          }
-        }
-        catch (error) {
-          console.log(error);
+    // generates random creature and updates player creature in database
+    const genAsyncPlayerCreature = async () => {
+      try {
+        if (player[0].creatureId === "") {
+          const { data } = await getCreatures();
+          const randomCreature = data[Math.floor(Math.random() * data.length)]._id;
+          updateUser(player[0]._id, { creatureId: randomCreature });
         }
       }
-      // retrieves user data, generates new user if needed, and updates player state
-      const loadAsyncDataPlayer = async () => {
-        try {
-          const { data } = await getUsers();
-          const userData = data.filter(user => user.userfrontId === userfrontId);
-          if (userfrontId !== userData.userfrontId) {
-            const newUser = {
-              userfrontId: userfrontId,
-              name: Userfront.user.email,
-              avatarPath: "img/avatar/placeholder_avatar.png",
-              experience: 0,
-              drachmas: 0,
-              relics: [1],
-              chosenRelic: 1,
-              creatureId: "",
-              displayCreatureStats: false
-            }
-            await addUser(newUser);
-            const newUserData = data.filter(user => user.userfrontId === userfrontId);
-            setPlayer(newUserData);
-
-            if (player[0]) {
-              genAsyncPlayerCreature();
-            }
-
-          } else {
-            setPlayer(userData);
-          }
-        } catch (error) {
-          console.log(error);
-        }
+      catch (error) {
+        console.log(error);
       }
-      loadAsyncDataPlayer();
+    }
+    // retrieves user data, generates new user if needed, and updates player state
+    const loadAsyncDataPlayer = async () => {
+      try {
+        const { data } = await getUsers();
+        const userData = data.filter(user => user.userfrontId === userfrontId);
+        if (userfrontId !== userData.userfrontId) {
+          const newUser = {
+            userfrontId: userfrontId,
+            name: Userfront.user.email,
+            avatarPath: "img/avatar/placeholder_avatar.png",
+            experience: 0,
+            drachmas: 0,
+            relics: [1],
+            chosenRelic: 1,
+            creatureId: "",
+            displayCreatureStats: false
+          }
+          await addUser(newUser);
+          const newUserData = data.filter(user => user.userfrontId === userfrontId);
+          setPlayer(newUserData);
+
+          if (player[0]) {
+            genAsyncPlayerCreature();
+          }
+
+        } else {
+          setPlayer(userData);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    loadAsyncDataPlayer();
   }, [player, userfrontId]);
 
   useEffect(() => {

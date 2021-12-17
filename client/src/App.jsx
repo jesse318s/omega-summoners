@@ -190,16 +190,6 @@ function App() {
     }
   }, [player, relicsData]);
 
-  // toggles display creature stats in database
-  const toggleDisplayCreatureStats = async () => {
-    try {
-      await updateUser(player[0]._id, { displayCreatureStats: !creatureStatsStatus });
-    }
-    catch (error) {
-      console.log(error);
-    }
-  }
-
   // retrieves user data, generates new user if needed, and updates player state
   const loadAsyncDataPlayer = async () => {
     try {
@@ -229,11 +219,22 @@ function App() {
     }
   }
 
+  // toggles display creature stats in database
+  const toggleDisplayCreatureStats = async () => {
+    try {
+      await updateUser(player[0]._id, { displayCreatureStats: !creatureStatsStatus });
+      loadAsyncDataPlayer();
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
+
   // updates player avatar path in database
   const selectAvatar = async (avatarPath) => {
     try {
       await updateUser(player[0]._id, { avatarPath: avatarPath });
-      loadAsyncDataPlayer();//working example
+      loadAsyncDataPlayer();
     }
     catch (error) {
       console.log(error);
@@ -244,6 +245,7 @@ function App() {
   const selectName = async (e) => {
     try {
       await updateUser(player[0]._id, { name: e });
+      loadAsyncDataPlayer();
     }
     catch (error) {
       console.log(error);
@@ -254,6 +256,7 @@ function App() {
   const selectRelic = async (relicId) => {
     try {
       await updateUser(player[0]._id, { chosenRelic: relicId });
+      loadAsyncDataPlayer();
     }
     catch (error) {
       console.log(error);
@@ -265,6 +268,7 @@ function App() {
     try {
       if (player[0].drachmas >= relicPrice && !player[0].relics.includes(relicId)) {
         await updateUser(player[0]._id, { drachmas: player[0].drachmas - relicPrice, relics: [...player[0].relics, relicId] });
+        loadAsyncDataPlayer();
       }
     }
     catch (error) {
@@ -420,6 +424,9 @@ function App() {
             setBattleStatus(false);
             setEnemyCreature([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0, speed: 0, defense: 0, critical: 0 }]);
             setPlayerCreatureHP(0);
+          }, 2250);
+          await setTimeout(() => {
+            loadAsyncDataPlayer();
           }, 2250);
         } else {
 

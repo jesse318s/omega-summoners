@@ -113,7 +113,7 @@ function App() {
 
   useEffect(() => {
     // retrieves user data, generates new user if needed, and updates player state
-    const loadAsyncDataPlayer = async () => {
+    const loadAsyncDataPlayerNew = async () => {
       try {
         const { data } = await getUsers();
         const userData = data.filter(user => user.userfrontId === userfrontId);
@@ -133,25 +133,34 @@ function App() {
           const newUserData = data.filter(user => user.userfrontId === userfrontId);
           setPlayer(newUserData);
 
-        } else {
-          setPlayer(userData);
         }
       } catch (error) {
         console.log(error);
       }
     }
-    loadAsyncDataPlayer();
+    loadAsyncDataPlayerNew();
   }, [userfrontId]);
 
   useEffect(() => {
     try {
       // generates random creature and updates player creature in database
       const genAsyncPlayerCreature = async () => {
+        // retrieves user data, generates new user if needed, and updates player state
+        const loadAsyncDataPlayer = async () => {
+          try {
+            const { data } = await getUsers();
+            const userData = data.filter(user => user.userfrontId === userfrontId);
+            setPlayer(userData);
+          } catch (error) {
+            console.log(error);
+          }
+        }
         try {
           if (player[0].creatureId === "") {
             const { data } = await getCreatures();
             const randomCreature = data[Math.floor(Math.random() * data.length)]._id;
             updateUser(player[0]._id, { creatureId: randomCreature });
+            await loadAsyncDataPlayer();
           }
         }
         catch (error) {
@@ -188,32 +197,14 @@ function App() {
     } catch (error) {
       console.log(error);
     }
-  }, [player, relicsData]);
+  }, [player, userfrontId, relicsData]);
 
   // retrieves user data, generates new user if needed, and updates player state
   const loadAsyncDataPlayer = async () => {
     try {
       const { data } = await getUsers();
       const userData = data.filter(user => user.userfrontId === userfrontId);
-      if (userfrontId !== userData.userfrontId) {
-        const newUser = {
-          userfrontId: userfrontId,
-          name: Userfront.user.email,
-          avatarPath: "img/avatar/placeholder_avatar.png",
-          experience: 0,
-          drachmas: 0,
-          relics: [1],
-          chosenRelic: 1,
-          creatureId: "",
-          displayCreatureStats: false
-        }
-        await addUser(newUser);
-        const newUserData = data.filter(user => user.userfrontId === userfrontId);
-        setPlayer(newUserData);
-
-      } else {
-        setPlayer(userData);
-      }
+      setPlayer(userData);
     } catch (error) {
       console.log(error);
     }

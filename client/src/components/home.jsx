@@ -158,7 +158,7 @@ function Home() {
                 <section id="login" className="d-flex justify-content-center">
                     <div className="card my-2 col-sm-4">
                         <form className="card-body text-start" onSubmit={handleSubmitLogin}>
-                            <h3 className="card-title">Login</h3>
+                            <h2 className="card-title">Login</h2>
                             <label className="my-1 card-text">
                                 Email:
                                 <input
@@ -191,7 +191,7 @@ function Home() {
                 <section className="d-flex justify-content-center">
                     <div className="card my-2 col-sm-4">
                         <form className="card-body text-start" onSubmit={handleSubmitSignup}>
-                            <h3 className="card-title">Sign up</h3>
+                            <h2 className="card-title">Sign up</h2>
                             <label className="my-1 card-text">
                                 Email address:
                                 <input

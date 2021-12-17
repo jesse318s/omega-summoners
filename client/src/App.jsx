@@ -16,7 +16,7 @@ function App() {
     {
       id: 1,
       name: "Gust of Hermes",
-      description: "Grants the user a tiny speed boost.",
+      description: "Grants the user +5 speed.",
       imgPath: "img/relic/relic1.webp",
       effectClass: "relic1",
       hpMod: 0,
@@ -29,7 +29,7 @@ function App() {
     {
       id: 2,
       name: "Spark of Zeus",
-      description: "Grants the user a small attack boost.",
+      description: "Grants the user +10 attack.",
       imgPath: "img/relic/relic2.webp",
       effectClass: "relic2",
       hpMod: 0,
@@ -42,7 +42,7 @@ function App() {
     {
       id: 3,
       name: "Cup of Dionysus",
-      description: "Grants the user a small HP boost.",
+      description: "Grants the user +10 HP.",
       imgPath: "img/relic/relic3.webp",
       effectClass: "relic3",
       hpMod: 10,
@@ -143,9 +143,9 @@ function App() {
 
   useEffect(() => {
     try {
-      // generates random creature and updates player creature in database
+      // generates random creature and updates player creature in database if needed
       const genAsyncPlayerCreature = async () => {
-        // retrieves user data, generates new user if needed, and updates player state
+        // retrieves user data and updates player state
         const loadAsyncDataPlayer = async () => {
           try {
             const { data } = await getUsers();
@@ -436,7 +436,7 @@ function App() {
     }
   }
 
-  // renders if a player creature is detected and a relic is bestowed
+  // renders if a relic is bestowed
   if (chosenRelic[0]) {
     return (
       <>

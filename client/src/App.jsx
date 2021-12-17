@@ -17,7 +17,7 @@ function App() {
       id: 1,
       name: "Gust of Hermes",
       description: "Grants the user a tiny speed boost.",
-      img: "img/relic/relic1.webp",
+      imgPath: "img/relic/relic1.webp",
       effectClass: "relic1",
       hpMod: 0,
       attackMod: 0,
@@ -30,7 +30,7 @@ function App() {
       id: 2,
       name: "Spark of Zeus",
       description: "Grants the user a small attack boost.",
-      img: "img/relic/relic2.webp",
+      imgPath: "img/relic/relic2.webp",
       effectClass: "relic2",
       hpMod: 0,
       attackMod: 10,
@@ -43,7 +43,7 @@ function App() {
       id: 3,
       name: "Cup of Dionysus",
       description: "Grants the user a small HP boost.",
-      img: "img/relic/relic3.webp",
+      imgPath: "img/relic/relic3.webp",
       effectClass: "relic3",
       hpMod: 10,
       attackMod: 0,
@@ -89,9 +89,13 @@ function App() {
   // sets relics state
   const [relicsData] = useState(relics);
   // sets player relics state
-  const [playerRelics, setPlayerRelics] = useState([]);
+  const [playerRelics, setPlayerRelics] = useState([{
+    id: 0, name: "", description: "", imgPath: "", effectClass: "", hpMod: 0, attackMod: 0, speedMod: 0, defenseMod: 0, criticalMod: 0, price: 0
+  }]);
   // sets chosen relic state
-  const [chosenRelic, setChosenRelic] = useState({});
+  const [chosenRelic, setChosenRelic] = useState({
+    id: 0, name: "", description: "", imgPath: "", effectClass: "", hpMod: 0, attackMod: 0, speedMod: 0, defenseMod: 0, criticalMod: 0, price: 0
+  });
   // sets combat alert state
   const [combatAlert, setCombatAlert] = useState("");
   // sets battle decision state
@@ -108,85 +112,86 @@ function App() {
   });
 
   useEffect(() => {
-    // generates random creature and updates player creature in database
-    const genAsyncPlayerCreature = async () => {
-      try {
-        if (player[0].creatureId === "") {
-          const { data } = await getCreatures();
-          const randomCreature = data[Math.floor(Math.random() * data.length)]._id;
-          updateUser(player[0]._id, { creatureId: randomCreature });
-        }
-      }
-      catch (error) {
-        console.log(error);
-      }
-    }
-    // retrieves user data, generates new user if needed, and updates player state
-    const loadAsyncDataPlayer = async () => {
-      try {
-        const { data } = await getUsers();
-        const userData = data.filter(user => user.userfrontId === userfrontId);
-        if (userfrontId !== userData.userfrontId) {
-          const newUser = {
-            userfrontId: userfrontId,
-            name: Userfront.user.email,
-            avatarPath: "img/avatar/placeholder_avatar.png",
-            experience: 0,
-            drachmas: 0,
-            relics: [1],
-            chosenRelic: 1,
-            creatureId: "",
-            displayCreatureStats: false
-          }
-          await addUser(newUser);
-          const newUserData = data.filter(user => user.userfrontId === userfrontId);
-          setPlayer(newUserData);
-
-          if (player[0]) {
-            genAsyncPlayerCreature();
-          }
-
-        } else {
-          setPlayer(userData);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    loadAsyncDataPlayer();
-    // if a player exists
-    if (player[0]) {
-      // loads player creature data
-      const loadAsyncDataPlayerCreature = async () => {
+      // generates random creature and updates player creature in database
+      const genAsyncPlayerCreature = async () => {
         try {
+          if (player[0].creatureId === "") {
+            const { data } = await getCreatures();
+            const randomCreature = data[Math.floor(Math.random() * data.length)]._id;
+            updateUser(player[0]._id, { creatureId: randomCreature });
+          }
+        }
+        catch (error) {
+          console.log(error);
+        }
+      }
+      // retrieves user data, generates new user if needed, and updates player state
+      const loadAsyncDataPlayer = async () => {
+        try {
+          const { data } = await getUsers();
+          const userData = data.filter(user => user.userfrontId === userfrontId);
+          if (userfrontId !== userData.userfrontId) {
+            const newUser = {
+              userfrontId: userfrontId,
+              name: Userfront.user.email,
+              avatarPath: "img/avatar/placeholder_avatar.png",
+              experience: 0,
+              drachmas: 0,
+              relics: [1],
+              chosenRelic: 1,
+              creatureId: "",
+              displayCreatureStats: false
+            }
+            await addUser(newUser);
+            const newUserData = data.filter(user => user.userfrontId === userfrontId);
+            setPlayer(newUserData);
+
+            if (player[0]) {
+              genAsyncPlayerCreature();
+            }
+
+          } else {
+            setPlayer(userData);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      loadAsyncDataPlayer();
+  }, [player, userfrontId]);
+
+  useEffect(() => {
+    try {
+      // if there is a player
+      if (player[0]) {
+        // loads player creature data
+        const loadAsyncDataPlayerCreature = async () => {
           const { data } = await getCreatures();
           const playerCreatureData = data.filter(creature => creature._id === player[0].creatureId);
           setPlayerCreature(playerCreatureData);
           setCreatureStatsStatus(player[0].displayCreatureStats);
         }
-        catch (error) {
-          console.log(error);
-        }
+        loadAsyncDataPlayerCreature();
       }
-      loadAsyncDataPlayerCreature();
+    } catch (error) {
+      console.log(error);
     }
-    // if player relics exist
-    if (player[0] && player[0].relics) {
-      // loads player relics data
-      const loadDataPlayerRelics = () => {
-        try {
+    try {
+      // if there is a player and player relics
+      if (player[0] && player[0].relics) {
+        // loads player relics data
+        const loadDataPlayerRelics = () => {
           const playerRelicsData = relicsData.filter(relic => player[0].relics.includes(relic.id));
           setPlayerRelics(playerRelicsData);
           const chosenRelicData = playerRelicsData.filter(relic => relic.id === player[0].chosenRelic);
           setChosenRelic(chosenRelicData);
         }
-        catch (error) {
-          console.log(error);
-        }
+        loadDataPlayerRelics();
       }
-      loadDataPlayerRelics();
+    } catch (error) {
+      console.log(error);
     }
-  }, [userfrontId, player, relicsData]);
+  }, [player, relicsData]);
 
   // toggles display creature stats in database
   const toggleDisplayCreatureStats = async () => {
@@ -407,7 +412,7 @@ function App() {
   }
 
   // renders if a player creature is detected and a relic is bestowed
-  if (playerCreature && chosenRelic[0]) {
+  if (chosenRelic[0]) {
     return (
       <>
         <header>
@@ -532,7 +537,7 @@ function App() {
                   <button className="game_button_small" onClick={() => selectRelic(relic.id)}>Use</button>
                   <img onClick={() => alert(relic.description)}
                     className="relic_option_img"
-                    src={relic.img}
+                    src={relic.imgPath}
                     alt={relic.name}
                     width="48px"
                     height="48px" /><span className="relic_info" onClick={() => alert(relic.description)}>?</span><br />
@@ -551,7 +556,7 @@ function App() {
                   <button className="game_button_small" onClick={() => buyRelic(relic.id, relic.price)}>Buy</button>
                   <img onClick={() => alert(relic.description)}
                     className="relic_option_img"
-                    src={relic.img}
+                    src={relic.imgPath}
                     alt={relic.name}
                     width="48px"
                     height="48px" /><span className="relic_info" onClick={() => alert(relic.description)}>?</span><br />

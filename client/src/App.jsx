@@ -556,7 +556,7 @@ function App() {
                 <button className="game_button item_option" onClick={() => { setTempleStatus(!templeStatus); setRelicsStatus(false) }}>Temple</button>
               </div></div>
                 : null}
-              {battleStatus ? <div><h5 className="combat_alert">{combatAlert}</h5></div>
+              {battleStatus ? <div><p className="combat_alert">{combatAlert}</p></div>
                 : null}
               {relicsStatus ? <div>
                 <h4>Player Relics</h4>

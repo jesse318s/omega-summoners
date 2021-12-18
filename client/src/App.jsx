@@ -120,7 +120,7 @@ function App() {
         if (userfrontId !== userData.userfrontId) {
           const newUser = {
             userfrontId: userfrontId,
-            name: Userfront.user.email,
+            name: Userfront.user.username,
             avatarPath: "img/avatar/placeholder_avatar.png",
             experience: 0,
             drachmas: 0,

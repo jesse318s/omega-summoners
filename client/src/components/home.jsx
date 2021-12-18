@@ -111,7 +111,7 @@ function Home() {
                             aria-expanded="false"
                             aria-label="Toggle navigation"
                         >
-                            <i className="fas fa-bars"></i>
+                            <i className="text-light">{"\u2630"}</i>
                         </button>
 
                         {/* Collapsible wrapper */}
@@ -156,8 +156,8 @@ function Home() {
 
                 {/* login form */}
                 <section id="login" className="d-flex justify-content-center">
-                    <div className="card my-2 col-sm-4">
-                        <form className="card-body text-start" onSubmit={handleSubmitLogin}>
+                    <div className="card my-2 col-sm-5">
+                        <form className="card-body" onSubmit={handleSubmitLogin}>
                             <h2 className="card-title">Login</h2>
                             <label className="my-1 card-text">
                                 Email:
@@ -189,8 +189,8 @@ function Home() {
 
                 {/* sign up form */}
                 <section className="d-flex justify-content-center">
-                    <div className="card my-2 col-sm-4">
-                        <form className="card-body text-start" onSubmit={handleSubmitSignup}>
+                    <div className="card my-2 col-sm-5">
+                        <form className="card-body" onSubmit={handleSubmitSignup}>
                             <h2 className="card-title">Sign up</h2>
                             <label className="my-1 card-text">
                                 Email address:

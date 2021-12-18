@@ -49,7 +49,7 @@ function Reset() {
         <>
             {/* password reset form */}
             <Link to="/"><button className="btn btn-primary">Home</button></Link>
-            <form className="text-light text-start" onSubmit={handleSubmit}>
+            <form className="text-light justify-content-center" onSubmit={handleSubmit}>
                 <label className="mt-5">
                     Password:
                     <input

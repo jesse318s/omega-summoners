@@ -455,7 +455,7 @@ function App() {
                 aria-expanded="false"
                 aria-label="Toggle navigation"
               >
-                <i className="fas fa-bars"></i>
+                <i className="text-light">{"\u2630"}</i>
               </button>
 
               {/* Collapsible wrapper */}
@@ -467,7 +467,7 @@ function App() {
                 {/* Left links */}
                 <ul className="navbar-nav me-auto">
                   <li className="nav-item font-weight-bold">
-                    <button className="btn btn-warning my-1" onClick={() => Userfront.logout()}>Logout</button>
+                    <button className="btn btn-warning my-1 text-dark" onClick={() => Userfront.logout()}>Logout</button>
                   </li>
                 </ul>
                 {/* Left links */}
@@ -542,7 +542,7 @@ function App() {
                       style={{ width: ((Math.sqrt(player.experience) * 0.25 - Math.floor(Math.sqrt(player.experience) * 0.25)).toFixed(2)).replace("0.", '') + "%" }} />
                   </div>
                 </h5>
-                <h5>Drachmas: {player.drachmas} <i className="fas fa-coins" /></h5>
+                <h5>Drachmas: {player.drachmas} {"\u25C9"}</h5>
               </div>
             ))}
             {!battleStatus ? <div><div className="item_options_container">
@@ -566,7 +566,7 @@ function App() {
                     alt={relic.name}
                     width="48px"
                     height="48px" /><span className="relic_info" onClick={() => alert(relic.description)}>?</span><br />
-                  {relic.name} {relic.id === player[0].chosenRelic ? <i className="fas fa-check fa-lg" /> : null}
+                  {relic.name} {relic.id === player[0].chosenRelic ? <i>{"\u2713"}</i> : null}
                 </div>))}
             </div>
               : null
@@ -585,7 +585,7 @@ function App() {
                     alt={relic.name}
                     width="48px"
                     height="48px" /><span className="relic_info" onClick={() => alert(relic.description)}>?</span><br />
-                  {relic.name} - {relic.price} <i className="fas fa-coins" />
+                  {relic.name} - {relic.price} {"\u25C9"}
                 </div>))}
             </div>
               : null

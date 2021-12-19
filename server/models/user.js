@@ -20,7 +20,7 @@ const userSchema = new Schema({
         type: Number,
     },
     creatureId: {
-        type: String,
+        type: Number,
     },
     displayCreatureStats: {
         type: Boolean,

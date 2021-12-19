@@ -3,13 +3,56 @@ import './App.scss';
 import Userfront from "@userfront/core";
 import { useNavigate } from "react-router-dom";
 import { getUsers, addUser, updateUser } from './services/userServices';
-import { getCreatures } from './services/creatureServices';
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
 
 // main app component
 function App() {
+
+  // creature objects
+  const creatures = [
+    {
+      id: 1,
+      name: "Demon",
+      imgPath: "img/creature/demon_creature.png",
+      hp: 60,
+      attack: 50,
+      speed: 60,
+      defense: 20,
+      critical: 50
+    },
+    {
+      id: 2,
+      name: "Medusa",
+      imgPath: "img/creature/medusa_creature.png",
+      hp: 110,
+      attack: 30,
+      speed: 30,
+      defense: 15,
+      critical: 20
+    },
+    {
+      id: 3,
+      name: "Baby Dragon",
+      imgPath: "img/creature/small_dragon_creature.png",
+      hp: 60,
+      attack: 50,
+      speed: 60,
+      defense: 20,
+      critical: 50
+    },
+    {
+      id: 4,
+      name: "Lizard",
+      imgPath: "img/creature/lizard_creature.png",
+      hp: 110,
+      attack: 30,
+      speed: 30,
+      defense: 15,
+      critical: 20
+    }
+  ];
 
   // relic objects
   const relics = [
@@ -59,7 +102,7 @@ function App() {
 
   // sets player and userfront id state
   const [player, setPlayer] = useState([{
-    _id: 0, userfrontId: 0, name: "", avatarPath: "", experience: 0, drachmas: 0, relics: [], chosenRelic: 0, creatureId: "", displayCreatureStats: false
+    _id: 0, userfrontId: 0, name: "", avatarPath: "", experience: 0, drachmas: 0, relics: [], chosenRelic: 0, creatureId: 0, displayCreatureStats: false
   }]);
   const [userfrontId] = useState(Userfront.user.userId);
   // sets player options states
@@ -69,13 +112,15 @@ function App() {
   // sets relics and temple state
   const [relicsStatus, setRelicsStatus] = useState(false);
   const [templeStatus, setTempleStatus] = useState(false);
+  // sets creatures state
+  const [creatureData] = useState(creatures);
   // sets player creature state
-  const [playerCreature, setPlayerCreature] = useState([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0, speed: 0, defense: 0, critical: 0 }]);
+  const [playerCreature, setPlayerCreature] = useState([{ id: "", name: "", imgPath: "", hp: 0, attack: 0, speed: 0, defense: 0, critical: 0 }]);
   // sets creature stats state
   const [creatureStatsStatus, setCreatureStatsStatus] = useState(false);
   // sets battle and enemy creature state
   const [battleStatus, setBattleStatus] = useState(false);
-  const [enemyCreature, setEnemyCreature] = useState([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0, speed: 0, defense: 0, critical: 0 }]);
+  const [enemyCreature, setEnemyCreature] = useState([{ id: "", name: "", imgPath: "", hp: 0, attack: 0, speed: 0, defense: 0, critical: 0 }]);
   // sets player and enemy creature attack state
   const [playerAttackStatus, setPlayerAttackStatus] = useState(false);
   const [enemyAttackStatus, setEnemyAttackStatus] = useState(false);
@@ -126,7 +171,7 @@ function App() {
             drachmas: 0,
             relics: [1],
             chosenRelic: 1,
-            creatureId: "",
+            creatureId: 0,
             displayCreatureStats: false
           }
           await addUser(newUser);
@@ -156,9 +201,8 @@ function App() {
           }
         }
         try {
-          if (player[0].creatureId === "") {
-            const { data } = await getCreatures();
-            const randomCreature = data[Math.floor(Math.random() * data.length)]._id;
+          if (player[0].creatureId === 0) {
+            const randomCreature = creatureData[Math.floor(Math.random() * creatureData.length)].id;
             updateUser(player[0]._id, { creatureId: randomCreature });
             await loadAsyncDataPlayer();
           }
@@ -172,8 +216,7 @@ function App() {
         genAsyncPlayerCreature();
         // loads player creature data
         const loadAsyncDataPlayerCreature = async () => {
-          const { data } = await getCreatures();
-          const playerCreatureData = data.filter(creature => creature._id === player[0].creatureId);
+          const playerCreatureData = creatureData.filter(creature => creature.id === player[0].creatureId);
           setPlayerCreature(playerCreatureData);
           setCreatureStatsStatus(player[0].displayCreatureStats);
         }
@@ -197,7 +240,7 @@ function App() {
     } catch (error) {
       console.log(error);
     }
-  }, [player, userfrontId, relicsData]);
+  }, [player, userfrontId, relicsData, creatureData]);
 
   // retrieves user data, generates new user if needed, and updates player state
   const loadAsyncDataPlayer = async () => {
@@ -272,8 +315,7 @@ function App() {
     try {
       if (!battleStatus) {
         setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod);
-        const { data } = await getCreatures();
-        const enemyCreatureData = [data[Math.floor(Math.random() * data.length)]];
+        const enemyCreatureData = [creatureData[Math.floor(Math.random() * creatureData.length)]];
         setEnemyCreature(enemyCreatureData);
         setEnemyCreatureHP(enemyCreatureData[0].hp);
         setCombatAlert("The battle has begun!");
@@ -353,7 +395,7 @@ function App() {
           setTimeout(() => {
             setBattleStatus(false);
             setEnemyCreature([{
-              _id: 0,
+              id: 0,
               name: "",
               imgPath: "",
               hp: 0,
@@ -607,7 +649,7 @@ function App() {
               <div className="player_creature">
                 {playerCreature.map((creature) => (
                   <div
-                    key={creature._id}
+                    key={creature.id}
                   >
                     {playerAttackStatus
                       ? <img className={chosenRelic[0].effectClass}
@@ -659,7 +701,7 @@ function App() {
               <div className="enemy_creature">
                 {enemyCreature.map((creature) => (
                   <div
-                    key={creature._id}
+                    key={creature.id}
                   >
                     {enemyAttackStatus ? <img className="enemy_creature_img"
                       src={creature.imgPath.slice(0, -4) + "_attack.png"}

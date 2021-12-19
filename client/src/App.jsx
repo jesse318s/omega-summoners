@@ -177,13 +177,23 @@ function App() {
           await addUser(newUser);
           const newUserData = data.filter(user => user.userfrontId === userfrontId);
           setPlayer(newUserData);
-
         }
       } catch (error) {
         console.log(error);
       }
     }
+    // retrieves user data and updates player state
+    const loadAsyncDataPlayer = async () => {
+      try {
+        const { data } = await getUsers();
+        const userData = data.filter(user => user.userfrontId === userfrontId);
+        setPlayer(userData);
+      } catch (error) {
+        console.log(error);
+      }
+    }
     loadAsyncDataPlayerNew();
+    loadAsyncDataPlayer();
   }, [userfrontId]);
 
   useEffect(() => {
@@ -300,6 +310,7 @@ function App() {
   // updates player relics in database
   const buyRelic = async (relicId, relicPrice) => {
     try {
+      // if the player can afford the relic and doesn't own it
       if (player[0].drachmas >= relicPrice && !player[0].relics.includes(relicId)) {
         await updateUser(player[0]._id, { drachmas: player[0].drachmas - relicPrice, relics: [...player[0].relics, relicId] });
         await loadAsyncDataPlayer();
@@ -313,6 +324,7 @@ function App() {
   // loads battle data
   const loadDataBattle = () => {
     try {
+      // if there is no battle
       if (!battleStatus) {
         setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod);
         const enemyCreatureData = [creatureData[Math.floor(Math.random() * creatureData.length)]];
@@ -359,11 +371,13 @@ function App() {
       const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
       const playerCreatureDefense = (playerCreature[0].defense + chosenRelic[0].defenseMod) / 100;
       var chanceEnemy = false;
+      // checks for equal player and enemy speed
       if (enemyCreature[0].speed / 100 === playerCreatureSpeed) {
         chanceEnemy = Math.random() >= 0.5;
       } else {
         chanceEnemy = Math.random() >= playerCreatureSpeed - enemyCreature[0].speed / 100;
       }
+      // series of checks for enemy counter attack based on speed
       if (!chanceEnemy && chancePlayer) {
         setTimeout(() => {
           setCombatAlert("Enemy was too slow!");

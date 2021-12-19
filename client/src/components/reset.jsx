@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 // initialize Userfront
 Userfront.init("rbvqd5nd");
 
+// reset page component
 function Reset() {
 
     // sets form value state
@@ -27,7 +28,7 @@ function Reset() {
         }
     }
 
-    // resets userfront password
+    // verifies and resets userfront password
     const handleSubmit = (e) => {
         try {
             if (password !== passwordVerify) {

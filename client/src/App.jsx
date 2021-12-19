@@ -188,7 +188,7 @@ function App() {
 
   useEffect(() => {
     try {
-      // generates random creature and updates player creature in database if needed
+      // if needed, generates random creature and updates player in database
       const genAsyncPlayerCreature = async () => {
         // retrieves user data and updates player state
         const loadAsyncDataPlayer = async () => {
@@ -203,7 +203,7 @@ function App() {
         try {
           if (player[0].creatureId === 0) {
             const randomCreature = creatureData[Math.floor(Math.random() * creatureData.length)].id;
-            updateUser(player[0]._id, { creatureId: randomCreature });
+            await updateUser(player[0]._id, { creatureId: randomCreature });
             await loadAsyncDataPlayer();
           }
         }
@@ -211,16 +211,16 @@ function App() {
           console.log(error);
         }
       }
+      // loads player creature data and sets player creature state
+      const loadDataPlayerCreature = () => {
+        const playerCreatureData = creatureData.filter(creature => creature.id === player[0].creatureId);
+        setPlayerCreature(playerCreatureData);
+        setCreatureStatsStatus(player[0].displayCreatureStats);
+      }
       // if there is a player
       if (player[0]) {
         genAsyncPlayerCreature();
-        // loads player creature data
-        const loadAsyncDataPlayerCreature = async () => {
-          const playerCreatureData = creatureData.filter(creature => creature.id === player[0].creatureId);
-          setPlayerCreature(playerCreatureData);
-          setCreatureStatsStatus(player[0].displayCreatureStats);
-        }
-        loadAsyncDataPlayerCreature();
+        loadDataPlayerCreature();
       }
     } catch (error) {
       console.log(error);
@@ -242,7 +242,7 @@ function App() {
     }
   }, [player, userfrontId, relicsData, creatureData]);
 
-  // retrieves user data, generates new user if needed, and updates player state
+  // retrieves user data and updates player state
   const loadAsyncDataPlayer = async () => {
     try {
       const { data } = await getUsers();
@@ -311,7 +311,7 @@ function App() {
   }
 
   // loads battle data
-  const loadAsyncDataBattle = async () => {
+  const loadDataBattle = () => {
     try {
       if (!battleStatus) {
         setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod);
@@ -382,10 +382,12 @@ function App() {
           enemyAttackAnimation();
         }, 500);
 
+        // checks enemy critical hit
         if (Math.random() <= enemyCreature[0].critical / 100) {
           setCriticalAttackMultiplier(1.5);
         }
 
+        // checks for player death, and damages player otherwise
         if (playerCreatureHP - ((enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalAttackMultiplier) <= 0) {
           setBattleUndecided(false);
           setTimeout(() => {
@@ -427,22 +429,26 @@ function App() {
         const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
         const playerCreatureCritical = (playerCreature[0].critical + chosenRelic[0].criticalMod) / 100;
 
+        // checks for equal player and enemy speed
         if (playerCreatureSpeed === enemyCreature[0].speed / 100) {
           setChancePlayer(Math.random() >= 0.5);
         } else {
           setChancePlayer(Math.random() >= enemyCreature[0].speed / 100 - playerCreatureSpeed);
         }
 
+        // checks for player speed failure
         if (!chancePlayer) {
           setTimeout(() => {
             setCombatAlert("Your summon was too slow!");
           }, 750);
         }
 
+        // checks for player critical hit
         if (Math.random() <= playerCreatureCritical) {
           setCriticalAttackMultiplier(1.5);
         }
 
+        // checks for enemy death
         if (enemyCreatureHP - ((playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier) <= 0 && chancePlayer) {
           setBattleUndecided(false);
           playerAttackAnimation();
@@ -461,6 +467,7 @@ function App() {
           }, 2250);
         } else {
 
+          // damages enemy
           if (chancePlayer) {
             playerAttackAnimation();
             setTimeout(() => {
@@ -593,6 +600,8 @@ function App() {
                   <h5>Drachmas: {player.drachmas} {"\u25C9"}</h5>
                 </div>
               ))}
+
+              {/* menu */}
               {!battleStatus ? <div><div className="item_options_container">
                 <button className="game_button item_option" onClick={() => { setRelicsStatus(!relicsStatus); setTempleStatus(false) }}>Relics</button>
                 <button className="game_button item_option" onClick={() => { setTempleStatus(!templeStatus); setRelicsStatus(false) }}>Temple</button>
@@ -639,7 +648,7 @@ function App() {
                 : null
               }
               {!battleStatus ?
-                <button className="game_button battle_button" onClick={() => { loadAsyncDataBattle(); setTempleStatus(false); setRelicsStatus(false) }}>
+                <button className="game_button battle_button" onClick={() => { loadDataBattle(); setTempleStatus(false); setRelicsStatus(false) }}>
                   Battle Hellspawn</button>
                 : null}
             </div>

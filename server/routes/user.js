@@ -20,8 +20,8 @@ router.get("/", async (req, res) => {
     try {
         const accessToken = req.headers.authorization.replace("Bearer ", "");
         const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, { algorithms: ["RS256"] });
-        const users = await User.findOne({ userfrontId: decoded.userId });
-        res.send(users);
+        const user = await User.findOne({ userfrontId: decoded.userId });
+        res.send(user);
     } catch (error) {
         res.send(error);
     }

@@ -4,7 +4,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const compression = require("compression");
-const users = require("./routes/users");
+const user = require("./routes/user");
 
 mongoose.connect(process.env.MONGO_URL);
 
@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(cors());
 app.use(compression());
 
-app.use("/api/users", users);
+app.use("/api/user", user);
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Listening on port ${port}...`));

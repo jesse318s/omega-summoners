@@ -1,9 +1,9 @@
 import axios from "axios";
 import Userfront from "@userfront/core";
-const apiUrl = "http://localhost:8080/api/users";
+const apiUrl = "http://localhost:8080/api/user";
 Userfront.init("rbvqd5nd");
 
-export function getUsers() {
+export function getUser() {
     return axios.get(apiUrl, {
         headers: {
             "Content-Type": "application/json",

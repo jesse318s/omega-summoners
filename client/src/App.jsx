@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import './App.scss';
 import Userfront from "@userfront/core";
 import { useNavigate } from "react-router-dom";
-import { getUsers, addUser, updateUser } from './services/userServices';
+import { getUser, addUser, updateUser } from './services/userServices';
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
@@ -160,7 +160,7 @@ function App() {
     // retrieves user data, generates new user if needed, and updates player state
     const loadAsyncDataPlayerNew = async () => {
       try {
-        const { data } = await getUsers();
+        const { data } = await getUser();
         if (userfrontId !== data.userfrontId) {
           const newUser = {
             userfrontId: userfrontId,
@@ -183,7 +183,7 @@ function App() {
     // retrieves user data and updates player state
     const loadAsyncDataPlayer = async () => {
       try {
-        const { data } = await getUsers();
+        const { data } = await getUser();
         setPlayer(data);
       } catch (error) {
         console.log(error);
@@ -200,7 +200,7 @@ function App() {
         // retrieves user data and updates player state
         const loadAsyncDataPlayer = async () => {
           try {
-            const { data } = await getUsers();
+            const { data } = await getUser();
             setPlayer(data);
           } catch (error) {
             console.log(error);
@@ -251,7 +251,7 @@ function App() {
   // retrieves user data and updates player state
   const loadAsyncDataPlayer = async () => {
     try {
-      const { data } = await getUsers();
+      const { data } = await getUser();
       setPlayer(data);
     } catch (error) {
       console.log(error);

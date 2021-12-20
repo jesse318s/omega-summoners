@@ -191,7 +191,7 @@ function App() {
     }
     loadAsyncDataPlayerNew();
     loadAsyncDataPlayer();
-  }, [player, userfrontId]);
+  }, [userfrontId]);
 
   useEffect(() => {
     try {

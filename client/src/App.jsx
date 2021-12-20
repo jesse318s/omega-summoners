@@ -246,7 +246,7 @@ function App() {
     } catch (error) {
       console.log(error);
     }
-  }, [player, userfrontId, relicsData, creatureData]);
+  }, [player, relicsData, creatureData]);
 
   // retrieves user data and updates player state
   const loadAsyncDataPlayer = async () => {

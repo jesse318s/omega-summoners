@@ -101,9 +101,9 @@ function App() {
   const navigate = useNavigate();
 
   // sets player and userfront id state
-  const [player, setPlayer] = useState([{
+  const [player, setPlayer] = useState({
     _id: 0, userfrontId: 0, name: "", avatarPath: "", experience: 0, drachmas: 0, relics: [], chosenRelic: 0, creatureId: 0, displayCreatureStats: false
-  }]);
+  });
   const [userfrontId] = useState(Userfront.user.userId);
   // sets player options states
   const [optionsStatus, setOptionsStatus] = useState(false);
@@ -161,8 +161,7 @@ function App() {
     const loadAsyncDataPlayerNew = async () => {
       try {
         const { data } = await getUsers();
-        const userData = data.filter(user => user.userfrontId === userfrontId);
-        if (userfrontId !== userData.userfrontId) {
+        if (userfrontId !== data.userfrontId) {
           const newUser = {
             userfrontId: userfrontId,
             name: Userfront.user.username,
@@ -175,8 +174,7 @@ function App() {
             displayCreatureStats: false
           }
           await addUser(newUser);
-          const newUserData = data.filter(user => user.userfrontId === userfrontId);
-          setPlayer(newUserData);
+          setPlayer(data);
         }
       } catch (error) {
         console.log(error);
@@ -186,8 +184,7 @@ function App() {
     const loadAsyncDataPlayer = async () => {
       try {
         const { data } = await getUsers();
-        const userData = data.filter(user => user.userfrontId === userfrontId);
-        setPlayer(userData);
+        setPlayer(data);
       } catch (error) {
         console.log(error);
       }
@@ -204,16 +201,15 @@ function App() {
         const loadAsyncDataPlayer = async () => {
           try {
             const { data } = await getUsers();
-            const userData = data.filter(user => user.userfrontId === userfrontId);
-            setPlayer(userData);
+            setPlayer(data);
           } catch (error) {
             console.log(error);
           }
         }
         try {
-          if (player[0].creatureId === 0) {
+          if (player.creatureId === 0) {
             const randomCreature = creatureData[Math.floor(Math.random() * creatureData.length)].id;
-            await updateUser(player[0]._id, { creatureId: randomCreature });
+            await updateUser(player._id, { creatureId: randomCreature });
             await loadAsyncDataPlayer();
           }
         }
@@ -223,12 +219,12 @@ function App() {
       }
       // loads player creature data and sets player creature state
       const loadDataPlayerCreature = () => {
-        const playerCreatureData = creatureData.filter(creature => creature.id === player[0].creatureId);
+        const playerCreatureData = creatureData.filter(creature => creature.id === player.creatureId);
         setPlayerCreature(playerCreatureData);
-        setCreatureStatsStatus(player[0].displayCreatureStats);
+        setCreatureStatsStatus(player.displayCreatureStats);
       }
       // if there is a player
-      if (player[0]) {
+      if (player) {
         genAsyncPlayerCreature();
         loadDataPlayerCreature();
       }
@@ -237,12 +233,12 @@ function App() {
     }
     try {
       // if there is a player and player relics
-      if (player[0] && player[0].relics) {
+      if (player && player.relics) {
         // loads player relics data
         const loadDataPlayerRelics = () => {
-          const playerRelicsData = relicsData.filter(relic => player[0].relics.includes(relic.id));
+          const playerRelicsData = relicsData.filter(relic => player.relics.includes(relic.id));
           setPlayerRelics(playerRelicsData);
-          const chosenRelicData = playerRelicsData.filter(relic => relic.id === player[0].chosenRelic);
+          const chosenRelicData = playerRelicsData.filter(relic => relic.id === player.chosenRelic);
           setChosenRelic(chosenRelicData);
         }
         loadDataPlayerRelics();
@@ -256,8 +252,7 @@ function App() {
   const loadAsyncDataPlayer = async () => {
     try {
       const { data } = await getUsers();
-      const userData = data.filter(user => user.userfrontId === userfrontId);
-      setPlayer(userData);
+      setPlayer(data);
     } catch (error) {
       console.log(error);
     }
@@ -266,7 +261,7 @@ function App() {
   // toggles display creature stats in database
   const toggleDisplayCreatureStats = async () => {
     try {
-      await updateUser(player[0]._id, { displayCreatureStats: !creatureStatsStatus });
+      await updateUser(player._id, { displayCreatureStats: !creatureStatsStatus });
       await loadAsyncDataPlayer();
     }
     catch (error) {
@@ -277,7 +272,7 @@ function App() {
   // updates player avatar path in database
   const selectAvatar = async (avatarPath) => {
     try {
-      await updateUser(player[0]._id, { avatarPath: avatarPath });
+      await updateUser(player._id, { avatarPath: avatarPath });
       await loadAsyncDataPlayer();
     }
     catch (error) {
@@ -288,7 +283,7 @@ function App() {
   // updates player name in database
   const selectName = async (e) => {
     try {
-      await updateUser(player[0]._id, { name: e });
+      await updateUser(player._id, { name: e });
       await loadAsyncDataPlayer();
     }
     catch (error) {
@@ -299,7 +294,7 @@ function App() {
   // updates player chosen relic in database
   const selectRelic = async (relicId) => {
     try {
-      await updateUser(player[0]._id, { chosenRelic: relicId });
+      await updateUser(player._id, { chosenRelic: relicId });
       await loadAsyncDataPlayer();
     }
     catch (error) {
@@ -311,8 +306,8 @@ function App() {
   const buyRelic = async (relicId, relicPrice) => {
     try {
       // if the player can afford the relic and doesn't own it
-      if (player[0].drachmas >= relicPrice && !player[0].relics.includes(relicId)) {
-        await updateUser(player[0]._id, { drachmas: player[0].drachmas - relicPrice, relics: [...player[0].relics, relicId] });
+      if (player.drachmas >= relicPrice && !player.relics.includes(relicId)) {
+        await updateUser(player._id, { drachmas: player.drachmas - relicPrice, relics: [...player.relics, relicId] });
         await loadAsyncDataPlayer();
       }
     }
@@ -469,7 +464,7 @@ function App() {
           await setTimeout(() => {
             setEnemyCreatureHP(0);
             setCombatAlert("Victory!");
-            updateUser(player[0]._id, { experience: player[0].experience + 5, drachmas: player[0].drachmas + 3 });
+            updateUser(player._id, { experience: player.experience + 5, drachmas: player.drachmas + 3 });
           }, 250);
           setTimeout(() => {
             setBattleStatus(false);
@@ -553,13 +548,13 @@ function App() {
             <div className="options">
               <h3>Game Options</h3>
               <button className="btn btn-light my-2" onClick={() => { toggleDisplayCreatureStats() }}>Toggle Creature Stats
-                {player[0].displayCreatureStats ? " - ON" : " - OFF"}</button>
+                {player.displayCreatureStats ? " - ON" : " - OFF"}</button>
               <h3>Player Options</h3>
               <button className="btn btn-light my-2" onClick={() => { setAvatarOptionStatus(!avatarOptionStatus); setNameOptionStatus(false); }}> Change Avatar</button>
               <button className="btn btn-light my-2 ms-1" onClick={() => { setNameOptionStatus(!nameOptionStatus); setAvatarOptionStatus(false); }}>Change Name</button>
               {nameOptionStatus && !avatarOptionStatus ? <form>
                 <label htmlFor="name">Player name:&nbsp;</label>
-                <input className="my-1" type="text" name="name" placeholder={player[0].name} onChange={(e) => selectName(e.target.value)} />
+                <input className="my-1" type="text" name="name" placeholder={player.name} onChange={(e) => selectName(e.target.value)} />
               </form> : null}
               {avatarOptionStatus && !nameOptionStatus ? <div>
                 <div className="d-flex justify-content-center">
@@ -594,26 +589,20 @@ function App() {
           {/* player */}
           {!optionsStatus ? <>
             <div className="player">
-              {player.map((player) => (
-                <div
-                  key={player._id}
-                >
-                  <img src={player.avatarPath}
-                    alt={player.name}
-                    className="player_avatar"
-                    width="96"
-                    height="96" />
-                  <h4>{player.name}</h4>
-                  <h5>
-                    Level {Math.floor(Math.sqrt(player.experience) * 0.25)}
-                    <div className="progress_bar_container">
-                      <div className="experience_progress_bar"
-                        style={{ width: ((Math.sqrt(player.experience) * 0.25 - Math.floor(Math.sqrt(player.experience) * 0.25)).toFixed(2)).replace("0.", '') + "%" }} />
-                    </div>
-                  </h5>
-                  <h5>Drachmas: {player.drachmas} {"\u25C9"}</h5>
+              <img src={player.avatarPath}
+                alt={player.name}
+                className="player_avatar"
+                width="96"
+                height="96" />
+              <h4>{player.name}</h4>
+              <h5>
+                Level {Math.floor(Math.sqrt(player.experience) * 0.25)}
+                <div className="progress_bar_container">
+                  <div className="experience_progress_bar"
+                    style={{ width: ((Math.sqrt(player.experience) * 0.25 - Math.floor(Math.sqrt(player.experience) * 0.25)).toFixed(2)).replace("0.", '') + "%" }} />
                 </div>
-              ))}
+              </h5>
+              <h5>Drachmas: {player.drachmas} {"\u25C9"}</h5>
 
               {/* menu */}
               {!battleStatus ? <div><div className="item_options_container">
@@ -637,7 +626,7 @@ function App() {
                       alt={relic.name}
                       width="48px"
                       height="48px" /><span className="relic_info" onClick={() => alert(relic.description)}>?</span><br />
-                    {relic.name} {relic.id === player[0].chosenRelic ? <i>{"\u2713"}</i> : null}
+                    {relic.name} {relic.id === player.chosenRelic ? <i>{"\u2713"}</i> : null}
                   </div>))}
               </div>
                 : null
@@ -692,28 +681,23 @@ function App() {
                           width="128px"
                           height="128px" />
                     }
-                    {player.map((player) => (
-                      <div
-                        key={player._id}
-                      >
-                        <div className="creature_panel">
-                          {battleStatus ? <><button className="game_button attack_button" onClick={() => { attackEnemy() }}>Attack</button><br /></> : null}
-                          <h4>{player.name}'s {creature.name}</h4>
-                          {!battleStatus ? <h5>HP: {creature.hp + chosenRelic[0].hpMod}</h5>
-                            : !creatureStatsStatus ? <h5>HP: {playerCreatureHP} / {creature.hp + chosenRelic[0].hpMod}</h5>
-                              : null}
-                          {creatureStatsStatus ?
-                            <div>
-                              {battleStatus ? <h5>HP: {playerCreatureHP} / {creature.hp + chosenRelic[0].hpMod}</h5>
-                                : null}
-                              <h5>Attack: {creature.attack + chosenRelic[0].attackMod}</h5>
-                              <h5>Speed: {creature.speed + chosenRelic[0].speedMod}</h5>
-                              <h5>Defense: {creature.defense + chosenRelic[0].defenseMod}</h5>
-                              <h5>Critical: {creature.critical + chosenRelic[0].criticalMod}</h5>
-                            </div>
+                    <div className="creature_panel">
+                      {battleStatus ? <><button className="game_button attack_button" onClick={() => { attackEnemy() }}>Attack</button><br /></> : null}
+                      <h4>{player.name}'s {creature.name}</h4>
+                      {!battleStatus ? <h5>HP: {creature.hp + chosenRelic[0].hpMod}</h5>
+                        : !creatureStatsStatus ? <h5>HP: {playerCreatureHP} / {creature.hp + chosenRelic[0].hpMod}</h5>
+                          : null}
+                      {creatureStatsStatus ?
+                        <div>
+                          {battleStatus ? <h5>HP: {playerCreatureHP} / {creature.hp + chosenRelic[0].hpMod}</h5>
                             : null}
+                          <h5>Attack: {creature.attack + chosenRelic[0].attackMod}</h5>
+                          <h5>Speed: {creature.speed + chosenRelic[0].speedMod}</h5>
+                          <h5>Defense: {creature.defense + chosenRelic[0].defenseMod}</h5>
+                          <h5>Critical: {creature.critical + chosenRelic[0].criticalMod}</h5>
                         </div>
-                      </div>))}
+                        : null}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -762,26 +746,22 @@ function App() {
             // player for options
             <div>
               <div className="player">
-                {player.map((player) => (
-                  <div
-                    key={player._id}
-                  >
-                    <img src={player.avatarPath}
-                      alt={player.name}
-                      className="player_avatar"
-                      width="96"
-                      height="96" />
-                    <h4>{player.name}</h4>
-                    <h5>
-                      Level {Math.floor(Math.sqrt(player.experience) * 0.25)}
-                      <div className="progress_bar_container">
-                        <div className="experience_progress_bar"
-                          style={{ width: ((Math.sqrt(player.experience) * 0.25 - Math.floor(Math.sqrt(player.experience) * 0.25)).toFixed(2)).replace("0.", '') + "%" }} />
-                      </div>
-                    </h5>
-                    <h5>Drachmas: {player.drachmas} {"\u25C9"}</h5>
+
+                <img src={player.avatarPath}
+                  alt={player.name}
+                  className="player_avatar"
+                  width="96"
+                  height="96" />
+                <h4>{player.name}</h4>
+                <h5>
+                  Level {Math.floor(Math.sqrt(player.experience) * 0.25)}
+                  <div className="progress_bar_container">
+                    <div className="experience_progress_bar"
+                      style={{ width: ((Math.sqrt(player.experience) * 0.25 - Math.floor(Math.sqrt(player.experience) * 0.25)).toFixed(2)).replace("0.", '') + "%" }} />
                   </div>
-                ))}</div></div>}
+                </h5>
+                <h5>Drachmas: {player.drachmas} {"\u25C9"}</h5>
+              </div></div>}
         </main>
       </>
     );

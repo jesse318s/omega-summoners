@@ -7,7 +7,13 @@ router.post("/", async (req, res) => {
     try {
         const accessToken = req.headers.authorization.replace("Bearer ", "");
         const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, { algorithms: ["RS256"] });
-        if (decoded.userId === req.body.userfrontId) {
+        if (decoded.userId === req.body.userfrontId &&
+            req.body.avatarPath === "img/avatar/placeholder_avatar.png" &&
+            req.body.experience === 0 &&
+            req.body.drachmas === 0 &&
+            req.body.creatureId === 0 &&
+            req.body.relics[0] === 1 &&
+            req.body.chosenRelic === 1) {
             const user = await new User(req.body).save();
             res.send(user);
         }

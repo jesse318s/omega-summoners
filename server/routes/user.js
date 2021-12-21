@@ -7,7 +7,8 @@ router.post("/", async (req, res) => {
     try {
         const accessToken = req.headers.authorization.replace("Bearer ", "");
         const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, { algorithms: ["RS256"] });
-        if (decoded.userId === req.body.userfrontId &&
+        const user = await User.findOne({ userfrontId: decoded.userId });
+        if (!user && decoded.userId === req.body.userfrontId &&
             req.body.avatarPath === "img/avatar/placeholder_avatar.png" &&
             req.body.experience === 0 &&
             req.body.drachmas === 0 &&

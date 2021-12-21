@@ -180,16 +180,16 @@ function App() {
       }
     }
     // retrieves user data and updates player state
-    const loadDataPlayer = () => {
+    const loadAsyncDataPlayer = async () => {
       try {
-        const { data } = getUser();
+        const { data } = await getUser();
         setPlayer(data);
       } catch (error) {
         console.log(error);
       }
     }
     genDataPlayer();
-    loadDataPlayer();
+    loadAsyncDataPlayer();
   }, []);
 
   useEffect(() => {

@@ -33,7 +33,10 @@ router.put("/:id", async (req, res) => {
         const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, { algorithms: ["RS256"] });
         if (decoded) {
             const user = await User.findOneAndUpdate(
-                { _id: req.params.id },
+                {
+                    _id: req.params.id,
+                    userfrontId: decoded.userId
+                },
                 req.body
             );
             res.send(user);
@@ -48,7 +51,10 @@ router.delete("/:id", async (req, res) => {
         const accessToken = req.headers.authorization.replace("Bearer ", "");
         const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, { algorithms: ["RS256"] });
         if (decoded) {
-            const user = await User.findByIdAndDelete(req.params.id);
+            const user = await User.findOneAndDelete({
+                _id: req.params.id,
+                userfrontId: decoded.userId
+            });
             res.send(user);
         }
     } catch (error) {

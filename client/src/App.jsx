@@ -148,8 +148,12 @@ function App() {
   useEffect(() => {
     // checks for userfront authentication and redirects visitor if not authenticated
     const checkAuth = () => {
-      if (!Userfront.accessToken()) {
-        navigate('/');
+      try {
+        if (!Userfront.accessToken()) {
+          navigate('/');
+        }
+      } catch (error) {
+        console.log(error);
       }
     }
     checkAuth();

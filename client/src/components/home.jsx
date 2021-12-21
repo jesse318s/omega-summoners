@@ -137,7 +137,7 @@ function Home() {
                         <div className="d-flex align-items-center">
                             <ul className="navbar-nav">
                                 <li className="nav-item font-weight-bold">
-                                    <a className="mx-2 nav-link" href="#login">Login / Sign up</a>
+                                    <a className="mx-2 nav-link" href="#login_signup">Login / Sign up</a>
                                 </li>
                             </ul>
                         </div>
@@ -155,7 +155,7 @@ function Home() {
                 </section>
 
                 {/* login form */}
-                <section id="login" className="d-flex justify-content-center">
+                <section id="login_signup" className="d-flex justify-content-center">
                     <div className="card my-2 col-sm-5">
                         <form className="card-body" onSubmit={handleSubmitLogin}>
                             <h2 className="card-title">Login</h2>

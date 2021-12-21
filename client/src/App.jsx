@@ -100,11 +100,10 @@ function App() {
   // navigation hook
   const navigate = useNavigate();
 
-  // sets player and userfront id state
+  // sets player state
   const [player, setPlayer] = useState({
     _id: 0, userfrontId: 0, name: "", avatarPath: "", experience: 0, drachmas: 0, relics: [], chosenRelic: 0, creatureId: 0, displayCreatureStats: false
   });
-  const [userfrontId] = useState(Userfront.user.userId);
   // sets player options states
   const [optionsStatus, setOptionsStatus] = useState(false);
   const [avatarOptionStatus, setAvatarOptionStatus] = useState(false);
@@ -157,13 +156,14 @@ function App() {
   });
 
   useEffect(() => {
-    // retrieves user data, generates new user if needed, and updates player state
-    const loadAsyncDataPlayerNew = async () => {
+    // retrieves user data and generates new user if needed
+    const genDataPlayer = () => {
       try {
-        const { data } = await getUser();
-        if (userfrontId !== data.userfrontId) {
+        const { data } = getUser();
+        // if there is no user data
+        if (!data) {
           const newUser = {
-            userfrontId: userfrontId,
+            userfrontId: Userfront.user.userId,
             name: Userfront.user.username,
             avatarPath: "img/avatar/placeholder_avatar.png",
             experience: 0,
@@ -173,67 +173,64 @@ function App() {
             creatureId: 0,
             displayCreatureStats: false
           }
-          await addUser(newUser);
-          setPlayer(data);
+          addUser(newUser);
         }
       } catch (error) {
         console.log(error);
       }
     }
     // retrieves user data and updates player state
-    const loadAsyncDataPlayer = async () => {
+    const loadDataPlayer = () => {
       try {
-        const { data } = await getUser();
+        const { data } = getUser();
         setPlayer(data);
       } catch (error) {
         console.log(error);
       }
     }
-    loadAsyncDataPlayerNew();
-    loadAsyncDataPlayer();
-  }, [userfrontId]);
+    genDataPlayer();
+    loadDataPlayer();
+  }, []);
 
   useEffect(() => {
-    try {
-      // if needed, generates random creature and updates player in database
-      const genAsyncPlayerCreature = async () => {
-        // retrieves user data and updates player state
-        const loadAsyncDataPlayer = async () => {
+    // if there is a player
+    if (player) {
+      try {
+        // if needed, generates random creature and updates player in database
+        const genAsyncPlayerCreature = async () => {
+          // retrieves user data and updates player state
+          const loadAsyncDataPlayer = async () => {
+            try {
+              const { data } = await getUser();
+              setPlayer(data);
+            } catch (error) {
+              console.log(error);
+            }
+          }
           try {
-            const { data } = await getUser();
-            setPlayer(data);
-          } catch (error) {
+            // if there is no player creature data
+            if (player.creatureId === 0) {
+              const randomCreature = creatureData[Math.floor(Math.random() * creatureData.length)].id;
+              await updateUser(player._id, { creatureId: randomCreature });
+              loadAsyncDataPlayer();
+            }
+          }
+          catch (error) {
             console.log(error);
           }
         }
-        try {
-          if (player.creatureId === 0) {
-            const randomCreature = creatureData[Math.floor(Math.random() * creatureData.length)].id;
-            await updateUser(player._id, { creatureId: randomCreature });
-            await loadAsyncDataPlayer();
-          }
+        // loads player creature data and sets player creature state
+        const loadDataPlayerCreature = () => {
+          const playerCreatureData = creatureData.filter(creature => creature.id === player.creatureId);
+          setPlayerCreature(playerCreatureData);
+          setCreatureStatsStatus(player.displayCreatureStats);
         }
-        catch (error) {
-          console.log(error);
-        }
-      }
-      // loads player creature data and sets player creature state
-      const loadDataPlayerCreature = () => {
-        const playerCreatureData = creatureData.filter(creature => creature.id === player.creatureId);
-        setPlayerCreature(playerCreatureData);
-        setCreatureStatsStatus(player.displayCreatureStats);
-      }
-      // if there is a player
-      if (player) {
         genAsyncPlayerCreature();
         loadDataPlayerCreature();
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
-    }
-    try {
-      // if there is a player and player relics
-      if (player && player.relics) {
+      try {
         // loads player relics data
         const loadDataPlayerRelics = () => {
           const playerRelicsData = relicsData.filter(relic => player.relics.includes(relic.id));
@@ -242,9 +239,9 @@ function App() {
           setChosenRelic(chosenRelicData);
         }
         loadDataPlayerRelics();
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
     }
   }, [player, relicsData, creatureData]);
 

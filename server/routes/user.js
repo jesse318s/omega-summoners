@@ -7,7 +7,7 @@ router.post("/", async (req, res) => {
     try {
         const accessToken = req.headers.authorization.replace("Bearer ", "");
         const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, { algorithms: ["RS256"] });
-        if (decoded) {
+        if (decoded.userId === req.body.userfrontId) {
             const user = await new User(req.body).save();
             res.send(user);
         }

@@ -29,12 +29,3 @@ export function updateUser(id, user) {
         }
     });
 }
-
-export function deleteUser(id) {
-    return axios.delete(apiUrl + "/" + id, {
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${Userfront.accessToken()}`,
-        }
-    });
-}

@@ -53,20 +53,4 @@ router.put("/:id", async (req, res) => {
     }
 });
 
-router.delete("/:id", async (req, res) => {
-    try {
-        const accessToken = req.headers.authorization.replace("Bearer ", "");
-        const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, { algorithms: ["RS256"] });
-        if (decoded) {
-            const user = await User.findOneAndDelete({
-                _id: req.params.id,
-                userfrontId: decoded.userId
-            });
-            res.send(user);
-        }
-    } catch (error) {
-        res.send(error);
-    }
-});
-
 module.exports = router;

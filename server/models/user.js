@@ -5,10 +5,10 @@ const userSchema = new Schema({
     userfrontId: {
         type: Number,
         required: true,
+        immutable: true
     },
     name: {
         type: String,
-        required: true,
     },
     avatarPath: {
         type: String,

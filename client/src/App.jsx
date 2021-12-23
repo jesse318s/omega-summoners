@@ -177,7 +177,14 @@ function App() {
             creatureId: 0,
             displayCreatureStats: false
           }
-          addUser(newUser);
+
+          // if there is no userkey
+          if (!Userfront.user.data.userkey) {
+            addUser(newUser);
+            alert("Welcome to the game! You have been assigned a new account. Please log in again to continue.");
+            Userfront.logout();
+          }
+
         }
       } catch (error) {
         console.log(error);
@@ -215,7 +222,12 @@ function App() {
             // if there is no player creature data
             if (player.creatureId === 0) {
               const randomCreature = creatureData[Math.floor(Math.random() * creatureData.length)].id;
-              await updateUser(player._id, { creatureId: randomCreature });
+              Userfront.user.update({
+                data: {
+                  userkey: Userfront.user.data.userkey,
+                },
+              });
+              await updateUser(player._id, { userfrontId: Userfront.user.userId, creatureId: randomCreature });
               loadAsyncDataPlayer();
             }
           }
@@ -262,7 +274,12 @@ function App() {
   // toggles display creature stats in database
   const toggleDisplayCreatureStats = async () => {
     try {
-      await updateUser(player._id, { displayCreatureStats: !creatureStatsStatus });
+      Userfront.user.update({
+        data: {
+          userkey: Userfront.user.data.userkey,
+        },
+      });
+      await updateUser(player._id, { userfrontId: Userfront.user.userId, displayCreatureStats: !creatureStatsStatus });
       await loadAsyncDataPlayer();
     }
     catch (error) {
@@ -273,7 +290,12 @@ function App() {
   // updates player avatar path in database
   const selectAvatar = async (avatarPath) => {
     try {
-      await updateUser(player._id, { avatarPath: avatarPath });
+      Userfront.user.update({
+        data: {
+          userkey: Userfront.user.data.userkey,
+        },
+      });
+      await updateUser(player._id, { userfrontId: Userfront.user.userId, avatarPath: avatarPath });
       await loadAsyncDataPlayer();
     }
     catch (error) {
@@ -284,7 +306,12 @@ function App() {
   // updates player name in database
   const selectName = async (e) => {
     try {
-      await updateUser(player._id, { name: e });
+      Userfront.user.update({
+        data: {
+          userkey: Userfront.user.data.userkey,
+        },
+      });
+      await updateUser(player._id, { userfrontId: Userfront.user.userId, name: e });
       await loadAsyncDataPlayer();
     }
     catch (error) {
@@ -295,7 +322,12 @@ function App() {
   // updates player chosen relic in database
   const selectRelic = async (relicId) => {
     try {
-      await updateUser(player._id, { chosenRelic: relicId });
+      Userfront.user.update({
+        data: {
+          userkey: Userfront.user.data.userkey,
+        },
+      });
+      await updateUser(player._id, { userfrontId: Userfront.user.userId, chosenRelic: relicId });
       await loadAsyncDataPlayer();
     }
     catch (error) {
@@ -308,7 +340,12 @@ function App() {
     try {
       // if the player can afford the relic and doesn't own it
       if (player.drachmas >= relicPrice && !player.relics.includes(relicId)) {
-        await updateUser(player._id, { drachmas: player.drachmas - relicPrice, relics: [...player.relics, relicId] });
+        Userfront.user.update({
+          data: {
+            userkey: Userfront.user.data.userkey,
+          },
+        });
+        await updateUser(player._id, { userfrontId: Userfront.user.userId, drachmas: player.drachmas - relicPrice, relics: [...player.relics, relicId] });
         await loadAsyncDataPlayer();
       }
     }
@@ -465,7 +502,12 @@ function App() {
           await setTimeout(() => {
             setEnemyCreatureHP(0);
             setCombatAlert("Victory!");
-            updateUser(player._id, { experience: player.experience + 5, drachmas: player.drachmas + 3 });
+            Userfront.user.update({
+              data: {
+                userkey: Userfront.user.data.userkey,
+              },
+            });
+            updateUser(player._id, { userfrontId: Userfront.user.userId, experience: player.experience + 5, drachmas: player.drachmas + 3 });
           }, 250);
           setTimeout(() => {
             setBattleStatus(false);

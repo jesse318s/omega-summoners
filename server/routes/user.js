@@ -2,6 +2,14 @@ const User = require("../models/user");
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
+const axios = require('axios');
+
+const options = {
+    headers: {
+        Accept: "*/*",
+        Authorization: `Bearer ${process.env.USERFRONT_KEY}`
+    }
+};
 
 router.post("/", async (req, res) => {
     try {
@@ -36,9 +44,22 @@ router.get("/", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
     try {
+        const payload = {
+            data: {
+                userkey: Math.random().toString(36).substring(7),
+            }
+        };
+        function getUserkey() {
+            return axios.get("https://api.userfront.com/v0/users/" + req.body.userfrontId, options)
+                .then((response) => {
+                    return response.data;
+                })
+                .catch((err) => console.error(err));
+        }
+        const userkey = await getUserkey();
         const accessToken = req.headers.authorization.replace("Bearer ", "");
         const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, { algorithms: ["RS256"] });
-        if (decoded) {
+        if (req.headers.userkey === userkey.data.userkey && decoded) {
             const user = await User.findOneAndUpdate(
                 {
                     _id: req.params.id,
@@ -48,6 +69,11 @@ router.put("/:id", async (req, res) => {
             );
             res.send(user);
         }
+        function putUserkey() {
+            return axios.put("https://api.userfront.com/v0/users/" + req.body.userfrontId, payload, options)
+                .catch((err) => console.error(err));
+        }
+        await putUserkey();
     } catch (error) {
         res.send(error);
     }

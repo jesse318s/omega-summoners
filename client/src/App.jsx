@@ -177,9 +177,9 @@ function App() {
             creatureId: 0,
             displayCreatureStats: false
           }
-          addUser(newUser);
           if (!Userfront.user.data.userkey) {
-            Userfront.logout({ redirect: false });
+            addUser(newUser);
+            Userfront.logout();
           }
         }
       } catch (error) {

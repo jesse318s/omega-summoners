@@ -13,6 +13,16 @@ const options = {
 
 router.post("/", async (req, res) => {
     try {
+        const payload = {
+            data: {
+                userkey: Math.random().toString(36).substring(7),
+            }
+        };
+        function putUserkey() {
+            return axios.put("https://api.userfront.com/v0/users/" + req.body.userfrontId, payload, options)
+                .catch((err) => console.error(err));
+        }
+        await putUserkey();
         const accessToken = req.headers.authorization.replace("Bearer ", "");
         const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, { algorithms: ["RS256"] });
         const user = await User.findOne({ userfrontId: decoded.userId });

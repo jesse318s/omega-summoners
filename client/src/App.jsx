@@ -177,10 +177,14 @@ function App() {
             creatureId: 0,
             displayCreatureStats: false
           }
+
+          // if there is no userkey
           if (!Userfront.user.data.userkey) {
             addUser(newUser);
+            alert("Welcome to the game! You have been assigned a new account. Please log in again to continue.");
             Userfront.logout();
           }
+
         }
       } catch (error) {
         console.log(error);

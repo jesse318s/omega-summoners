@@ -160,12 +160,11 @@ function App() {
   });
 
   useEffect(() => {
-    // retrieves user data and generates new user if needed
+    // checks for userkey and generates new user if needed
     const genDataPlayer = () => {
       try {
-        const { data } = getUser();
-        // if there is no user data
-        if (!data) {
+        // if there is no userkey
+        if (!Userfront.user.data.userkey) {
           const newUser = {
             userfrontId: Userfront.user.userId,
             name: Userfront.user.username,
@@ -177,14 +176,9 @@ function App() {
             creatureId: 0,
             displayCreatureStats: false
           }
-
-          // if there is no userkey
-          if (!Userfront.user.data.userkey) {
-            addUser(newUser);
-            alert("Welcome to the game! You have been assigned a new account. Please log in again to continue.");
-            Userfront.logout();
-          }
-
+          addUser(newUser);
+          alert("Welcome to the game! You have been assigned a new account. Please log in again to continue.");
+          Userfront.logout();
         }
       } catch (error) {
         console.log(error);
@@ -357,16 +351,13 @@ function App() {
   // loads battle data
   const loadDataBattle = () => {
     try {
-      // if there is no battle
-      if (!battleStatus) {
-        setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod);
-        const enemyCreatureData = [creatureData[Math.floor(Math.random() * creatureData.length)]];
-        setEnemyCreature(enemyCreatureData);
-        setEnemyCreatureHP(enemyCreatureData[0].hp);
-        setCombatAlert("The battle has begun!");
-        setBattleStatus(true);
-        setBattleUndecided(true);
-      }
+      setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod);
+      const enemyCreatureData = [creatureData[Math.floor(Math.random() * creatureData.length)]];
+      setEnemyCreature(enemyCreatureData);
+      setEnemyCreatureHP(enemyCreatureData[0].hp);
+      setCombatAlert("The battle has begun!");
+      setBattleStatus(true);
+      setBattleUndecided(true);
     }
     catch (error) {
       console.log(error);

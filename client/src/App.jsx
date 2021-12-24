@@ -59,7 +59,7 @@ function App() {
     {
       id: 1,
       name: "Gust of Hermes",
-      description: "Grants the user +5 speed.",
+      description: "Grants the user's summons +5 speed.",
       imgPath: "img/relic/relic1.webp",
       effectClass: "relic1",
       hpMod: 0,
@@ -72,7 +72,7 @@ function App() {
     {
       id: 2,
       name: "Spark of Zeus",
-      description: "Grants the user +10 attack.",
+      description: "Grants the user's summons +10 attack.",
       imgPath: "img/relic/relic2.webp",
       effectClass: "relic2",
       hpMod: 0,
@@ -85,7 +85,7 @@ function App() {
     {
       id: 3,
       name: "Cup of Dionysus",
-      description: "Grants the user +10 HP.",
+      description: "Grants the user's summons +10 HP.",
       imgPath: "img/relic/relic3.webp",
       effectClass: "relic3",
       hpMod: 10,
@@ -686,7 +686,7 @@ function App() {
               }
               {!battleStatus ?
                 <button className="game_button battle_button" onClick={() => { loadDataBattle(); setTempleStatus(false); setRelicsStatus(false) }}>
-                  Battle Hellspawn</button>
+                  Battle</button>
                 : null}
             </div>
 

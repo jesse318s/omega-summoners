@@ -2,7 +2,7 @@
 .game_section {
   background-image: url("assets/img_background/game_background_1.webp");
   background-size: cover;
-  min-height: 1100px;
+  min-height: 1200px;
   height: 100vh;
   width: 100vw;
   padding-top: 80px;
@@ -131,10 +131,6 @@
   color: blue;
 }
 
-.battle_button {
-  margin-top: 5px;
-}
-
 .relic1 {
   filter: drop-shadow(0 0 10px lightblue);
 }
@@ -145,6 +141,41 @@
 
 .relic3 {
   filter: drop-shadow(0 0 15px purple);
+}
+
+.creature_option {
+  margin: 5px;
+}
+
+.summon_option {
+  margin: 0 auto;
+  padding: 5px;
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 250px;
+}
+
+.summon_option_img {
+  margin: 5px;
+  border: 1px solid black;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.summon_option_img:hover {
+  filter: brightness(0.8);
+}
+
+.summon_info {
+  cursor: pointer;
+  position: relative;
+  right: 100px;
+  bottom: 38px;
+  color: white;
+}
+
+.summon_info:hover {
+  color: blue;
 }
 
 .combat_alert {
@@ -169,7 +200,7 @@
 
 .player_creature {
   float: left;
-  padding: 5px;
+  padding: 5px 5px 5px 5px;
   color: white;
 }
 

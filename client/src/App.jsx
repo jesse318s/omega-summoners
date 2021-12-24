@@ -15,7 +15,9 @@ function App() {
     {
       id: 1,
       name: "Demon",
+      description: "HP: 60\nAttack: 50\nSpeed: 60\nDefense: 20\nCritical: 50",
       imgPath: "img/creature/demon_creature.png",
+      price: 50,
       hp: 60,
       attack: 50,
       speed: 60,
@@ -25,7 +27,9 @@ function App() {
     {
       id: 2,
       name: "Medusa",
+      description: "HP: 110\nAttack: 30\nSpeed: 30\nDefense: 15\nCritical: 20",
       imgPath: "img/creature/medusa_creature.png",
+      price: 50,
       hp: 110,
       attack: 30,
       speed: 30,
@@ -35,7 +39,9 @@ function App() {
     {
       id: 3,
       name: "Baby Dragon",
+      description: "HP: 60\nAttack: 50\nSpeed: 60\nDefense: 20\nCritical: 50",
       imgPath: "img/creature/small_dragon_creature.png",
+      price: 50,
       hp: 60,
       attack: 50,
       speed: 60,
@@ -45,7 +51,9 @@ function App() {
     {
       id: 4,
       name: "Lizard",
+      description: "HP: 110\nAttack: 30\nSpeed: 30\nDefense: 15\nCritical: 20",
       imgPath: "img/creature/lizard_creature.png",
+      price: 50,
       hp: 110,
       attack: 30,
       speed: 30,
@@ -108,18 +116,19 @@ function App() {
   const [optionsStatus, setOptionsStatus] = useState(false);
   const [avatarOptionStatus, setAvatarOptionStatus] = useState(false);
   const [nameOptionStatus, setNameOptionStatus] = useState(false);
-  // sets relics and temple state
+  // sets relics, temple, and summons state
   const [relicsStatus, setRelicsStatus] = useState(false);
   const [templeStatus, setTempleStatus] = useState(false);
+  const [summonsStatus, setSummonsStatus] = useState(false);
   // sets creatures state
   const [creatureData] = useState(creatures);
   // sets player creature state
-  const [playerCreature, setPlayerCreature] = useState([{ id: "", name: "", imgPath: "", hp: 0, attack: 0, speed: 0, defense: 0, critical: 0 }]);
+  const [playerCreature, setPlayerCreature] = useState([{ id: "", name: "", description: "", imgPath: "", price: 0, hp: 0, attack: 0, speed: 0, defense: 0, critical: 0 }]);
   // sets creature stats state
   const [creatureStatsStatus, setCreatureStatsStatus] = useState(false);
   // sets battle and enemy creature state
   const [battleStatus, setBattleStatus] = useState(false);
-  const [enemyCreature, setEnemyCreature] = useState([{ id: "", name: "", imgPath: "", hp: 0, attack: 0, speed: 0, defense: 0, critical: 0 }]);
+  const [enemyCreature, setEnemyCreature] = useState([{ id: "", name: "", description: "", imgPath: "", price: 0, hp: 0, attack: 0, speed: 0, defense: 0, critical: 0 }]);
   // sets player and enemy creature attack state
   const [playerAttackStatus, setPlayerAttackStatus] = useState(false);
   const [enemyAttackStatus, setEnemyAttackStatus] = useState(false);
@@ -348,6 +357,25 @@ function App() {
     }
   }
 
+  // swaps player creature in database
+  const swapCreature = async (creatureId, creaturePrice) => {
+    try {
+      // if the player can afford the creature and isn't already using it
+      if (player.experience >= creaturePrice && player.creatureId !== creatureId) {
+        Userfront.user.update({
+          data: {
+            userkey: Userfront.user.data.userkey,
+          },
+        });
+        await updateUser(player._id, { userfrontId: Userfront.user.userId, experience: player.experience - creaturePrice, creatureId: creatureId });
+        await loadAsyncDataPlayer();
+      }
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
+
   // loads battle data
   const loadDataBattle = () => {
     try {
@@ -437,7 +465,9 @@ function App() {
             setEnemyCreature([{
               id: 0,
               name: "",
+              description: "",
               imgPath: "",
+              price: 0,
               hp: 0,
               attack: 0,
               speed: 0,
@@ -640,8 +670,8 @@ function App() {
 
               {/* menu */}
               {!battleStatus ? <div><div className="item_options_container">
-                <button className="game_button item_option" onClick={() => { setRelicsStatus(!relicsStatus); setTempleStatus(false) }}>Relics</button>
-                <button className="game_button item_option" onClick={() => { setTempleStatus(!templeStatus); setRelicsStatus(false) }}>Temple</button>
+                <button className="game_button item_option" onClick={() => { setRelicsStatus(!relicsStatus); setTempleStatus(false); setSummonsStatus(false); }}>Relics</button>
+                <button className="game_button item_option" onClick={() => { setTempleStatus(!templeStatus); setRelicsStatus(false); setSummonsStatus(false); }}>Temple</button>
               </div></div>
                 : null}
               {battleStatus ? <div><p className="combat_alert">{combatAlert}</p></div>
@@ -684,14 +714,36 @@ function App() {
               </div>
                 : null
               }
-              {!battleStatus ?
-                <button className="game_button battle_button" onClick={() => { loadDataBattle(); setTempleStatus(false); setRelicsStatus(false) }}>
+              {!battleStatus ? <>
+                <button className="game_button creature_option" onClick={() => { setSummonsStatus(!summonsStatus); setTempleStatus(false); setRelicsStatus(false) }}>
+                  Summons</button>
+                <button className="game_button creature_option" onClick={() => { loadDataBattle(); setTempleStatus(false); setRelicsStatus(false); setSummonsStatus(false); }}>
                   Battle</button>
+              </>
                 : null}
+              {summonsStatus ? <div>
+                <h4>Available Summons</h4>
+                {creatureData.map((creature) => (
+                  <div
+                    className="summon_option"
+                    key={creature.id}
+                  >
+                    <button className="game_button_small" onClick={() => swapCreature(creature.id, creature.price)}>Swap</button>
+                    <img onClick={() => alert(creature.description)}
+                      className="summon_option_img"
+                      src={creature.imgPath}
+                      alt={creature.name}
+                      width="96px"
+                      height="96px" /><span className="summon_info" onClick={() => alert(creature.description)}>?</span><br />
+                    {creature.name} - {creature.price} EXP. {creature.id === player.creatureId ? <i>{"\u2713"}</i> : null}
+                  </div>))}
+              </div>
+                : null
+              }
             </div>
 
             {/* player creature */}
-            {!relicsStatus && !templeStatus ? <>
+            {!relicsStatus && !templeStatus && !summonsStatus ? <>
               <div className="player_creature">
                 {playerCreature.map((creature) => (
                   <div

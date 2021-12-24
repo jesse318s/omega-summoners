@@ -35,6 +35,8 @@ router.post("/", async (req, res) => {
             req.body.chosenRelic === 1) {
             const user = await new User(req.body).save();
             res.send(user);
+        } else {
+            res.send("Unauthorized");
         }
     } catch (error) {
         res.send(error);
@@ -78,6 +80,8 @@ router.put("/:id", async (req, res) => {
                 req.body
             );
             res.send(user);
+        } else {
+            res.send("Unauthorized");
         }
         function putUserkey() {
             return axios.put("https://api.userfront.com/v0/users/" + req.body.userfrontId, payload, options)

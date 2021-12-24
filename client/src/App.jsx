@@ -59,7 +59,7 @@ function App() {
     {
       id: 1,
       name: "Gust of Hermes",
-      description: "Grants the user +5 speed.",
+      description: "Grants the user's summons +5 speed.",
       imgPath: "img/relic/relic1.webp",
       effectClass: "relic1",
       hpMod: 0,
@@ -72,7 +72,7 @@ function App() {
     {
       id: 2,
       name: "Spark of Zeus",
-      description: "Grants the user +10 attack.",
+      description: "Grants the user's summons +10 attack.",
       imgPath: "img/relic/relic2.webp",
       effectClass: "relic2",
       hpMod: 0,
@@ -85,7 +85,7 @@ function App() {
     {
       id: 3,
       name: "Cup of Dionysus",
-      description: "Grants the user +10 HP.",
+      description: "Grants the user's summons +10 HP.",
       imgPath: "img/relic/relic3.webp",
       effectClass: "relic3",
       hpMod: 10,
@@ -160,12 +160,11 @@ function App() {
   });
 
   useEffect(() => {
-    // retrieves user data and generates new user if needed
+    // checks for userkey and generates new user if needed
     const genDataPlayer = () => {
       try {
-        const { data } = getUser();
-        // if there is no user data
-        if (!data) {
+        // if there is no userkey
+        if (!Userfront.user.data.userkey) {
           const newUser = {
             userfrontId: Userfront.user.userId,
             name: Userfront.user.username,
@@ -177,14 +176,9 @@ function App() {
             creatureId: 0,
             displayCreatureStats: false
           }
-
-          // if there is no userkey
-          if (!Userfront.user.data.userkey) {
-            addUser(newUser);
-            alert("Welcome to the game! You have been assigned a new account. Please log in again to continue.");
-            Userfront.logout();
-          }
-
+          addUser(newUser);
+          alert("Welcome to the game! You have been assigned a new account. Please log in again to continue.");
+          Userfront.logout();
         }
       } catch (error) {
         console.log(error);
@@ -357,16 +351,13 @@ function App() {
   // loads battle data
   const loadDataBattle = () => {
     try {
-      // if there is no battle
-      if (!battleStatus) {
-        setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod);
-        const enemyCreatureData = [creatureData[Math.floor(Math.random() * creatureData.length)]];
-        setEnemyCreature(enemyCreatureData);
-        setEnemyCreatureHP(enemyCreatureData[0].hp);
-        setCombatAlert("The battle has begun!");
-        setBattleStatus(true);
-        setBattleUndecided(true);
-      }
+      setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod);
+      const enemyCreatureData = [creatureData[Math.floor(Math.random() * creatureData.length)]];
+      setEnemyCreature(enemyCreatureData);
+      setEnemyCreatureHP(enemyCreatureData[0].hp);
+      setCombatAlert("The battle has begun!");
+      setBattleStatus(true);
+      setBattleUndecided(true);
     }
     catch (error) {
       console.log(error);
@@ -695,7 +686,7 @@ function App() {
               }
               {!battleStatus ?
                 <button className="game_button battle_button" onClick={() => { loadDataBattle(); setTempleStatus(false); setRelicsStatus(false) }}>
-                  Battle Hellspawn</button>
+                  Battle</button>
                 : null}
             </div>
 

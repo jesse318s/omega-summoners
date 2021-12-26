@@ -407,6 +407,7 @@ function App() {
   // loads battle data
   const loadDataBattle = () => {
     try {
+      setCriticalAttackMultiplier(1);
       setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod);
       setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod);
       const enemyCreatureData = [creatureData[Math.floor(Math.random() * creatureData.length)]];
@@ -511,7 +512,6 @@ function App() {
     try {
       // if the player and enemy aren't attacking and the battle is undecided
       if (!playerAttackStatus && !enemyAttackStatus && battleUndecided) {
-        setCriticalAttackMultiplier(1);
         const playerCreatureAttack = playerCreature[0].attack + chosenRelic[0].attackMod;
         const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
         const playerCreatureCritical = (playerCreature[0].critical + chosenRelic[0].criticalMod) / 100;
@@ -520,8 +520,20 @@ function App() {
         // checks for equal player and enemy speed
         if (playerCreatureSpeed === enemyCreature[0].speed / 100) {
           setChancePlayer(Math.random() >= 0.5);
+
+          // checks for player critical hit
+          if (Math.random() <= playerCreatureCritical) {
+            setCriticalAttackMultiplier(1.5);
+          }
+
         } else {
           setChancePlayer(Math.random() >= enemyCreature[0].speed / 100 - playerCreatureSpeed);
+
+          // checks for player critical hit
+          if (Math.random() <= playerCreatureCritical) {
+            setCriticalAttackMultiplier(1.5);
+          }
+
         }
 
         // checks for player speed failure
@@ -531,12 +543,7 @@ function App() {
           }, 750);
         }
 
-        // checks for player critical hit
-        if (Math.random() <= playerCreatureCritical) {
-          setCriticalAttackMultiplier(1.5);
-        }
-
-        // if the players attack is regular
+        // if the player's attack is regular
         if (movename === playerCreature[0].attack_name) {
 
           // checks for enemy death
@@ -835,6 +842,8 @@ function App() {
                   <div
                     key={creature.id}
                   >
+                    {criticalAttackMultiplier > 1 && playerAttackStatus ? <div className="critical_effect">!</div>
+                      : null}
                     {playerAttackStatus
                       ? <img className={chosenRelic[0].effectClass}
                         src={creature.imgPath.slice(0, -4) + "_attack.png"}
@@ -882,6 +891,8 @@ function App() {
                   <div
                     key={creature.id}
                   >
+                    {criticalAttackMultiplier > 1 && enemyAttackStatus ? <div className="critical_effect">!</div>
+                      : null}
                     {enemyAttackStatus ? <img className="enemy_creature_img"
                       src={creature.imgPath.slice(0, -4) + "_attack.png"}
                       alt={creature.name}

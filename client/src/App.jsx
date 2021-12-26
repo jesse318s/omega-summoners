@@ -15,50 +15,70 @@ function App() {
     {
       id: 1,
       name: "Demon",
-      description: "HP: 60\nAttack: 50\nSpeed: 60\nDefense: 20\nCritical: 50",
       imgPath: "img/creature/demon_creature.png",
       price: 50,
       hp: 60,
       attack: 50,
+      attack_name: "Slash",
       speed: 60,
       defense: 20,
-      critical: 50
+      critical: 50,
+      mp: 100,
+      mp_regen: 25,
+      special: 75,
+      special_cost: 100,
+      special_name: "Harvest"
     },
     {
       id: 2,
       name: "Medusa",
-      description: "HP: 110\nAttack: 30\nSpeed: 30\nDefense: 15\nCritical: 20",
       imgPath: "img/creature/medusa_creature.png",
       price: 50,
       hp: 110,
       attack: 30,
+      attack_name: "Gaze",
       speed: 30,
       defense: 15,
-      critical: 20
+      critical: 20,
+      mp: 100,
+      mp_regen: 25,
+      special: 75,
+      special_cost: 100,
+      special_name: "Petrify"
     },
     {
       id: 3,
       name: "Baby Dragon",
-      description: "HP: 60\nAttack: 50\nSpeed: 60\nDefense: 20\nCritical: 50",
       imgPath: "img/creature/small_dragon_creature.png",
       price: 50,
       hp: 60,
       attack: 50,
+      attack_name: "Exhale",
       speed: 60,
       defense: 20,
-      critical: 50
+      critical: 50,
+      mp: 100,
+      mp_regen: 25,
+      special: 75,
+      special_cost: 100,
+      special_name: "Fireball"
     },
     {
       id: 4,
       name: "Lizard",
-      description: "HP: 110\nAttack: 30\nSpeed: 30\nDefense: 15\nCritical: 20",
       imgPath: "img/creature/lizard_creature.png",
       price: 50,
       hp: 110,
       attack: 30,
+      attack_name: "Impale",
       speed: 30,
       defense: 15,
-      critical: 20
+      critical: 20,
+      mp: 100,
+      mp_regen: 25,
+      special: 75,
+      special_cost: 100,
+      special_name: "Poison"
     }
   ];
 
@@ -75,6 +95,9 @@ function App() {
       speedMod: 5,
       defenseMod: 0,
       criticalMod: 0,
+      mpMod: 0,
+      mpRegenMod: 0,
+      specialMod: 0,
       price: 0,
     },
     {
@@ -88,6 +111,9 @@ function App() {
       speedMod: 0,
       defenseMod: 0,
       criticalMod: 0,
+      mpMod: 0,
+      mpRegenMod: 0,
+      specialMod: 0,
       price: 500,
     },
     {
@@ -101,6 +127,9 @@ function App() {
       speedMod: 0,
       defenseMod: 0,
       criticalMod: 0,
+      mpMod: 0,
+      mpRegenMod: 0,
+      specialMod: 0,
       price: 500,
     }
   ];
@@ -109,9 +138,7 @@ function App() {
   const navigate = useNavigate();
 
   // sets player state
-  const [player, setPlayer] = useState({
-    _id: 0, userfrontId: 0, name: "", avatarPath: "", experience: 0, drachmas: 0, relics: [], chosenRelic: 0, creatureId: 0, displayCreatureStats: false
-  });
+  const [player, setPlayer] = useState({});
   // sets player options states
   const [optionsStatus, setOptionsStatus] = useState(false);
   const [avatarOptionStatus, setAvatarOptionStatus] = useState(false);
@@ -123,18 +150,20 @@ function App() {
   // sets creatures state
   const [creatureData] = useState(creatures);
   // sets player creature state
-  const [playerCreature, setPlayerCreature] = useState([{ id: "", name: "", description: "", imgPath: "", price: 0, hp: 0, attack: 0, speed: 0, defense: 0, critical: 0 }]);
+  const [playerCreature, setPlayerCreature] = useState([{}]);
   // sets creature stats state
   const [creatureStatsStatus, setCreatureStatsStatus] = useState(false);
   // sets battle and enemy creature state
   const [battleStatus, setBattleStatus] = useState(false);
-  const [enemyCreature, setEnemyCreature] = useState([{ id: "", name: "", description: "", imgPath: "", price: 0, hp: 0, attack: 0, speed: 0, defense: 0, critical: 0 }]);
+  const [enemyCreature, setEnemyCreature] = useState([{}]);
   // sets player and enemy creature attack state
   const [playerAttackStatus, setPlayerAttackStatus] = useState(false);
   const [enemyAttackStatus, setEnemyAttackStatus] = useState(false);
   // sets player and enemy creature hp state
   const [playerCreatureHP, setPlayerCreatureHP] = useState(0);
   const [enemyCreatureHP, setEnemyCreatureHP] = useState(0);
+  // sets player creature MP state
+  const [playerCreatureMP, setPlayerCreatureMP] = useState(0);
   // sets critical modifier state
   const [criticalAttackMultiplier, setCriticalAttackMultiplier] = useState(1);
   // sets player speed chance state
@@ -142,13 +171,9 @@ function App() {
   // sets relics state
   const [relicsData] = useState(relics);
   // sets player relics state
-  const [playerRelics, setPlayerRelics] = useState([{
-    id: 0, name: "", description: "", imgPath: "", effectClass: "", hpMod: 0, attackMod: 0, speedMod: 0, defenseMod: 0, criticalMod: 0, price: 0
-  }]);
+  const [playerRelics, setPlayerRelics] = useState([{}]);
   // sets chosen relic state
-  const [chosenRelic, setChosenRelic] = useState({
-    id: 0, name: "", description: "", imgPath: "", effectClass: "", hpMod: 0, attackMod: 0, speedMod: 0, defenseMod: 0, criticalMod: 0, price: 0
-  });
+  const [chosenRelic, setChosenRelic] = useState({});
   // sets combat alert state
   const [combatAlert, setCombatAlert] = useState("");
   // sets battle decision state
@@ -250,14 +275,17 @@ function App() {
         console.log(error);
       }
       try {
-        // loads player relics data
-        const loadDataPlayerRelics = () => {
-          const playerRelicsData = relicsData.filter(relic => player.relics.includes(relic.id));
-          setPlayerRelics(playerRelicsData);
-          const chosenRelicData = playerRelicsData.filter(relic => relic.id === player.chosenRelic);
-          setChosenRelic(chosenRelicData);
+        // if there are player relics
+        if (player.relics) {
+          // loads player relics data
+          const loadDataPlayerRelics = () => {
+            const playerRelicsData = relicsData.filter(relic => player.relics.includes(relic.id));
+            setPlayerRelics(playerRelicsData);
+            const chosenRelicData = playerRelicsData.filter(relic => relic.id === player.chosenRelic);
+            setChosenRelic(chosenRelicData);
+          }
+          loadDataPlayerRelics();
         }
-        loadDataPlayerRelics();
       } catch (error) {
         console.log(error);
       }
@@ -380,6 +408,7 @@ function App() {
   const loadDataBattle = () => {
     try {
       setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod);
+      setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod);
       const enemyCreatureData = [creatureData[Math.floor(Math.random() * creatureData.length)]];
       setEnemyCreature(enemyCreatureData);
       setEnemyCreatureHP(enemyCreatureData[0].hp);
@@ -462,18 +491,7 @@ function App() {
           }, 750);
           setTimeout(() => {
             setBattleStatus(false);
-            setEnemyCreature([{
-              id: 0,
-              name: "",
-              description: "",
-              imgPath: "",
-              price: 0,
-              hp: 0,
-              attack: 0,
-              speed: 0,
-              defense: 0,
-              critical: 0
-            }]);
+            setEnemyCreature([{}]);
             setEnemyCreatureHP(0);
           }, 2750);
         } else {
@@ -489,13 +507,15 @@ function App() {
   }
 
   // initiates chance to attack enemy creature
-  const attackEnemy = async () => {
+  const attackEnemy = async (movename) => {
     try {
+      // if the player and enemy aren't attacking and the battle is undecided
       if (!playerAttackStatus && !enemyAttackStatus && battleUndecided) {
         setCriticalAttackMultiplier(1);
         const playerCreatureAttack = playerCreature[0].attack + chosenRelic[0].attackMod;
         const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
         const playerCreatureCritical = (playerCreature[0].critical + chosenRelic[0].criticalMod) / 100;
+        const playerCreatureSpecial = playerCreature[0].special + chosenRelic[0].specialMod;
 
         // checks for equal player and enemy speed
         if (playerCreatureSpeed === enemyCreature[0].speed / 100) {
@@ -516,39 +536,99 @@ function App() {
           setCriticalAttackMultiplier(1.5);
         }
 
-        // checks for enemy death
-        if (enemyCreatureHP - ((playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier) <= 0 && chancePlayer) {
-          setBattleUndecided(false);
-          playerAttackAnimation();
-          await setTimeout(() => {
-            setEnemyCreatureHP(0);
-            setCombatAlert("Victory!");
-            Userfront.user.update({
-              data: {
-                userkey: Userfront.user.data.userkey,
-              },
-            });
-            updateUser(player._id, { userfrontId: Userfront.user.userId, experience: player.experience + 5, drachmas: player.drachmas + 3 });
-          }, 250);
-          setTimeout(() => {
-            setBattleStatus(false);
-            setEnemyCreature([{ _id: 0, name: "", imgPath: "", hp: 0, attack: 0, speed: 0, defense: 0, critical: 0 }]);
-            setPlayerCreatureHP(0);
-          }, 2250);
-          await setTimeout(() => {
-            loadAsyncDataPlayer();
-          }, 2250);
-        } else {
+        // if the players attack is regular
+        if (movename === playerCreature[0].attack_name) {
 
-          // damages enemy
-          if (chancePlayer) {
+          // checks for enemy death
+          if (enemyCreatureHP - ((playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier) <= 0 && chancePlayer) {
+            setBattleUndecided(false);
             playerAttackAnimation();
-            setTimeout(() => {
-              setEnemyCreatureHP(enemyCreatureHP - (playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier);
+            await setTimeout(() => {
+              setEnemyCreatureHP(0);
+              setCombatAlert("Victory!");
+              Userfront.user.update({
+                data: {
+                  userkey: Userfront.user.data.userkey,
+                },
+              });
+              updateUser(player._id, { userfrontId: Userfront.user.userId, experience: player.experience + 5, drachmas: player.drachmas + 3 });
             }, 250);
+            setTimeout(() => {
+              setBattleStatus(false);
+              setEnemyCreature([{}]);
+              setPlayerCreatureHP(0);
+            }, 2250);
+            await setTimeout(() => {
+              loadAsyncDataPlayer();
+            }, 2250);
+          } else {
+
+            // damages enemy
+            if (chancePlayer) {
+              playerAttackAnimation();
+              setTimeout(() => {
+                setEnemyCreatureHP(enemyCreatureHP - (playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier);
+              }, 250);
+            }
+
+            enemyCounterAttack();
           }
 
-          enemyCounterAttack();
+          setTimeout(() => {
+            if (playerCreatureMP !== playerCreature[0].mp_regen + chosenRelic[0].mpRegenMod) {
+              setPlayerCreatureMP(playerCreatureMP + (playerCreature[0].mp_regen + chosenRelic[0].mpRegenMod));
+            }
+          }, 500);
+        } else {
+
+          // checks to see if the player has enough mana to use special attack
+          if (playerCreatureMP >= playerCreature[0].special_cost) {
+
+            if (playerCreatureMP - playerCreature[0].special_cost === 0) {
+              setPlayerCreatureMP(0);
+            } else {
+              setPlayerCreatureMP(playerCreatureMP - playerCreature[0].special_cost);
+            }
+
+            // checks for enemy death
+            if (enemyCreatureHP - ((playerCreatureSpecial - playerCreatureSpecial * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier) <= 0 && chancePlayer) {
+              setBattleUndecided(false);
+              playerAttackAnimation();
+              await setTimeout(() => {
+                setEnemyCreatureHP(0);
+                setCombatAlert("Victory!");
+                Userfront.user.update({
+                  data: {
+                    userkey: Userfront.user.data.userkey,
+                  },
+                });
+                updateUser(player._id, { userfrontId: Userfront.user.userId, experience: player.experience + 5, drachmas: player.drachmas + 3 });
+              }, 250);
+              setTimeout(() => {
+                setBattleStatus(false);
+                setEnemyCreature([{}]);
+                setPlayerCreatureHP(0);
+              }, 2250);
+              await setTimeout(() => {
+                loadAsyncDataPlayer();
+              }, 2250);
+            } else {
+
+              // damages enemy
+              if (chancePlayer) {
+                playerAttackAnimation();
+                setTimeout(() => {
+                  setEnemyCreatureHP(enemyCreatureHP - (playerCreatureSpecial - playerCreatureSpecial * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier);
+                }, 250);
+              }
+
+              enemyCounterAttack();
+            }
+
+          } else {
+            setCombatAlert("Not enough MP!");
+          }
+
         }
       }
     } catch (error) {
@@ -616,10 +696,12 @@ function App() {
               <h3>Player Options</h3>
               <button className="btn btn-light my-2" onClick={() => { setAvatarOptionStatus(!avatarOptionStatus); setNameOptionStatus(false); }}> Change Avatar</button>
               <button className="btn btn-light my-2 ms-1" onClick={() => { setNameOptionStatus(!nameOptionStatus); setAvatarOptionStatus(false); }}>Change Name</button>
-              {nameOptionStatus && !avatarOptionStatus ? <form>
+              {nameOptionStatus && !avatarOptionStatus ? <div>
                 <label htmlFor="name">Player name:&nbsp;</label>
-                <input className="my-1" type="text" name="name" placeholder={player.name} onChange={(e) => selectName(e.target.value)} />
-              </form> : null}
+                <input className="my-1" type="text" name="name" placeholder={player.name} /><br />
+                <button className="btn btn-light my-1" onClick={() => selectName(document.querySelector("input[name='name']").value)}>Submit Name</button>
+              </div>
+                : null}
               {avatarOptionStatus && !nameOptionStatus ? <div>
                 <div className="d-flex justify-content-center">
                   <div className="my-1 mx-1" onClick={() => selectAvatar("img/avatar/f_mage_avatar.png")}>
@@ -660,7 +742,7 @@ function App() {
                 height="96" />
               <h4>{player.name}</h4>
               <h5>
-                Level {Math.floor(Math.sqrt(player.experience) * 0.25)}
+                Lvl. {Math.floor(Math.sqrt(player.experience) * 0.25)} | {player.experience} XP
                 <div className="progress_bar_container">
                   <div className="experience_progress_bar"
                     style={{ width: ((Math.sqrt(player.experience) * 0.25 - Math.floor(Math.sqrt(player.experience) * 0.25)).toFixed(2)).replace("0.", '') + "%" }} />
@@ -729,13 +811,17 @@ function App() {
                     key={creature.id}
                   >
                     <button className="game_button_small" onClick={() => swapCreature(creature.id, creature.price)}>Swap</button>
-                    <img onClick={() => alert(creature.description)}
+                    <img onClick={() => alert("HP: " + creature.hp + "\nAttack: " + creature.attack + "\nSpeed: " + creature.speed + "\nDefense: " + creature.defense +
+                      "\nCritical: " + creature.critical + "\nMP: " + creature.mp + "\nMP Regen: " + creature.mp_regen + "\nSpecial: " + creature.special
+                      + "\nSpecial cost: " + creature.special_cost)}
                       className="summon_option_img"
                       src={creature.imgPath}
                       alt={creature.name}
                       width="96px"
-                      height="96px" /><span className="summon_info" onClick={() => alert(creature.description)}>?</span><br />
-                    {creature.name} - {creature.price} EXP. {creature.id === player.creatureId ? <i>{"\u2713"}</i> : null}
+                      height="96px" /><span className="summon_info" onClick={() => alert("HP: " + creature.hp + "\nAttack: " + creature.attack + "\nSpeed: " +
+                        creature.speed + "\nDefense: " + creature.defense + "\nCritical: " + creature.critical + "\nMP: " + creature.mp + "\nMP Regen: " +
+                        creature.mp_regen + "\nSpecial: " + creature.special + "\nSpecial cost: " + creature.special_cost)}>?</span><br />
+                    {creature.name} - {creature.price} XP {creature.id === player.creatureId ? <i>{"\u2713"}</i> : null}
                   </div>))}
               </div>
                 : null
@@ -768,17 +854,17 @@ function App() {
                           height="128px" />
                     }
                     <div className="creature_panel">
-                      {battleStatus ? <><button className="game_button attack_button" onClick={() => { attackEnemy() }}>Attack</button><br /></> : null}
+                      {battleStatus ? <div className="inline_flex"><button className="game_button attack_button" onClick={() => { attackEnemy(creature.attack_name) }}>{creature.attack_name}</button>
+                        <button className="game_button special_button" onClick={() => { attackEnemy(creature.special_name) }}>{creature.special_name}<br />
+                          Cost: {creature.special_cost} MP</button></div> : null}
                       <h4>{player.name}'s {creature.name}</h4>
-                      {!battleStatus ? <h5>HP: {creature.hp + chosenRelic[0].hpMod}</h5>
-                        : !creatureStatsStatus ? <h5>HP: {playerCreatureHP} / {creature.hp + chosenRelic[0].hpMod}</h5>
-                          : null}
+                      {!battleStatus ? <div className="inline_flex"><h5>HP: {creature.hp + chosenRelic[0].hpMod}</h5>&nbsp;|&nbsp;<h5>MP: {creature.mp}</h5></div>
+                        : <div className="inline_flex">
+                          <h5>HP: {playerCreatureHP} / {creature.hp + chosenRelic[0].hpMod}</h5>&nbsp;|&nbsp;<h5>MP: {playerCreatureMP} / {creature.mp}</h5></div>}
                       {creatureStatsStatus ?
                         <div>
-                          {battleStatus ? <h5>HP: {playerCreatureHP} / {creature.hp + chosenRelic[0].hpMod}</h5>
-                            : null}
-                          <h5>Attack: {creature.attack + chosenRelic[0].attackMod}</h5>
-                          <h5>Speed: {creature.speed + chosenRelic[0].speedMod}</h5>
+                          <h5>Attack: {creature.attack + chosenRelic[0].attackMod} | Sp. Attack: {creature.special}</h5>
+                          <h5>Speed: {creature.speed + chosenRelic[0].speedMod} | MP Regen: {creature.mp_regen}</h5>
                           <h5>Defense: {creature.defense + chosenRelic[0].defenseMod}</h5>
                           <h5>Critical: {creature.critical + chosenRelic[0].criticalMod}</h5>
                         </div>

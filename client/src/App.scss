@@ -201,10 +201,14 @@
 
 .special_button {
   margin: 0px 0px 5px 5px;
-  filter: drop-shadow(0 0 10px red);
+  border-color: rgba(yellow, 0.75);
   font-size: 14px;
   line-height: 18px;
   padding: 4px 22px;
+}
+
+.special_button:hover {
+  border-color: rgba(gold, 0.75);
 }
 
 .player_creature {

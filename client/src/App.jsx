@@ -721,7 +721,7 @@ function App() {
               <button className="btn btn-light my-2 ms-1" onClick={() => { setNameOptionStatus(!nameOptionStatus); setAvatarOptionStatus(false); }}>Change Name</button>
               {nameOptionStatus && !avatarOptionStatus ? <div>
                 <label htmlFor="name">Player name:&nbsp;</label>
-                <input className="my-1" type="text" name="name" placeholder={player.name} /><br />
+                <input className="my-1 text-light bg-dark" type="text" name="name" placeholder={player.name} /><br />
                 <button className="btn btn-light my-1" onClick={() => selectName(document.querySelector("input[name='name']").value)}>Submit Name</button>
               </div>
                 : null}

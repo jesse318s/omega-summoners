@@ -245,6 +245,31 @@
   }
 }
 
+.special_effect {
+  height: 0;
+  overflow: visible;
+  position: relative;
+  bottom: 80px;
+  font-size: 32px;
+
+  animation: special_effect_animation 0.5s;
+
+  @keyframes special_effect_animation {
+    0% {
+      transform: scale(1);
+      filter: drop-shadow(0 0 10px red);
+    }
+    50% {
+      transform: scale(1.5);
+      filter: drop-shadow(0 0 10px gold);
+    }
+    100% {
+      transform: scale(1);
+      filter: drop-shadow(0 0 10px red);
+    }
+  }
+}
+
 //media query
 @media screen and (min-width: 1200px) {
   .player_creature {

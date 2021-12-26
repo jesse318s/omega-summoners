@@ -159,6 +159,8 @@ function App() {
   // sets player and enemy creature attack state
   const [playerAttackStatus, setPlayerAttackStatus] = useState(false);
   const [enemyAttackStatus, setEnemyAttackStatus] = useState(false);
+  // sets special status state
+  const [specialStatus, setSpecialStatus] = useState(false);
   // sets player and enemy creature hp state
   const [playerCreatureHP, setPlayerCreatureHP] = useState(0);
   const [enemyCreatureHP, setEnemyCreatureHP] = useState(0);
@@ -434,6 +436,18 @@ function App() {
     }
   }
 
+  // special animation
+  const specialAnimation = () => {
+    try {
+      setSpecialStatus(true);
+      setTimeout(() => {
+        setSpecialStatus(false);
+      }, 500);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   // enemy attack animation
   const enemyAttackAnimation = () => {
     try {
@@ -601,6 +615,7 @@ function App() {
             if (enemyCreatureHP - ((playerCreatureSpecial - playerCreatureSpecial * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier) <= 0 && chancePlayer) {
               setBattleUndecided(false);
               playerAttackAnimation();
+              specialAnimation();
               await setTimeout(() => {
                 setEnemyCreatureHP(0);
                 setCombatAlert("Victory!");
@@ -624,6 +639,7 @@ function App() {
               // damages enemy
               if (chancePlayer) {
                 playerAttackAnimation();
+                specialAnimation();
                 setTimeout(() => {
                   setEnemyCreatureHP(enemyCreatureHP - (playerCreatureSpecial - playerCreatureSpecial * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier);
                 }, 250);
@@ -842,8 +858,7 @@ function App() {
                   <div
                     key={creature.id}
                   >
-                    {criticalAttackMultiplier > 1 && playerAttackStatus ? <div className="critical_effect">!</div>
-                      : null}
+                    {criticalAttackMultiplier > 1 && playerAttackStatus ? <div className="critical_effect">!</div> : null}
                     {playerAttackStatus
                       ? <img className={chosenRelic[0].effectClass}
                         src={creature.imgPath.slice(0, -4) + "_attack.png"}
@@ -862,6 +877,7 @@ function App() {
                           width="128px"
                           height="128px" />
                     }
+                    {specialStatus ? <div className="special_effect">{"\u2620"}</div> : null}
                     <div className="creature_panel">
                       {battleStatus ? <div className="inline_flex"><button className="game_button attack_button" onClick={() => { attackEnemy(creature.attack_name) }}>{creature.attack_name}</button>
                         <button className="game_button special_button" onClick={() => { attackEnemy(creature.special_name) }}>{creature.special_name}<br />

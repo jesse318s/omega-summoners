@@ -1,27 +1,61 @@
 // styles
+.game_nav {
+  padding-top: 10px;
+  height: 67.5px;
+  background-image: radial-gradient(circle, #222222, black);
+}
+
+.game_nav_brand {
+  margin: 0 20px 0 20px;
+  float: left;
+}
+
+.button_logout {
+  float: left;
+  background-color: rgba(orange, 0.90);
+  border: 1px solid orangered;
+  border-radius: 16px;
+  color: black;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 24px;
+  padding: 8px;
+  transition: all 0.2s;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.button_logout:active,
+.button_logout:hover {
+  outline: 0;
+}
+
+.button_logout:hover {
+  background-color: orangered;
+  border-color: black;
+}
+
+.button_options {
+  float: right;
+  margin-right: 20px;
+}
+
 .game_section {
   background-image: url("assets/img_background/background1.webp");
   background-size: cover;
   min-height: 1200px;
   height: 100vh;
   width: 100vw;
-  padding-top: 80px;
-}
-
-.options {
-  color: white;
-}
-
-.avatar_option {
-  cursor: pointer;
+  padding-top: 5px;
 }
 
 .avatar_option:hover {
+  cursor: pointer;
   filter: brightness(0.8);
 }
 
 .game_button {
-  background-color: rgba(240, 240, 240, 0.75);
+  background-color: rgba(white, 0.75);
   border: 1px solid white;
   border-radius: 16px;
   color: black;
@@ -45,7 +79,7 @@
 }
 
 .game_button_small {
-  background-color: rgba(240, 240, 240, 0.75);
+  background-color: rgba(white, 0.75);
   border: 1px solid white;
   border-radius: 16px;
   color: black;
@@ -56,11 +90,10 @@
   transition: all 0.2s;
   user-select: none;
   touch-action: manipulation;
-  width: 150px;
 }
 
 .game_button_small:active,
-.game_button:hover {
+.game_button_small:hover {
   outline: 0;
 }
 
@@ -77,10 +110,6 @@
   border-radius: 5px;
 }
 
-.player {
-  color: white;
-}
-
 .player_avatar {
   border: 1px solid black;
   border-radius: 5px;
@@ -90,14 +119,6 @@
   padding-top: 10px;
   background-color: green;
   border-radius: 5px 0 0 5px;
-}
-
-.item_options_container {
-  display: inline-flex;
-}
-
-.item_option {
-  margin: 5px;
 }
 
 .relic_option {
@@ -141,10 +162,6 @@
 
 .relic_effect3 {
   filter: drop-shadow(0 0 15px purple);
-}
-
-.creature_option {
-  margin: 5px;
 }
 
 .summon_option {
@@ -362,7 +379,7 @@
     rgb(0, 255, 42) 33%,
     rgba(43, 255, 220, 0) 100%
   );
-  box-shadow: 1px 2px 0 rgb(10, 141, 17);
+  box-shadow: 1px 2px 0 green;
 
   @keyframes castFireball {
     50% {

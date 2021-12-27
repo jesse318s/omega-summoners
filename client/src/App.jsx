@@ -675,89 +675,55 @@ function App() {
     return (
       <>
         <header>
-          {/* Navbar */}
-          <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top text-start">
-            {/* Container wrapper */}
-            <div className="container-fluid">
-              {/* Toggle button */}
-              <button
-                className="navbar-toggler"
-                type="button"
-                data-mdb-toggle="collapse"
-                data-mdb-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-              >
-                <i className="text-light">{"\u2630"}</i>
-              </button>
-
-              {/* Collapsible wrapper */}
-              <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                {/* Navbar brand */}
-                <a className="navbar-brand" href="app">
-                  <img src="favicon.ico" alt="favicon" width="48px" height="48px" />
-                </a>
-                {/* Left links */}
-                <ul className="navbar-nav me-auto">
-                  <li className="nav-item font-weight-bold">
-                    <button className="btn btn-warning my-1 text-dark" onClick={() => Userfront.logout()}>Logout</button>
-                  </li>
-                </ul>
-                {/* Left links */}
-              </div>
-              {/* Collapsible wrapper */}
-
-              {/* Right elements */}
-              <div className="d-flex align-items-center">
-                <button className="btn btn-light my-1"
-                  onClick={() => { setOptionsStatus(!optionsStatus); setAvatarOptionStatus(false); setNameOptionStatus(false); }}>Options</button>
-              </div>
-              {/* Right elements */}
-            </div>
-            {/* Container wrapper */}
+          {/* game navigation */}
+          <nav className="game_nav">
+            <a className="game_nav_brand" href="app">
+              <img src="favicon.ico" alt="favicon" width="48px" height="48px" />
+            </a>
+            <button className="button_logout" onClick={() => Userfront.logout()}>Logout</button>
+            <button className="game_button_small button_options"
+              onClick={() => { setOptionsStatus(!optionsStatus); setAvatarOptionStatus(false); setNameOptionStatus(false); }}>Options</button>
           </nav>
-          {/* Navbar */}
         </header>
 
         <main className="game_section">
           {/* options */}
           {optionsStatus ?
-            <div className="options">
+            <div className="color_white">
               <h3>Game Options</h3>
-              <button className="btn btn-light my-2" onClick={() => { toggleDisplayCreatureStats() }}>Display Summon Stats
+              <button className="game_button margin_small" onClick={() => { toggleDisplayCreatureStats() }}>Display Summon Stats
                 {player.displayCreatureStats ? " - ON" : " - OFF"}</button>
               <h3>Player Options</h3>
-              <button className="btn btn-light my-2" onClick={() => { setAvatarOptionStatus(!avatarOptionStatus); setNameOptionStatus(false); }}> Change Avatar</button>
-              <button className="btn btn-light my-2 ms-1" onClick={() => { setNameOptionStatus(!nameOptionStatus); setAvatarOptionStatus(false); }}>Change Name</button>
+              <button className="game_button margin_small" onClick={() => { setAvatarOptionStatus(!avatarOptionStatus); setNameOptionStatus(false); }}> Change Avatar</button>
+              <button className="game_button margin_small" onClick={() => { setNameOptionStatus(!nameOptionStatus); setAvatarOptionStatus(false); }}>Change Name</button>
               {nameOptionStatus && !avatarOptionStatus ? <div>
                 <label htmlFor="name">Player name:&nbsp;</label>
-                <input className="my-1 text-light bg-dark" type="text" name="name" placeholder={player.name} /><br />
-                <button className="btn btn-light my-1" onClick={() => selectName(document.querySelector("input[name='name']").value)}>Submit Name</button>
+                <input className="margin_small" type="text" name="name" placeholder={player.name} /><br />
+                <button className="game_button_small margin_small" onClick={() => selectName(document.querySelector("input[name='name']").value)}>Submit Name</button>
               </div>
                 : null}
               {avatarOptionStatus && !nameOptionStatus ? <div>
-                <div className="d-flex justify-content-center">
-                  <div className="my-1 mx-1" onClick={() => selectAvatar("img/avatar/f_mage_avatar.png")}>
+                <div className="inline_flex">
+                  <div className="margin_small" onClick={() => selectAvatar("img/avatar/f_mage_avatar.png")}>
                     <img className="player_avatar avatar_option" src={"img/avatar/f_mage_avatar.png"} alt={"f_mage"} width="96" height="96" />
                     <p className="avatar_option">Avatar 1</p></div>
-                  <div className="my-1 mx-1" onClick={() => selectAvatar("img/avatar/m_mage_avatar.png")}>
+                  <div className="margin_small" onClick={() => selectAvatar("img/avatar/m_mage_avatar.png")}>
                     <img className="player_avatar avatar_option" src={"img/avatar/m_mage_avatar.png"} alt={"m_mage"} width="96" height="96" />
                     <p className="avatar_option">Avatar 2</p></div>
-                </div>
-                <div className="d-flex justify-content-center">
-                  <div className="my-1 mx-1" onClick={() => selectAvatar("img/avatar/f_rogue_avatar.png")}>
+                </div><br />
+                <div className="inline_flex">
+                  <div className="margin_small" onClick={() => selectAvatar("img/avatar/f_rogue_avatar.png")}>
                     <img className="player_avatar avatar_option" src={"img/avatar/f_rogue_avatar.png"} alt={"f_rogue"} width="96" height="96" />
                     <p className="avatar_option">Avatar 3</p></div>
-                  <div className="my-1 mx-1" onClick={() => selectAvatar("img/avatar/m_rogue_avatar.png")}>
+                  <div className="margin_small" onClick={() => selectAvatar("img/avatar/m_rogue_avatar.png")}>
                     <img className="player_avatar avatar_option" src={"img/avatar/m_rogue_avatar.png"} alt={"m_rogue"} width="96" height="96" />
                     <p className="avatar_option">Avatar 4</p></div>
-                </div>
-                <div className="d-flex justify-content-center">
-                  <div className="my-1 mx-1" onClick={() => selectAvatar("img/avatar/f_warrior_avatar.png")}>
+                </div><br />
+                <div className="inline_flex">
+                  <div className="margin_small" onClick={() => selectAvatar("img/avatar/f_warrior_avatar.png")}>
                     <img className="player_avatar avatar_option" src={"img/avatar/f_warrior_avatar.png"} alt={"f_warrior"} width="96" height="96" />
                     <p className="avatar_option">Avatar 5</p></div>
-                  <div className="my-1 mx-1" onClick={() => selectAvatar("img/avatar/m_warrior_avatar.png")}>
+                  <div className="margin_small" onClick={() => selectAvatar("img/avatar/m_warrior_avatar.png")}>
                     <img className="player_avatar avatar_option" src={"img/avatar/m_warrior_avatar.png"} alt={"m_warrior"} width="96" height="96" />
                     <p className="avatar_option">Avatar 6</p></div>
                 </div>
@@ -768,7 +734,7 @@ function App() {
 
           {/* player */}
           {!optionsStatus ? <>
-            <div className="player">
+            <div className="color_white">
               <img src={player.avatarPath}
                 alt={player.name}
                 className="player_avatar"
@@ -785,9 +751,9 @@ function App() {
               <h5>Drachmas: {player.drachmas} {"\u25C9"}</h5>
 
               {/* menu */}
-              {!battleStatus ? <div><div className="item_options_container">
-                <button className="game_button item_option" onClick={() => { setRelicsStatus(!relicsStatus); setTempleStatus(false); setSummonsStatus(false); }}>Relics</button>
-                <button className="game_button item_option" onClick={() => { setTempleStatus(!templeStatus); setRelicsStatus(false); setSummonsStatus(false); }}>Temple</button>
+              {!battleStatus ? <div><div className="inline_flex">
+                <button className="game_button margin_small" onClick={() => { setRelicsStatus(!relicsStatus); setTempleStatus(false); setSummonsStatus(false); }}>Relics</button>
+                <button className="game_button margin_small" onClick={() => { setTempleStatus(!templeStatus); setRelicsStatus(false); setSummonsStatus(false); }}>Temple</button>
               </div></div>
                 : null}
               {battleStatus ? <div><p className="combat_alert">{combatAlert}</p></div>
@@ -831,9 +797,9 @@ function App() {
                 : null
               }
               {!battleStatus ? <>
-                <button className="game_button creature_option" onClick={() => { setSummonsStatus(!summonsStatus); setTempleStatus(false); setRelicsStatus(false) }}>
+                <button className="game_button margin_small" onClick={() => { setSummonsStatus(!summonsStatus); setTempleStatus(false); setRelicsStatus(false) }}>
                   Summons</button>
-                <button className="game_button creature_option" onClick={() => { loadDataBattle(); setTempleStatus(false); setRelicsStatus(false); setSummonsStatus(false); }}>
+                <button className="game_button margin_small" onClick={() => { loadDataBattle(); setTempleStatus(false); setRelicsStatus(false); setSummonsStatus(false); }}>
                   Battle</button>
               </>
                 : null}
@@ -948,7 +914,7 @@ function App() {
 
             // player for options
             <div>
-              <div className="player">
+              <div className="color_white">
 
                 <img src={player.avatarPath}
                   alt={player.name}

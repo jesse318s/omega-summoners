@@ -19,15 +19,16 @@ function App() {
       price: 50,
       hp: 60,
       attack: 50,
-      attack_name: "Slash",
+      attackName: "Slash",
       speed: 60,
       defense: 20,
       critical: 50,
       mp: 100,
-      mp_regen: 25,
+      mpRegen: 25,
       special: 75,
-      special_cost: 100,
-      special_name: "Harvest"
+      specialCost: 100,
+      specialName: "Harvest",
+      specialEffect: "special_effect1"
     },
     {
       id: 2,
@@ -36,15 +37,16 @@ function App() {
       price: 50,
       hp: 110,
       attack: 30,
-      attack_name: "Gaze",
+      attackName: "Gaze",
       speed: 30,
       defense: 15,
       critical: 20,
       mp: 100,
-      mp_regen: 25,
+      mpRegen: 25,
       special: 75,
-      special_cost: 100,
-      special_name: "Petrify"
+      specialCost: 100,
+      specialName: "Petrify",
+      specialEffect: "special_effect2"
     },
     {
       id: 3,
@@ -53,15 +55,16 @@ function App() {
       price: 50,
       hp: 60,
       attack: 50,
-      attack_name: "Exhale",
+      attackName: "Exhale",
       speed: 60,
       defense: 20,
       critical: 50,
       mp: 100,
-      mp_regen: 25,
+      mpRegen: 25,
       special: 75,
-      special_cost: 100,
-      special_name: "Fireball"
+      specialCost: 100,
+      specialName: "Fireball",
+      specialEffect: "special_effect3"
     },
     {
       id: 4,
@@ -70,15 +73,16 @@ function App() {
       price: 50,
       hp: 110,
       attack: 30,
-      attack_name: "Impale",
+      attackName: "Impale",
       speed: 30,
       defense: 15,
       critical: 20,
       mp: 100,
-      mp_regen: 25,
+      mpRegen: 25,
       special: 75,
-      special_cost: 100,
-      special_name: "Poison"
+      specialCost: 100,
+      specialName: "Poison",
+      specialEffect: "special_effect4"
     }
   ];
 
@@ -87,9 +91,9 @@ function App() {
     {
       id: 1,
       name: "Gust of Hermes",
-      description: "Grants the user's summons +5 speed.",
+      description: "Grants the user's summon +5 speed.",
       imgPath: "img/relic/relic1.webp",
-      effectClass: "relic1",
+      effectClass: "relic_effect1",
       hpMod: 0,
       attackMod: 0,
       speedMod: 5,
@@ -103,9 +107,9 @@ function App() {
     {
       id: 2,
       name: "Spark of Zeus",
-      description: "Grants the user's summons +10 attack.",
+      description: "Grants the user's summon +10 attack.",
       imgPath: "img/relic/relic2.webp",
-      effectClass: "relic2",
+      effectClass: "relic_effect2",
       hpMod: 0,
       attackMod: 10,
       speedMod: 0,
@@ -119,9 +123,9 @@ function App() {
     {
       id: 3,
       name: "Cup of Dionysus",
-      description: "Grants the user's summons +10 HP.",
+      description: "Grants the user's summon +10 HP.",
       imgPath: "img/relic/relic3.webp",
-      effectClass: "relic3",
+      effectClass: "relic_effect3",
       hpMod: 10,
       attackMod: 0,
       speedMod: 0,
@@ -550,15 +554,15 @@ function App() {
 
         }
 
-        // checks for player speed failure
-        if (!chancePlayer) {
-          setTimeout(() => {
-            setCombatAlert("Your summon was too slow!");
-          }, 750);
-        }
-
         // if the player's attack is regular
-        if (movename === playerCreature[0].attack_name) {
+        if (movename === playerCreature[0].attackName) {
+
+          // checks for player speed failure
+          if (!chancePlayer) {
+            setTimeout(() => {
+              setCombatAlert("Your summon was too slow!");
+            }, 750);
+          }
 
           // checks for enemy death
           if (enemyCreatureHP - ((playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier) <= 0 && chancePlayer) {
@@ -596,19 +600,26 @@ function App() {
           }
 
           setTimeout(() => {
-            if (playerCreatureMP !== playerCreature[0].mp_regen + chosenRelic[0].mpRegenMod) {
-              setPlayerCreatureMP(playerCreatureMP + (playerCreature[0].mp_regen + chosenRelic[0].mpRegenMod));
+            if (playerCreatureMP !== playerCreature[0].mp && (playerCreatureMP + playerCreature[0].mpRegen <= playerCreature[0].mp)) {
+              setPlayerCreatureMP(playerCreatureMP + (playerCreature[0].mpRegen + chosenRelic[0].mpRegenMod));
+            }
+
+            if (playerCreatureMP + playerCreature[0].mpRegen > playerCreature[0].mp) {
+              setPlayerCreatureMP(playerCreature[0].mp);
             }
           }, 500);
         } else {
 
           // checks to see if the player has enough mana to use special attack
-          if (playerCreatureMP >= playerCreature[0].special_cost) {
+          if (playerCreatureMP >= playerCreature[0].specialCost) {
+            //deducts MP
+            setPlayerCreatureMP(playerCreatureMP - playerCreature[0].specialCost);
 
-            if (playerCreatureMP - playerCreature[0].special_cost === 0) {
-              setPlayerCreatureMP(0);
-            } else {
-              setPlayerCreatureMP(playerCreatureMP - playerCreature[0].special_cost);
+            // checks for player speed failure
+            if (!chancePlayer) {
+              setTimeout(() => {
+                setCombatAlert("Your summon was too slow!");
+              }, 750);
             }
 
             // checks for enemy death
@@ -714,7 +725,7 @@ function App() {
           {optionsStatus ?
             <div className="options">
               <h3>Game Options</h3>
-              <button className="btn btn-light my-2" onClick={() => { toggleDisplayCreatureStats() }}>Toggle Creature Stats
+              <button className="btn btn-light my-2" onClick={() => { toggleDisplayCreatureStats() }}>Display Summon Stats
                 {player.displayCreatureStats ? " - ON" : " - OFF"}</button>
               <h3>Player Options</h3>
               <button className="btn btn-light my-2" onClick={() => { setAvatarOptionStatus(!avatarOptionStatus); setNameOptionStatus(false); }}> Change Avatar</button>
@@ -835,15 +846,15 @@ function App() {
                   >
                     <button className="game_button_small" onClick={() => swapCreature(creature.id, creature.price)}>Swap</button>
                     <img onClick={() => alert("HP: " + creature.hp + "\nAttack: " + creature.attack + "\nSpeed: " + creature.speed + "\nDefense: " + creature.defense +
-                      "\nCritical: " + creature.critical + "\nMP: " + creature.mp + "\nMP Regen: " + creature.mp_regen + "\nSpecial: " + creature.special
-                      + "\nSpecial cost: " + creature.special_cost)}
+                      "\nCritical: " + creature.critical + "\nMP: " + creature.mp + "\nMP Regen: " + creature.mpRegen + "\nSpecial: " + creature.special
+                      + "\nSpecial cost: " + creature.specialCost)}
                       className="summon_option_img"
                       src={creature.imgPath}
                       alt={creature.name}
                       width="96px"
                       height="96px" /><span className="summon_info" onClick={() => alert("HP: " + creature.hp + "\nAttack: " + creature.attack + "\nSpeed: " +
                         creature.speed + "\nDefense: " + creature.defense + "\nCritical: " + creature.critical + "\nMP: " + creature.mp + "\nMP Regen: " +
-                        creature.mp_regen + "\nSpecial: " + creature.special + "\nSpecial cost: " + creature.special_cost)}>?</span><br />
+                        creature.mpRegen + "\nSpecial: " + creature.special + "\nSpecial cost: " + creature.specialCost)}>?</span><br />
                     {creature.name} - {creature.price} XP {creature.id === player.creatureId ? <i>{"\u2713"}</i> : null}
                   </div>))}
               </div>
@@ -852,7 +863,7 @@ function App() {
             </div>
 
             {/* player creature */}
-            {!relicsStatus && !templeStatus && !summonsStatus ? <>
+            {!summonsStatus ? <>
               <div className="player_creature">
                 {playerCreature.map((creature) => (
                   <div
@@ -877,19 +888,20 @@ function App() {
                           width="128px"
                           height="128px" />
                     }
-                    {specialStatus ? <div className="special_effect">{"\u2620"}</div> : null}
+                    {specialStatus ? <div className="special_effect_container"><div className={creature.specialEffect} /></div> : null}
                     <div className="creature_panel">
-                      {battleStatus ? <div className="inline_flex"><button className="game_button attack_button" onClick={() => { attackEnemy(creature.attack_name) }}>{creature.attack_name}</button>
-                        <button className="game_button special_button" onClick={() => { attackEnemy(creature.special_name) }}>{creature.special_name}<br />
-                          Cost: {creature.special_cost} MP</button></div> : null}
+                      {battleStatus ? <div className="inline_flex">
+                        <button className="game_button attack_button" onClick={() => { attackEnemy(creature.attackName) }}>{creature.attackName}</button>
+                        <button className="game_button special_button" onClick={() => { attackEnemy(creature.specialName) }}>{creature.specialName}<br />
+                          Cost: {creature.specialCost} MP</button></div> : null}
                       <h4>{player.name}'s {creature.name}</h4>
                       {!battleStatus ? <div className="inline_flex"><h5>HP: {creature.hp + chosenRelic[0].hpMod}</h5>&nbsp;|&nbsp;<h5>MP: {creature.mp}</h5></div>
                         : <div className="inline_flex">
                           <h5>HP: {playerCreatureHP} / {creature.hp + chosenRelic[0].hpMod}</h5>&nbsp;|&nbsp;<h5>MP: {playerCreatureMP} / {creature.mp}</h5></div>}
-                      {creatureStatsStatus ?
+                      {creatureStatsStatus && !battleStatus ?
                         <div>
                           <h5>Attack: {creature.attack + chosenRelic[0].attackMod} | Sp. Attack: {creature.special}</h5>
-                          <h5>Speed: {creature.speed + chosenRelic[0].speedMod} | MP Regen: {creature.mp_regen}</h5>
+                          <h5>Speed: {creature.speed + chosenRelic[0].speedMod} | MP Regen: {creature.mpRegen}</h5>
                           <h5>Defense: {creature.defense + chosenRelic[0].defenseMod}</h5>
                           <h5>Critical: {creature.critical + chosenRelic[0].criticalMod}</h5>
                         </div>
@@ -927,14 +939,6 @@ function App() {
                     <div className="creature_panel">
                       <h4>Enemy {creature.name}</h4>
                       <h5>HP: {enemyCreatureHP} / {creature.hp}</h5>
-                      {creatureStatsStatus ?
-                        <div>
-                          <h5>Attack: {creature.attack}</h5>
-                          <h5>Speed: {creature.speed}</h5>
-                          <h5>Defense: {creature.defense}</h5>
-                          <h5>Critical: {creature.critical}</h5>
-                        </div>
-                        : null}
                     </div>
                   </div>
                 ))}

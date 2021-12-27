@@ -1,6 +1,6 @@
 // styles
 .game_section {
-  background-image: url("assets/img_background/game_background_1.webp");
+  background-image: url("assets/img_background/background1.webp");
   background-size: cover;
   min-height: 1200px;
   height: 100vh;
@@ -131,15 +131,15 @@
   color: blue;
 }
 
-.relic1 {
+.relic_effect1 {
   filter: drop-shadow(0 0 10px lightblue);
 }
 
-.relic2 {
+.relic_effect2 {
   filter: drop-shadow(0 0 15px gold);
 }
 
-.relic3 {
+.relic_effect3 {
   filter: drop-shadow(0 0 15px purple);
 }
 
@@ -213,12 +213,14 @@
 
 .player_creature {
   float: left;
-  padding: 5px 5px 5px 5px;
+  margin-left: 10px;
+  padding: 5px;
   color: white;
 }
 
 .enemy_creature {
   float: right;
+  margin-right: 10px;
   padding: 5px;
   color: white;
 }
@@ -249,33 +251,139 @@
   }
 }
 
-.special_effect {
+.special_effect_container {
   height: 0;
   overflow: visible;
+}
+
+.special_effect1 {
+  transform-style: preserve-3d;
   position: relative;
-  bottom: 80px;
-  font-size: 32px;
+  bottom: 75px;
+  left: 170px;
+  transform: rotateX(-20deg) rotateY(20deg) translateX(200px) scaleX(2)
+    scaleY(0.89);
+  animation: harvestSoul 750ms infinite linear;
+  width: 30px;
+  height: 5px;
+  background: linear-gradient(
+    to left,
+    rgb(255, 0, 0) 0%,
+    rgb(183, 0, 255) 33%,
+    rgba(255, 118, 43, 0) 100%
+  );
+  box-shadow: 1px 2px 0 red;
 
-  animation: special_effect_animation 0.5s;
-
-  @keyframes special_effect_animation {
-    0% {
-      transform: scale(1);
-      filter: drop-shadow(0 0 10px red);
-    }
+  @keyframes harvestSoul {
     50% {
-      transform: scale(1.5);
-      filter: drop-shadow(0 0 10px gold);
+      transform: rotateX(-20deg) rotateY(20deg) translateX(-20px) scaleX(1);
+    }
+    75% {
+      opacity: 0;
     }
     100% {
-      transform: scale(1);
-      filter: drop-shadow(0 0 10px red);
+      opacity: 0;
+      transform: rotateX(-20deg) rotateY(20deg) translateX(-20px) scaleX(1);
     }
   }
 }
 
-//media query
-@media screen and (min-width: 1200px) {
+.special_effect2 {
+  transform-style: preserve-3d;
+  position: relative;
+  bottom: 77px;
+  left: 370px;
+  transform: translateX(-200px) scaleX(2) scaleY(0.89);
+  animation: stareLaser 750ms infinite linear;
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(
+    to left,
+    rgb(0, 195, 255) 0%,
+    rgb(0, 132, 255) 33%,
+    rgba(255, 118, 43, 0) 100%
+  );
+  box-shadow: 1px 2px 0 lightblue;
+
+  @keyframes stareLaser {
+    50% {
+      transform: rotateY(180deg) translateX(-20px) scaleX(1);
+    }
+    75% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 0;
+      transform: rotateY(180deg) translateX(-20px) scaleX(1);
+    }
+  }
+}
+
+.special_effect3 {
+  transform-style: preserve-3d;
+  position: relative;
+  bottom: 90px;
+  left: 400px;
+  transform: rotateX(-20deg) rotateY(20deg) translateX(-200px) scaleX(2)
+    scaleY(0.89);
+  animation: castFireball 400ms infinite linear;
+  width: 30px;
+  height: 5px;
+  background: linear-gradient(
+    to left,
+    rgb(255, 0, 0) 0%,
+    rgb(255, 200, 0) 33%,
+    rgba(255, 118, 43, 0) 100%
+  );
+  box-shadow: 1px 2px 0 red;
+
+  @keyframes castFireball {
+    50% {
+      transform: rotateX(-20deg) rotateY(20deg) translateX(-20px) scaleX(1);
+    }
+    75% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 0;
+      transform: rotateX(-20deg) rotateY(20deg) translateX(-20px) scaleX(1);
+    }
+  }
+}
+
+.special_effect4 {
+  transform-style: preserve-3d;
+  position: relative;
+  bottom: 70px;
+  left: 360px;
+  transform: rotateY(20deg) translateX(-200px) scaleX(2) scaleY(0.89);
+  animation: castFireball 400ms infinite linear;
+  width: 30px;
+  height: 5px;
+  background: linear-gradient(
+    to left,
+    rgba(51, 255, 0, 0.541) 0%,
+    rgb(0, 255, 42) 33%,
+    rgba(43, 255, 220, 0) 100%
+  );
+  box-shadow: 1px 2px 0 rgb(10, 141, 17);
+
+  @keyframes castFireball {
+    50% {
+      transform: rotateY(20deg) translateX(-20px) scaleX(1);
+    }
+    75% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 0;
+      transform: rotateX(-20deg) rotateY(20deg) translateX(-20px) scaleX(1);
+    }
+  }
+}
+
+// media query
+@media screen and (min-width: 2000px) {
   .player_creature {
     margin-left: 450px;
   }

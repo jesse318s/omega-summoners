@@ -203,8 +203,8 @@ function App() {
     // checks for userkey and generates new user if needed
     const genDataPlayer = () => {
       try {
-        // if there is no userkey
-        if (!Userfront.user.data.userkey) {
+        // if there is no user key
+        if (Userfront.user.data.userkey === undefined) {
           const newUser = {
             userfrontId: Userfront.user.userId,
             name: Userfront.user.username,

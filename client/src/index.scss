@@ -8,6 +8,22 @@ body {
   background-image: radial-gradient(circle, #222222, black);
 }
 
+.inline_flex {
+  display: inline-flex;
+}
+
+.font_small {
+  font-size: 8px;
+}
+
+.color_white {
+  color: white;
+}
+
+.margin_small {
+  margin: 5px;
+}
+
 // styles
 .home_section {
   display: grid;

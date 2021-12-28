@@ -854,7 +854,7 @@ function App() {
                       {!battleStatus ? <div className="inline_flex"><h5>HP: {creature.hp + chosenRelic[0].hpMod}</h5>&nbsp;|&nbsp;<h5>MP: {creature.mp}</h5></div>
                         : <div className="inline_flex">
                           <h5>HP: {playerCreatureHP} / {creature.hp + chosenRelic[0].hpMod}</h5>&nbsp;|&nbsp;<h5>MP: {playerCreatureMP} / {creature.mp}</h5></div>}
-                      {creatureStatsStatus && !battleStatus ?
+                      {creatureStatsStatus ?
                         <div>
                           <h5>Attack: {creature.attack + chosenRelic[0].attackMod} | Sp. Attack: {creature.special}</h5>
                           <h5>Speed: {creature.speed + chosenRelic[0].speedMod} | MP Regen: {creature.mpRegen}</h5>

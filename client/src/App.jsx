@@ -170,8 +170,6 @@ function App() {
   const [enemyCreatureHP, setEnemyCreatureHP] = useState(0);
   // sets player creature MP state
   const [playerCreatureMP, setPlayerCreatureMP] = useState(0);
-  // sets critical modifier state
-  const [criticalAttackMultiplier, setCriticalAttackMultiplier] = useState(1);
   // sets player speed chance state
   const [chancePlayer, setChancePlayer] = useState(false);
   // sets relics state
@@ -413,7 +411,6 @@ function App() {
   // loads battle data
   const loadDataBattle = () => {
     try {
-      setCriticalAttackMultiplier(1);
       setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod);
       setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod);
       const enemyCreatureData = [creatureData[Math.floor(Math.random() * creatureData.length)]];
@@ -467,9 +464,9 @@ function App() {
   // initiates chance of enemy counter attack
   const enemyCounterAttack = () => {
     try {
-      setCriticalAttackMultiplier(1);
       const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
       const playerCreatureDefense = (playerCreature[0].defense + chosenRelic[0].defenseMod) / 100;
+      var criticalMultiplier = 1;
       var chanceEnemy = false;
       // checks for equal player and enemy speed
       if (enemyCreature[0].speed / 100 === playerCreatureSpeed) {
@@ -498,11 +495,11 @@ function App() {
 
         // checks enemy critical hit
         if (Math.random() <= enemyCreature[0].critical / 100) {
-          setCriticalAttackMultiplier(1.5);
+          criticalMultiplier = 1.5;
         }
 
         // checks for player death, and damages player otherwise
-        if (playerCreatureHP - ((enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalAttackMultiplier) <= 0) {
+        if (playerCreatureHP - ((enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalMultiplier) <= 0) {
           setBattleUndecided(false);
           setTimeout(() => {
             setPlayerCreatureHP(0);
@@ -515,7 +512,7 @@ function App() {
           }, 2750);
         } else {
           setTimeout(() => {
-            setPlayerCreatureHP(playerCreatureHP - (enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalAttackMultiplier);
+            setPlayerCreatureHP(playerCreatureHP - (enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalMultiplier);
           }, 750);
         }
 
@@ -534,24 +531,18 @@ function App() {
         const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
         const playerCreatureCritical = (playerCreature[0].critical + chosenRelic[0].criticalMod) / 100;
         const playerCreatureSpecial = playerCreature[0].special + chosenRelic[0].specialMod;
+        var criticalMultiplier = 1;
 
         // checks for equal player and enemy speed
         if (playerCreatureSpeed === enemyCreature[0].speed / 100) {
           setChancePlayer(Math.random() >= 0.5);
-
-          // checks for player critical hit
-          if (Math.random() <= playerCreatureCritical) {
-            setCriticalAttackMultiplier(1.5);
-          }
-
         } else {
           setChancePlayer(Math.random() >= enemyCreature[0].speed / 100 - playerCreatureSpeed);
+        }
 
-          // checks for player critical hit
-          if (Math.random() <= playerCreatureCritical) {
-            setCriticalAttackMultiplier(1.5);
-          }
-
+        // checks for player critical hit
+        if (Math.random() <= playerCreatureCritical) {
+          criticalMultiplier = 1.5;
         }
 
         // if the player's attack is regular
@@ -565,7 +556,7 @@ function App() {
           }
 
           // checks for enemy death
-          if (enemyCreatureHP - ((playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier) <= 0 && chancePlayer) {
+          if (enemyCreatureHP - ((playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalMultiplier) <= 0 && chancePlayer) {
             setBattleUndecided(false);
             playerAttackAnimation();
             await setTimeout(() => {
@@ -592,7 +583,7 @@ function App() {
             if (chancePlayer) {
               playerAttackAnimation();
               setTimeout(() => {
-                setEnemyCreatureHP(enemyCreatureHP - (playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier);
+                setEnemyCreatureHP(enemyCreatureHP - (playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalMultiplier);
               }, 250);
             }
 
@@ -623,7 +614,7 @@ function App() {
             }
 
             // checks for enemy death
-            if (enemyCreatureHP - ((playerCreatureSpecial - playerCreatureSpecial * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier) <= 0 && chancePlayer) {
+            if (enemyCreatureHP - ((playerCreatureSpecial - playerCreatureSpecial * (enemyCreature[0].defense / 100)) * criticalMultiplier) <= 0 && chancePlayer) {
               setBattleUndecided(false);
               playerAttackAnimation();
               specialAnimation();
@@ -652,7 +643,7 @@ function App() {
                 playerAttackAnimation();
                 specialAnimation();
                 setTimeout(() => {
-                  setEnemyCreatureHP(enemyCreatureHP - (playerCreatureSpecial - playerCreatureSpecial * (enemyCreature[0].defense / 100)) * criticalAttackMultiplier);
+                  setEnemyCreatureHP(enemyCreatureHP - (playerCreatureSpecial - playerCreatureSpecial * (enemyCreature[0].defense / 100)) * criticalMultiplier);
                 }, 250);
               }
 
@@ -835,7 +826,6 @@ function App() {
                   <div
                     key={creature.id}
                   >
-                    {criticalAttackMultiplier > 1 && playerAttackStatus ? <div className="critical_effect">!</div> : null}
                     {playerAttackStatus
                       ? <img className={chosenRelic[0].effectClass}
                         src={creature.imgPath.slice(0, -4) + "_attack.png"}
@@ -885,8 +875,6 @@ function App() {
                   <div
                     key={creature.id}
                   >
-                    {criticalAttackMultiplier > 1 && enemyAttackStatus ? <div className="critical_effect">!</div>
-                      : null}
                     {enemyAttackStatus ? <img className="enemy_creature_img"
                       src={creature.imgPath.slice(0, -4) + "_attack.png"}
                       alt={creature.name}

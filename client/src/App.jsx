@@ -170,8 +170,6 @@ function App() {
   const [enemyCreatureHP, setEnemyCreatureHP] = useState(0);
   // sets player creature MP state
   const [playerCreatureMP, setPlayerCreatureMP] = useState(0);
-  // sets player speed chance state
-  const [chancePlayer, setChancePlayer] = useState(false);
   // sets relics state
   const [relicsData] = useState(relics);
   // sets player relics state
@@ -462,12 +460,12 @@ function App() {
   }
 
   // initiates chance of enemy counter attack
-  const enemyCounterAttack = () => {
+  const enemyCounterAttack = (chancePlayer) => {
     try {
       const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
       const playerCreatureDefense = (playerCreature[0].defense + chosenRelic[0].defenseMod) / 100;
       var criticalMultiplier = 1;
-      var chanceEnemy = false;
+      var chanceEnemy;
       // checks for equal player and enemy speed
       if (enemyCreature[0].speed / 100 === playerCreatureSpeed) {
         chanceEnemy = Math.random() >= 0.5;
@@ -531,13 +529,14 @@ function App() {
         const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
         const playerCreatureCritical = (playerCreature[0].critical + chosenRelic[0].criticalMod) / 100;
         const playerCreatureSpecial = playerCreature[0].special + chosenRelic[0].specialMod;
+        var chancePlayer;
         var criticalMultiplier = 1;
 
         // checks for equal player and enemy speed
         if (playerCreatureSpeed === enemyCreature[0].speed / 100) {
-          setChancePlayer(Math.random() >= 0.5);
+          chancePlayer = Math.random() >= 0.5;
         } else {
-          setChancePlayer(Math.random() >= enemyCreature[0].speed / 100 - playerCreatureSpeed);
+          chancePlayer = Math.random() >= enemyCreature[0].speed / 100 - playerCreatureSpeed;
         }
 
         // checks for player critical hit
@@ -587,7 +586,7 @@ function App() {
               }, 250);
             }
 
-            enemyCounterAttack();
+            enemyCounterAttack(chancePlayer);
           }
 
           setTimeout(() => {
@@ -647,7 +646,7 @@ function App() {
                 }, 250);
               }
 
-              enemyCounterAttack();
+              enemyCounterAttack(chancePlayer);
             }
 
           } else {

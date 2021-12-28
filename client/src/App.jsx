@@ -460,12 +460,12 @@ function App() {
   }
 
   // initiates chance of enemy counter attack
-  const enemyCounterAttack = (chancePlayer) => {
+  const enemyCounterAttack = (chancePlayer, moveName) => {
     try {
       const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
       const playerCreatureDefense = (playerCreature[0].defense + chosenRelic[0].defenseMod) / 100;
       var criticalMultiplier = 1;
-      var chanceEnemy;
+      var chanceEnemy = false;
       // checks for equal player and enemy speed
       if (enemyCreature[0].speed / 100 === playerCreatureSpeed) {
         chanceEnemy = Math.random() >= 0.5;
@@ -476,15 +476,21 @@ function App() {
       if (!chanceEnemy && chancePlayer) {
         setTimeout(() => {
           setCombatAlert("Enemy was too slow!");
-        }, 750);
+        }, 250);
       }
       if (!chanceEnemy && !chancePlayer) {
-        attackEnemy();
+        attackEnemy(moveName);
       }
       if (chanceEnemy && chancePlayer) {
         setTimeout(() => {
           setCombatAlert("The battle continues...");
-        }, 750);
+        }, 500);
+      }
+      // checks for player speed failure
+      if (chanceEnemy && !chancePlayer) {
+        setTimeout(() => {
+          setCombatAlert("Your summon was too slow!");
+        }, 250);
       }
       if (battleStatus && chanceEnemy) {
         setTimeout(() => {
@@ -521,7 +527,7 @@ function App() {
   }
 
   // initiates chance to attack enemy creature
-  const attackEnemy = async (movename) => {
+  const attackEnemy = async (moveName) => {
     try {
       // if the player and enemy aren't attacking and the battle is undecided
       if (!playerAttackStatus && !enemyAttackStatus && battleUndecided) {
@@ -529,7 +535,7 @@ function App() {
         const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
         const playerCreatureCritical = (playerCreature[0].critical + chosenRelic[0].criticalMod) / 100;
         const playerCreatureSpecial = playerCreature[0].special + chosenRelic[0].specialMod;
-        var chancePlayer;
+        var chancePlayer = false;
         var criticalMultiplier = 1;
 
         // checks for equal player and enemy speed
@@ -545,14 +551,7 @@ function App() {
         }
 
         // if the player's attack is regular
-        if (movename === playerCreature[0].attackName) {
-
-          // checks for player speed failure
-          if (!chancePlayer) {
-            setTimeout(() => {
-              setCombatAlert("Your summon was too slow!");
-            }, 750);
-          }
+        if (moveName === playerCreature[0].attackName) {
 
           // checks for enemy death
           if (enemyCreatureHP - ((playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalMultiplier) <= 0 && chancePlayer) {
@@ -586,7 +585,7 @@ function App() {
               }, 250);
             }
 
-            enemyCounterAttack(chancePlayer);
+            enemyCounterAttack(chancePlayer, moveName);
           }
 
           setTimeout(() => {
@@ -604,13 +603,6 @@ function App() {
           if (playerCreatureMP >= playerCreature[0].specialCost) {
             //deducts MP
             setPlayerCreatureMP(playerCreatureMP - playerCreature[0].specialCost);
-
-            // checks for player speed failure
-            if (!chancePlayer) {
-              setTimeout(() => {
-                setCombatAlert("Your summon was too slow!");
-              }, 750);
-            }
 
             // checks for enemy death
             if (enemyCreatureHP - ((playerCreatureSpecial - playerCreatureSpecial * (enemyCreature[0].defense / 100)) * criticalMultiplier) <= 0 && chancePlayer) {
@@ -646,7 +638,7 @@ function App() {
                 }, 250);
               }
 
-              enemyCounterAttack(chancePlayer);
+              enemyCounterAttack(chancePlayer, moveName);
             }
 
           } else {

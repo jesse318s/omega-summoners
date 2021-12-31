@@ -373,13 +373,15 @@ function App() {
     try {
       // if the player can afford the relic and doesn't own it
       if (player.drachmas >= relicPrice && !player.relics.includes(relicId)) {
-        Userfront.user.update({
-          data: {
-            userkey: Userfront.user.data.userkey,
-          },
-        });
-        await updateUser(player._id, { userfrontId: Userfront.user.userId, drachmas: player.drachmas - relicPrice, relics: [...player.relics, relicId] });
-        await loadAsyncDataPlayer();
+        if (window.confirm(`Are you sure you want to buy this relic? It will cost ${relicPrice} drachmas.`)) {
+          Userfront.user.update({
+            data: {
+              userkey: Userfront.user.data.userkey,
+            },
+          });
+          await updateUser(player._id, { userfrontId: Userfront.user.userId, drachmas: player.drachmas - relicPrice, relics: [...player.relics, relicId] });
+          await loadAsyncDataPlayer();
+        }
       }
     }
     catch (error) {
@@ -392,13 +394,15 @@ function App() {
     try {
       // if the player can afford the creature and isn't already using it
       if (player.experience >= creaturePrice && player.creatureId !== creatureId) {
-        Userfront.user.update({
-          data: {
-            userkey: Userfront.user.data.userkey,
-          },
-        });
-        await updateUser(player._id, { userfrontId: Userfront.user.userId, experience: player.experience - creaturePrice, creatureId: creatureId });
-        await loadAsyncDataPlayer();
+        if (window.confirm(`Are you sure you want to swap your creature for this one? It will cost ${creaturePrice} experience.`)) {
+          Userfront.user.update({
+            data: {
+              userkey: Userfront.user.data.userkey,
+            },
+          });
+          await updateUser(player._id, { userfrontId: Userfront.user.userId, experience: player.experience - creaturePrice, creatureId: creatureId });
+          await loadAsyncDataPlayer();
+        }
       }
     }
     catch (error) {
@@ -724,13 +728,13 @@ function App() {
                 height="96" />
               <h4>{player.name}</h4>
               <h5>
-                Lvl. {Math.floor(Math.sqrt(player.experience) * 0.25)} | {player.experience} XP
+                Lvl. {Math.floor(Math.sqrt(player.experience) * 0.25)} | {player.experience.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} XP
                 <div className="progress_bar_container">
-                  <div className="experience_progress_bar"
+                  <div className="progress_bar"
                     style={{ width: ((Math.sqrt(player.experience) * 0.25 - Math.floor(Math.sqrt(player.experience) * 0.25)).toFixed(2)).replace("0.", '') + "%" }} />
                 </div>
               </h5>
-              <h5>Drachmas: {player.drachmas} {"\u25C9"}</h5>
+              <h5>Drachmas: {player.drachmas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} {"\u25C9"}</h5>
 
               {/* menu */}
               {!battleStatus ? <div><div className="inline_flex">
@@ -842,6 +846,11 @@ function App() {
                         <button className="game_button special_button" onClick={() => { attackEnemy(creature.specialName) }}>{creature.specialName}<br />
                           Cost: {creature.specialCost} MP</button></div> : null}
                       <h4>{player.name}'s {creature.name}</h4>
+                      {battleStatus ? <div className="progress_bar_container">
+                        <div className="progress_bar"
+                          style={{ width: ((playerCreatureHP / playerCreature[0].hp)) * 100 + "%" }} />
+                      </div>
+                        : null}
                       {!battleStatus ? <div className="inline_flex"><h5>HP: {creature.hp + chosenRelic[0].hpMod}</h5>&nbsp;|&nbsp;<h5>MP: {creature.mp}</h5></div>
                         : <div className="inline_flex">
                           <h5>HP: {playerCreatureHP} / {creature.hp + chosenRelic[0].hpMod}</h5>&nbsp;|&nbsp;<h5>MP: {playerCreatureMP} / {creature.mp}</h5></div>}
@@ -883,6 +892,10 @@ function App() {
                           height="128px" />}
                     <div className="creature_panel">
                       <h4>Enemy {creature.name}</h4>
+                      <div className="progress_bar_container">
+                        <div className="progress_bar"
+                          style={{ width: ((enemyCreatureHP / enemyCreature[0].hp)) * 100 + "%" }} />
+                      </div>
                       <h5>HP: {enemyCreatureHP} / {creature.hp}</h5>
                     </div>
                   </div>
@@ -892,24 +905,22 @@ function App() {
           </> :
 
             // player for options
-            <div>
-              <div className="color_white">
-
-                <img src={player.avatarPath}
-                  alt={player.name}
-                  className="player_avatar"
-                  width="96"
-                  height="96" />
-                <h4>{player.name}</h4>
-                <h5>
-                  Level {Math.floor(Math.sqrt(player.experience) * 0.25)}
-                  <div className="progress_bar_container">
-                    <div className="experience_progress_bar"
-                      style={{ width: ((Math.sqrt(player.experience) * 0.25 - Math.floor(Math.sqrt(player.experience) * 0.25)).toFixed(2)).replace("0.", '') + "%" }} />
-                  </div>
-                </h5>
-                <h5>Drachmas: {player.drachmas} {"\u25C9"}</h5>
-              </div></div>}
+            <div className="color_white">
+              <img src={player.avatarPath}
+                alt={player.name}
+                className="player_avatar"
+                width="96"
+                height="96" />
+              <h4>{player.name}</h4>
+              <h5>
+                Lvl. {Math.floor(Math.sqrt(player.experience) * 0.25)} | {player.experience.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} XP
+                <div className="progress_bar_container">
+                  <div className="progress_bar"
+                    style={{ width: ((Math.sqrt(player.experience) * 0.25 - Math.floor(Math.sqrt(player.experience) * 0.25)).toFixed(2)).replace("0.", '') + "%" }} />
+                </div>
+              </h5>
+              <h5>Drachmas: {player.drachmas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} {"\u25C9"}</h5>
+            </div>}
         </main>
       </>
     );

@@ -12,7 +12,7 @@
 
 .button_logout {
   float: left;
-  background-color: rgba(orange, 0.90);
+  background-color: rgba(orange, 0.9);
   border: 1px solid orangered;
   border-radius: 16px;
   color: black;
@@ -103,7 +103,7 @@
 }
 
 .progress_bar_container {
-  width: 100px;
+  width: 150px;
   margin: 0 auto;
   background-color: white;
   border: 1px solid black;
@@ -115,7 +115,7 @@
   border-radius: 5px;
 }
 
-.experience_progress_bar {
+.progress_bar {
   padding-top: 10px;
   background-color: green;
   border-radius: 5px 0 0 5px;

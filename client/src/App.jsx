@@ -170,8 +170,6 @@ function App() {
   const [enemyCreatureHP, setEnemyCreatureHP] = useState(0);
   // sets player creature MP state
   const [playerCreatureMP, setPlayerCreatureMP] = useState(0);
-  // sets player speed chance state
-  const [chancePlayer, setChancePlayer] = useState(false);
   // sets relics state
   const [relicsData] = useState(relics);
   // sets player relics state
@@ -375,13 +373,15 @@ function App() {
     try {
       // if the player can afford the relic and doesn't own it
       if (player.drachmas >= relicPrice && !player.relics.includes(relicId)) {
-        Userfront.user.update({
-          data: {
-            userkey: Userfront.user.data.userkey,
-          },
-        });
-        await updateUser(player._id, { userfrontId: Userfront.user.userId, drachmas: player.drachmas - relicPrice, relics: [...player.relics, relicId] });
-        await loadAsyncDataPlayer();
+        if (window.confirm(`Are you sure you want to buy this relic? It will cost ${relicPrice} drachmas.`)) {
+          Userfront.user.update({
+            data: {
+              userkey: Userfront.user.data.userkey,
+            },
+          });
+          await updateUser(player._id, { userfrontId: Userfront.user.userId, drachmas: player.drachmas - relicPrice, relics: [...player.relics, relicId] });
+          await loadAsyncDataPlayer();
+        }
       }
     }
     catch (error) {
@@ -394,13 +394,15 @@ function App() {
     try {
       // if the player can afford the creature and isn't already using it
       if (player.experience >= creaturePrice && player.creatureId !== creatureId) {
-        Userfront.user.update({
-          data: {
-            userkey: Userfront.user.data.userkey,
-          },
-        });
-        await updateUser(player._id, { userfrontId: Userfront.user.userId, experience: player.experience - creaturePrice, creatureId: creatureId });
-        await loadAsyncDataPlayer();
+        if (window.confirm(`Are you sure you want to swap your creature for this one? It will cost ${creaturePrice} experience.`)) {
+          Userfront.user.update({
+            data: {
+              userkey: Userfront.user.data.userkey,
+            },
+          });
+          await updateUser(player._id, { userfrontId: Userfront.user.userId, experience: player.experience - creaturePrice, creatureId: creatureId });
+          await loadAsyncDataPlayer();
+        }
       }
     }
     catch (error) {
@@ -462,7 +464,7 @@ function App() {
   }
 
   // initiates chance of enemy counter attack
-  const enemyCounterAttack = () => {
+  const enemyCounterAttack = (chancePlayer, moveName) => {
     try {
       const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
       const playerCreatureDefense = (playerCreature[0].defense + chosenRelic[0].defenseMod) / 100;
@@ -478,15 +480,21 @@ function App() {
       if (!chanceEnemy && chancePlayer) {
         setTimeout(() => {
           setCombatAlert("Enemy was too slow!");
-        }, 750);
+        }, 250);
       }
       if (!chanceEnemy && !chancePlayer) {
-        attackEnemy();
+        attackEnemy(moveName);
       }
       if (chanceEnemy && chancePlayer) {
         setTimeout(() => {
           setCombatAlert("The battle continues...");
-        }, 750);
+        }, 500);
+      }
+      // checks for player speed failure
+      if (chanceEnemy && !chancePlayer) {
+        setTimeout(() => {
+          setCombatAlert("Your summon was too slow!");
+        }, 250);
       }
       if (battleStatus && chanceEnemy) {
         setTimeout(() => {
@@ -523,7 +531,7 @@ function App() {
   }
 
   // initiates chance to attack enemy creature
-  const attackEnemy = async (movename) => {
+  const attackEnemy = async (moveName) => {
     try {
       // if the player and enemy aren't attacking and the battle is undecided
       if (!playerAttackStatus && !enemyAttackStatus && battleUndecided) {
@@ -531,13 +539,14 @@ function App() {
         const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
         const playerCreatureCritical = (playerCreature[0].critical + chosenRelic[0].criticalMod) / 100;
         const playerCreatureSpecial = playerCreature[0].special + chosenRelic[0].specialMod;
+        var chancePlayer = false;
         var criticalMultiplier = 1;
 
         // checks for equal player and enemy speed
         if (playerCreatureSpeed === enemyCreature[0].speed / 100) {
-          setChancePlayer(Math.random() >= 0.5);
+          chancePlayer = Math.random() >= 0.5;
         } else {
-          setChancePlayer(Math.random() >= enemyCreature[0].speed / 100 - playerCreatureSpeed);
+          chancePlayer = Math.random() >= enemyCreature[0].speed / 100 - playerCreatureSpeed;
         }
 
         // checks for player critical hit
@@ -546,14 +555,7 @@ function App() {
         }
 
         // if the player's attack is regular
-        if (movename === playerCreature[0].attackName) {
-
-          // checks for player speed failure
-          if (!chancePlayer) {
-            setTimeout(() => {
-              setCombatAlert("Your summon was too slow!");
-            }, 750);
-          }
+        if (moveName === playerCreature[0].attackName) {
 
           // checks for enemy death
           if (enemyCreatureHP - ((playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalMultiplier) <= 0 && chancePlayer) {
@@ -587,7 +589,7 @@ function App() {
               }, 250);
             }
 
-            enemyCounterAttack();
+            enemyCounterAttack(chancePlayer, moveName);
           }
 
           setTimeout(() => {
@@ -605,13 +607,6 @@ function App() {
           if (playerCreatureMP >= playerCreature[0].specialCost) {
             //deducts MP
             setPlayerCreatureMP(playerCreatureMP - playerCreature[0].specialCost);
-
-            // checks for player speed failure
-            if (!chancePlayer) {
-              setTimeout(() => {
-                setCombatAlert("Your summon was too slow!");
-              }, 750);
-            }
 
             // checks for enemy death
             if (enemyCreatureHP - ((playerCreatureSpecial - playerCreatureSpecial * (enemyCreature[0].defense / 100)) * criticalMultiplier) <= 0 && chancePlayer) {
@@ -647,7 +642,7 @@ function App() {
                 }, 250);
               }
 
-              enemyCounterAttack();
+              enemyCounterAttack(chancePlayer, moveName);
             }
 
           } else {
@@ -733,13 +728,13 @@ function App() {
                 height="96" />
               <h4>{player.name}</h4>
               <h5>
-                Lvl. {Math.floor(Math.sqrt(player.experience) * 0.25)} | {player.experience} XP
+                Lvl. {Math.floor(Math.sqrt(player.experience) * 0.25)} | {player.experience.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} XP
                 <div className="progress_bar_container">
-                  <div className="experience_progress_bar"
+                  <div className="progress_bar"
                     style={{ width: ((Math.sqrt(player.experience) * 0.25 - Math.floor(Math.sqrt(player.experience) * 0.25)).toFixed(2)).replace("0.", '') + "%" }} />
                 </div>
               </h5>
-              <h5>Drachmas: {player.drachmas} {"\u25C9"}</h5>
+              <h5>Drachmas: {player.drachmas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} {"\u25C9"}</h5>
 
               {/* menu */}
               {!battleStatus ? <div><div className="inline_flex">
@@ -851,10 +846,15 @@ function App() {
                         <button className="game_button special_button" onClick={() => { attackEnemy(creature.specialName) }}>{creature.specialName}<br />
                           Cost: {creature.specialCost} MP</button></div> : null}
                       <h4>{player.name}'s {creature.name}</h4>
+                      {battleStatus ? <div className="progress_bar_container">
+                        <div className="progress_bar"
+                          style={{ width: ((playerCreatureHP / playerCreature[0].hp)) * 100 + "%" }} />
+                      </div>
+                        : null}
                       {!battleStatus ? <div className="inline_flex"><h5>HP: {creature.hp + chosenRelic[0].hpMod}</h5>&nbsp;|&nbsp;<h5>MP: {creature.mp}</h5></div>
                         : <div className="inline_flex">
                           <h5>HP: {playerCreatureHP} / {creature.hp + chosenRelic[0].hpMod}</h5>&nbsp;|&nbsp;<h5>MP: {playerCreatureMP} / {creature.mp}</h5></div>}
-                      {creatureStatsStatus && !battleStatus ?
+                      {creatureStatsStatus ?
                         <div>
                           <h5>Attack: {creature.attack + chosenRelic[0].attackMod} | Sp. Attack: {creature.special}</h5>
                           <h5>Speed: {creature.speed + chosenRelic[0].speedMod} | MP Regen: {creature.mpRegen}</h5>
@@ -892,6 +892,10 @@ function App() {
                           height="128px" />}
                     <div className="creature_panel">
                       <h4>Enemy {creature.name}</h4>
+                      <div className="progress_bar_container">
+                        <div className="progress_bar"
+                          style={{ width: ((enemyCreatureHP / enemyCreature[0].hp)) * 100 + "%" }} />
+                      </div>
                       <h5>HP: {enemyCreatureHP} / {creature.hp}</h5>
                     </div>
                   </div>
@@ -901,24 +905,22 @@ function App() {
           </> :
 
             // player for options
-            <div>
-              <div className="color_white">
-
-                <img src={player.avatarPath}
-                  alt={player.name}
-                  className="player_avatar"
-                  width="96"
-                  height="96" />
-                <h4>{player.name}</h4>
-                <h5>
-                  Level {Math.floor(Math.sqrt(player.experience) * 0.25)}
-                  <div className="progress_bar_container">
-                    <div className="experience_progress_bar"
-                      style={{ width: ((Math.sqrt(player.experience) * 0.25 - Math.floor(Math.sqrt(player.experience) * 0.25)).toFixed(2)).replace("0.", '') + "%" }} />
-                  </div>
-                </h5>
-                <h5>Drachmas: {player.drachmas} {"\u25C9"}</h5>
-              </div></div>}
+            <div className="color_white">
+              <img src={player.avatarPath}
+                alt={player.name}
+                className="player_avatar"
+                width="96"
+                height="96" />
+              <h4>{player.name}</h4>
+              <h5>
+                Lvl. {Math.floor(Math.sqrt(player.experience) * 0.25)} | {player.experience.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} XP
+                <div className="progress_bar_container">
+                  <div className="progress_bar"
+                    style={{ width: ((Math.sqrt(player.experience) * 0.25 - Math.floor(Math.sqrt(player.experience) * 0.25)).toFixed(2)).replace("0.", '') + "%" }} />
+                </div>
+              </h5>
+              <h5>Drachmas: {player.drachmas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} {"\u25C9"}</h5>
+            </div>}
         </main>
       </>
     );

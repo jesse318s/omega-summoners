@@ -126,6 +126,9 @@ function Home() {
                                     <a className="nav-link" href="/">Home</a>
                                 </li>
                                 <li className="nav-item font-weight-bold">
+                                    <a className="nav-link" href="#gameplay">Gameplay</a>
+                                </li>
+                                <li className="nav-item font-weight-bold">
                                     <a className="nav-link" href="#about">About</a>
                                 </li>
                             </ul>
@@ -149,6 +152,59 @@ function Home() {
             </header>
 
             <main>
+                {/* shooting star background */}
+                <div className="stars">
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                    <div className="star"></div>
+                </div>
                 {/* title and home */}
                 <section className="home_section">
                     <h1 className="mx-2 home_title blink">Welcome to Omega Summoners!</h1>
@@ -228,6 +284,111 @@ function Home() {
                             <button className="btn btn-primary my-1" type="submit">Sign up</button>
                         </form>
                     </div>
+                </section>
+
+                {/* gameplay section */}
+                <section className="mx-2" id="gameplay">
+                    <h2 className="mt-4 mb-3 text-light">Gameplay</h2>
+                    {/* Carousel wrapper */}
+                    <div
+                        id="carouselBasicExample"
+                        className="carousel slide carousel-fade"
+                        data-mdb-ride="carousel"
+                    >
+                        {/* Indicators */}
+                        <div className="carousel-indicators">
+                            <button
+                                type="button"
+                                data-mdb-target="#carouselBasicExample"
+                                data-mdb-slide-to="0"
+                                className="active"
+                                aria-current="true"
+                                aria-label="Slide 1"
+                            ></button>
+                            <button
+                                type="button"
+                                data-mdb-target="#carouselBasicExample"
+                                data-mdb-slide-to="1"
+                                aria-label="Slide 2"
+                            ></button>
+                            <button
+                                type="button"
+                                data-mdb-target="#carouselBasicExample"
+                                data-mdb-slide-to="2"
+                                aria-label="Slide 3"
+                            ></button>
+                        </div>
+
+                        {/* Inner */}
+                        <div className="carousel-inner">
+                            {/* Single item */}
+                            <div className="carousel-item active">
+                                <img
+                                    src="img/screenshot/screenshot1.webp"
+                                    className="d-block w-100"
+                                    alt="Gameplay screenshot desktop"
+                                />
+                                <div className="carousel-caption d-none d-md-block">
+                                    <h5>A Traditional, Turn-Based RPG Experience</h5>
+                                    <p>
+                                        Utilize your skills and stats to defeat enemies and gain loot.
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Single item */}
+                            <div className="carousel-item">
+                                <img
+                                    src="img/screenshot/screenshot2.webp"
+                                    className="d-block w-100"
+                                    alt="Gameplay screenshot mobile"
+                                />
+                                <div className="carousel-caption d-none d-md-block">
+                                    <h5>Multi-Platform</h5>
+                                    <p>
+                                        Desktop, mobile, and tablet versions. Play anywhere!
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Single item */}
+                            <div className="carousel-item">
+                                <img
+                                    src="img/screenshot/screenshot3.webp"
+                                    className="d-block w-100"
+                                    alt="Gameplay screenshot other"
+                                />
+                                <div className="carousel-caption d-none d-md-block">
+                                    <h5>Signature Moves</h5>
+                                    <p>
+                                        Summons have a unique set of skills that can be used to defeat enemies.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        {/* Inner */}
+
+                        {/* Controls */}
+                        <button
+                            className="carousel-control-prev"
+                            type="button"
+                            data-mdb-target="#carouselBasicExample"
+                            data-mdb-slide="prev"
+                        >
+                            <span className="font_large" aria-hidden="true">{"\u276E"}</span>
+                            <span className="visually-hidden">Previous</span>
+                        </button>
+                        <button
+                            className="carousel-control-next"
+                            type="button"
+                            data-mdb-target="#carouselBasicExample"
+                            data-mdb-slide="next"
+                        >
+                            <span className="font_large" aria-hidden="true">{"\u276F"}</span>
+                            <span className="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                    {/* Carousel wrapper */}
                 </section>
 
                 {/* about section */}

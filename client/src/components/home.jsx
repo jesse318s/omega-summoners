@@ -329,7 +329,7 @@ function Home() {
                                     alt="Gameplay screenshot desktop"
                                 />
                                 <div className="carousel-caption d-none d-md-block">
-                                    <h5>A Traditional, Turn-Based RPG Experience</h5>
+                                    <h2>A Traditional, Turn-Based RPG Experience</h2>
                                     <p>
                                         Utilize your skills and stats to defeat enemies and gain loot.
                                     </p>
@@ -344,7 +344,7 @@ function Home() {
                                     alt="Gameplay screenshot mobile"
                                 />
                                 <div className="carousel-caption d-none d-md-block">
-                                    <h5>Multi-Platform</h5>
+                                    <h2>Multi-Platform</h2>
                                     <p>
                                         Desktop, mobile, and tablet versions. Play anywhere!
                                     </p>
@@ -359,7 +359,7 @@ function Home() {
                                     alt="Gameplay screenshot other"
                                 />
                                 <div className="carousel-caption d-none d-md-block">
-                                    <h5>Signature Moves</h5>
+                                    <h2>Signature Moves</h2>
                                     <p>
                                         Summons have a unique set of skills that can be used to defeat enemies.
                                     </p>

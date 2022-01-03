@@ -183,7 +183,7 @@ function App() {
   // sets combat text state
   const [combatText, setCombatText] = useState("");
   // sets crit text state
-  const [critText, setCritText] = useState("");
+  const [critText, setCritText] = useState("combat_text");
 
   useEffect(() => {
     // checks for userfront authentication and redirects visitor if not authenticated
@@ -452,7 +452,7 @@ function App() {
       setCombatText((playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalMultiplier)
       setTimeout(() => {
         setCombatText("");
-        setCritText("");
+        setCritText("combat_text");
       }, 500);
     } catch (error) {
       console.log(error);
@@ -480,7 +480,7 @@ function App() {
       setCombatText((playerCreatureSpecial - playerCreatureSpecial * (enemyCreature[0].defense / 100)) * criticalMultiplier)
       setTimeout(() => {
         setCombatText("");
-        setCritText("");
+        setCritText("combat_text");
       }, 500);
     } catch (error) {
       console.log(error);
@@ -508,7 +508,7 @@ function App() {
       setCombatText((enemyCreature[0].attack - enemyCreature[0].attack * (playerCreature[0].defense / 100)) * criticalMultiplier)
       setTimeout(() => {
         setCombatText("");
-        setCritText("");
+        setCritText("combat_text");
       }, 500);
     } catch (error) {
       console.log(error);

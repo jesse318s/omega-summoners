@@ -252,9 +252,33 @@
   overflow: visible;
 }
 
+.combat_text {
+  animation: combat_text_animation 0.5s;
+
+  @keyframes combat_text_animation {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.25;
+    }
+  }
+}
+
 .crit_text {
   color: red;
   font-weight: bold;
+
+  animation: crit_text_animation 0.5s;
+
+  @keyframes crit_text_animation {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
 }
 
 .special_effect1 {

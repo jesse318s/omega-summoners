@@ -920,8 +920,8 @@ function App() {
                         <div>
                           <h5>Attack: {creature.attack + chosenRelic[0].attackMod} | Sp. Attack: {creature.special + chosenRelic[0].specialMod}</h5>
                           <h5>Speed: {creature.speed + chosenRelic[0].speedMod} | MP Regen: {creature.mpRegen + chosenRelic[0].mpRegenMod}</h5>
-                          <h5>Defense: {creature.defense + chosenRelic[0].defenseMod}</h5>
-                          <h5>Critical: {creature.critical + chosenRelic[0].criticalMod}</h5>
+                          <h5>Defense: {creature.defense + chosenRelic[0].defenseMod}%</h5>
+                          <h5>Critical: {creature.critical + chosenRelic[0].criticalMod}%</h5>
                         </div>
                         : null}
                     </div>

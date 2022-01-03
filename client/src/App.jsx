@@ -180,6 +180,10 @@ function App() {
   const [combatAlert, setCombatAlert] = useState("");
   // sets battle decision state
   const [battleUndecided, setBattleUndecided] = useState(false);
+  // sets combat text state
+  const [combatText, setCombatText] = useState("");
+  // sets crit text state
+  const [critText, setCritText] = useState("");
 
   useEffect(() => {
     // checks for userfront authentication and redirects visitor if not authenticated
@@ -439,6 +443,22 @@ function App() {
     }
   }
 
+  // player attack Combat Text animation
+  const playerAttackCT = (playerCreatureAttack, criticalMultiplier) => {
+    try {
+      if (criticalMultiplier > 1) {
+        setCritText("crit_text");
+      }
+      setCombatText((playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalMultiplier)
+      setTimeout(() => {
+        setCombatText("");
+        setCritText("");
+      }, 500);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   // special animation
   const specialAnimation = () => {
     try {
@@ -451,12 +471,44 @@ function App() {
     }
   }
 
+  // player special Combat Text animation
+  const playerSpecialCT = (playerCreatureSpecial, criticalMultiplier) => {
+    try {
+      if (criticalMultiplier > 1) {
+        setCritText("crit_text");
+      }
+      setCombatText((playerCreatureSpecial - playerCreatureSpecial * (enemyCreature[0].defense / 100)) * criticalMultiplier)
+      setTimeout(() => {
+        setCombatText("");
+        setCritText("");
+      }, 500);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   // enemy attack animation
   const enemyAttackAnimation = () => {
     try {
       setEnemyAttackStatus(true);
       setTimeout(() => {
         setEnemyAttackStatus(false);
+      }, 500);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  // enemy attack Combat Text animation
+  const enemyAttackCT = (criticalMultiplier) => {
+    try {
+      if (criticalMultiplier > 1) {
+        setCritText("crit_text");
+      }
+      setCombatText((enemyCreature[0].attack - enemyCreature[0].attack * (playerCreature[0].defense / 100)) * criticalMultiplier)
+      setTimeout(() => {
+        setCombatText("");
+        setCritText("");
       }, 500);
     } catch (error) {
       console.log(error);
@@ -510,6 +562,7 @@ function App() {
         if (playerCreatureHP - ((enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalMultiplier) <= 0) {
           setBattleUndecided(false);
           setTimeout(() => {
+            enemyAttackCT(criticalMultiplier);
             setPlayerCreatureHP(0);
             setCombatAlert("Defeat!");
           }, 750);
@@ -520,6 +573,7 @@ function App() {
           }, 2750);
         } else {
           setTimeout(() => {
+            enemyAttackCT(criticalMultiplier);
             setPlayerCreatureHP(playerCreatureHP - (enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalMultiplier);
           }, 750);
         }
@@ -561,6 +615,7 @@ function App() {
           if (enemyCreatureHP - ((playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalMultiplier) <= 0 && chancePlayer) {
             setBattleUndecided(false);
             playerAttackAnimation();
+            playerAttackCT(playerCreatureAttack, criticalMultiplier);
             await setTimeout(() => {
               setEnemyCreatureHP(0);
               setCombatAlert("Victory!");
@@ -584,6 +639,7 @@ function App() {
             // damages enemy
             if (chancePlayer) {
               playerAttackAnimation();
+              playerAttackCT(playerCreatureAttack, criticalMultiplier);
               setTimeout(() => {
                 setEnemyCreatureHP(enemyCreatureHP - (playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalMultiplier);
               }, 250);
@@ -613,6 +669,7 @@ function App() {
               setBattleUndecided(false);
               playerAttackAnimation();
               specialAnimation();
+              playerSpecialCT(playerCreatureSpecial, criticalMultiplier);
               await setTimeout(() => {
                 setEnemyCreatureHP(0);
                 setCombatAlert("Victory!");
@@ -636,6 +693,7 @@ function App() {
               // damages enemy
               if (chancePlayer) {
                 playerAttackAnimation();
+                playerSpecialCT(playerCreatureSpecial, criticalMultiplier);
                 specialAnimation();
                 setTimeout(() => {
                   setEnemyCreatureHP(enemyCreatureHP - (playerCreatureSpecial - playerCreatureSpecial * (enemyCreature[0].defense / 100)) * criticalMultiplier);
@@ -821,6 +879,7 @@ function App() {
                   <div
                     key={creature.id}
                   >
+                    {enemyAttackStatus ? <div className="special_effect_container"><div className={critText}>{combatText}</div></div> : null}
                     {playerAttackStatus
                       ? <img className={chosenRelic[0].effectClass}
                         src={creature.imgPath.slice(0, -4) + "_attack.png"}
@@ -875,6 +934,7 @@ function App() {
                   <div
                     key={creature.id}
                   >
+                    {playerAttackStatus ? <div className="special_effect_container"><div className={critText}>{combatText}</div></div> : null}
                     {enemyAttackStatus ? <img className="enemy_creature_img"
                       src={creature.imgPath.slice(0, -4) + "_attack.png"}
                       alt={creature.name}

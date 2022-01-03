@@ -154,12 +154,12 @@ function App() {
   // sets creatures state
   const [creatureData] = useState(creatures);
   // sets player creature state
-  const [playerCreature, setPlayerCreature] = useState([{}]);
+  const [playerCreature, setPlayerCreature] = useState({});
   // sets creature stats state
   const [creatureStatsStatus, setCreatureStatsStatus] = useState(false);
   // sets battle and enemy creature state
   const [battleStatus, setBattleStatus] = useState(false);
-  const [enemyCreature, setEnemyCreature] = useState([{}]);
+  const [enemyCreature, setEnemyCreature] = useState({});
   // sets player and enemy creature attack state
   const [playerAttackStatus, setPlayerAttackStatus] = useState(false);
   const [enemyAttackStatus, setEnemyAttackStatus] = useState(false);
@@ -568,7 +568,7 @@ function App() {
           }, 750);
           setTimeout(() => {
             setBattleStatus(false);
-            setEnemyCreature([{}]);
+            setEnemyCreature({});
             setEnemyCreatureHP(0);
           }, 2750);
         } else {
@@ -628,7 +628,7 @@ function App() {
             }, 250);
             setTimeout(() => {
               setBattleStatus(false);
-              setEnemyCreature([{}]);
+              setEnemyCreature({});
               setPlayerCreatureHP(0);
             }, 2250);
             await setTimeout(() => {
@@ -683,7 +683,7 @@ function App() {
               }, 250);
               setTimeout(() => {
                 setBattleStatus(false);
-                setEnemyCreature([{}]);
+                setEnemyCreature({});
                 setPlayerCreatureHP(0);
               }, 2250);
               await setTimeout(() => {

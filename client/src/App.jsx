@@ -649,12 +649,13 @@ function App() {
           }
 
           setTimeout(() => {
-            if (playerCreatureMP !== playerCreature[0].mp && (playerCreatureMP + playerCreature[0].mpRegen <= playerCreature[0].mp)) {
-              setPlayerCreatureMP(playerCreatureMP + (playerCreature[0].mpRegen + chosenRelic[0].mpRegenMod));
+            if (playerCreatureMP !== (playerCreature[0].mp + chosenRelic[0].mpMod) && (playerCreatureMP + playerCreature[0].mpRegen + chosenRelic[0].mpRegenMod)
+              <= (playerCreature[0].mp + chosenRelic[0].mpMod)) {
+              setPlayerCreatureMP(playerCreatureMP + playerCreature[0].mpRegen + chosenRelic[0].mpRegenMod);
             }
 
-            if (playerCreatureMP + playerCreature[0].mpRegen > playerCreature[0].mp) {
-              setPlayerCreatureMP(playerCreature[0].mp);
+            if ((playerCreatureMP + playerCreature[0].mpRegen) > playerCreature[0].mp) {
+              setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod);
             }
           }, 500);
         } else {
@@ -910,13 +911,15 @@ function App() {
                           style={{ width: ((playerCreatureHP / playerCreature[0].hp)) * 100 + "%" }} />
                       </div>
                         : null}
-                      {!battleStatus ? <div className="inline_flex"><h5>HP: {creature.hp + chosenRelic[0].hpMod}</h5>&nbsp;|&nbsp;<h5>MP: {creature.mp}</h5></div>
+                      {!battleStatus ?
+                        <div className="inline_flex"><h5>HP: {creature.hp + chosenRelic[0].hpMod}</h5>&nbsp;|&nbsp;<h5>MP: {creature.mp + chosenRelic[0].mpMod}</h5></div>
                         : <div className="inline_flex">
-                          <h5>HP: {playerCreatureHP} / {creature.hp + chosenRelic[0].hpMod}</h5>&nbsp;|&nbsp;<h5>MP: {playerCreatureMP} / {creature.mp}</h5></div>}
+                          <h5>HP: {playerCreatureHP} / {creature.hp + chosenRelic[0].hpMod}</h5>&nbsp;|&nbsp;
+                          <h5>MP: {playerCreatureMP} / {creature.mp + chosenRelic[0].mpMod}</h5></div>}
                       {creatureStatsStatus ?
                         <div>
-                          <h5>Attack: {creature.attack + chosenRelic[0].attackMod} | Sp. Attack: {creature.special}</h5>
-                          <h5>Speed: {creature.speed + chosenRelic[0].speedMod} | MP Regen: {creature.mpRegen}</h5>
+                          <h5>Attack: {creature.attack + chosenRelic[0].attackMod} | Sp. Attack: {creature.special + chosenRelic[0].specialMod}</h5>
+                          <h5>Speed: {creature.speed + chosenRelic[0].speedMod} | MP Regen: {creature.mpRegen + chosenRelic[0].mpRegenMod}</h5>
                           <h5>Defense: {creature.defense + chosenRelic[0].defenseMod}</h5>
                           <h5>Critical: {creature.critical + chosenRelic[0].criticalMod}</h5>
                         </div>

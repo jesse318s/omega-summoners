@@ -253,14 +253,14 @@
 }
 
 .combat_text {
-  animation: combat_text_animation 0.5s;
+  animation: combat_text_animation 0.75s;
 
   @keyframes combat_text_animation {
     0% {
       opacity: 1;
     }
     100% {
-      opacity: 0.25;
+      opacity: 0;
     }
   }
 }
@@ -269,7 +269,7 @@
   color: red;
   font-weight: bold;
 
-  animation: crit_text_animation 0.5s;
+  animation: crit_text_animation 0.75s;
 
   @keyframes crit_text_animation {
     0% {

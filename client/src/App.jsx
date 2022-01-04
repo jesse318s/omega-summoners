@@ -20,7 +20,7 @@ function App() {
       hp: 60,
       attack: 50,
       attackName: "Slash",
-      attackType: "Poison",
+      attackType: "Normal",
       speed: 60,
       defense: 20,
       critical: 50,
@@ -29,7 +29,7 @@ function App() {
       special: 75,
       specialCost: 100,
       specialName: "Harvest",
-      specialType: "Magic",
+      specialType: "Poison",
       specialEffect: "special_effect1"
     },
     {
@@ -40,7 +40,7 @@ function App() {
       hp: 110,
       attack: 30,
       attackName: "Gaze",
-      attackType: "Normal",
+      attackType: "Magic",
       speed: 30,
       defense: 15,
       critical: 20,
@@ -452,12 +452,12 @@ function App() {
   }
 
   // player attack Combat Text animation
-  const playerAttackCT = (playerCreatureAttack, criticalMultiplier) => {
+  const playerAttackCT = (playerCreatureAttack, criticalMultiplier, enemyDefense) => {
     try {
       if (criticalMultiplier > 1) {
         setCritText("crit_text");
       }
-      setCombatText((playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalMultiplier)
+      setCombatText((playerCreatureAttack - playerCreatureAttack * enemyDefense) * criticalMultiplier)
       setTimeout(() => {
         setCombatText("");
         setCritText("combat_text");
@@ -480,12 +480,12 @@ function App() {
   }
 
   // player special Combat Text animation
-  const playerSpecialCT = (playerCreatureSpecial, criticalMultiplier) => {
+  const playerSpecialCT = (playerCreatureSpecial, criticalMultiplier, enemyDefense) => {
     try {
       if (criticalMultiplier > 1) {
         setCritText("crit_text");
       }
-      setCombatText((playerCreatureSpecial - playerCreatureSpecial * (enemyCreature[0].defense / 100)) * criticalMultiplier)
+      setCombatText((playerCreatureSpecial - playerCreatureSpecial * enemyDefense) * criticalMultiplier)
       setTimeout(() => {
         setCombatText("");
         setCritText("combat_text");
@@ -508,12 +508,12 @@ function App() {
   }
 
   // enemy attack Combat Text animation
-  const enemyAttackCT = (criticalMultiplier) => {
+  const enemyAttackCT = (criticalMultiplier, playerCreatureDefense) => {
     try {
       if (criticalMultiplier > 1) {
         setCritText("crit_text");
       }
-      setCombatText((enemyCreature[0].attack - enemyCreature[0].attack * (playerCreature[0].defense / 100)) * criticalMultiplier)
+      setCombatText((enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalMultiplier)
       setTimeout(() => {
         setCombatText("");
         setCritText("combat_text");
@@ -527,9 +527,14 @@ function App() {
   const enemyCounterAttack = (chancePlayer, moveName) => {
     try {
       const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
-      const playerCreatureDefense = (playerCreature[0].defense + chosenRelic[0].defenseMod) / 100;
+      var playerCreatureDefense = (playerCreature[0].defense + chosenRelic[0].defenseMod) / 100;
       var criticalMultiplier = 1;
       var chanceEnemy = false;
+
+      // checks for attack type
+      if (enemyCreature[0].attackType === "Magic") {
+        playerCreatureDefense = 0;
+      }
       // checks for equal player and enemy speed
       if (enemyCreature[0].speed / 100 === playerCreatureSpeed) {
         chanceEnemy = Math.random() >= 0.5;
@@ -566,11 +571,16 @@ function App() {
           criticalMultiplier = 1.5;
         }
 
+        //checks for player poison move type and crit, then applies effect
+        if (enemyCreature[0].attackType === "Poison" && criticalMultiplier === 1) {
+          criticalMultiplier = 1.5;
+        }
+
         // checks for player death, and damages player otherwise
         if (playerCreatureHP - ((enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalMultiplier) <= 0) {
           setBattleUndecided(false);
           setTimeout(() => {
-            enemyAttackCT(criticalMultiplier);
+            enemyAttackCT(criticalMultiplier, playerCreatureDefense);
             setPlayerCreatureHP(0);
             setCombatAlert("Defeat!");
           }, 750);
@@ -581,7 +591,7 @@ function App() {
           }, 2750);
         } else {
           setTimeout(() => {
-            enemyAttackCT(criticalMultiplier);
+            enemyAttackCT(criticalMultiplier, playerCreatureDefense);
             setPlayerCreatureHP(playerCreatureHP - (enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalMultiplier);
           }, 750);
         }
@@ -601,8 +611,14 @@ function App() {
         const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
         const playerCreatureCritical = (playerCreature[0].critical + chosenRelic[0].criticalMod) / 100;
         const playerCreatureSpecial = playerCreature[0].special + chosenRelic[0].specialMod;
+        var enemyDefense = enemyCreature[0].defense / 100;
         var chancePlayer = false;
         var criticalMultiplier = 1;
+
+        //checks for player magic move type and applies effect
+        if (moveType === "Magic") {
+          enemyDefense = 0;
+        }
 
         // checks for equal player and enemy speed
         if (playerCreatureSpeed === enemyCreature[0].speed / 100) {
@@ -616,14 +632,19 @@ function App() {
           criticalMultiplier = 1.5;
         }
 
+        //checks for player poison move type and crit, then applies effect
+        if (moveType === "Poison" && criticalMultiplier === 1) {
+          criticalMultiplier = 1.5;
+        }
+
         // if the player's attack is regular
         if (moveName === playerCreature[0].attackName) {
 
           // checks for enemy death
-          if (enemyCreatureHP - ((playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalMultiplier) <= 0 && chancePlayer) {
+          if (enemyCreatureHP - ((playerCreatureAttack - playerCreatureAttack * enemyDefense) * criticalMultiplier) <= 0 && chancePlayer) {
             setBattleUndecided(false);
             playerAttackAnimation();
-            playerAttackCT(playerCreatureAttack, criticalMultiplier);
+            playerAttackCT(playerCreatureAttack, criticalMultiplier, enemyDefense);
             await setTimeout(() => {
               setEnemyCreatureHP(0);
               setCombatAlert("Victory!");
@@ -647,9 +668,9 @@ function App() {
             // damages enemy
             if (chancePlayer) {
               playerAttackAnimation();
-              playerAttackCT(playerCreatureAttack, criticalMultiplier);
+              playerAttackCT(playerCreatureAttack, criticalMultiplier, enemyDefense);
               setTimeout(() => {
-                setEnemyCreatureHP(enemyCreatureHP - (playerCreatureAttack - playerCreatureAttack * (enemyCreature[0].defense / 100)) * criticalMultiplier);
+                setEnemyCreatureHP(enemyCreatureHP - (playerCreatureAttack - playerCreatureAttack * enemyDefense) * criticalMultiplier);
               }, 250);
             }
 
@@ -674,11 +695,11 @@ function App() {
             setPlayerCreatureMP(playerCreatureMP - playerCreature[0].specialCost);
 
             // checks for enemy death
-            if (enemyCreatureHP - ((playerCreatureSpecial - playerCreatureSpecial * (enemyCreature[0].defense / 100)) * criticalMultiplier) <= 0 && chancePlayer) {
+            if (enemyCreatureHP - ((playerCreatureSpecial - playerCreatureSpecial * enemyDefense) * criticalMultiplier) <= 0 && chancePlayer) {
               setBattleUndecided(false);
               playerAttackAnimation();
               specialAnimation();
-              playerSpecialCT(playerCreatureSpecial, criticalMultiplier);
+              playerSpecialCT(playerCreatureSpecial, criticalMultiplier, enemyDefense);
               await setTimeout(() => {
                 setEnemyCreatureHP(0);
                 setCombatAlert("Victory!");
@@ -702,10 +723,10 @@ function App() {
               // damages enemy
               if (chancePlayer) {
                 playerAttackAnimation();
-                playerSpecialCT(playerCreatureSpecial, criticalMultiplier);
+                playerSpecialCT(playerCreatureSpecial, criticalMultiplier, enemyDefense);
                 specialAnimation();
                 setTimeout(() => {
-                  setEnemyCreatureHP(enemyCreatureHP - (playerCreatureSpecial - playerCreatureSpecial * (enemyCreature[0].defense / 100)) * criticalMultiplier);
+                  setEnemyCreatureHP(enemyCreatureHP - (playerCreatureSpecial - playerCreatureSpecial * enemyDefense) * criticalMultiplier);
                 }, 250);
               }
 

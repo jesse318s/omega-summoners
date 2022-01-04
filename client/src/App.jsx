@@ -885,18 +885,19 @@ function App() {
                     key={creature.id}
                   >
                     <button className="game_button_small" onClick={() => swapCreature(creature.id, creature.price)}>Swap</button>
-                    <img onClick={() => alert("HP: " + creature.hp + "\nAttack: " + creature.attack + " - Attack type: " +
-                      creature.attackType + "\nSpeed: " + creature.speed + "\nCritical: " + creature.critical + "\nDefense: " + creature.defense + "\nMP: " + creature.mp
-                      + "\nMP Regen: " + creature.mpRegen + "\nSpecial: " + creature.special + " - Special type: " + creature.specialType + "\nSpecial cost: " +
-                      creature.specialCost)}
+                    <img onClick={() => alert("HP: " + creature.hp + "\nAttack: " + creature.attack + " | Attack type: " +
+                      creature.attackType + "\nSpeed: " + creature.speed + "\nCritical: " + creature.critical + "%\nDefense: " + creature.defense
+                      + "%\nMP: " + creature.mp + " | MP Regen: " + creature.mpRegen + "\nSpecial: " + creature.special + " | Special type: " +
+                      creature.specialType + " | Special cost: " + creature.specialCost + "\n\nMagic attacks ignore defense, and poison attacks are always critical.")}
                       className="summon_option_img"
                       src={creature.imgPath}
                       alt={creature.name}
                       width="96px"
-                      height="96px" /><span className="summon_info" onClick={() => alert("HP: " + creature.hp + "\nAttack: " + creature.attack + " - Attack type: " +
-                        creature.attackType + "\nSpeed: " + creature.speed + "\nCritical: " + creature.critical + "\nDefense: " + creature.defense + "\nMP: " + creature.mp
-                        + "\nMP Regen: " + creature.mpRegen + "\nSpecial: " + creature.special + " - Special type: " + creature.specialType + "\nSpecial cost: " +
-                        creature.specialCost)}>?</span><br />
+                      height="96px" /><span className="summon_info" onClick={() => alert("HP: " + creature.hp + "\nAttack: " + creature.attack + " | Attack type: " +
+                        creature.attackType + "\nSpeed: " + creature.speed + "\nCritical: " + creature.critical + "%\nDefense: " + creature.defense
+                        + "%\nMP: " + creature.mp + " | MP Regen: " + creature.mpRegen + "\nSpecial: " + creature.special + " | Special type: " +
+                        creature.specialType + " | Special cost: " + creature.specialCost + "\n\nMagic attacks ignore defense, and poison attacks are always critical.")}>?</span>
+                    <br />
                     {creature.name} - {creature.price} XP {creature.id === player.creatureId ? <i>{"\u2713"}</i> : null}
                   </div>))}
               </div>

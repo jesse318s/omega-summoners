@@ -20,6 +20,7 @@ function App() {
       hp: 60,
       attack: 50,
       attackName: "Slash",
+      attackType: "Poison",
       speed: 60,
       defense: 20,
       critical: 50,
@@ -28,6 +29,7 @@ function App() {
       special: 75,
       specialCost: 100,
       specialName: "Harvest",
+      specialType: "Magic",
       specialEffect: "special_effect1"
     },
     {
@@ -38,6 +40,7 @@ function App() {
       hp: 110,
       attack: 30,
       attackName: "Gaze",
+      attackType: "Normal",
       speed: 30,
       defense: 15,
       critical: 20,
@@ -46,6 +49,7 @@ function App() {
       special: 75,
       specialCost: 100,
       specialName: "Petrify",
+      specialType: "Magic",
       specialEffect: "special_effect2"
     },
     {
@@ -56,6 +60,7 @@ function App() {
       hp: 60,
       attack: 50,
       attackName: "Exhale",
+      attackType: "Magic",
       speed: 60,
       defense: 20,
       critical: 50,
@@ -64,6 +69,7 @@ function App() {
       special: 75,
       specialCost: 100,
       specialName: "Fireball",
+      specialType: "Magic",
       specialEffect: "special_effect3"
     },
     {
@@ -74,6 +80,7 @@ function App() {
       hp: 110,
       attack: 30,
       attackName: "Impale",
+      attackType: "Normal",
       speed: 30,
       defense: 15,
       critical: 20,
@@ -82,6 +89,7 @@ function App() {
       special: 75,
       specialCost: 100,
       specialName: "Poison",
+      specialType: "Poison",
       specialEffect: "special_effect4"
     }
   ];
@@ -585,7 +593,7 @@ function App() {
   }
 
   // initiates chance to attack enemy creature
-  const attackEnemy = async (moveName) => {
+  const attackEnemy = async (moveName, moveType) => {
     try {
       // if the player and enemy aren't attacking and the battle is undecided
       if (!playerAttackStatus && !enemyAttackStatus && battleUndecided) {
@@ -856,16 +864,18 @@ function App() {
                     key={creature.id}
                   >
                     <button className="game_button_small" onClick={() => swapCreature(creature.id, creature.price)}>Swap</button>
-                    <img onClick={() => alert("HP: " + creature.hp + "\nAttack: " + creature.attack + "\nSpeed: " + creature.speed + "\nDefense: " + creature.defense +
-                      "\nCritical: " + creature.critical + "\nMP: " + creature.mp + "\nMP Regen: " + creature.mpRegen + "\nSpecial: " + creature.special
-                      + "\nSpecial cost: " + creature.specialCost)}
+                    <img onClick={() => alert("HP: " + creature.hp + "\nAttack: " + creature.attack + " - Attack type: " +
+                      creature.attackType + "\nSpeed: " + creature.speed + "\nCritical: " + creature.critical + "\nDefense: " + creature.defense + "\nMP: " + creature.mp
+                      + "\nMP Regen: " + creature.mpRegen + "\nSpecial: " + creature.special + " - Special type: " + creature.specialType + "\nSpecial cost: " +
+                      creature.specialCost)}
                       className="summon_option_img"
                       src={creature.imgPath}
                       alt={creature.name}
                       width="96px"
-                      height="96px" /><span className="summon_info" onClick={() => alert("HP: " + creature.hp + "\nAttack: " + creature.attack + "\nSpeed: " +
-                        creature.speed + "\nDefense: " + creature.defense + "\nCritical: " + creature.critical + "\nMP: " + creature.mp + "\nMP Regen: " +
-                        creature.mpRegen + "\nSpecial: " + creature.special + "\nSpecial cost: " + creature.specialCost)}>?</span><br />
+                      height="96px" /><span className="summon_info" onClick={() => alert("HP: " + creature.hp + "\nAttack: " + creature.attack + " - Attack type: " +
+                        creature.attackType + "\nSpeed: " + creature.speed + "\nCritical: " + creature.critical + "\nDefense: " + creature.defense + "\nMP: " + creature.mp
+                        + "\nMP Regen: " + creature.mpRegen + "\nSpecial: " + creature.special + " - Special type: " + creature.specialType + "\nSpecial cost: " +
+                        creature.specialCost)}>?</span><br />
                     {creature.name} - {creature.price} XP {creature.id === player.creatureId ? <i>{"\u2713"}</i> : null}
                   </div>))}
               </div>
@@ -902,8 +912,8 @@ function App() {
                     {specialStatus ? <div className="special_effect_container"><div className={creature.specialEffect} /></div> : null}
                     <div className="creature_panel">
                       {battleStatus ? <div className="inline_flex">
-                        <button className="game_button attack_button" onClick={() => { attackEnemy(creature.attackName) }}>{creature.attackName}</button>
-                        <button className="game_button special_button" onClick={() => { attackEnemy(creature.specialName) }}>{creature.specialName}<br />
+                        <button className="game_button attack_button" onClick={() => { attackEnemy(creature.attackName, creature.attackType) }}>{creature.attackName}</button>
+                        <button className="game_button special_button" onClick={() => { attackEnemy(creature.specialName, creature.specialType) }}>{creature.specialName}<br />
                           Cost: {creature.specialCost} MP</button></div> : null}
                       <h4>{player.name}'s {creature.name}</h4>
                       {battleStatus ? <div className="progress_bar_container">
@@ -918,10 +928,10 @@ function App() {
                           <h5>MP: {playerCreatureMP} / {creature.mp + chosenRelic[0].mpMod}</h5></div>}
                       {creatureStatsStatus ?
                         <div>
-                          <h5>Attack: {creature.attack + chosenRelic[0].attackMod} | Sp. Attack: {creature.special + chosenRelic[0].specialMod}</h5>
-                          <h5>Speed: {creature.speed + chosenRelic[0].speedMod} | MP Regen: {creature.mpRegen + chosenRelic[0].mpRegenMod}</h5>
-                          <h5>Defense: {creature.defense + chosenRelic[0].defenseMod}%</h5>
-                          <h5>Critical: {creature.critical + chosenRelic[0].criticalMod}%</h5>
+                          <h5>Attack: {creature.attack + chosenRelic[0].attackMod} | Type: {creature.attackType}</h5>
+                          <h5>Sp. Attack: {creature.special + chosenRelic[0].specialMod} | Type: {creature.specialType}</h5>
+                          <h5>MP Regen: {creature.mpRegen + chosenRelic[0].mpRegenMod} | Speed: {creature.speed + chosenRelic[0].speedMod}</h5>
+                          <h5>Critical: {creature.critical + chosenRelic[0].criticalMod}% | Defense: {creature.defense + chosenRelic[0].defenseMod}%</h5>
                         </div>
                         : null}
                     </div>

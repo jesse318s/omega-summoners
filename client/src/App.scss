@@ -41,7 +41,7 @@
 }
 
 .game_section {
-  background-image: url("assets/img_background/background1.webp");
+  background-image: url("assets/img_background/backgroundHome.webp");
   background-size: cover;
   min-height: 1200px;
   height: 100vh;
@@ -193,6 +193,14 @@
 
 .summon_info:hover {
   color: blue;
+}
+
+.stage_options {
+  margin: 0 auto;
+  padding: 5px;
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 250px;
 }
 
 .combat_alert {

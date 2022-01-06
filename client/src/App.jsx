@@ -3,148 +3,20 @@ import './App.scss';
 import Userfront from "@userfront/core";
 import { useNavigate } from "react-router-dom";
 import { getUser, addUser, updateUser } from './services/userServices';
+import GameNav from './components/gameNav';
+import Options from "./components/options";
+import Player from "./components/player";
+import Menu from "./components/menu";
+import PlayerCreature from "./components/playerCreature";
+import EnemyCreature from "./components/enemyCreature";
+import creatures from "./constants/creatures";
+import relics from "./constants/relics";
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
 
 // main app component
 function App() {
-
-  // creature objects
-  const creatures = [
-    {
-      id: 1,
-      name: "Demon",
-      imgPath: "img/creature/demon_creature.png",
-      price: 50,
-      hp: 60,
-      attack: 50,
-      attackName: "Slash",
-      attackType: "Normal",
-      speed: 60,
-      defense: 20,
-      critical: 50,
-      mp: 100,
-      mpRegen: 25,
-      special: 75,
-      specialCost: 100,
-      specialName: "Harvest",
-      specialType: "Poison",
-      specialEffect: "special_effect1"
-    },
-    {
-      id: 2,
-      name: "Medusa",
-      imgPath: "img/creature/medusa_creature.png",
-      price: 50,
-      hp: 110,
-      attack: 30,
-      attackName: "Gaze",
-      attackType: "Magic",
-      speed: 30,
-      defense: 15,
-      critical: 20,
-      mp: 100,
-      mpRegen: 25,
-      special: 75,
-      specialCost: 100,
-      specialName: "Petrify",
-      specialType: "Magic",
-      specialEffect: "special_effect2"
-    },
-    {
-      id: 3,
-      name: "Baby Dragon",
-      imgPath: "img/creature/small_dragon_creature.png",
-      price: 50,
-      hp: 60,
-      attack: 50,
-      attackName: "Exhale",
-      attackType: "Magic",
-      speed: 60,
-      defense: 20,
-      critical: 50,
-      mp: 100,
-      mpRegen: 25,
-      special: 75,
-      specialCost: 100,
-      specialName: "Fireball",
-      specialType: "Magic",
-      specialEffect: "special_effect3"
-    },
-    {
-      id: 4,
-      name: "Lizard",
-      imgPath: "img/creature/lizard_creature.png",
-      price: 50,
-      hp: 110,
-      attack: 30,
-      attackName: "Impale",
-      attackType: "Normal",
-      speed: 30,
-      defense: 15,
-      critical: 20,
-      mp: 100,
-      mpRegen: 25,
-      special: 75,
-      specialCost: 100,
-      specialName: "Poison",
-      specialType: "Poison",
-      specialEffect: "special_effect4"
-    }
-  ];
-
-  // relic objects
-  const relics = [
-    {
-      id: 1,
-      name: "Gust of Hermes",
-      description: "Grants the user's summon +5 speed.",
-      imgPath: "img/relic/relic1.webp",
-      effectClass: "relic_effect1",
-      hpMod: 0,
-      attackMod: 0,
-      speedMod: 5,
-      defenseMod: 0,
-      criticalMod: 0,
-      mpMod: 0,
-      mpRegenMod: 0,
-      specialMod: 0,
-      price: 0,
-    },
-    {
-      id: 2,
-      name: "Spark of Zeus",
-      description: "Grants the user's summon +10 attack.",
-      imgPath: "img/relic/relic2.webp",
-      effectClass: "relic_effect2",
-      hpMod: 0,
-      attackMod: 10,
-      speedMod: 0,
-      defenseMod: 0,
-      criticalMod: 0,
-      mpMod: 0,
-      mpRegenMod: 0,
-      specialMod: 0,
-      price: 500,
-    },
-    {
-      id: 3,
-      name: "Cup of Dionysus",
-      description: "Grants the user's summon +10 HP.",
-      imgPath: "img/relic/relic3.webp",
-      effectClass: "relic_effect3",
-      hpMod: 10,
-      attackMod: 0,
-      speedMod: 0,
-      defenseMod: 0,
-      criticalMod: 0,
-      mpMod: 0,
-      mpRegenMod: 0,
-      specialMod: 0,
-      price: 500,
-    }
-  ];
 
   // navigation hook
   const navigate = useNavigate();
@@ -159,6 +31,7 @@ function App() {
   const [relicsStatus, setRelicsStatus] = useState(false);
   const [templeStatus, setTempleStatus] = useState(false);
   const [summonsStatus, setSummonsStatus] = useState(false);
+  const [stagesStatus, setStagesStatus] = useState(false);
   // sets creatures state
   const [creatureData] = useState(creatures);
   // sets player creature state
@@ -749,273 +622,34 @@ function App() {
     return (
       <>
         <header>
-          {/* game navigation */}
-          <nav className="game_nav">
-            <a className="game_nav_brand" href="app">
-              <img src="favicon.ico" alt="favicon" width="48px" height="48px" />
-            </a>
-            <button className="button_logout" onClick={() => Userfront.logout()}>Logout</button>
-            <button className="game_button_small button_options"
-              onClick={() => { setOptionsStatus(!optionsStatus); setAvatarOptionStatus(false); setNameOptionStatus(false); }}>Options</button>
-          </nav>
+          <GameNav Userfront={Userfront} optionsStatus={optionsStatus} setOptionsStatus={setOptionsStatus} setNameOptionStatus={setNameOptionStatus}
+            setAvatarOptionStatus={setAvatarOptionStatus} />
         </header>
 
         <main className="game_section">
-          {/* options */}
-          {optionsStatus ?
-            <div className="color_white">
-              <h3>Game Options</h3>
-              <button className="game_button margin_small" onClick={() => { toggleDisplayCreatureStats() }}>Display Summon Stats
-                {player.displayCreatureStats ? " - ON" : " - OFF"}</button>
-              <h3>Player Options</h3>
-              <button className="game_button margin_small" onClick={() => { setAvatarOptionStatus(!avatarOptionStatus); setNameOptionStatus(false); }}> Change Avatar</button>
-              <button className="game_button margin_small" onClick={() => { setNameOptionStatus(!nameOptionStatus); setAvatarOptionStatus(false); }}>Change Name</button>
-              {nameOptionStatus && !avatarOptionStatus ? <div>
-                <label htmlFor="name">Player name:&nbsp;</label>
-                <input className="margin_small" type="text" name="name" placeholder={player.name} /><br />
-                <button className="game_button_small margin_small" onClick={() => selectName(document.querySelector("input[name='name']").value)}>Submit Name</button>
-              </div>
-                : null}
-              {avatarOptionStatus && !nameOptionStatus ? <div>
-                <div className="inline_flex">
-                  <div className="margin_small" onClick={() => selectAvatar("img/avatar/f_mage_avatar.png")}>
-                    <img className="player_avatar avatar_option" src={"img/avatar/f_mage_avatar.png"} alt={"f_mage"} width="96" height="96" />
-                    <p className="avatar_option">Avatar 1</p></div>
-                  <div className="margin_small" onClick={() => selectAvatar("img/avatar/m_mage_avatar.png")}>
-                    <img className="player_avatar avatar_option" src={"img/avatar/m_mage_avatar.png"} alt={"m_mage"} width="96" height="96" />
-                    <p className="avatar_option">Avatar 2</p></div>
-                </div><br />
-                <div className="inline_flex">
-                  <div className="margin_small" onClick={() => selectAvatar("img/avatar/f_rogue_avatar.png")}>
-                    <img className="player_avatar avatar_option" src={"img/avatar/f_rogue_avatar.png"} alt={"f_rogue"} width="96" height="96" />
-                    <p className="avatar_option">Avatar 3</p></div>
-                  <div className="margin_small" onClick={() => selectAvatar("img/avatar/m_rogue_avatar.png")}>
-                    <img className="player_avatar avatar_option" src={"img/avatar/m_rogue_avatar.png"} alt={"m_rogue"} width="96" height="96" />
-                    <p className="avatar_option">Avatar 4</p></div>
-                </div><br />
-                <div className="inline_flex">
-                  <div className="margin_small" onClick={() => selectAvatar("img/avatar/f_warrior_avatar.png")}>
-                    <img className="player_avatar avatar_option" src={"img/avatar/f_warrior_avatar.png"} alt={"f_warrior"} width="96" height="96" />
-                    <p className="avatar_option">Avatar 5</p></div>
-                  <div className="margin_small" onClick={() => selectAvatar("img/avatar/m_warrior_avatar.png")}>
-                    <img className="player_avatar avatar_option" src={"img/avatar/m_warrior_avatar.png"} alt={"m_warrior"} width="96" height="96" />
-                    <p className="avatar_option">Avatar 6</p></div>
-                </div>
-              </div>
-                : null}
-            </div>
-            : null}
+          <Options player={player} optionsStatus={optionsStatus} nameOptionStatus={nameOptionStatus} setNameOptionStatus={setNameOptionStatus} selectName={selectName}
+            avatarOptionStatus={avatarOptionStatus} setAvatarOptionStatus={setAvatarOptionStatus} selectAvatar={selectAvatar}
+            toggleDisplayCreatureStats={() => toggleDisplayCreatureStats()} />
 
-          {/* player */}
+          <Player player={player} />
+
+          {/* menu and creatures wrapped in options status check */}
           {!optionsStatus ? <>
-            <div className="color_white">
-              <img src={player.avatarPath}
-                alt={player.name}
-                className="player_avatar"
-                width="96"
-                height="96" />
-              <h4>{player.name}</h4>
-              <h5>
-                Lvl. {Math.floor(Math.sqrt(player.experience) * 0.25)} | {player.experience.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} XP
-                <div className="progress_bar_container">
-                  <div className="progress_bar"
-                    style={{ width: ((Math.sqrt(player.experience) * 0.25 - Math.floor(Math.sqrt(player.experience) * 0.25)).toFixed(2)).replace("0.", '') + "%" }} />
-                </div>
-              </h5>
-              <h5>Drachmas: {player.drachmas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} {"\u25C9"}</h5>
 
-              {/* menu */}
-              {!battleStatus ? <div><div className="inline_flex">
-                <button className="game_button margin_small" onClick={() => { setRelicsStatus(!relicsStatus); setTempleStatus(false); setSummonsStatus(false); }}>Relics</button>
-                <button className="game_button margin_small" onClick={() => { setTempleStatus(!templeStatus); setRelicsStatus(false); setSummonsStatus(false); }}>Temple</button>
-              </div></div>
-                : null}
-              {battleStatus ? <div><p className="combat_alert">{combatAlert}</p></div>
-                : null}
-              {relicsStatus ? <div>
-                <h4>Player Relics</h4>
-                {playerRelics.map((relic) => (
-                  <div
-                    className="relic_option"
-                    key={relic.id}
-                  >
-                    <button className="game_button_small" onClick={() => selectRelic(relic.id)}>Use</button>
-                    <img onClick={() => alert(relic.description)}
-                      className="relic_option_img"
-                      src={relic.imgPath}
-                      alt={relic.name}
-                      width="48px"
-                      height="48px" /><span className="relic_info" onClick={() => alert(relic.description)}>?</span><br />
-                    {relic.name} {relic.id === player.chosenRelic ? <i>{"\u2713"}</i> : null}
-                  </div>))}
-              </div>
-                : null
-              }
-              {templeStatus ? <div>
-                <h4>Temple Relics</h4>
-                {relicsData.map((relic) => (
-                  <div
-                    className="relic_option"
-                    key={relic.id}
-                  >
-                    <button className="game_button_small" onClick={() => buyRelic(relic.id, relic.price)}>Buy</button>
-                    <img onClick={() => alert(relic.description)}
-                      className="relic_option_img"
-                      src={relic.imgPath}
-                      alt={relic.name}
-                      width="48px"
-                      height="48px" /><span className="relic_info" onClick={() => alert(relic.description)}>?</span><br />
-                    {relic.name} - {relic.price} {"\u25C9"}
-                  </div>))}
-              </div>
-                : null
-              }
-              {!battleStatus ? <>
-                <button className="game_button margin_small" onClick={() => { setSummonsStatus(!summonsStatus); setTempleStatus(false); setRelicsStatus(false) }}>
-                  Summons</button>
-                <button className="game_button margin_small" onClick={() => { loadDataBattle(); setTempleStatus(false); setRelicsStatus(false); setSummonsStatus(false); }}>
-                  Battle</button>
-              </>
-                : null}
-              {summonsStatus ? <div>
-                <h4>Available Summons</h4>
-                {creatureData.map((creature) => (
-                  <div
-                    className="summon_option"
-                    key={creature.id}
-                  >
-                    <button className="game_button_small" onClick={() => swapCreature(creature.id, creature.price)}>Swap</button>
-                    <img onClick={() => alert("HP: " + creature.hp + "\nAttack: " + creature.attack + " | Attack type: " +
-                      creature.attackType + "\nSpeed: " + creature.speed + "\nCritical: " + creature.critical + "%\nDefense: " + creature.defense
-                      + "%\nMP: " + creature.mp + " | MP Regen: " + creature.mpRegen + "\nSpecial: " + creature.special + " | Special type: " +
-                      creature.specialType + " | Special cost: " + creature.specialCost + "\n\nMagic attacks ignore defense, and poison attacks are always critical.")}
-                      className="summon_option_img"
-                      src={creature.imgPath}
-                      alt={creature.name}
-                      width="96px"
-                      height="96px" /><span className="summon_info" onClick={() => alert("HP: " + creature.hp + "\nAttack: " + creature.attack + " | Attack type: " +
-                        creature.attackType + "\nSpeed: " + creature.speed + "\nCritical: " + creature.critical + "%\nDefense: " + creature.defense
-                        + "%\nMP: " + creature.mp + " | MP Regen: " + creature.mpRegen + "\nSpecial: " + creature.special + " | Special type: " +
-                        creature.specialType + " | Special cost: " + creature.specialCost + "\n\nMagic attacks ignore defense, and poison attacks are always critical.")}>?</span>
-                    <br />
-                    {creature.name} - {creature.price} XP {creature.id === player.creatureId ? <i>{"\u2713"}</i> : null}
-                  </div>))}
-              </div>
-                : null
-              }
-            </div>
+            <Menu battleStatus={battleStatus} player={player} relicsData={relicsData} relicsStatus={relicsStatus} setRelicsStatus={setRelicsStatus} playerRelics={playerRelics}
+              selectRelic={selectRelic} templeStatus={templeStatus} setTempleStatus={setTempleStatus} buyRelic={buyRelic} creatureData={creatureData} summonsStatus={summonsStatus}
+              setSummonsStatus={setSummonsStatus} swapCreature={swapCreature} stagesStatus={stagesStatus} setStagesStatus={setStagesStatus} combatAlert={combatAlert}
+              loadDataBattle={() => loadDataBattle()}
+            />
 
-            {/* player creature */}
-            {!summonsStatus ? <>
-              <div className="player_creature">
-                {playerCreature.map((creature) => (
-                  <div
-                    key={creature.id}
-                  >
-                    {enemyAttackStatus ? <div className="special_effect_container"><div className={critText}>{combatText}</div></div> : null}
-                    {playerAttackStatus
-                      ? <img className={chosenRelic[0].effectClass}
-                        src={creature.imgPath.slice(0, -4) + "_attack.png"}
-                        alt={creature.name}
-                        width="128px"
-                        height="128px" />
-                      : enemyAttackStatus && (enemyCreatureHP !== 0)
-                        ? <img className={chosenRelic[0].effectClass}
-                          src={creature.imgPath.slice(0, -4) + "_hurt.png"}
-                          alt={creature.name}
-                          width="128px"
-                          height="128px" />
-                        : <img className={chosenRelic[0].effectClass}
-                          src={creature.imgPath}
-                          alt={creature.name}
-                          width="128px"
-                          height="128px" />
-                    }
-                    {specialStatus ? <div className="special_effect_container"><div className={creature.specialEffect} /></div> : null}
-                    <div className="creature_panel">
-                      {battleStatus ? <div className="inline_flex">
-                        <button className="game_button attack_button" onClick={() => { attackEnemy(creature.attackName, creature.attackType) }}>{creature.attackName}</button>
-                        <button className="game_button special_button" onClick={() => { attackEnemy(creature.specialName, creature.specialType) }}>{creature.specialName}<br />
-                          Cost: {creature.specialCost} MP</button></div> : null}
-                      <h4>{player.name}'s {creature.name}</h4>
-                      {battleStatus ? <div className="progress_bar_container">
-                        <div className="progress_bar"
-                          style={{ width: ((playerCreatureHP / playerCreature[0].hp)) * 100 + "%" }} />
-                      </div>
-                        : null}
-                      {!battleStatus ?
-                        <div className="inline_flex"><h5>HP: {creature.hp + chosenRelic[0].hpMod}</h5>&nbsp;|&nbsp;<h5>MP: {creature.mp + chosenRelic[0].mpMod}</h5></div>
-                        : <div className="inline_flex">
-                          <h5>HP: {playerCreatureHP} / {creature.hp + chosenRelic[0].hpMod}</h5>&nbsp;|&nbsp;
-                          <h5>MP: {playerCreatureMP} / {creature.mp + chosenRelic[0].mpMod}</h5></div>}
-                      {creatureStatsStatus ?
-                        <div>
-                          <h5>Attack: {creature.attack + chosenRelic[0].attackMod} | Type: {creature.attackType}</h5>
-                          <h5>Sp. Attack: {creature.special + chosenRelic[0].specialMod} | Type: {creature.specialType}</h5>
-                          <h5>MP Regen: {creature.mpRegen + chosenRelic[0].mpRegenMod} | Speed: {creature.speed + chosenRelic[0].speedMod}</h5>
-                          <h5>Critical: {creature.critical + chosenRelic[0].criticalMod}% | Defense: {creature.defense + chosenRelic[0].defenseMod}%</h5>
-                        </div>
-                        : null}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </> : null}
+            <PlayerCreature summonsStatus={summonsStatus} playerCreature={playerCreature} enemyAttackStatus={enemyAttackStatus} critText={critText} combatText={combatText}
+              playerAttackStatus={playerAttackStatus} chosenRelic={chosenRelic} specialStatus={specialStatus} battleStatus={battleStatus} player={player}
+              creatureStatsStatus={creatureStatsStatus} playerCreatureHP={playerCreatureHP} playerCreatureMP={playerCreatureMP} attackEnemy={attackEnemy} />
 
-            {/* enemy creature */}
-            {battleStatus ?
-              <div className="enemy_creature">
-                {enemyCreature.map((creature) => (
-                  <div
-                    key={creature.id}
-                  >
-                    {playerAttackStatus ? <div className="special_effect_container"><div className={critText}>{combatText}</div></div> : null}
-                    {enemyAttackStatus ? <img className="enemy_creature_img"
-                      src={creature.imgPath.slice(0, -4) + "_attack.png"}
-                      alt={creature.name}
-                      width="128px"
-                      height="128px" />
-                      : playerAttackStatus ? <img className="enemy_creature_img"
-                        src={creature.imgPath.slice(0, -4) + "_hurt.png"}
-                        alt={creature.name}
-                        width="128px"
-                        height="128px" />
-                        : <img className="enemy_creature_img"
-                          src={creature.imgPath}
-                          alt={creature.name}
-                          width="128px"
-                          height="128px" />}
-                    <div className="creature_panel">
-                      <h4>Enemy {creature.name}</h4>
-                      <div className="progress_bar_container">
-                        <div className="progress_bar"
-                          style={{ width: ((enemyCreatureHP / enemyCreature[0].hp)) * 100 + "%" }} />
-                      </div>
-                      <h5>HP: {enemyCreatureHP} / {creature.hp}</h5>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              : null}
-          </> :
+            <EnemyCreature battleStatus={battleStatus} enemyCreature={enemyCreature} playerAttackStatus={playerAttackStatus} enemyAttackStatus={enemyAttackStatus}
+              critText={critText} combatText={combatText} enemyCreatureHP={enemyCreatureHP} />
 
-            // player for options
-            <div className="color_white">
-              <img src={player.avatarPath}
-                alt={player.name}
-                className="player_avatar"
-                width="96"
-                height="96" />
-              <h4>{player.name}</h4>
-              <h5>
-                Lvl. {Math.floor(Math.sqrt(player.experience) * 0.25)} | {player.experience.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} XP
-                <div className="progress_bar_container">
-                  <div className="progress_bar"
-                    style={{ width: ((Math.sqrt(player.experience) * 0.25 - Math.floor(Math.sqrt(player.experience) * 0.25)).toFixed(2)).replace("0.", '') + "%" }} />
-                </div>
-              </h5>
-              <h5>Drachmas: {player.drachmas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} {"\u25C9"}</h5>
-            </div>}
+          </> : null}
         </main>
       </>
     );

@@ -83,7 +83,7 @@ function Stage1() {
 
     useEffect(() => {
         // checks for userkey and logs user out if none is found
-        const genDataPlayer = () => {
+        const checkDataPlayer = () => {
             try {
                 // if there is no user key
                 if (Userfront.user.data.userkey === undefined) {
@@ -102,7 +102,7 @@ function Stage1() {
                 console.log(error);
             }
         }
-        genDataPlayer();
+        checkDataPlayer();
         loadAsyncDataPlayer();
     }, []);
 

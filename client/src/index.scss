@@ -16,6 +16,10 @@ body {
   background: radial-gradient(ellipse at bottom, #0d1d31 0%, #0c0d13 100%);
 }
 
+:root {
+  background: black;
+}
+
 .inline_flex {
   display: inline-flex;
 }

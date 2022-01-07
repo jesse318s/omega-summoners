@@ -20,4 +20,3 @@ function Player({ player }) {
 }
 
 export default Player;
-

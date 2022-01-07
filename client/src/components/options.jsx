@@ -1,5 +1,55 @@
-function Options({ player, optionsStatus, nameOptionStatus, setNameOptionStatus, selectName, avatarOptionStatus, setAvatarOptionStatus, selectAvatar,
-    toggleDisplayCreatureStats }) {
+import { updateUser } from '../services/userServices';
+
+function Options({ Userfront, player, optionsStatus, nameOptionStatus, setNameOptionStatus, avatarOptionStatus, setAvatarOptionStatus, creatureStatsStatus, loadAsyncDataPlayer }) {
+
+    // toggles display creature stats in database
+    const toggleDisplayCreatureStats = async () => {
+        try {
+            Userfront.user.update({
+                data: {
+                    userkey: Userfront.user.data.userkey,
+                },
+            });
+            await updateUser(player._id, { userfrontId: Userfront.user.userId, displayCreatureStats: !creatureStatsStatus });
+            await loadAsyncDataPlayer();
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    // updates player name in database
+    const selectName = async (e) => {
+        try {
+            Userfront.user.update({
+                data: {
+                    userkey: Userfront.user.data.userkey,
+                },
+            });
+            await updateUser(player._id, { userfrontId: Userfront.user.userId, name: e });
+            await loadAsyncDataPlayer();
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    // updates player avatar path in database
+    const selectAvatar = async (avatarPath) => {
+        try {
+            Userfront.user.update({
+                data: {
+                    userkey: Userfront.user.data.userkey,
+                },
+            });
+            await updateUser(player._id, { userfrontId: Userfront.user.userId, avatarPath: avatarPath });
+            await loadAsyncDataPlayer();
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <>
             {optionsStatus ?

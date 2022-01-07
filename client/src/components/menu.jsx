@@ -1,9 +1,87 @@
 import { Link } from "react-router-dom";
+import { updateUser } from '../services/userServices';
 
 function Menu({
-    battleStatus, player, relicsData, relicsStatus, setRelicsStatus, playerRelics, selectRelic, templeStatus, setTempleStatus, buyRelic, creatureData,
-    summonsStatus, setSummonsStatus, swapCreature, stagesStatus, setStagesStatus, combatAlert, loadDataBattle
+    Userfront, battleStatus, player, relicsData, relicsStatus, setRelicsStatus, playerRelics, templeStatus, setTempleStatus, creatureData, summonsStatus, setSummonsStatus,
+    stagesStatus, setStagesStatus, combatAlert, loadAsyncDataPlayer, setPlayerCreatureHP, setPlayerCreatureMP, playerCreature, chosenRelic, setEnemyCreature, setEnemyCreatureHP,
+    setCombatAlert, setBattleStatus, setBattleUndecided
 }) {
+
+    // updates player chosen relic in database
+    const selectRelic = async (relicId) => {
+        try {
+            Userfront.user.update({
+                data: {
+                    userkey: Userfront.user.data.userkey,
+                },
+            });
+            await updateUser(player._id, { userfrontId: Userfront.user.userId, chosenRelic: relicId });
+            await loadAsyncDataPlayer();
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    // updates player relics in database
+    const buyRelic = async (relicId, relicPrice) => {
+        try {
+            // if the player can afford the relic and doesn't own it
+            if (player.drachmas >= relicPrice && !player.relics.includes(relicId)) {
+                if (window.confirm(`Are you sure you want to buy this relic? It will cost ${relicPrice} drachmas.`)) {
+                    Userfront.user.update({
+                        data: {
+                            userkey: Userfront.user.data.userkey,
+                        },
+                    });
+                    await updateUser(player._id, { userfrontId: Userfront.user.userId, drachmas: player.drachmas - relicPrice, relics: [...player.relics, relicId] });
+                    await loadAsyncDataPlayer();
+                }
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    // swaps player creature in database
+    const swapCreature = async (creatureId, creaturePrice) => {
+        try {
+            // if the player can afford the creature and isn't already using it
+            if (player.experience >= creaturePrice && player.creatureId !== creatureId) {
+                if (window.confirm(`Are you sure you want to swap your creature for this one? It will cost ${creaturePrice} experience.`)) {
+                    Userfront.user.update({
+                        data: {
+                            userkey: Userfront.user.data.userkey,
+                        },
+                    });
+                    await updateUser(player._id, { userfrontId: Userfront.user.userId, experience: player.experience - creaturePrice, creatureId: creatureId });
+                    await loadAsyncDataPlayer();
+                }
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    // loads battle data
+    const loadDataBattle = () => {
+        try {
+            setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod);
+            setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod);
+            const enemyCreatureData = [creatureData[Math.floor(Math.random() * creatureData.length)]];
+            setEnemyCreature(enemyCreatureData);
+            setEnemyCreatureHP(enemyCreatureData[0].hp);
+            setCombatAlert("The battle has begun!");
+            setBattleStatus(true);
+            setBattleUndecided(true);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <>
             <div className="color_white">
@@ -105,7 +183,7 @@ function Menu({
                         </Link><br />
                         <Link to="/stage1">
                             <button className="game_button_small margin_small">Stage I - Path to Olympus</button>
-                        </Link></div><br />
+                        </Link><br /></div>
                 </>
                     : null
                 }

@@ -2,9 +2,9 @@ import { Link } from "react-router-dom";
 import { updateUser } from '../services/userServices';
 
 function Menu({
-    Userfront, battleStatus, player, relicsData, relicsStatus, setRelicsStatus, playerRelics, templeStatus, setTempleStatus, creatureData, summonsStatus, setSummonsStatus,
-    stagesStatus, setStagesStatus, combatAlert, loadAsyncDataPlayer, setPlayerCreatureHP, setPlayerCreatureMP, playerCreature, chosenRelic, setEnemyCreature, setEnemyCreatureHP,
-    setCombatAlert, setBattleStatus, setBattleUndecided
+    Userfront, battleStatus, player, relicsData, relicsStatus, setRelicsStatus, playerRelics, templeStatus, setTempleStatus, creatureData, enemyCreatureData,
+    summonsStatus, setSummonsStatus, stagesStatus, setStagesStatus, combatAlert, loadAsyncDataPlayer, setPlayerCreatureHP, setPlayerCreatureMP, playerCreature, chosenRelic,
+    setEnemyCreature, setEnemyCreatureHP, setCombatAlert, setBattleStatus, setBattleUndecided
 }) {
 
     // updates player chosen relic in database
@@ -70,9 +70,9 @@ function Menu({
         try {
             setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod);
             setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod);
-            const enemyCreatureData = [creatureData[Math.floor(Math.random() * creatureData.length)]];
-            setEnemyCreature(enemyCreatureData);
-            setEnemyCreatureHP(enemyCreatureData[0].hp);
+            const enemyCreature = [enemyCreatureData[Math.floor(Math.random() * enemyCreatureData.length)]];
+            setEnemyCreature(enemyCreature);
+            setEnemyCreatureHP(enemyCreature[0].hp);
             setCombatAlert("The battle has begun!");
             setBattleStatus(true);
             setBattleUndecided(true);
@@ -130,7 +130,8 @@ function Menu({
                                 src={relic.imgPath}
                                 alt={relic.name}
                                 width="48px"
-                                height="48px" /><span className="relic_info" onClick={() => alert(relic.description)}>?</span><br />
+                                height="48px" /><span className="relic_info" onClick={() => alert(relic.description)}>?</span>
+                            {player.relics.includes(relic.id) ? <i>{"\u2713"}</i> : null}<br />
                             {relic.name} - {relic.price} {"\u25C9"}
                         </div>))}
                 </div>
@@ -180,9 +181,11 @@ function Menu({
                     <div className="stage_options">
                         <Link to="/app">
                             <button className="game_button_small margin_small">Home</button>
+                            {window.location.pathname === "/app" ? <span className="color_white">X</span> : null}
                         </Link><br />
                         <Link to="/stage1">
                             <button className="game_button_small margin_small">Stage I - Path to Olympus</button>
+                            {window.location.pathname === "/stage1" ? <span className="color_white">X</span> : null}
                         </Link><br /></div>
                 </>
                     : null

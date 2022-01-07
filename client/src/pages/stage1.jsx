@@ -12,6 +12,7 @@ import PlayerCreature from "../components/playerCreature";
 import EnemyCreature from "../components/enemyCreature";
 import creatures from "../constants/creatures";
 import relics from "../constants/relics";
+import enemyCreatures from "../constants/enemyCreatures";
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
@@ -33,8 +34,9 @@ function Stage1() {
     const [templeStatus, setTempleStatus] = useState(false);
     const [summonsStatus, setSummonsStatus] = useState(false);
     const [stagesStatus, setStagesStatus] = useState(false);
-    // sets creatures state
+    // sets player and enemy creatures state
     const [creatureData] = useState(creatures);
+    const [enemyCreatureData] = useState(enemyCreatures.slice(2, 4));
     // sets player creature state
     const [playerCreature, setPlayerCreature] = useState({});
     // sets creature stats state
@@ -169,8 +171,8 @@ function Stage1() {
 
                         <Menu Userfront={Userfront} battleStatus={battleStatus} player={player} setPlayer={setPlayer} relicsData={relicsData} relicsStatus={relicsStatus}
                             setRelicsStatus={setRelicsStatus} playerRelics={playerRelics} templeStatus={templeStatus} setTempleStatus={setTempleStatus} creatureData={creatureData}
-                            summonsStatus={summonsStatus} setSummonsStatus={setSummonsStatus} stagesStatus={stagesStatus} setStagesStatus={setStagesStatus} combatAlert={combatAlert}
-                            loadAsyncDataPlayer={() => loadAsyncDataPlayer()} setPlayerCreatureHP={setPlayerCreatureHP} setPlayerCreatureMP={setPlayerCreatureMP}
+                            enemyCreatureData={enemyCreatureData} summonsStatus={summonsStatus} setSummonsStatus={setSummonsStatus} stagesStatus={stagesStatus} setStagesStatus={setStagesStatus}
+                            combatAlert={combatAlert} loadAsyncDataPlayer={() => loadAsyncDataPlayer()} setPlayerCreatureHP={setPlayerCreatureHP} setPlayerCreatureMP={setPlayerCreatureMP}
                             playerCreature={playerCreature} chosenRelic={chosenRelic} setEnemyCreature={setEnemyCreature} setEnemyCreatureHP={setEnemyCreatureHP} setCombatAlert={setCombatAlert}
                             setBattleStatus={setBattleStatus} setBattleUndecided={setBattleUndecided} />
 

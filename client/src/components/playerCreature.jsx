@@ -219,7 +219,10 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                     userkey: Userfront.user.data.userkey,
                                 },
                             });
-                            updateUser(player._id, { userfrontId: Userfront.user.userId, experience: player.experience + 5, drachmas: player.drachmas + 3 });
+                            updateUser(player._id, {
+                                userfrontId: Userfront.user.userId, experience: player.experience + enemyCreature[0].reward * 2,
+                                drachmas: player.drachmas + enemyCreature[0].reward
+                            });
                         }, 250);
                         setTimeout(() => {
                             setBattleStatus(false);
@@ -274,7 +277,10 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                         userkey: Userfront.user.data.userkey,
                                     },
                                 });
-                                updateUser(player._id, { userfrontId: Userfront.user.userId, experience: player.experience + 5, drachmas: player.drachmas + 3 });
+                                updateUser(player._id, {
+                                    userfrontId: Userfront.user.userId, experience: player.experience + enemyCreature[0].reward * 2,
+                                    drachmas: player.drachmas + enemyCreature[0].reward
+                                });
                             }, 250);
                             setTimeout(() => {
                                 setBattleStatus(false);

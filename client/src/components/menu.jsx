@@ -2,9 +2,9 @@ import { Link } from "react-router-dom";
 import { updateUser } from '../services/userServices';
 
 function Menu({
-    Userfront, battleStatus, player, relicsData, relicsStatus, setRelicsStatus, playerRelics, templeStatus, setTempleStatus, creatureData, enemyCreatureData,
+    Userfront, battleStatus, setBattleStatus, player, relicsData, relicsStatus, setRelicsStatus, playerRelics, templeStatus, setTempleStatus, creatureData, enemyCreatureData,
     summonsStatus, setSummonsStatus, stagesStatus, setStagesStatus, combatAlert, loadAsyncDataPlayer, setPlayerCreatureHP, setPlayerCreatureMP, playerCreature, chosenRelic,
-    setEnemyCreature, setEnemyCreatureHP, setCombatAlert, setBattleStatus, setBattleUndecided
+    setEnemyCreature, setEnemyCreatureHP, setCombatAlert, setBattleUndecided
 }) {
 
     // updates player chosen relic in database

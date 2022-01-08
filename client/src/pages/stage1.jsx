@@ -169,20 +169,20 @@ function Stage1() {
                     {/* menu and creatures wrapped in options status check */}
                     {!optionsStatus ? <>
 
-                        <Menu Userfront={Userfront} battleStatus={battleStatus} player={player} setPlayer={setPlayer} relicsData={relicsData} relicsStatus={relicsStatus}
-                            setRelicsStatus={setRelicsStatus} playerRelics={playerRelics} templeStatus={templeStatus} setTempleStatus={setTempleStatus} creatureData={creatureData}
-                            enemyCreatureData={enemyCreatureData} summonsStatus={summonsStatus} setSummonsStatus={setSummonsStatus} stagesStatus={stagesStatus} setStagesStatus={setStagesStatus}
-                            combatAlert={combatAlert} loadAsyncDataPlayer={() => loadAsyncDataPlayer()} setPlayerCreatureHP={setPlayerCreatureHP} setPlayerCreatureMP={setPlayerCreatureMP}
-                            playerCreature={playerCreature} chosenRelic={chosenRelic} setEnemyCreature={setEnemyCreature} setEnemyCreatureHP={setEnemyCreatureHP} setCombatAlert={setCombatAlert}
-                            setBattleStatus={setBattleStatus} setBattleUndecided={setBattleUndecided} />
+                        <Menu Userfront={Userfront} battleStatus={battleStatus} setBattleStatus={setBattleStatus} player={player} setPlayer={setPlayer} relicsData={relicsData}
+                            relicsStatus={relicsStatus} setRelicsStatus={setRelicsStatus} playerRelics={playerRelics} templeStatus={templeStatus} setTempleStatus={setTempleStatus}
+                            creatureData={creatureData} enemyCreatureData={enemyCreatureData} summonsStatus={summonsStatus} setSummonsStatus={setSummonsStatus}
+                            stagesStatus={stagesStatus} setStagesStatus={setStagesStatus} combatAlert={combatAlert} loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
+                            setPlayerCreatureHP={setPlayerCreatureHP} setPlayerCreatureMP={setPlayerCreatureMP} playerCreature={playerCreature} chosenRelic={chosenRelic}
+                            setEnemyCreature={setEnemyCreature} setEnemyCreatureHP={setEnemyCreatureHP} setCombatAlert={setCombatAlert} setBattleUndecided={setBattleUndecided} />
 
                         <PlayerCreature summonsStatus={summonsStatus} playerCreature={playerCreature} enemyAttackStatus={enemyAttackStatus} setEnemyAttackStatus={setEnemyAttackStatus}
-                            critText={critText} combatText={combatText} playerAttackStatus={playerAttackStatus} setPlayerAttackStatus={setPlayerAttackStatus} chosenRelic={chosenRelic}
-                            specialStatus={specialStatus} setSpecialStatus={setSpecialStatus} battleStatus={battleStatus} setBattleStatus={setBattleStatus} player={player}
-                            creatureStatsStatus={creatureStatsStatus} playerCreatureHP={playerCreatureHP} setPlayerCreatureHP={setPlayerCreatureHP} playerCreatureMP={playerCreatureMP}
-                            setPlayerCreatureMP={setPlayerCreatureMP} setCritText={setCritText} setCombatText={setCombatText} enemyCreature={enemyCreature} setEnemyCreature={setEnemyCreatureHP}
-                            battleUndecided={battleUndecided} setBattleUndecided={setBattleUndecided} enemyCreatureHP={enemyCreatureHP} setEnemyCreatureHP={setEnemyCreatureHP}
-                            Userfront={Userfront} loadAsyncDataPlayer={() => loadAsyncDataPlayer()} setCombatAlert={setCombatAlert} />
+                            critText={critText} setCritText={setCritText} combatText={combatText} playerAttackStatus={playerAttackStatus} setPlayerAttackStatus={setPlayerAttackStatus}
+                            chosenRelic={chosenRelic} specialStatus={specialStatus} setSpecialStatus={setSpecialStatus} battleStatus={battleStatus} setBattleStatus={setBattleStatus}
+                            player={player} creatureStatsStatus={creatureStatsStatus} playerCreatureHP={playerCreatureHP} setPlayerCreatureHP={setPlayerCreatureHP}
+                            playerCreatureMP={playerCreatureMP} setPlayerCreatureMP={setPlayerCreatureMP} setCombatText={setCombatText} enemyCreature={enemyCreature}
+                            setEnemyCreature={setEnemyCreatureHP} battleUndecided={battleUndecided} setBattleUndecided={setBattleUndecided} enemyCreatureHP={enemyCreatureHP}
+                            setEnemyCreatureHP={setEnemyCreatureHP} Userfront={Userfront} loadAsyncDataPlayer={() => loadAsyncDataPlayer()} setCombatAlert={setCombatAlert} />
 
                         <EnemyCreature battleStatus={battleStatus} enemyCreature={enemyCreature} playerAttackStatus={playerAttackStatus} enemyAttackStatus={enemyAttackStatus}
                             critText={critText} combatText={combatText} enemyCreatureHP={enemyCreatureHP} />

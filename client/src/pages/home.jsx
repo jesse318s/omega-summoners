@@ -187,24 +187,6 @@ function Home() {
                     <div className="star"></div>
                     <div className="star"></div>
                     <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
                 </div>
                 {/* title and home */}
                 <section className="home_section">

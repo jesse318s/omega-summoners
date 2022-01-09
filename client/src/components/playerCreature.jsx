@@ -169,7 +169,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
     }
 
     // initiates chance to attack enemy creature
-    const attackEnemy = async (moveName, moveType) => {
+    const attackEnemy = (moveName, moveType) => {
         try {
             // if the player and enemy aren't attacking and the battle is undecided
             if (!playerAttackStatus && !enemyAttackStatus && battleUndecided) {
@@ -211,7 +211,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                         setBattleUndecided(false);
                         playerAttackAnimation();
                         playerAttackCT(playerCreatureAttack, criticalMultiplier, enemyDefense);
-                        await setTimeout(() => {
+                        setTimeout(() => {
                             setEnemyCreatureHP(0);
                             setCombatAlert("Victory!");
                             Userfront.user.update({
@@ -229,7 +229,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                             setEnemyCreature({});
                             setPlayerCreatureHP(0);
                         }, 2250);
-                        await setTimeout(() => {
+                        setTimeout(() => {
                             loadAsyncDataPlayer();
                         }, 2250);
                     } else {
@@ -269,7 +269,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                             playerAttackAnimation();
                             specialAnimation();
                             playerSpecialCT(playerCreatureSpecial, criticalMultiplier, enemyDefense);
-                            await setTimeout(() => {
+                            setTimeout(() => {
                                 setEnemyCreatureHP(0);
                                 setCombatAlert("Victory!");
                                 Userfront.user.update({
@@ -287,7 +287,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                 setEnemyCreature({});
                                 setPlayerCreatureHP(0);
                             }, 2250);
-                            await setTimeout(() => {
+                            setTimeout(() => {
                                 loadAsyncDataPlayer();
                             }, 2250);
                         } else {

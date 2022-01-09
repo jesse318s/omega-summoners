@@ -1,4 +1,4 @@
-const enemyCreatures = [
+export const enemyCreaturesHome = [
     {
         id: 1,
         name: "Demon",
@@ -9,7 +9,7 @@ const enemyCreatures = [
         attackType: "Normal",
         speed: 60,
         defense: 20,
-        critical: 50,
+        critical: 25,
     },
     {
         id: 2,
@@ -21,10 +21,13 @@ const enemyCreatures = [
         attackType: "Normal",
         speed: 30,
         defense: 15,
-        critical: 20,
-    },
+        critical: 15,
+    }
+];
+
+export const enemyCreaturesStage1 = [
     {
-        id: 3,
+        id: 1,
         name: "Medusa",
         imgPath: "img/creature/medusa_creature.png",
         reward: 5,
@@ -33,10 +36,10 @@ const enemyCreatures = [
         attackType: "Magic",
         speed: 30,
         defense: 15,
-        critical: 20,
+        critical: 15,
     },
     {
-        id: 4,
+        id: 2,
         name: "Baby Dragon",
         imgPath: "img/creature/small_dragon_creature.png",
         reward: 5,
@@ -45,8 +48,6 @@ const enemyCreatures = [
         attackType: "Magic",
         speed: 60,
         defense: 20,
-        critical: 50,
+        critical: 25,
     }
 ];
-
-export default enemyCreatures;

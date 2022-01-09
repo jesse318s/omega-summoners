@@ -351,7 +351,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                             <h4>{player.name}'s {creature.name}</h4>
                             {battleStatus ? <div className="progress_bar_container">
                                 <div className="progress_bar"
-                                    style={{ width: ((playerCreatureHP / playerCreature[0].hp)) * 100 + "%" }} />
+                                    style={{ width: ((playerCreatureHP / (playerCreature[0].hp + chosenRelic[0].hpMod))) * 100 + "%" }} />
                             </div>
                                 : null}
                             {!battleStatus ?

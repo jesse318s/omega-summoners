@@ -11,7 +11,7 @@ import PlayerCreature from "./components/playerCreature";
 import EnemyCreature from "./components/enemyCreature";
 import creatures from "./constants/creatures";
 import relics from "./constants/relics";
-import enemyCreatures from "./constants/enemyCreatures";
+import { enemyCreaturesHome } from "./constants/enemyCreatures";
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
@@ -35,7 +35,7 @@ function App() {
   const [stagesStatus, setStagesStatus] = useState(false);
   // sets player and enemy creatures state
   const [creatureData] = useState(creatures);
-  const [enemyCreatureData] = useState(enemyCreatures.slice(0, 2));
+  const [enemyCreatureData] = useState(enemyCreaturesHome);
   // sets player creature state
   const [playerCreature, setPlayerCreature] = useState({});
   // sets creature stats state
@@ -83,14 +83,14 @@ function App() {
   });
 
   useEffect(() => {
-    // checks for userkey and generates new user if needed
+    // checks for userkey and generates new player if needed
     const genDataPlayer = () => {
       try {
         // if there is no user key
         if (Userfront.user.data.userkey === undefined) {
           const newUser = {
             userfrontId: Userfront.user.userId,
-            name: Userfront.user.username,
+            name: "New Player",
             avatarPath: "img/avatar/placeholder_avatar.png",
             experience: 0,
             drachmas: 0,

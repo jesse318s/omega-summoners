@@ -21,13 +21,19 @@ function Options({ Userfront, player, optionsStatus, nameOptionStatus, setNameOp
     // updates player name in database
     const selectName = async (e) => {
         try {
-            Userfront.user.update({
-                data: {
-                    userkey: Userfront.user.data.userkey,
-                },
-            });
-            await updateUser(player._id, { userfrontId: Userfront.user.userId, name: e });
-            await loadAsyncDataPlayer();
+            if (e === "") {
+                alert("Please enter a name.");
+            } else if (e.length < 20) {
+                Userfront.user.update({
+                    data: {
+                        userkey: Userfront.user.data.userkey,
+                    },
+                });
+                await updateUser(player._id, { userfrontId: Userfront.user.userId, name: e });
+                await loadAsyncDataPlayer();
+            } else {
+                alert("Name must be less than 20 characters.");
+            }
         }
         catch (error) {
             console.log(error);

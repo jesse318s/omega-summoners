@@ -12,7 +12,7 @@ import PlayerCreature from "../components/playerCreature";
 import EnemyCreature from "../components/enemyCreature";
 import creatures from "../constants/creatures";
 import relics from "../constants/relics";
-import enemyCreatures from "../constants/enemyCreatures";
+import { enemyCreaturesStage1 } from "../constants/enemyCreatures";
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
@@ -36,7 +36,7 @@ function Stage1() {
     const [stagesStatus, setStagesStatus] = useState(false);
     // sets player and enemy creatures state
     const [creatureData] = useState(creatures);
-    const [enemyCreatureData] = useState(enemyCreatures.slice(2, 4));
+    const [enemyCreatureData] = useState(enemyCreaturesStage1);
     // sets player creature state
     const [playerCreature, setPlayerCreature] = useState({});
     // sets creature stats state
@@ -112,19 +112,32 @@ function Stage1() {
         // if there is a player
         if (player) {
             try {
+                // checks player level for stage requirements
+                const checkLevelPlayer = () => {
+                    try {
+                        if (Math.floor(Math.sqrt(player.experience) * 0.25) < 5) {
+                            alert("You must be level 5 to battle at this stage.");
+                            navigate(-1);
+                        }
+                    }
+                    catch (error) {
+                        console.log(error);
+                    }
+                }
                 // loads player creature data and sets player creature state
                 const loadDataPlayerCreature = () => {
                     const playerCreatureData = creatureData.filter(creature => creature.id === player.creatureId);
                     setPlayerCreature(playerCreatureData);
                     setCreatureStatsStatus(player.displayCreatureStats);
                 }
+                checkLevelPlayer();
                 loadDataPlayerCreature();
             } catch (error) {
                 console.log(error);
             }
-            try {
-                // if there are player relics
-                if (player.relics) {
+            // if there are player relics
+            if (player.relics) {
+                try {
                     // loads player relics data
                     const loadDataPlayerRelics = () => {
                         const playerRelicsData = relicsData.filter(relic => player.relics.includes(relic.id));
@@ -133,12 +146,13 @@ function Stage1() {
                         setChosenRelic(chosenRelicData);
                     }
                     loadDataPlayerRelics();
+
+                } catch (error) {
+                    console.log(error);
                 }
-            } catch (error) {
-                console.log(error);
             }
         }
-    }, [player, relicsData, creatureData]);
+    }, [player, relicsData, creatureData, navigate]);
 
     // retrieves user data and updates player state
     const loadAsyncDataPlayer = async () => {

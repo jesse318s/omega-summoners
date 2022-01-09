@@ -180,11 +180,11 @@ function Menu({
                     <h4>Battle Stages</h4>
                     <div className="stage_options">
                         <Link to="/app">
-                            <button className="game_button_small margin_small">Home</button>
+                            <button className="game_button_small margin_small">Lvl. 0 | Home</button>
                             {window.location.pathname === "/app" ? <span className="color_white">X</span> : null}
                         </Link><br />
                         <Link to="/stage1">
-                            <button className="game_button_small margin_small">Stage I - Path to Olympus</button>
+                            <button className="game_button_small margin_small">Lvl. 5 | Stage I<br/> The Path to Olympus</button>
                             {window.location.pathname === "/stage1" ? <span className="color_white">X</span> : null}
                         </Link><br /></div>
                 </>

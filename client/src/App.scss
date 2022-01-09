@@ -41,7 +41,7 @@
 }
 
 .game_section {
-  background-image: url("assets/img_background/background1.webp");
+  background-image: url("assets/img_background/backgroundHome.webp");
   background-size: cover;
   min-height: 1200px;
   height: 100vh;
@@ -195,6 +195,14 @@
   color: blue;
 }
 
+.stage_options {
+  margin: 0 auto;
+  padding: 5px;
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 250px;
+}
+
 .combat_alert {
   margin: 0 auto;
   border: 1px solid orange;
@@ -247,30 +255,38 @@
 }
 
 // animations
-.critical_effect {
-  font-weight: bold;
-  color: red;
+.special_effect_container {
   height: 0;
   overflow: visible;
+}
 
-  animation: critical_effect_animation 0.5s;
+.combat_text {
+  animation: combat_text_animation 0.75s;
 
-  @keyframes critical_effect_animation {
+  @keyframes combat_text_animation {
     0% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.5);
+      opacity: 1;
     }
     100% {
-      transform: scale(1);
+      opacity: 0;
     }
   }
 }
 
-.special_effect_container {
-  height: 0;
-  overflow: visible;
+.crit_text {
+  color: red;
+  font-weight: bold;
+
+  animation: crit_text_animation 0.75s;
+
+  @keyframes crit_text_animation {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
 }
 
 .special_effect1 {

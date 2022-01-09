@@ -1,4 +1,5 @@
 import { useState } from "react";
+import './home.scss';
 import Userfront from "@userfront/core";
 
 // initialize Userfront
@@ -154,24 +155,6 @@ function Home() {
             <main>
                 {/* shooting star background */}
                 <div className="stars">
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
-                    <div className="star"></div>
                     <div className="star"></div>
                     <div className="star"></div>
                     <div className="star"></div>

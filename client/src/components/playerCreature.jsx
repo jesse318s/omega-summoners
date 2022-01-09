@@ -90,7 +90,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
     }
 
     // initiates chance of enemy counter attack
-    const enemyCounterAttack = (chancePlayer, moveName) => {
+    const enemyCounterAttack = (chancePlayer, moveName, moveType) => {
         try {
             const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
             var playerCreatureDefense = (playerCreature[0].defense + chosenRelic[0].defenseMod) / 100;
@@ -114,7 +114,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                 }, 250);
             }
             if (!chanceEnemy && !chancePlayer) {
-                attackEnemy(moveName);
+                attackEnemy(moveName, moveType);
             }
             if (chanceEnemy && chancePlayer) {
                 setTimeout(() => {
@@ -243,7 +243,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                             }, 250);
                         }
 
-                        enemyCounterAttack(chancePlayer, moveName);
+                        enemyCounterAttack(chancePlayer, moveName, moveType);
                     }
 
                     setTimeout(() => {
@@ -302,7 +302,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                 }, 250);
                             }
 
-                            enemyCounterAttack(chancePlayer, moveName);
+                            enemyCounterAttack(chancePlayer, moveName, moveType);
                         }
 
                     } else {

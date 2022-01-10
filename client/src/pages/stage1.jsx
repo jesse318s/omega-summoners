@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import '../App.scss';
+import React, { useState, useEffect } from "react";
+import "../App.scss";
 import "./stage1.scss";
 import Userfront from "@userfront/core";
 import { useNavigate } from "react-router-dom";
-import { getUser } from '../services/userServices';
-import GameNav from '../components/gameNav';
+import { getUser } from "../services/userServices";
+import GameNav from "../components/gameNav";
 import Options from "../components/options";
 import Player from "../components/player";
 import Menu from "../components/menu";

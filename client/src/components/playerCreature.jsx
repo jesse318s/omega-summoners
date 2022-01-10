@@ -1,9 +1,13 @@
-import { updateUser } from '../services/userServices';
+import { useRef } from "react";
+import { updateUser } from "../services/userServices";
 
 function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setEnemyAttackStatus, critText, setCritText, combatText, setCombatText, playerAttackStatus,
     setPlayerAttackStatus, chosenRelic, specialStatus, setSpecialStatus, battleStatus, setBattleStatus, player, creatureStatsStatus, playerCreatureHP, setPlayerCreatureHP,
     playerCreatureMP, setPlayerCreatureMP, enemyCreature, setEnemyCreature, battleUndecided, setBattleUndecided, enemyCreatureHP, setEnemyCreatureHP, Userfront,
     loadAsyncDataPlayer, setCombatAlert }) {
+
+    // reference hook
+    const ref = useRef(null);
 
     // player attack animation
     const playerAttackAnimation = () => {
@@ -143,7 +147,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                 }
 
                 // checks for player death, and damages player otherwise
-                if (playerCreatureHP - ((enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalMultiplier) <= 0) {
+                if (ref.current - ((enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalMultiplier) <= 0) {
                     setBattleUndecided(false);
                     setTimeout(() => {
                         enemyAttackCT(criticalMultiplier, playerCreatureDefense);
@@ -158,7 +162,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                 } else {
                     setTimeout(() => {
                         enemyAttackCT(criticalMultiplier, playerCreatureDefense);
-                        setPlayerCreatureHP(playerCreatureHP - (enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalMultiplier);
+                        setPlayerCreatureHP(ref.current - (enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalMultiplier);
                     }, 750);
                 }
 
@@ -243,6 +247,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                             }, 250);
                         }
 
+                        ref.current = playerCreatureHP;
                         enemyCounterAttack(chancePlayer, moveName, moveType);
                     }
 
@@ -263,46 +268,76 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                         //deducts MP
                         setPlayerCreatureMP(playerCreatureMP - playerCreature[0].specialCost);
 
-                        // checks for enemy death
-                        if (enemyCreatureHP - ((playerCreatureSpecial - playerCreatureSpecial * enemyDefense) * criticalMultiplier) <= 0 && chancePlayer) {
-                            setBattleUndecided(false);
-                            playerAttackAnimation();
-                            specialAnimation();
-                            playerSpecialCT(playerCreatureSpecial, criticalMultiplier, enemyDefense);
-                            setTimeout(() => {
-                                setEnemyCreatureHP(0);
-                                setCombatAlert("Victory!");
-                                Userfront.user.update({
-                                    data: {
-                                        userkey: Userfront.user.data.userkey,
-                                    },
-                                });
-                                updateUser(player._id, {
-                                    userfrontId: Userfront.user.userId, experience: player.experience + enemyCreature[0].reward * 2,
-                                    drachmas: player.drachmas + enemyCreature[0].reward
-                                });
-                            }, 250);
-                            setTimeout(() => {
-                                setBattleStatus(false);
-                                setEnemyCreature({});
-                                setPlayerCreatureHP(0);
-                            }, 2250);
-                            setTimeout(() => {
-                                loadAsyncDataPlayer();
-                            }, 2250);
-                        } else {
+                        if (moveType !== "Heal") {
 
-                            // damages enemy
-                            if (chancePlayer) {
+                            // checks for enemy death
+                            if (enemyCreatureHP - ((playerCreatureSpecial - playerCreatureSpecial * enemyDefense) * criticalMultiplier) <= 0 && chancePlayer) {
+                                setBattleUndecided(false);
                                 playerAttackAnimation();
-                                playerSpecialCT(playerCreatureSpecial, criticalMultiplier, enemyDefense);
                                 specialAnimation();
+                                playerSpecialCT(playerCreatureSpecial, criticalMultiplier, enemyDefense);
                                 setTimeout(() => {
-                                    setEnemyCreatureHP(enemyCreatureHP - (playerCreatureSpecial - playerCreatureSpecial * enemyDefense) * criticalMultiplier);
+                                    setEnemyCreatureHP(0);
+                                    setCombatAlert("Victory!");
+                                    Userfront.user.update({
+                                        data: {
+                                            userkey: Userfront.user.data.userkey,
+                                        },
+                                    });
+                                    updateUser(player._id, {
+                                        userfrontId: Userfront.user.userId, experience: player.experience + enemyCreature[0].reward * 2,
+                                        drachmas: player.drachmas + enemyCreature[0].reward
+                                    });
                                 }, 250);
+                                setTimeout(() => {
+                                    setBattleStatus(false);
+                                    setEnemyCreature({});
+                                    setPlayerCreatureHP(0);
+                                }, 2250);
+                                setTimeout(() => {
+                                    loadAsyncDataPlayer();
+                                }, 2250);
+                            } else {
+
+                                // damages enemy
+                                if (chancePlayer) {
+                                    playerAttackAnimation();
+                                    playerSpecialCT(playerCreatureSpecial, criticalMultiplier, enemyDefense);
+                                    specialAnimation();
+                                    setTimeout(() => {
+                                        setEnemyCreatureHP(enemyCreatureHP - (playerCreatureSpecial - playerCreatureSpecial * enemyDefense) * criticalMultiplier);
+                                    }, 250);
+                                }
+
+                                ref.current = playerCreatureHP;
+                                enemyCounterAttack(chancePlayer, moveName, moveType);
                             }
 
-                            enemyCounterAttack(chancePlayer, moveName, moveType);
+                        } else {
+
+                            // heals player
+                            if (chancePlayer) {
+                                specialAnimation();
+                                setTimeout(() => {
+
+                                    if (playerCreatureHP + playerCreatureSpecial * criticalMultiplier > playerCreature[0].hp + chosenRelic[0].hpMod) {
+                                        setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod);
+                                        ref.current = playerCreature[0].hp + chosenRelic[0].hpMod;
+                                    } else {
+                                        setPlayerCreatureHP(playerCreatureHP + playerCreatureSpecial * criticalMultiplier);
+                                        ref.current = playerCreatureHP + playerCreatureSpecial * criticalMultiplier;
+                                    }
+
+                                    enemyCounterAttack(chancePlayer, moveName, moveType);
+
+                                }, 250)
+                            } else {
+                                ref.current = playerCreatureHP;
+
+                                enemyCounterAttack(chancePlayer, moveName, moveType);
+
+                            }
+
                         }
 
                     } else {

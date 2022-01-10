@@ -1,4 +1,4 @@
-import { updateUser } from '../services/userServices';
+import { updateUser } from "../services/userServices";
 
 function Options({ Userfront, player, optionsStatus, nameOptionStatus, setNameOptionStatus, avatarOptionStatus, setAvatarOptionStatus, creatureStatsStatus, loadAsyncDataPlayer }) {
 

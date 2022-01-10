@@ -265,6 +265,17 @@
   font-size: 18px;
 }
 
+.heal_combat_text {
+  color: lightgreen;
+  font-size: 18px;
+}
+
+.heal_crit_text {
+  color: yellow;
+  font-size: 18px;
+  font-weight: bold;
+}
+
 // animations
 .special_effect_container {
   height: 0;

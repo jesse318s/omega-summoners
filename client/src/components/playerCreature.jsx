@@ -65,6 +65,22 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
         }
     }
 
+    const playerHealCT = (playerCreatureSpecial, criticalMultiplier) => {
+        try {
+            setCritText("heal_combat_text");
+            if (criticalMultiplier > 1) {
+                setCritText("heal_crit_text");
+            }
+            setCombatText((playerCreatureSpecial * criticalMultiplier));
+            setTimeout(() => {
+                setCombatText("");
+                setCritText("combat_text");
+            }, 500);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     // enemy attack animation
     const enemyAttackAnimation = () => {
         try {
@@ -317,6 +333,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
 
                             // heals player
                             if (chancePlayer) {
+                                playerHealCT(playerCreatureSpecial, criticalMultiplier);
                                 specialAnimation();
                                 setTimeout(() => {
 
@@ -358,7 +375,8 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                     <div
                         key={creature.id}
                     >
-                        {enemyAttackStatus ? <div className="special_effect_container"><div className={critText}>{combatText}</div></div> : null}
+                        {enemyAttackStatus || critText === "heal_crit_text" || critText === "heal_combat_text" ? <div className="special_effect_container">
+                            <div className={critText}>{combatText}</div></div> : null}
                         {playerAttackStatus
                             ? <img className={chosenRelic[0].effectClass}
                                 src={creature.imgPath.slice(0, -4) + "_attack.png"}

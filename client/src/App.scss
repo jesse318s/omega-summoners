@@ -254,39 +254,22 @@
   transform: scaleX(-1);
 }
 
-// animations
-.special_effect_container {
-  height: 0;
-  overflow: visible;
-}
-
 .combat_text {
-  animation: combatTextAnimation 0.75s;
-
-  @keyframes combatTextAnimation {
-    0% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-    }
-  }
+  color: orange;
+  font-weight: bold;
+  font-size: 18px;
 }
 
 .crit_text {
   color: red;
   font-weight: bold;
+  font-size: 18px;
+}
 
-  animation: critTextAnimation 750ms;
-
-  @keyframes critTextAnimation {
-    0% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-    }
-  }
+// animations
+.special_effect_container {
+  height: 0;
+  overflow: visible;
 }
 
 .special_effect1 {

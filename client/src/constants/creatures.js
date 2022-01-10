@@ -75,9 +75,29 @@ const creatures = [
         mpRegen: 25,
         special: 75,
         specialCost: 100,
-        specialName: "Poison",
+        specialName: "Inject",
         specialType: "Poison",
         specialEffect: "special_effect4"
+    },
+    {
+        id: 5,
+        name: "Ice Golem",
+        imgPath: "img/creature/ice_golem_creature.png",
+        price: 50,
+        hp: 110,
+        attack: 30,
+        attackName: "Slice",
+        attackType: "Magic",
+        speed: 30,
+        defense: 15,
+        critical: 15,
+        mp: 100,
+        mpRegen: 25,
+        special: 75,
+        specialCost: 100,
+        specialName: "Ice Cloak",
+        specialType: "Heal",
+        specialEffect: "special_effect5"
     }
 ];
 

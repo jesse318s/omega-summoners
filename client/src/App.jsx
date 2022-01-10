@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import './App.scss';
+import "./App.scss";
 import Userfront from "@userfront/core";
 import { useNavigate } from "react-router-dom";
-import { getUser, addUser, updateUser } from './services/userServices';
-import GameNav from './components/gameNav';
+import { getUser, addUser, updateUser } from "./services/userServices";
+import GameNav from "./components/gameNav";
 import Options from "./components/options";
 import Player from "./components/player";
 import Menu from "./components/menu";

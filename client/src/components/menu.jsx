@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { updateUser } from '../services/userServices';
+import { updateUser } from "../services/userServices";
 
 function Menu({
     Userfront, battleStatus, setBattleStatus, player, relicsData, relicsStatus, setRelicsStatus, playerRelics, templeStatus, setTempleStatus, creatureData, enemyCreatureData,

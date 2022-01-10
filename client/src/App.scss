@@ -261,9 +261,9 @@
 }
 
 .combat_text {
-  animation: combat_text_animation 0.75s;
+  animation: combatTextAnimation 0.75s;
 
-  @keyframes combat_text_animation {
+  @keyframes combatTextAnimation {
     0% {
       opacity: 1;
     }
@@ -277,9 +277,9 @@
   color: red;
   font-weight: bold;
 
-  animation: crit_text_animation 0.75s;
+  animation: critTextAnimation 750ms;
 
-  @keyframes crit_text_animation {
+  @keyframes critTextAnimation {
     0% {
       opacity: 1;
     }
@@ -386,7 +386,7 @@
   bottom: 70px;
   left: 360px;
   transform: rotateY(20deg) translateX(-200px) scaleX(2) scaleY(0.89);
-  animation: castFireball 400ms infinite linear;
+  animation: injectPoison 400ms infinite linear;
   width: 30px;
   height: 5px;
   background: linear-gradient(
@@ -397,7 +397,7 @@
   );
   box-shadow: 1px 2px 0 green;
 
-  @keyframes castFireball {
+  @keyframes injectPoison {
     50% {
       transform: rotateY(20deg) translateX(-20px) scaleX(1);
     }
@@ -407,6 +407,25 @@
     100% {
       opacity: 0;
       transform: rotateX(-20deg) rotateY(20deg) translateX(-20px) scaleX(1);
+    }
+  }
+}
+
+.special_effect5 {
+  position: relative;
+  bottom: 128px;
+  height: 100px;
+  border-radius: 50%;
+  background: lightblue;
+  filter: blur(100px);
+  animation: iceCloak 375ms;
+
+  @keyframes iceCloak {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(0.5);
     }
   }
 }

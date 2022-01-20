@@ -282,6 +282,29 @@
   overflow: visible;
 }
 
+.spawn_effect {
+  height: 100px;
+  border-style: solid;
+  border-color: purple;
+  border-radius: 50%;
+  background: black;
+  opacity: 80%;
+  filter: blur(10px);
+  animation: spawnPortal 200ms;
+
+  @keyframes spawnPortal {
+    0% {
+      transform: scale(0);
+    }
+    50% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(0);
+    }
+  }
+}
+
 .special_effect1 {
   position: relative;
   bottom: 75px;

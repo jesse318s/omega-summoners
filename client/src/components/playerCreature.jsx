@@ -65,6 +65,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
         }
     }
 
+    // player healing Combat Text animation
     const playerHealCT = (playerCreatureSpecial, criticalMultiplier) => {
         try {
             setCritText("heal_combat_text");

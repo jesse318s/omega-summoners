@@ -4,7 +4,7 @@ import { updateUser } from "../services/userServices";
 function Menu({
     Userfront, battleStatus, setBattleStatus, player, relicsData, relicsStatus, setRelicsStatus, playerRelics, templeStatus, setTempleStatus, creatureData, enemyCreatureData,
     summonsStatus, setSummonsStatus, stagesStatus, setStagesStatus, combatAlert, loadAsyncDataPlayer, setPlayerCreatureHP, setPlayerCreatureMP, playerCreature, chosenRelic,
-    setEnemyCreature, setEnemyCreatureHP, setCombatAlert, setBattleUndecided
+    setEnemyCreature, setEnemyCreatureHP, setCombatAlert, setBattleUndecided, spawn, setSpawn
 }) {
 
     // updates player chosen relic in database
@@ -65,6 +65,18 @@ function Menu({
         }
     }
 
+    // enemy spawn animation
+    const spawnAnimation = () => {
+        try {
+            setSpawn("spawn_effect");
+            setTimeout(() => {
+                setSpawn("");
+            }, 200);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     // loads battle data
     const loadDataBattle = () => {
         try {
@@ -75,6 +87,7 @@ function Menu({
             setEnemyCreatureHP(enemyCreature[0].hp);
             setCombatAlert("The battle has begun!");
             setBattleStatus(true);
+            spawnAnimation();
             setBattleUndecided(true);
         }
         catch (error) {
@@ -184,7 +197,7 @@ function Menu({
                             {window.location.pathname === "/app" ? <span className="color_white">X</span> : null}
                         </Link><br />
                         <Link to="/stage1">
-                            <button className="game_button_small margin_small">Lvl. 5 | Stage I<br/> The Path to Olympus</button>
+                            <button className="game_button_small margin_small">Lvl. 5 | Stage I<br /> The Path to Olympus</button>
                             {window.location.pathname === "/stage1" ? <span className="color_white">X</span> : null}
                         </Link><br /></div>
                 </>

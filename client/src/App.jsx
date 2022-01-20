@@ -67,6 +67,8 @@ function App() {
   const [combatText, setCombatText] = useState("");
   // sets crit text state
   const [critText, setCritText] = useState("combat_text");
+  // sets spawn state
+  const [spawn, setSpawn] = useState("");
 
   useEffect(() => {
     // checks for userfront authentication and redirects visitor if not authenticated
@@ -215,7 +217,8 @@ function App() {
               creatureData={creatureData} enemyCreatureData={enemyCreatureData} summonsStatus={summonsStatus} setSummonsStatus={setSummonsStatus}
               stagesStatus={stagesStatus} setStagesStatus={setStagesStatus} combatAlert={combatAlert} loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
               setPlayerCreatureHP={setPlayerCreatureHP} setPlayerCreatureMP={setPlayerCreatureMP} playerCreature={playerCreature} chosenRelic={chosenRelic}
-              setEnemyCreature={setEnemyCreature} setEnemyCreatureHP={setEnemyCreatureHP} setCombatAlert={setCombatAlert} setBattleUndecided={setBattleUndecided} />
+              setEnemyCreature={setEnemyCreature} setEnemyCreatureHP={setEnemyCreatureHP} setCombatAlert={setCombatAlert} setBattleUndecided={setBattleUndecided}
+              spawn={spawn} setSpawn={setSpawn} />
 
             <PlayerCreature summonsStatus={summonsStatus} playerCreature={playerCreature} enemyAttackStatus={enemyAttackStatus} setEnemyAttackStatus={setEnemyAttackStatus}
               critText={critText} setCritText={setCritText} combatText={combatText} playerAttackStatus={playerAttackStatus} setPlayerAttackStatus={setPlayerAttackStatus}
@@ -226,7 +229,7 @@ function App() {
               setEnemyCreatureHP={setEnemyCreatureHP} Userfront={Userfront} loadAsyncDataPlayer={() => loadAsyncDataPlayer()} setCombatAlert={setCombatAlert} />
 
             <EnemyCreature battleStatus={battleStatus} enemyCreature={enemyCreature} playerAttackStatus={playerAttackStatus} enemyAttackStatus={enemyAttackStatus}
-              critText={critText} combatText={combatText} enemyCreatureHP={enemyCreatureHP} />
+              critText={critText} combatText={combatText} enemyCreatureHP={enemyCreatureHP} spawn={spawn} />
 
           </> : null}
         </main>

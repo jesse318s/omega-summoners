@@ -80,6 +80,7 @@ function Menu({
     // loads battle data
     const loadDataBattle = () => {
         try {
+            spawnAnimation();
             setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod);
             setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod);
             const enemyCreature = [enemyCreatureData[Math.floor(Math.random() * enemyCreatureData.length)]];
@@ -87,7 +88,6 @@ function Menu({
             setEnemyCreatureHP(enemyCreature[0].hp);
             setCombatAlert("The battle has begun!");
             setBattleStatus(true);
-            spawnAnimation();
             setBattleUndecided(true);
         }
         catch (error) {

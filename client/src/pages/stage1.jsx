@@ -191,7 +191,7 @@ function Stage1() {
                             stagesStatus={stagesStatus} setStagesStatus={setStagesStatus} combatAlert={combatAlert} loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
                             setPlayerCreatureHP={setPlayerCreatureHP} setPlayerCreatureMP={setPlayerCreatureMP} playerCreature={playerCreature} chosenRelic={chosenRelic}
                             setEnemyCreature={setEnemyCreature} setEnemyCreatureHP={setEnemyCreatureHP} setCombatAlert={setCombatAlert} setBattleUndecided={setBattleUndecided}
-                            spawn={spawn} setSpawn={setSpawn} />
+                            setSpawn={setSpawn} />
 
                         <PlayerCreature summonsStatus={summonsStatus} playerCreature={playerCreature} enemyAttackStatus={enemyAttackStatus} setEnemyAttackStatus={setEnemyAttackStatus}
                             critText={critText} setCritText={setCritText} combatText={combatText} playerAttackStatus={playerAttackStatus} setPlayerAttackStatus={setPlayerAttackStatus}

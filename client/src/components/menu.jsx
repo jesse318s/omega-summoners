@@ -4,7 +4,7 @@ import { updateUser } from "../services/userServices";
 function Menu({
     Userfront, battleStatus, setBattleStatus, player, relicsData, relicsStatus, setRelicsStatus, playerRelics, templeStatus, setTempleStatus, creatureData, enemyCreatureData,
     summonsStatus, setSummonsStatus, stagesStatus, setStagesStatus, combatAlert, loadAsyncDataPlayer, setPlayerCreatureHP, setPlayerCreatureMP, playerCreature, chosenRelic,
-    setEnemyCreature, setEnemyCreatureHP, setCombatAlert, setBattleUndecided, spawn, setSpawn
+    setEnemyCreature, setEnemyCreatureHP, setCombatAlert, setBattleUndecided, setSpawn
 }) {
 
     // updates player chosen relic in database

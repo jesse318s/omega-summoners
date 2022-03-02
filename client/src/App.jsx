@@ -86,7 +86,7 @@ function App() {
 
   useEffect(() => {
     // checks for userkey and generates new player if needed
-    const genDataPlayer = () => {
+    const genDataPlayer = async () => {
       try {
         // if there is no user key
         if (Userfront.user.data.userkey === undefined) {
@@ -101,9 +101,9 @@ function App() {
             creatureId: 0,
             displayCreatureStats: false
           }
-          addUser(newUser);
+          await addUser(newUser);
           alert("Welcome to the game! You have been assigned a new account. Please log in again to continue.");
-          Userfront.logout();
+          await Userfront.logout();
         }
       } catch (error) {
         console.log(error);

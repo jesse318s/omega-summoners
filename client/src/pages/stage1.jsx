@@ -198,7 +198,7 @@ function Stage1() {
                             chosenRelic={chosenRelic} specialStatus={specialStatus} setSpecialStatus={setSpecialStatus} battleStatus={battleStatus} setBattleStatus={setBattleStatus}
                             player={player} creatureStatsStatus={creatureStatsStatus} playerCreatureHP={playerCreatureHP} setPlayerCreatureHP={setPlayerCreatureHP}
                             playerCreatureMP={playerCreatureMP} setPlayerCreatureMP={setPlayerCreatureMP} setCombatText={setCombatText} enemyCreature={enemyCreature}
-                            setEnemyCreature={setEnemyCreatureHP} battleUndecided={battleUndecided} setBattleUndecided={setBattleUndecided} enemyCreatureHP={enemyCreatureHP}
+                            setEnemyCreature={setEnemyCreature} battleUndecided={battleUndecided} setBattleUndecided={setBattleUndecided} enemyCreatureHP={enemyCreatureHP}
                             setEnemyCreatureHP={setEnemyCreatureHP} Userfront={Userfront} loadAsyncDataPlayer={() => loadAsyncDataPlayer()} setCombatAlert={setCombatAlert} />
 
                         <EnemyCreature battleStatus={battleStatus} enemyCreature={enemyCreature} playerAttackStatus={playerAttackStatus} enemyAttackStatus={enemyAttackStatus}

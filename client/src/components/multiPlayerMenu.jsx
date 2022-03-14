@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import { updateUser } from "../services/userServices";
 
-function Menu({
+function MultiPlayerMenu({
     Userfront, battleStatus, setBattleStatus, player, relicsData, relicsStatus, setRelicsStatus, playerRelics, templeStatus, setTempleStatus, creatureData, enemyCreatureData,
     summonsStatus, setSummonsStatus, stagesStatus, setStagesStatus, combatAlert, loadAsyncDataPlayer, setPlayerCreatureHP, setPlayerCreatureMP, playerCreature, chosenRelic,
-    setEnemyCreature, setEnemyCreatureHP, setCombatAlert, setBattleUndecided, setSpawn
+    setEnemyCreature, setCombatAlert, setBattleUndecided, setSpawn, loadAsyncDataLobby
 }) {
 
     // updates player chosen relic in database
@@ -85,7 +85,7 @@ function Menu({
             spawnAnimation();
             const enemyCreature = [enemyCreatureData[Math.floor(Math.random() * enemyCreatureData.length)]];
             setEnemyCreature(enemyCreature);
-            setEnemyCreatureHP(enemyCreature[0].hp);
+            loadAsyncDataLobby();
             setCombatAlert("The battle has begun!");
             setBattleStatus(true);
             setBattleUndecided(true);
@@ -219,4 +219,4 @@ function Menu({
     );
 }
 
-export default Menu;
+export default MultiPlayerMenu;

@@ -51,3 +51,18 @@ export const enemyCreaturesStage1 = [
         critical: 25,
     }
 ];
+
+export const bossEnemyCreatureStage1 = [
+    {
+        id: 1,
+        name: "Dragon",
+        imgPath: "img/creature/dragon_creature.png",
+        reward: 750,
+        hp: 900,
+        attack: 30,
+        attackType: "Normal",
+        speed: 30,
+        defense: 15,
+        critical: 15,
+    }
+];

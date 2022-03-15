@@ -2,6 +2,7 @@ const Lobby = require("../models/lobby");
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
+const axios = require('axios');
 
 router.get("/:id", async (req, res) => {
     try {
@@ -28,10 +29,29 @@ router.get("/:id", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
     try {
+        const options = {
+            headers: {
+                Accept: "*/*",
+                Authorization: `Bearer ${process.env.USERFRONT_KEY}`
+            }
+        };
+        const payload = {
+            data: {
+                userkey: Math.random().toString(36).substring(7),
+            }
+        };
+        function getUserkey() {
+            return axios.get("https://api.userfront.com/v0/users/" + req.headers.userid, options)
+                .then((response) => {
+                    return response.data;
+                })
+                .catch((err) => console.error(err));
+        }
+        const userkey = await getUserkey();
         const lobbyCheck = await Lobby.findOne({ _id: req.params.id });
         const accessToken = req.headers.authorization.replace("Bearer ", "");
         const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, { algorithms: ["RS256"] });
-        if (decoded && req.body.enemyHP < lobbyCheck.enemyHP) {
+        if (decoded && req.body.enemyHP < lobbyCheck.enemyHP && req.headers.userkey === userkey.data.userkey) {
             const lobby = await Lobby.findOneAndUpdate(
                 {
                     _id: req.params.id
@@ -44,6 +64,11 @@ router.put("/:id", async (req, res) => {
         } else {
             res.send("Unauthorized");
         }
+        function putUserkey() {
+            return axios.put("https://api.userfront.com/v0/users/" + req.headers.userid, payload, options)
+                .catch((err) => console.error(err));
+        }
+        await putUserkey();
     } catch (error) {
         res.send(error);
     }

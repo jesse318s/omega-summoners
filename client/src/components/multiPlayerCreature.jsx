@@ -235,6 +235,11 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                         playerAttackAnimation();
                         playerAttackCT(playerCreatureAttack, criticalMultiplier, enemyDefense);
                         setTimeout(() => {
+                            Userfront.user.update({
+                                data: {
+                                    userkey: Userfront.user.data.userkey,
+                                },
+                            });
                             updateLobby("622d65844b65e9ce035febad", { enemyHP: 0 });
                             loadAsyncDataLobby();
                             setCombatAlert("Victory!");
@@ -264,6 +269,11 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                             playerAttackCT(playerCreatureAttack, criticalMultiplier, enemyDefense);
                             setTimeout(() => {
                                 loadAsyncDataLobby();
+                                Userfront.user.update({
+                                    data: {
+                                        userkey: Userfront.user.data.userkey,
+                                    },
+                                });
                                 updateLobby("622d65844b65e9ce035febad", { enemyHP: lobby.enemyHP - (playerCreatureAttack - playerCreatureAttack * enemyDefense) * criticalMultiplier });
                                 loadAsyncDataLobby();
                             }, 250);
@@ -299,6 +309,11 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                                 specialAnimation();
                                 playerSpecialCT(playerCreatureSpecial, criticalMultiplier, enemyDefense);
                                 setTimeout(() => {
+                                    Userfront.user.update({
+                                        data: {
+                                            userkey: Userfront.user.data.userkey,
+                                        },
+                                    });
                                     updateLobby("622d65844b65e9ce035febad", { enemyHP: 0 });
                                     loadAsyncDataLobby();
                                     setCombatAlert("Victory!");
@@ -329,6 +344,11 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                                     specialAnimation();
                                     setTimeout(() => {
                                         loadAsyncDataLobby();
+                                        Userfront.user.update({
+                                            data: {
+                                                userkey: Userfront.user.data.userkey,
+                                            },
+                                        });
                                         updateLobby("622d65844b65e9ce035febad", {
                                             enemyHP:
                                                 lobby.enemyHP - (playerCreatureSpecial - playerCreatureSpecial * enemyDefense) * criticalMultiplier

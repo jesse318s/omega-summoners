@@ -193,15 +193,15 @@ function Menu({
                     <h4>Battle Stages</h4>
                     <div className="stage_options">
                         <Link to="/app">
-                            <button className="game_button_small margin_small">Lvl. 0 | Home</button>
+                            <button className="game_button_small margin_small">Lvl. 0 | Home<br /> The Bridge (Solo)</button>
                             {window.location.pathname === "/app" ? <span className="color_white">X</span> : null}
                         </Link><br />
                         <Link to="/stage1">
-                            <button className="game_button_small margin_small">Lvl. 5 | Stage I<br /> The Path to Olympus</button>
+                            <button className="game_button_small margin_small">Lvl. 5 | Stage I<br /> Mount Olympus (Solo)</button>
                             {window.location.pathname === "/stage1" ? <span className="color_white">X</span> : null}
                         </Link><br />
                         <Link to="/lobby1">
-                            <button className="game_button_small margin_small">Lvl. 8 | Stage I<br /> The Showdown</button>
+                            <button className="game_button_small margin_small">Lvl. 8 | Stage I<br /> (Multiplayer)</button>
                             {window.location.pathname === "/lobby1" ? <span className="color_white">X</span> : null}
                         </Link><br /></div>
                 </>

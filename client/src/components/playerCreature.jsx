@@ -192,6 +192,11 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
     // initiates chance to attack enemy creature
     const attackEnemy = (moveName, moveType) => {
         try {
+            Userfront.user.update({
+                data: {
+                    userkey: Userfront.user.data.userkey,
+                },
+            });
             // if the player and enemy aren't attacking and the battle is undecided
             if (!playerAttackStatus && !enemyAttackStatus && battleUndecided) {
                 const playerCreatureAttack = playerCreature[0].attack + chosenRelic[0].attackMod;

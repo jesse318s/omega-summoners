@@ -193,14 +193,18 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
     // initiates chance to attack enemy creature
     const attackEnemy = (moveName, moveType) => {
         try {
-            Userfront.user.update({
-                data: {
-                    userkey: Userfront.user.data.userkey,
-                },
-            });
-            loadAsyncDataLobby();
             // if the player and enemy aren't attacking and the battle is undecided
             if (!playerAttackStatus && !enemyAttackStatus && battleUndecided) {
+
+                // update userkey and lobby
+                Userfront.user.update({
+                    data: {
+                        userkey: Userfront.user.data.userkey,
+                    },
+                });
+                
+                loadAsyncDataLobby();
+
                 const playerCreatureAttack = playerCreature[0].attack + chosenRelic[0].attackMod;
                 const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
                 const playerCreatureCritical = (playerCreature[0].critical + chosenRelic[0].criticalMod) / 100;

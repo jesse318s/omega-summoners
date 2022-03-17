@@ -222,7 +222,7 @@ function Lobby1() {
                             setPlayerAttackStatus={setPlayerAttackStatus} chosenRelic={chosenRelic} specialStatus={specialStatus} setSpecialStatus={setSpecialStatus}
                             battleStatus={battleStatus} setBattleStatus={setBattleStatus} player={player} creatureStatsStatus={creatureStatsStatus} playerCreatureHP={playerCreatureHP}
                             setPlayerCreatureHP={setPlayerCreatureHP} playerCreatureMP={playerCreatureMP} setPlayerCreatureMP={setPlayerCreatureMP} setCombatText={setCombatText}
-                            enemyCreature={enemyCreature} setEnemyCreature={setEnemyCreature} battleUndecided={battleUndecided} setBattleUndecided={setBattleUndecided} 
+                            enemyCreature={enemyCreature} setEnemyCreature={setEnemyCreature} battleUndecided={battleUndecided} setBattleUndecided={setBattleUndecided}
                             Userfront={Userfront} loadAsyncDataPlayer={() => loadAsyncDataPlayer()} setCombatAlert={setCombatAlert} lobby={lobby}
                             loadAsyncDataLobby={() => loadAsyncDataLobby()} />
 

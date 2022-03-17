@@ -18,7 +18,7 @@ export function updateLobby(id, Lobby) {
             "Content-Type": "application/json",
             Authorization: `Bearer ${Userfront.accessToken()}`,
             Userkey: Userfront.user.data.userkey,
-            UserId: Userfront.user.userId,
+            Userid: Userfront.user.userId,
         }
     });
 }

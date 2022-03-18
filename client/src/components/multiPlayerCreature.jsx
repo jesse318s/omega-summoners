@@ -5,7 +5,7 @@ import { updateLobby } from "../services/lobbyServices";
 function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setEnemyAttackStatus, critText, setCritText, combatText, setCombatText, playerAttackStatus,
     setPlayerAttackStatus, chosenRelic, specialStatus, setSpecialStatus, battleStatus, setBattleStatus, player, creatureStatsStatus, playerCreatureHP, setPlayerCreatureHP,
     playerCreatureMP, setPlayerCreatureMP, enemyCreature, setEnemyCreature, battleUndecided, setBattleUndecided, Userfront, loadAsyncDataPlayer, setCombatAlert, lobby,
-    loadAsyncDataLobby }) {
+    loadAsyncDataLobby, lobbyTimer, setLobbyTimer}) {
 
     // reference hook
     const ref = useRef(null);
@@ -194,16 +194,21 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
     const attackEnemy = (moveName, moveType) => {
         try {
             // if the player and enemy aren't attacking and the battle is undecided
-            if (!playerAttackStatus && !enemyAttackStatus && battleUndecided) {
+            if (!playerAttackStatus && !enemyAttackStatus && battleUndecided && !lobbyTimer) {
+                setLobbyTimer(true);
 
-                // update userkey and lobby
+                // timeout for lobby timer
+                setTimeout(() => {
+                    setLobbyTimer(false);
+                    loadAsyncDataLobby();
+                }, 1000);
+
+                // update userkey
                 Userfront.user.update({
                     data: {
                         userkey: Userfront.user.data.userkey,
                     },
                 });
-
-                loadAsyncDataLobby();
 
                 const playerCreatureAttack = playerCreature[0].attack + chosenRelic[0].attackMod;
                 const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;

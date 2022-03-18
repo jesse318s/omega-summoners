@@ -72,6 +72,8 @@ function Lobby1() {
     const [spawn, setSpawn] = useState("");
     // sets lobby state
     const [lobby, setLobby] = useState({});
+    // sets lobby timer state
+    const [lobbyTimer, setLobbyTimer] = useState(0);
 
     useEffect(() => {
         // checks for userfront authentication and redirects visitor if not authenticated
@@ -224,7 +226,7 @@ function Lobby1() {
                             setPlayerCreatureHP={setPlayerCreatureHP} playerCreatureMP={playerCreatureMP} setPlayerCreatureMP={setPlayerCreatureMP} setCombatText={setCombatText}
                             enemyCreature={enemyCreature} setEnemyCreature={setEnemyCreature} battleUndecided={battleUndecided} setBattleUndecided={setBattleUndecided}
                             Userfront={Userfront} loadAsyncDataPlayer={() => loadAsyncDataPlayer()} setCombatAlert={setCombatAlert} lobby={lobby}
-                            loadAsyncDataLobby={() => loadAsyncDataLobby()} />
+                            loadAsyncDataLobby={() => loadAsyncDataLobby()} lobbyTimer={lobbyTimer} setLobbyTimer={setLobbyTimer} />
 
                         <BossEnemyCreature battleStatus={battleStatus} enemyCreature={enemyCreature} playerAttackStatus={playerAttackStatus} enemyAttackStatus={enemyAttackStatus}
                             critText={critText} combatText={combatText} spawn={spawn} lobby={lobby} />

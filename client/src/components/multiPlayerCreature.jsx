@@ -218,7 +218,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                 var chancePlayer = false;
                 var criticalMultiplier = 1;
 
-                //checks for player magic move type and applies effect
+                // checks for player magic move type and applies effect
                 if (moveType === "Magic") {
                     enemyDefense = 0;
                 }
@@ -272,7 +272,6 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                             setPlayerCreatureHP(0);
                         }, 2250);
                         setTimeout(() => {
-                            loadAsyncDataLobby();
                             loadAsyncDataPlayer();
                         }, 2250);
                     } else {
@@ -288,7 +287,6 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                                     },
                                 });
                                 updateLobby("622d65844b65e9ce035febad", { enemyHP: lobby.enemyHP - (playerCreatureAttack - playerCreatureAttack * enemyDefense) * criticalMultiplier });
-                                loadAsyncDataLobby();
                             }, 250);
                         }
 
@@ -345,7 +343,6 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                                     setPlayerCreatureHP(0);
                                 }, 2250);
                                 setTimeout(() => {
-                                    loadAsyncDataLobby();
                                     loadAsyncDataPlayer();
                                 }, 2250);
                             } else {
@@ -365,7 +362,6 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                                             enemyHP:
                                                 lobby.enemyHP - (playerCreatureSpecial - playerCreatureSpecial * enemyDefense) * criticalMultiplier
                                         });
-                                        loadAsyncDataLobby();
                                     }, 250);
                                 }
 

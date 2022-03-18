@@ -202,7 +202,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                         userkey: Userfront.user.data.userkey,
                     },
                 });
-                
+
                 loadAsyncDataLobby();
 
                 const playerCreatureAttack = playerCreature[0].attack + chosenRelic[0].attackMod;
@@ -250,7 +250,6 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                                 },
                             });
                             updateLobby("622d65844b65e9ce035febad", { enemyHP: 0 });
-                            loadAsyncDataLobby();
                             setCombatAlert("Victory!");
                             Userfront.user.update({
                                 data: {
@@ -268,6 +267,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                             setPlayerCreatureHP(0);
                         }, 2250);
                         setTimeout(() => {
+                            loadAsyncDataLobby();
                             loadAsyncDataPlayer();
                         }, 2250);
                     } else {
@@ -323,7 +323,6 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                                         },
                                     });
                                     updateLobby("622d65844b65e9ce035febad", { enemyHP: 0 });
-                                    loadAsyncDataLobby();
                                     setCombatAlert("Victory!");
                                     Userfront.user.update({
                                         data: {
@@ -341,6 +340,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                                     setPlayerCreatureHP(0);
                                 }, 2250);
                                 setTimeout(() => {
+                                    loadAsyncDataLobby();
                                     loadAsyncDataPlayer();
                                 }, 2250);
                             } else {

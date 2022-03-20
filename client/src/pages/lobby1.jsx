@@ -14,6 +14,7 @@ import creatures from "../constants/creatures";
 import relics from "../constants/relics";
 import { bossEnemyCreatureStage1 } from "../constants/enemyCreatures";
 import { getLobby } from "../services/lobbyServices";
+import { getConnection, addConnection } from "../services/connectionServices";
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
@@ -126,6 +127,34 @@ function Lobby1() {
     }, []);
 
     useEffect(() => {
+        // checks for connection and generates new connection if needed
+        const genDataConnection = async () => {
+            try {
+                const test = await getConnection();
+                if (test.data.length === 0) {
+                    const newConnection = {
+                        userId: Userfront.user.userId,
+                    }
+                    await addConnection(newConnection);
+                    alert("You have entered the lobby.");
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        // retrieves connection data and updates connections
+        const loadAsyncDataConnection = async () => {
+            try {
+                await getConnection();
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        genDataConnection();
+        loadAsyncDataConnection();
+    }, []);
+
+    useEffect(() => {
         // if there is a player
         if (player) {
             try {
@@ -181,9 +210,33 @@ function Lobby1() {
         }
     }
 
-    // retreives lobby data and updates lobby state
+    // retreives lobby data and updates lobby state, also generates new connection if needed and updates connections
     const loadAsyncDataLobby = async () => {
         try {
+            // checks for connection and generates new connection if needed
+            const genDataConnection = async () => {
+                try {
+                    const test = await getConnection();
+                    if (test.data.length === 0) {
+                        const newConnection = {
+                            userId: Userfront.user.userId,
+                        }
+                        await addConnection(newConnection);
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+            // retrieves connection data and updates connections
+            const loadAsyncDataConnection = async () => {
+                try {
+                    await getConnection();
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+            genDataConnection();
+            loadAsyncDataConnection();
             const { data } = await getLobby("622d65844b65e9ce035febad");
             setLobby(data);
         }

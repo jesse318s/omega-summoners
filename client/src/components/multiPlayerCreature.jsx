@@ -5,7 +5,7 @@ import { updateLobby } from "../services/lobbyServices";
 function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setEnemyAttackStatus, critText, setCritText, combatText, setCombatText, playerAttackStatus,
     setPlayerAttackStatus, chosenRelic, specialStatus, setSpecialStatus, battleStatus, setBattleStatus, player, creatureStatsStatus, playerCreatureHP, setPlayerCreatureHP,
     playerCreatureMP, setPlayerCreatureMP, enemyCreature, setEnemyCreature, battleUndecided, setBattleUndecided, Userfront, loadAsyncDataPlayer, setCombatAlert, lobby,
-    loadAsyncDataLobby, lobbyTimer, setLobbyTimer}) {
+    loadAsyncDataLobby, lobbyTimer, setLobbyTimer }) {
 
     // reference hook
     const ref = useRef(null);
@@ -193,6 +193,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
     // initiates chance to attack enemy creature
     const attackEnemy = (moveName, moveType) => {
         try {
+            loadAsyncDataPlayer();
             // if the player and enemy aren't attacking and the battle is undecided
             if (!playerAttackStatus && !enemyAttackStatus && battleUndecided && !lobbyTimer) {
                 setLobbyTimer(true);

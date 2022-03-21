@@ -51,7 +51,18 @@ router.put("/:id", async (req, res) => {
         const lobbyCheck = await Lobby.findOne({ _id: req.params.id });
         const accessToken = req.headers.authorization.replace("Bearer ", "");
         const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, { algorithms: ["RS256"] });
-        if (decoded && req.body.enemyHP < lobbyCheck.enemyHP && req.headers.userkey === userkey.data.userkey) {
+        const lobby = await Lobby.findOne({ _id: req.params.id });
+        if (lobby.enemyHP <= 0) {
+            await Lobby.findOneAndUpdate(
+                {
+                    _id: req.params.id
+                },
+                {
+                    enemyHP: lobby.maxHP,
+                }
+            );
+            res.send(lobby);
+        } else if (decoded && req.body.enemyHP < lobbyCheck.enemyHP && req.headers.userkey === userkey.data.userkey) {
             const lobby = await Lobby.findOneAndUpdate(
                 {
                     _id: req.params.id

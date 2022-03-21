@@ -4,7 +4,7 @@ import { updateUser } from "../services/userServices";
 function MultiPlayerMenu({
     Userfront, battleStatus, setBattleStatus, player, relicsData, relicsStatus, setRelicsStatus, playerRelics, templeStatus, setTempleStatus, creatureData, enemyCreatureData,
     summonsStatus, setSummonsStatus, stagesStatus, setStagesStatus, combatAlert, loadAsyncDataPlayer, setPlayerCreatureHP, setPlayerCreatureMP, playerCreature, chosenRelic,
-    setEnemyCreature, setCombatAlert, setBattleUndecided, setSpawn, loadAsyncDataLobby
+    setEnemyCreature, setCombatAlert, setBattleUndecided, setSpawn, loadAsyncDataLobby, loadAsyncDataConnection, connections, alliesStatus, setAlliesStatus
 }) {
 
     // updates player chosen relic in database
@@ -101,11 +101,11 @@ function MultiPlayerMenu({
                 {!battleStatus ? <div><div className="inline_flex">
                     <button className="game_button margin_small" onClick={() => {
                         setRelicsStatus(!relicsStatus); setTempleStatus(false); setSummonsStatus(false);
-                        setStagesStatus(false);
+                        setStagesStatus(false); setAlliesStatus(false);
                     }}>Relics</button>
                     <button className="game_button margin_small" onClick={() => {
                         setTempleStatus(!templeStatus); setRelicsStatus(false); setSummonsStatus(false);
-                        setStagesStatus(false);
+                        setStagesStatus(false); setAlliesStatus(false);
                     }}>Temple</button>
                 </div></div>
                     : null}
@@ -153,12 +153,12 @@ function MultiPlayerMenu({
                 {!battleStatus ? <>
                     <button className="game_button margin_small" onClick={() => {
                         setSummonsStatus(!summonsStatus); setTempleStatus(false); setRelicsStatus(false);
-                        setStagesStatus(false);
+                        setStagesStatus(false); setAlliesStatus(false);
                     }}>
                         Summons</button>
                     <button className="game_button margin_small" onClick={() => {
                         setStagesStatus(!stagesStatus); setSummonsStatus(false); setTempleStatus(false);
-                        setRelicsStatus(false);
+                        setRelicsStatus(false); setAlliesStatus(false);
                     }}>
                         Stages</button>< br />
                 </>
@@ -207,13 +207,23 @@ function MultiPlayerMenu({
                 </>
                     : null
                 }
+                <button className="game_button margin_small" onClick={() => {
+                    setAlliesStatus(!alliesStatus); setStagesStatus(false); setSummonsStatus(false); setTempleStatus(false);
+                    setRelicsStatus(false); loadAsyncDataConnection();
+                }}>
+                    Allies</button>
                 {!battleStatus ? <>
                     <button className="game_button margin_small" onClick={() => {
                         loadDataBattle(); setTempleStatus(false); setRelicsStatus(false); setSummonsStatus(false);
-                        setStagesStatus(false);
+                        setStagesStatus(false); loadAsyncDataConnection();
                     }}>
                         Battle</button> </>
                     : null}
+                {alliesStatus ? <>
+                    <h4>Allies Online: {connections.length}</h4>
+                </>
+                    : null
+                }
             </div>
         </>
     );

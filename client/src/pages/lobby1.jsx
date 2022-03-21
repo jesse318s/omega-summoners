@@ -75,6 +75,10 @@ function Lobby1() {
     const [lobby, setLobby] = useState({});
     // sets lobby timer state
     const [lobbyTimer, setLobbyTimer] = useState(0);
+    // sets connections state
+    const [connections, setConnections] = useState([{}]);
+    // sets allies status state
+    const [alliesStatus, setAlliesStatus] = useState(false);
 
     useEffect(() => {
         // checks for userfront authentication and redirects visitor if not authenticated
@@ -124,34 +128,6 @@ function Lobby1() {
         checkDataPlayer();
         loadAsyncDataPlayer();
         loadAsyncDataLobby();
-    }, []);
-
-    useEffect(() => {
-        // checks for connection and generates new connection if needed
-        const genDataConnection = async () => {
-            try {
-                const test = await getConnection();
-                if (test.data.length === 0) {
-                    const newConnection = {
-                        userId: Userfront.user.userId,
-                    }
-                    await addConnection(newConnection);
-                    alert("You have entered the lobby.");
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        // retrieves connection data and updates connections
-        const loadAsyncDataConnection = async () => {
-            try {
-                await getConnection();
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        genDataConnection();
-        loadAsyncDataConnection();
     }, []);
 
     useEffect(() => {
@@ -210,19 +186,26 @@ function Lobby1() {
         }
     }
 
+    // retrieves connection data and updates connections
+    const loadAsyncDataConnection = async () => {
+        try {
+            const { data } = await getConnection();
+            setConnections(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     // retreives lobby data and updates lobby state, also generates new connection if needed and updates connections
     const loadAsyncDataLobby = async () => {
         try {
             // checks for connection and generates new connection if needed
             const genDataConnection = async () => {
                 try {
-                    const test = await getConnection();
-                    if (test.data.length === 0) {
-                        const newConnection = {
-                            userId: Userfront.user.userId,
-                        }
-                        await addConnection(newConnection);
+                    const newConnection = {
+                        userId: Userfront.user.userId,
                     }
+                    await addConnection(newConnection);
                 } catch (error) {
                     console.log(error);
                 }
@@ -230,7 +213,8 @@ function Lobby1() {
             // retrieves connection data and updates connections
             const loadAsyncDataConnection = async () => {
                 try {
-                    await getConnection();
+                    const { data } = await getConnection();
+                    setConnections(data);
                 } catch (error) {
                     console.log(error);
                 }
@@ -270,7 +254,9 @@ function Lobby1() {
                             stagesStatus={stagesStatus} setStagesStatus={setStagesStatus} combatAlert={combatAlert} loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
                             setPlayerCreatureHP={setPlayerCreatureHP} setPlayerCreatureMP={setPlayerCreatureMP} playerCreature={playerCreature} chosenRelic={chosenRelic}
                             setEnemyCreature={setEnemyCreature} setCombatAlert={setCombatAlert} setBattleUndecided={setBattleUndecided} setSpawn={setSpawn}
-                            loadAsyncDataLobby={() => loadAsyncDataLobby()} />
+                            loadAsyncDataLobby={() => loadAsyncDataLobby()} loadAsyncDataConnection={() => loadAsyncDataConnection()} connections={connections}
+                            alliesStatus={alliesStatus} setAlliesStatus={setAlliesStatus}
+                        />
 
                         <MultiPlayerCreature summonsStatus={summonsStatus} playerCreature={playerCreature} enemyAttackStatus={enemyAttackStatus}
                             setEnemyAttackStatus={setEnemyAttackStatus} critText={critText} setCritText={setCritText} combatText={combatText} playerAttackStatus={playerAttackStatus}

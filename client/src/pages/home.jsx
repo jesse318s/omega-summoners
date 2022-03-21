@@ -388,7 +388,7 @@ function Home() {
                 {/* footer */}
                 <footer>
                     <p>
-                        &copy; 2021 Jesse Sites. All Rights Reserved.
+                        &copy; 2021 Jesse All Rights Reserved.
                     </p>
                 </footer>
             </main>

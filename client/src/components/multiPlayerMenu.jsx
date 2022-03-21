@@ -80,15 +80,27 @@ function MultiPlayerMenu({
     // loads battle data
     const loadDataBattle = () => {
         try {
-            setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod);
-            setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod);
-            spawnAnimation();
-            const enemyCreature = [enemyCreatureData[Math.floor(Math.random() * enemyCreatureData.length)]];
-            setEnemyCreature(enemyCreature);
-            loadAsyncDataLobby();
-            setCombatAlert("The battle has begun!");
-            setBattleStatus(true);
-            setBattleUndecided(true);
+            // if the player can afford the battle
+            if (player.drachmas >= 500 && player.drachmas >= 500) {
+                if (window.confirm(`Are you sure you want to enter this battle? It will cost 750 drachmas and experience.`)) {
+                    setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod);
+                    setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod);
+                    spawnAnimation();
+                    const enemyCreature = [enemyCreatureData[Math.floor(Math.random() * enemyCreatureData.length)]];
+                    setEnemyCreature(enemyCreature);
+                    loadAsyncDataLobby();
+                    setCombatAlert("The battle has begun!");
+                    setBattleStatus(true);
+                    setBattleUndecided(true);
+                    Userfront.user.update({
+                        data: {
+                            userkey: Userfront.user.data.userkey,
+                        },
+                    });
+                    updateUser(player._id, { userfrontId: Userfront.user.userId, experience: player.experience - 750, drachmas: player.drachmas - 750 });
+                    loadAsyncDataPlayer();
+                }
+            }
         }
         catch (error) {
             console.log(error);

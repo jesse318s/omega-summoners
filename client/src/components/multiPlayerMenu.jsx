@@ -37,6 +37,8 @@ function MultiPlayerMenu({
                     await updateUser(player._id, { userfrontId: Userfront.user.userId, drachmas: player.drachmas - relicPrice, relics: [...player.relics, relicId] });
                     await loadAsyncDataPlayer();
                 }
+            } else {
+                alert("You can't afford this relic or you already own it.");
             }
         }
         catch (error) {
@@ -58,6 +60,8 @@ function MultiPlayerMenu({
                     await updateUser(player._id, { userfrontId: Userfront.user.userId, experience: player.experience - creaturePrice, creatureId: creatureId });
                     await loadAsyncDataPlayer();
                 }
+            } else {
+                alert("You can't afford this creature or you already have it.");
             }
         }
         catch (error) {
@@ -100,6 +104,8 @@ function MultiPlayerMenu({
                     updateUser(player._id, { userfrontId: Userfront.user.userId, experience: player.experience - 750, drachmas: player.drachmas - 750 });
                     loadAsyncDataPlayer();
                 }
+            } else {
+                alert("You can't afford this battle.");
             }
         }
         catch (error) {

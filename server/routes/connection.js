@@ -34,10 +34,9 @@ router.get("/", async (req, res) => {
             for await (const doc of Connection.find()) {
                 if (doc.userId === decoded.userId) {
                     count++;
-                    if (count === 2) {
+                    if (count > 1) {
                         await doc.remove();
                     }
-
                 }
             }
             const connections = await Connection.find();

@@ -103,6 +103,10 @@ function MultiPlayerMenu({
                     });
                     updateUser(player._id, { userfrontId: Userfront.user.userId, experience: player.experience - 750, drachmas: player.drachmas - 750 });
                     loadAsyncDataPlayer();
+                    setTimeout(() => {
+                        loadAsyncDataLobby();
+                    }
+                        , 1000);
                 }
             } else {
                 alert("You can't afford this battle.");

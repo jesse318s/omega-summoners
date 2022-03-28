@@ -255,7 +255,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                                     userkey: Userfront.user.data.userkey,
                                 },
                             });
-                            updateLobby("622d65844b65e9ce035febad", { enemyHP: 0 });
+                            updateLobby(lobby._id, { enemyHP: 0 });
                             setCombatAlert("Victory!");
                             Userfront.user.update({
                                 data: {
@@ -287,7 +287,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                                         userkey: Userfront.user.data.userkey,
                                     },
                                 });
-                                updateLobby("622d65844b65e9ce035febad", { enemyHP: lobby.enemyHP - (playerCreatureAttack - playerCreatureAttack * enemyDefense) * criticalMultiplier });
+                                updateLobby(lobby._id, { enemyHP: lobby.enemyHP - (playerCreatureAttack - playerCreatureAttack * enemyDefense) * criticalMultiplier });
                             }, 250);
                         }
 
@@ -326,7 +326,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                                             userkey: Userfront.user.data.userkey,
                                         },
                                     });
-                                    updateLobby("622d65844b65e9ce035febad", { enemyHP: 0 });
+                                    updateLobby(lobby._id, { enemyHP: 0 });
                                     setCombatAlert("Victory!");
                                     Userfront.user.update({
                                         data: {
@@ -359,7 +359,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                                                 userkey: Userfront.user.data.userkey,
                                             },
                                         });
-                                        updateLobby("622d65844b65e9ce035febad", {
+                                        updateLobby(lobby._id, {
                                             enemyHP:
                                                 lobby.enemyHP - (playerCreatureSpecial - playerCreatureSpecial * enemyDefense) * criticalMultiplier
                                         });

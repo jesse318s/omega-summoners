@@ -13,6 +13,7 @@ import BossEnemyCreature from "../components/bossEnemyCreature";
 import creatures from "../constants/creatures";
 import relics from "../constants/relics";
 import { bossEnemyCreatureStage1 } from "../constants/enemyCreatures";
+import { lobby1 } from "../constants/lobbies";
 import { getLobby } from "../services/lobbyServices";
 import { getConnection, addConnection } from "../services/connectionServices";
 
@@ -118,7 +119,7 @@ function Lobby1() {
         // retreives lobby data and updates lobby state
         const loadAsyncDataLobby = async () => {
             try {
-                const { data } = await getLobby("622d65844b65e9ce035febad");
+                const { data } = await getLobby(lobby1);
                 setLobby(data);
             }
             catch (error) {
@@ -131,6 +132,11 @@ function Lobby1() {
     }, []);
 
     useEffect(() => {
+        Userfront.user.update({
+            data: {
+                userkey: Userfront.user.data.userkey,
+            },
+        });
         // if there is a player
         if (player) {
             try {
@@ -221,7 +227,7 @@ function Lobby1() {
             }
             genDataConnection();
             loadAsyncDataConnection();
-            const { data } = await getLobby("622d65844b65e9ce035febad");
+            const { data } = await getLobby(lobby1);
             setLobby(data);
         }
         catch (error) {

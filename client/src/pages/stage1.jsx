@@ -86,6 +86,11 @@ function Stage1() {
     });
 
     useEffect(() => {
+        Userfront.user.update({
+            data: {
+                userkey: Userfront.user.data.userkey,
+            },
+        });
         // checks for userkey and logs user out if none is found
         const checkDataPlayer = () => {
             try {

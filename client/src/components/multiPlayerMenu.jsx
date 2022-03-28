@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import { updateUser } from "../services/userServices";
 
-function Menu({
+function MultiPlayerMenu({
     Userfront, battleStatus, setBattleStatus, player, relicsData, relicsStatus, setRelicsStatus, playerRelics, templeStatus, setTempleStatus, creatureData, enemyCreatureData,
     summonsStatus, setSummonsStatus, stagesStatus, setStagesStatus, combatAlert, loadAsyncDataPlayer, setPlayerCreatureHP, setPlayerCreatureMP, playerCreature, chosenRelic,
-    setEnemyCreature, setEnemyCreatureHP, setCombatAlert, setBattleUndecided, setSpawn
+    setEnemyCreature, setCombatAlert, setBattleUndecided, setSpawn, loadAsyncDataLobby, loadAsyncDataConnection, connections, alliesStatus, setAlliesStatus
 }) {
 
     // updates player chosen relic in database
@@ -84,15 +84,33 @@ function Menu({
     // loads battle data
     const loadDataBattle = () => {
         try {
-            setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod);
-            setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod);
-            spawnAnimation();
-            const enemyCreature = [enemyCreatureData[Math.floor(Math.random() * enemyCreatureData.length)]];
-            setEnemyCreature(enemyCreature);
-            setEnemyCreatureHP(enemyCreature[0].hp);
-            setCombatAlert("The battle has begun!");
-            setBattleStatus(true);
-            setBattleUndecided(true);
+            // if the player can afford the battle
+            if (player.drachmas >= 500 && player.drachmas >= 500) {
+                if (window.confirm(`Are you sure you want to enter this battle? It will cost 750 drachmas and experience.`)) {
+                    setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod);
+                    setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod);
+                    spawnAnimation();
+                    const enemyCreature = [enemyCreatureData[Math.floor(Math.random() * enemyCreatureData.length)]];
+                    setEnemyCreature(enemyCreature);
+                    loadAsyncDataLobby();
+                    setCombatAlert("The battle has begun!");
+                    setBattleStatus(true);
+                    setBattleUndecided(true);
+                    Userfront.user.update({
+                        data: {
+                            userkey: Userfront.user.data.userkey,
+                        },
+                    });
+                    updateUser(player._id, { userfrontId: Userfront.user.userId, experience: player.experience - 750, drachmas: player.drachmas - 750 });
+                    loadAsyncDataPlayer();
+                    setTimeout(() => {
+                        loadAsyncDataLobby();
+                    }
+                        , 1000);
+                }
+            } else {
+                alert("You can't afford this battle.");
+            }
         }
         catch (error) {
             console.log(error);
@@ -105,11 +123,11 @@ function Menu({
                 {!battleStatus ? <div><div className="inline_flex">
                     <button className="game_button margin_small" onClick={() => {
                         setRelicsStatus(!relicsStatus); setTempleStatus(false); setSummonsStatus(false);
-                        setStagesStatus(false);
+                        setStagesStatus(false); setAlliesStatus(false);
                     }}>Relics</button>
                     <button className="game_button margin_small" onClick={() => {
                         setTempleStatus(!templeStatus); setRelicsStatus(false); setSummonsStatus(false);
-                        setStagesStatus(false);
+                        setStagesStatus(false); setAlliesStatus(false);
                     }}>Temple</button>
                 </div></div>
                     : null}
@@ -157,12 +175,12 @@ function Menu({
                 {!battleStatus ? <>
                     <button className="game_button margin_small" onClick={() => {
                         setSummonsStatus(!summonsStatus); setTempleStatus(false); setRelicsStatus(false);
-                        setStagesStatus(false);
+                        setStagesStatus(false); setAlliesStatus(false);
                     }}>
                         Summons</button>
                     <button className="game_button margin_small" onClick={() => {
                         setStagesStatus(!stagesStatus); setSummonsStatus(false); setTempleStatus(false);
-                        setRelicsStatus(false);
+                        setRelicsStatus(false); setAlliesStatus(false);
                     }}>
                         Stages</button>< br />
                 </>
@@ -211,16 +229,26 @@ function Menu({
                 </>
                     : null
                 }
+                <button className="game_button margin_small" onClick={() => {
+                    setAlliesStatus(!alliesStatus); setStagesStatus(false); setSummonsStatus(false); setTempleStatus(false);
+                    setRelicsStatus(false); loadAsyncDataConnection();
+                }}>
+                    Allies</button>
                 {!battleStatus ? <>
                     <button className="game_button margin_small" onClick={() => {
                         loadDataBattle(); setTempleStatus(false); setRelicsStatus(false); setSummonsStatus(false);
-                        setStagesStatus(false);
+                        setStagesStatus(false); loadAsyncDataConnection();
                     }}>
                         Battle</button> </>
                     : null}
+                {alliesStatus ? <>
+                    <h4>Allies Online: {connections.length}</h4>
+                </>
+                    : null
+                }
             </div>
         </>
     );
 }
 
-export default Menu;
+export default MultiPlayerMenu;

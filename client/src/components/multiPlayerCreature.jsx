@@ -1,10 +1,11 @@
 import { useRef } from "react";
 import { updateUser } from "../services/userServices";
+import { updateLobby } from "../services/lobbyServices";
 
-function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setEnemyAttackStatus, critText, setCritText, combatText, setCombatText, playerAttackStatus,
+function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setEnemyAttackStatus, critText, setCritText, combatText, setCombatText, playerAttackStatus,
     setPlayerAttackStatus, chosenRelic, specialStatus, setSpecialStatus, battleStatus, setBattleStatus, player, creatureStatsStatus, playerCreatureHP, setPlayerCreatureHP,
-    playerCreatureMP, setPlayerCreatureMP, enemyCreature, setEnemyCreature, battleUndecided, setBattleUndecided, enemyCreatureHP, setEnemyCreatureHP, Userfront,
-    loadAsyncDataPlayer, setCombatAlert }) {
+    playerCreatureMP, setPlayerCreatureMP, enemyCreature, setEnemyCreature, battleUndecided, setBattleUndecided, Userfront, loadAsyncDataPlayer, setCombatAlert, lobby,
+    loadAsyncDataLobby, lobbyTimer, setLobbyTimer }) {
 
     // reference hook
     const ref = useRef(null);
@@ -174,7 +175,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                     setTimeout(() => {
                         setBattleStatus(false);
                         setEnemyCreature({});
-                        setEnemyCreatureHP(0);
+
                     }, 2750);
                 } else {
                     setTimeout(() => {
@@ -192,8 +193,16 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
     // initiates chance to attack enemy creature
     const attackEnemy = (moveName, moveType) => {
         try {
+            loadAsyncDataPlayer();
             // if the player and enemy aren't attacking and the battle is undecided
-            if (!playerAttackStatus && !enemyAttackStatus && battleUndecided) {
+            if (!playerAttackStatus && !enemyAttackStatus && battleUndecided && !lobbyTimer) {
+                setLobbyTimer(true);
+
+                // timeout for lobby timer
+                setTimeout(() => {
+                    setLobbyTimer(false);
+                    loadAsyncDataLobby();
+                }, 1000);
 
                 // update userkey
                 Userfront.user.update({
@@ -210,7 +219,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                 var chancePlayer = false;
                 var criticalMultiplier = 1;
 
-                //checks for player magic move type and applies effect
+                // checks for player magic move type and applies effect
                 if (moveType === "Magic") {
                     enemyDefense = 0;
                 }
@@ -236,12 +245,17 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                 if (moveName === playerCreature[0].attackName) {
 
                     // checks for enemy death
-                    if (enemyCreatureHP - ((playerCreatureAttack - playerCreatureAttack * enemyDefense) * criticalMultiplier) <= 0 && chancePlayer) {
+                    if (lobby.enemyHP - ((playerCreatureAttack - playerCreatureAttack * enemyDefense) * criticalMultiplier) <= 0) {
                         setBattleUndecided(false);
                         playerAttackAnimation();
                         playerAttackCT(playerCreatureAttack, criticalMultiplier, enemyDefense);
                         setTimeout(() => {
-                            setEnemyCreatureHP(0);
+                            Userfront.user.update({
+                                data: {
+                                    userkey: Userfront.user.data.userkey,
+                                },
+                            });
+                            updateLobby(lobby._id, { enemyHP: 0 });
                             setCombatAlert("Victory!");
                             Userfront.user.update({
                                 data: {
@@ -268,7 +282,12 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                             playerAttackAnimation();
                             playerAttackCT(playerCreatureAttack, criticalMultiplier, enemyDefense);
                             setTimeout(() => {
-                                setEnemyCreatureHP(enemyCreatureHP - (playerCreatureAttack - playerCreatureAttack * enemyDefense) * criticalMultiplier);
+                                Userfront.user.update({
+                                    data: {
+                                        userkey: Userfront.user.data.userkey,
+                                    },
+                                });
+                                updateLobby(lobby._id, { enemyHP: lobby.enemyHP - (playerCreatureAttack - playerCreatureAttack * enemyDefense) * criticalMultiplier });
                             }, 250);
                         }
 
@@ -296,13 +315,18 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                         if (moveType !== "Heal") {
 
                             // checks for enemy death
-                            if (enemyCreatureHP - ((playerCreatureSpecial - playerCreatureSpecial * enemyDefense) * criticalMultiplier) <= 0 && chancePlayer) {
+                            if (lobby.enemyHP - ((playerCreatureSpecial - playerCreatureSpecial * enemyDefense) * criticalMultiplier) <= 0) {
                                 setBattleUndecided(false);
                                 playerAttackAnimation();
                                 specialAnimation();
                                 playerSpecialCT(playerCreatureSpecial, criticalMultiplier, enemyDefense);
                                 setTimeout(() => {
-                                    setEnemyCreatureHP(0);
+                                    Userfront.user.update({
+                                        data: {
+                                            userkey: Userfront.user.data.userkey,
+                                        },
+                                    });
+                                    updateLobby(lobby._id, { enemyHP: 0 });
                                     setCombatAlert("Victory!");
                                     Userfront.user.update({
                                         data: {
@@ -330,7 +354,15 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                     playerSpecialCT(playerCreatureSpecial, criticalMultiplier, enemyDefense);
                                     specialAnimation();
                                     setTimeout(() => {
-                                        setEnemyCreatureHP(enemyCreatureHP - (playerCreatureSpecial - playerCreatureSpecial * enemyDefense) * criticalMultiplier);
+                                        Userfront.user.update({
+                                            data: {
+                                                userkey: Userfront.user.data.userkey,
+                                            },
+                                        });
+                                        updateLobby(lobby._id, {
+                                            enemyHP:
+                                                lobby.enemyHP - (playerCreatureSpecial - playerCreatureSpecial * enemyDefense) * criticalMultiplier
+                                        });
                                     }, 250);
                                 }
 
@@ -438,4 +470,4 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
     );
 }
 
-export default PlayerCreature;
+export default MultiPlayerCreature;

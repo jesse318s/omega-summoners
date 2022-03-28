@@ -1,4 +1,4 @@
-function EnemyCreature({ battleStatus, enemyCreature, playerAttackStatus, enemyAttackStatus, critText, combatText, enemyCreatureHP, spawn }) {
+function BossEnemyCreature({ battleStatus, enemyCreature, playerAttackStatus, enemyAttackStatus, critText, combatText, spawn, lobby }) {
     return (
         <>
             {battleStatus ?
@@ -12,25 +12,25 @@ function EnemyCreature({ battleStatus, enemyCreature, playerAttackStatus, enemyA
                             {enemyAttackStatus ? <img className="enemy_creature_img"
                                 src={creature.imgPath.slice(0, -4) + "_attack.png"}
                                 alt={creature.name}
-                                width="128px"
-                                height="128px" />
+                                width="256px"
+                                height="256px" />
                                 : playerAttackStatus ? <img className="enemy_creature_img"
                                     src={creature.imgPath.slice(0, -4) + "_hurt.png"}
                                     alt={creature.name}
-                                    width="128px"
-                                    height="128px" />
+                                    width="256px"
+                                    height="256px" />
                                     : <img className="enemy_creature_img"
                                         src={creature.imgPath}
                                         alt={creature.name}
-                                        width="128px"
-                                        height="128px" />}
+                                        width="256px"
+                                        height="256px" />}
                             <div className="creature_panel">
                                 <h4>Enemy {creature.name}</h4>
                                 <div className="progress_bar_container">
                                     <div className="progress_bar"
-                                        style={{ width: ((enemyCreatureHP / enemyCreature[0].hp)) * 100 + "%" }} />
+                                        style={{ width: ((lobby.enemyHP / enemyCreature[0].hp)) * 100 + "%" }} />
                                 </div>
-                                <h5>HP: {enemyCreatureHP} / {creature.hp}</h5>
+                                <h5>HP: {lobby.enemyHP} / {creature.hp}</h5>
                             </div>
                         </div>
                     ))}
@@ -40,4 +40,4 @@ function EnemyCreature({ battleStatus, enemyCreature, playerAttackStatus, enemyA
     );
 }
 
-export default EnemyCreature;
+export default BossEnemyCreature;

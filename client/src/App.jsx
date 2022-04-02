@@ -123,11 +123,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    Userfront.user.update({
-      data: {
-        userkey: Userfront.user.data.userkey,
-      },
-    });
     // if there is a player
     if (player) {
       try {

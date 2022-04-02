@@ -204,13 +204,6 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                     loadAsyncDataLobby();
                 }, 1000);
 
-                // update userkey
-                Userfront.user.update({
-                    data: {
-                        userkey: Userfront.user.data.userkey,
-                    },
-                });
-
                 const playerCreatureAttack = playerCreature[0].attack + chosenRelic[0].attackMod;
                 const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
                 const playerCreatureCritical = (playerCreature[0].critical + chosenRelic[0].criticalMod) / 100;

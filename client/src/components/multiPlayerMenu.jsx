@@ -249,7 +249,7 @@ function MultiPlayerMenu({
                             key={ally.userId}
                         >
                             <div>
-                                {ally.name} {ally.userId === player.userfrontId ? "(You)" : null}
+                                {ally.userId !== player.userfrontId ? ally.name : null}
                             </div>
                         </div>))}
                 </>

@@ -242,7 +242,16 @@ function MultiPlayerMenu({
                         Battle</button> </>
                     : null}
                 {alliesStatus ? <>
-                    <h4>Allies Online: {connections.length}</h4>
+                    <h4>Allies online:</h4>
+                    {connections.map((ally) => (
+                        <div
+                            className="ally_option"
+                            key={ally.userId}
+                        >
+                            <div>
+                                {ally.name} {ally.userId === player.userfrontId ? "(You)" : null}
+                            </div>
+                        </div>))}
                 </>
                     : null
                 }

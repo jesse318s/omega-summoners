@@ -5,6 +5,9 @@ const connectionSchema = new Schema({
     userId: {
         type: Number,
     },
+    name: {
+        type: String,
+    }
 },
     {
         timestamps: true

@@ -79,7 +79,7 @@ function Lobby1() {
     // sets connections state
     const [connections, setConnections] = useState([{}]);
     // sets allies status state
-    const [alliesStatus, setAlliesStatus] = useState(false);
+    const [alliesStatus, setAlliesStatus] = useState(true);
 
     useEffect(() => {
         // checks for userfront authentication and redirects visitor if not authenticated
@@ -205,6 +205,7 @@ function Lobby1() {
                 try {
                     const newConnection = {
                         userId: Userfront.user.userId,
+                        name: player.name
                     }
                     await addConnection(newConnection);
                 } catch (error) {

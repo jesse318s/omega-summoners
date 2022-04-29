@@ -100,21 +100,22 @@ function Menu({
         }
     }
 
-    // set index 1 state
+    // ses index 1 state
     const [index1, setIndex1] = useState(0);
-    // set index 2 state
+    // sets index 2 state
     const [index2, setIndex2] = useState(5);
 
-    // set index A state
+    // sets index A state
     const [indexA, setIndexA] = useState(0);
-    // set index B state
+    // sets index B state
     const [indexB, setIndexB] = useState(7);
 
-    // set index C state
+    // sets index C state
     const [indexC, setIndexC] = useState(0);
-    // set index D state
+    // sets index D state
     const [indexD, setIndexD] = useState(7);
 
+    // paginates creatures for summons menu
     const paginateCreatures = (index1, direction) => {
         try {
             if (direction === "next" && index1 < creatureData.length - 5) {
@@ -131,6 +132,7 @@ function Menu({
         }
     }
 
+    // paginates player relics for relics menu
     const paginateRelics = (indexA, direction) => {
         try {
             if (direction === "next" && indexA < playerRelics.length - 7) {
@@ -147,6 +149,7 @@ function Menu({
         }
     }
 
+    // paginates relics for temple menu
     const paginateTempleRelics = (indexC, direction) => {
         try {
             if (direction === "next" && indexC < relicsData.length - 7) {

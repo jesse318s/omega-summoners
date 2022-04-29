@@ -267,7 +267,8 @@ function Lobby1() {
                             setPlayerCreatureHP={setPlayerCreatureHP} playerCreatureMP={playerCreatureMP} setPlayerCreatureMP={setPlayerCreatureMP} setCombatText={setCombatText}
                             enemyCreature={enemyCreature} setEnemyCreature={setEnemyCreature} battleUndecided={battleUndecided} setBattleUndecided={setBattleUndecided}
                             Userfront={Userfront} loadAsyncDataPlayer={() => loadAsyncDataPlayer()} setCombatAlert={setCombatAlert} lobby={lobby}
-                            loadAsyncDataLobby={() => loadAsyncDataLobby()} lobbyTimer={lobbyTimer} setLobbyTimer={setLobbyTimer} />
+                            loadAsyncDataLobby={() => loadAsyncDataLobby()} lobbyTimer={lobbyTimer} setLobbyTimer={setLobbyTimer} relicsStatus={relicsStatus}
+                            templeStatus={templeStatus} stagesStatus={stagesStatus} />
 
                         <BossEnemyCreature battleStatus={battleStatus} enemyCreature={enemyCreature} playerAttackStatus={playerAttackStatus} enemyAttackStatus={enemyAttackStatus}
                             critText={critText} combatText={combatText} spawn={spawn} lobby={lobby} />

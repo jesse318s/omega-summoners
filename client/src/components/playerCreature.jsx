@@ -4,7 +4,7 @@ import { updateUser } from "../services/userServices";
 function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setEnemyAttackStatus, critText, setCritText, combatText, setCombatText, playerAttackStatus,
     setPlayerAttackStatus, chosenRelic, specialStatus, setSpecialStatus, battleStatus, setBattleStatus, player, creatureStatsStatus, playerCreatureHP, setPlayerCreatureHP,
     playerCreatureMP, setPlayerCreatureMP, enemyCreature, setEnemyCreature, battleUndecided, setBattleUndecided, enemyCreatureHP, setEnemyCreatureHP, Userfront,
-    loadAsyncDataPlayer, setCombatAlert }) {
+    loadAsyncDataPlayer, setCombatAlert, relicsStatus, templeStatus, stagesStatus }) {
 
     // reference hook
     const ref = useRef(null);
@@ -371,7 +371,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
     }
 
     return (<>
-        {!summonsStatus ? <>
+        {!summonsStatus && !relicsStatus && !templeStatus && !stagesStatus ? <>
             <div className="player_creature">
                 {playerCreature.map((creature) => (
                     <div

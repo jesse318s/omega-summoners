@@ -226,7 +226,8 @@ function App() {
               player={player} creatureStatsStatus={creatureStatsStatus} playerCreatureHP={playerCreatureHP} setPlayerCreatureHP={setPlayerCreatureHP}
               playerCreatureMP={playerCreatureMP} setPlayerCreatureMP={setPlayerCreatureMP} setCombatText={setCombatText} enemyCreature={enemyCreature}
               setEnemyCreature={setEnemyCreatureHP} battleUndecided={battleUndecided} setBattleUndecided={setBattleUndecided} enemyCreatureHP={enemyCreatureHP}
-              setEnemyCreatureHP={setEnemyCreatureHP} Userfront={Userfront} loadAsyncDataPlayer={() => loadAsyncDataPlayer()} setCombatAlert={setCombatAlert} />
+              setEnemyCreatureHP={setEnemyCreatureHP} Userfront={Userfront} loadAsyncDataPlayer={() => loadAsyncDataPlayer()} setCombatAlert={setCombatAlert}
+              relicsStatus={relicsStatus} templeStatus={templeStatus} stagesStatus={stagesStatus} />
 
             <EnemyCreature battleStatus={battleStatus} enemyCreature={enemyCreature} playerAttackStatus={playerAttackStatus} enemyAttackStatus={enemyAttackStatus}
               critText={critText} combatText={combatText} enemyCreatureHP={enemyCreatureHP} spawn={spawn} />

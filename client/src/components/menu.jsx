@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { updateUser } from "../services/userServices";
+import { useState } from "react";
 
 function Menu({
     Userfront, battleStatus, setBattleStatus, player, relicsData, relicsStatus, setRelicsStatus, playerRelics, templeStatus, setTempleStatus, creatureData, enemyCreatureData,
@@ -99,6 +100,69 @@ function Menu({
         }
     }
 
+    // set index 1 state
+    const [index1, setIndex1] = useState(0);
+    // set index 2 state
+    const [index2, setIndex2] = useState(5);
+
+    // set index A state
+    const [indexA, setIndexA] = useState(0);
+    // set index B state
+    const [indexB, setIndexB] = useState(7);
+
+    // set index C state
+    const [indexC, setIndexC] = useState(0);
+    // set index D state
+    const [indexD, setIndexD] = useState(7);
+
+    const paginateCreatures = (index1, direction) => {
+        try {
+            if (direction === "next" && index1 < creatureData.length - 5) {
+                setIndex1(index1 + 5);
+                setIndex2(index2 + 5);
+            }
+            else if (direction === "previous" && index1 > 0) {
+                setIndex1(index1 - 5);
+                setIndex2(index2 - 5);
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    const paginateRelics = (indexA, direction) => {
+        try {
+            if (direction === "next" && indexA < playerRelics.length - 7) {
+                setIndexA(indexA + 7);
+                setIndexB(indexB + 7);
+            }
+            else if (direction === "previous" && indexA > 0) {
+                setIndexA(indexA - 7);
+                setIndexB(indexB - 7);
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    const paginateTempleRelics = (indexC, direction) => {
+        try {
+            if (direction === "next" && indexC < relicsData.length - 7) {
+                setIndexC(indexC + 7);
+                setIndexD(indexD + 7);
+            }
+            else if (direction === "previous" && indexC > 0) {
+                setIndexC(indexC - 7);
+                setIndexD(indexD - 7);
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <>
             <div className="color_white">
@@ -117,7 +181,9 @@ function Menu({
                     : null}
                 {relicsStatus ? <div>
                     <h4>Player Relics</h4>
-                    {playerRelics.map((relic) => (
+                    <button className="game_button_small margin_small" onClick={() => paginateRelics(indexA, "previous")}>Previous</button>
+                    <button className="game_button_small margin_small" onClick={() => paginateRelics(indexA, "next")}>Next</button>
+                    {playerRelics.slice(indexA, indexB).map((relic) => (
                         <div
                             className="relic_option"
                             key={relic.id}
@@ -136,7 +202,9 @@ function Menu({
                 }
                 {templeStatus ? <div>
                     <h4>Temple Relics</h4>
-                    {relicsData.map((relic) => (
+                    <button className="game_button_small margin_small" onClick={() => paginateTempleRelics(indexC, "previous")}>Previous</button>
+                    <button className="game_button_small margin_small" onClick={() => paginateTempleRelics(indexC, "next")}>Next</button>
+                    {relicsData.slice(indexC, indexD).map((relic) => (
                         <div
                             className="relic_option"
                             key={relic.id}
@@ -169,7 +237,9 @@ function Menu({
                     : null}
                 {summonsStatus ? <div>
                     <h4>Available Summons</h4>
-                    {creatureData.map((creature) => (
+                    <button className="game_button_small margin_small" onClick={() => paginateCreatures(index1, "previous")}>Previous</button>
+                    <button className="game_button_small margin_small" onClick={() => paginateCreatures(index1, "next")}>Next</button>
+                    {creatureData.slice(index1, index2).map((creature) => (
                         <div
                             className="summon_option"
                             key={creature.id}

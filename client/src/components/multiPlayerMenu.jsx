@@ -5,7 +5,7 @@ import { useState } from "react";
 function MultiPlayerMenu({
     Userfront, battleStatus, setBattleStatus, player, relicsData, relicsStatus, setRelicsStatus, playerRelics, templeStatus, setTempleStatus, creatureData, enemyCreatureData,
     summonsStatus, setSummonsStatus, stagesStatus, setStagesStatus, combatAlert, loadAsyncDataPlayer, setPlayerCreatureHP, setPlayerCreatureMP, playerCreature, chosenRelic,
-    setEnemyCreature, setCombatAlert, setBattleUndecided, setSpawn, loadAsyncDataLobby, loadAsyncDataConnection, connections, alliesStatus, setAlliesStatus
+    setEnemyCreature, setCombatAlert, setBattleUndecided, setSpawn, loadAsyncDataLobby, loadAsyncDataConnection, connections
 }) {
 
     // updates player chosen relic in database
@@ -302,11 +302,6 @@ function MultiPlayerMenu({
                 </>
                     : null
                 }
-                <button className="game_button margin_small" onClick={() => {
-                    setAlliesStatus(!alliesStatus); setStagesStatus(false); setSummonsStatus(false); setTempleStatus(false);
-                    setRelicsStatus(false); loadAsyncDataConnection();
-                }}>
-                    Allies</button>
                 {!battleStatus ? <>
                     <button className="game_button margin_small" onClick={() => {
                         loadDataBattle(); setTempleStatus(false); setRelicsStatus(false); setSummonsStatus(false);
@@ -314,17 +309,20 @@ function MultiPlayerMenu({
                     }}>
                         Battle</button> </>
                     : null}
-                {alliesStatus && !relicsStatus && !templeStatus && !summonsStatus && !stagesStatus ? <>
-                    <h4>Allies online:</h4>
-                    {connections.map((ally) => (
-                        <div
-                            className="ally_option"
-                            key={ally.userId}
-                        >
-                            <div>
-                                {ally.userId !== player.userfrontId ? ally.name : null}
-                            </div>
-                        </div>))}
+                {!relicsStatus && !templeStatus && !summonsStatus && !stagesStatus ? <>
+                    <h4 className="margin_small">Allies online:</h4>
+                    {connections.length > 1 ? <>
+                        {connections.map((ally) => (
+                            <div
+                                className="ally_option"
+                                key={ally.userId}
+                            >
+                                <div>
+                                    {ally.userId !== player.userfrontId ? ally.name : null}
+                                </div>
+                            </div>))}
+                    </>
+                        : null}
                 </>
                     : null
                 }

@@ -78,8 +78,6 @@ function Lobby1() {
     const [lobbyTimer, setLobbyTimer] = useState(0);
     // sets connections state
     const [connections, setConnections] = useState([{}]);
-    // sets allies status state
-    const [alliesStatus, setAlliesStatus] = useState(true);
 
     useEffect(() => {
         // checks for userfront authentication and redirects visitor if not authenticated
@@ -257,7 +255,6 @@ function Lobby1() {
                             setPlayerCreatureHP={setPlayerCreatureHP} setPlayerCreatureMP={setPlayerCreatureMP} playerCreature={playerCreature} chosenRelic={chosenRelic}
                             setEnemyCreature={setEnemyCreature} setCombatAlert={setCombatAlert} setBattleUndecided={setBattleUndecided} setSpawn={setSpawn}
                             loadAsyncDataLobby={() => loadAsyncDataLobby()} loadAsyncDataConnection={() => loadAsyncDataConnection()} connections={connections}
-                            alliesStatus={alliesStatus} setAlliesStatus={setAlliesStatus}
                         />
 
                         <MultiPlayerCreature summonsStatus={summonsStatus} playerCreature={playerCreature} enemyAttackStatus={enemyAttackStatus}

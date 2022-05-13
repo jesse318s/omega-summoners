@@ -8,6 +8,70 @@ function MultiPlayerMenu({
     setEnemyCreature, setCombatAlert, setBattleUndecided, setSpawn, loadAsyncDataLobby, loadAsyncDataConnection, connections
 }) {
 
+    // sets index 1 state
+    const [index1, setIndex1] = useState(0);
+    // sets index 2 state
+    const [index2, setIndex2] = useState(5);
+    // sets index A state
+    const [indexA, setIndexA] = useState(0);
+    // sets index B state
+    const [indexB, setIndexB] = useState(7);
+    // sets index C state
+    const [indexC, setIndexC] = useState(0);
+    // sets index D state
+    const [indexD, setIndexD] = useState(7);
+
+    // paginates creatures for summons menu
+    const paginateCreatures = (index1, direction) => {
+        try {
+            if (direction === "next" && index1 < creatureData.length - 5) {
+                setIndex1(index1 + 5);
+                setIndex2(index2 + 5);
+            }
+            else if (direction === "previous" && index1 > 0) {
+                setIndex1(index1 - 5);
+                setIndex2(index2 - 5);
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    // paginates player relics for relics menu
+    const paginateRelics = (indexA, direction) => {
+        try {
+            if (direction === "next" && indexA < playerRelics.length - 7) {
+                setIndexA(indexA + 7);
+                setIndexB(indexB + 7);
+            }
+            else if (direction === "previous" && indexA > 0) {
+                setIndexA(indexA - 7);
+                setIndexB(indexB - 7);
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    // paginates relics for temple menu
+    const paginateTempleRelics = (indexC, direction) => {
+        try {
+            if (direction === "next" && indexC < relicsData.length - 7) {
+                setIndexC(indexC + 7);
+                setIndexD(indexD + 7);
+            }
+            else if (direction === "previous" && indexC > 0) {
+                setIndexC(indexC - 7);
+                setIndexD(indexD - 7);
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
     // updates player chosen relic in database
     const selectRelic = async (relicId) => {
         try {
@@ -111,72 +175,6 @@ function MultiPlayerMenu({
                 }
             } else {
                 alert("You can't afford this battle.");
-            }
-        }
-        catch (error) {
-            console.log(error);
-        }
-    }
-
-    // sets index 1 state
-    const [index1, setIndex1] = useState(0);
-    // sets index 2 state
-    const [index2, setIndex2] = useState(5);
-
-    // sets index A state
-    const [indexA, setIndexA] = useState(0);
-    // sets index B state
-    const [indexB, setIndexB] = useState(7);
-
-    // sets index C state
-    const [indexC, setIndexC] = useState(0);
-    // sets index D state
-    const [indexD, setIndexD] = useState(7);
-
-    // paginates creatures for summons menu
-    const paginateCreatures = (index1, direction) => {
-        try {
-            if (direction === "next" && index1 < creatureData.length - 5) {
-                setIndex1(index1 + 5);
-                setIndex2(index2 + 5);
-            }
-            else if (direction === "previous" && index1 > 0) {
-                setIndex1(index1 - 5);
-                setIndex2(index2 - 5);
-            }
-        }
-        catch (error) {
-            console.log(error);
-        }
-    }
-
-    // paginates player relics for relics menu
-    const paginateRelics = (indexA, direction) => {
-        try {
-            if (direction === "next" && indexA < playerRelics.length - 7) {
-                setIndexA(indexA + 7);
-                setIndexB(indexB + 7);
-            }
-            else if (direction === "previous" && indexA > 0) {
-                setIndexA(indexA - 7);
-                setIndexB(indexB - 7);
-            }
-        }
-        catch (error) {
-            console.log(error);
-        }
-    }
-
-    // paginates relics for temple menu
-    const paginateTempleRelics = (indexC, direction) => {
-        try {
-            if (direction === "next" && indexC < relicsData.length - 7) {
-                setIndexC(indexC + 7);
-                setIndexD(indexD + 7);
-            }
-            else if (direction === "previous" && indexC > 0) {
-                setIndexC(indexC - 7);
-                setIndexD(indexD - 7);
             }
         }
         catch (error) {

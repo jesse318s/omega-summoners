@@ -69,6 +69,12 @@ function App() {
   const [critText, setCritText] = useState("combat_text");
   // sets spawn state
   const [spawn, setSpawn] = useState("");
+  // sets potions state
+  const [potions, setPotions] = useState([]);
+  // sets ingredients state
+  const [ingredients, setIngredients] = useState([]);
+  // sets alchemy state
+  const [alchemyStatus, setAlchemyStatus] = useState(false);
 
   useEffect(() => {
     // checks for userfront authentication and redirects visitor if not authenticated
@@ -218,7 +224,8 @@ function App() {
               stagesStatus={stagesStatus} setStagesStatus={setStagesStatus} combatAlert={combatAlert} loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
               setPlayerCreatureHP={setPlayerCreatureHP} setPlayerCreatureMP={setPlayerCreatureMP} playerCreature={playerCreature} chosenRelic={chosenRelic}
               setEnemyCreature={setEnemyCreature} setEnemyCreatureHP={setEnemyCreatureHP} setCombatAlert={setCombatAlert} setBattleUndecided={setBattleUndecided}
-              setSpawn={setSpawn} />
+              setSpawn={setSpawn} alchemyStatus={alchemyStatus} setAlchemyStatus={setAlchemyStatus} potions={potions} setPotions={setPotions}
+              ingredients={ingredients} setIngredients={setIngredients} />
 
             <PlayerCreature summonsStatus={summonsStatus} playerCreature={playerCreature} enemyAttackStatus={enemyAttackStatus} setEnemyAttackStatus={setEnemyAttackStatus}
               critText={critText} setCritText={setCritText} combatText={combatText} playerAttackStatus={playerAttackStatus} setPlayerAttackStatus={setPlayerAttackStatus}
@@ -227,7 +234,7 @@ function App() {
               playerCreatureMP={playerCreatureMP} setPlayerCreatureMP={setPlayerCreatureMP} setCombatText={setCombatText} enemyCreature={enemyCreature}
               setEnemyCreature={setEnemyCreatureHP} battleUndecided={battleUndecided} setBattleUndecided={setBattleUndecided} enemyCreatureHP={enemyCreatureHP}
               setEnemyCreatureHP={setEnemyCreatureHP} Userfront={Userfront} loadAsyncDataPlayer={() => loadAsyncDataPlayer()} setCombatAlert={setCombatAlert}
-              relicsStatus={relicsStatus} templeStatus={templeStatus} stagesStatus={stagesStatus} />
+              relicsStatus={relicsStatus} templeStatus={templeStatus} stagesStatus={stagesStatus} alchemyStatus={alchemyStatus} />
 
             <EnemyCreature battleStatus={battleStatus} enemyCreature={enemyCreature} playerAttackStatus={playerAttackStatus} enemyAttackStatus={enemyAttackStatus}
               critText={critText} combatText={combatText} enemyCreatureHP={enemyCreatureHP} spawn={spawn} />

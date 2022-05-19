@@ -2,16 +2,23 @@ import { Link } from "react-router-dom";
 import { updateUser } from "../services/userServices";
 import { getItem, addItem } from "../services/itemServices";
 import { useState } from "react";
+import { potionsList } from "../constants/items";
+import { ingredientsList } from "../constants/items";
+import recipeList from "../constants/recipes";
 
 function Menu({
     Userfront, battleStatus, setBattleStatus, player, relicsData, relicsStatus, setRelicsStatus, playerRelics, templeStatus, setTempleStatus, creatureData, enemyCreatureData,
     summonsStatus, setSummonsStatus, stagesStatus, setStagesStatus, combatAlert, loadAsyncDataPlayer, setPlayerCreatureHP, setPlayerCreatureMP, playerCreature, chosenRelic,
-    setEnemyCreature, setEnemyCreatureHP, setCombatAlert, setBattleUndecided, setSpawn
+    setEnemyCreature, setEnemyCreatureHP, setCombatAlert, setBattleUndecided, setSpawn, alchemyStatus, setAlchemyStatus, potions, setPotions, ingredients, setIngredients
 }) {
-    // ses index 1 state
+    // sets index 1 state
     const [index1, setIndex1] = useState(0);
     // sets index 2 state
     const [index2, setIndex2] = useState(5);
+    // sets index 3 state
+    const [index3, setIndex3] = useState(0);
+    // sets index 4 state
+    const [index4, setIndex4] = useState(4);
     // sets index A state
     const [indexA, setIndexA] = useState(0);
     // sets index B state
@@ -20,6 +27,22 @@ function Menu({
     const [indexC, setIndexC] = useState(0);
     // sets index D state
     const [indexD, setIndexD] = useState(7);
+    // sets index E state
+    const [indexE, setIndexE] = useState(0);
+    // sets index F state
+    const [indexF, setIndexF] = useState(7);
+    // sets index G state
+    const [indexG, setIndexG] = useState(0);
+    // sets index H state
+    const [indexH, setIndexH] = useState(7);
+    // sets potion status state
+    const [potionsStatus, setPotionsStatus] = useState(false);
+    // sets ingredient status state
+    const [ingredientsStatus, setIngredientsStatus] = useState(false);
+    // sets recipe status state
+    const [recipesStatus, setRecipesStatus] = useState(false);
+    //create cooldown for potion creation
+    const [potionCooldown, setPotionCooldown] = useState(false);
 
     // paginates creatures for summons menu
     const paginateCreatures = (index1, direction) => {
@@ -65,6 +88,57 @@ function Menu({
             else if (direction === "previous" && indexC > 0) {
                 setIndexC(indexC - 7);
                 setIndexD(indexD - 7);
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    // paginates recipes for alchemy menu
+    const paginateRecipes = (index3, direction) => {
+        try {
+            if (direction === "next" && index3 < recipeList.length - 5) {
+                setIndex3(index3 + 5);
+                setIndex4(index4 + 5);
+            }
+            else if (direction === "previous" && index3 > 0) {
+                setIndex3(index3 - 5);
+                setIndex4(index4 - 5);
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    // paginates potions for alchemy menu
+    const paginatePotions = (indexE, direction) => {
+        try {
+            if (direction === "next" && indexE < potions.length - 7) {
+                setIndexE(indexE + 7);
+                setIndexF(indexF + 7);
+            }
+            else if (direction === "previous" && indexE > 0) {
+                setIndexE(indexE - 7);
+                setIndexF(indexF - 7);
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    // paginates ingredients for alchemy menu
+    const paginateIngredients = (indexG, direction) => {
+        try {
+            if (direction === "next" && indexG < ingredients.length - 7) {
+                setIndexG(indexG + 7);
+                setIndexH(indexH + 7);
+            }
+            else if (direction === "previous" && indexG > 0) {
+                setIndexG(indexG - 7);
+                setIndexH(indexH - 7);
             }
         }
         catch (error) {
@@ -164,15 +238,51 @@ function Menu({
         }
     }
 
-    // sets items state
-    const [items, setItems] = useState([{}]);
-
     // loads alchemy data
     const loadDataAlchemy = async () => {
         try {
+            setPotions([]);
+            setIngredients([]);
             const { data } = await getItem();
-            setItems(data);
-            console.log(items);
+            const playerPotionsData = data.filter(item => item.type === "Potion" && item.userId === player.userfrontId);
+            const playerPotions = potionsList.filter(potion => playerPotionsData.some(item => item.itemId === potion.id));
+            for (let i = 0; i < playerPotions.length; i++) {
+                playerPotions[i].itemQuantity = playerPotionsData.find(item => item.itemId === playerPotions[i].id).itemQuantity;
+            }
+            setPotions(playerPotions);
+            const playerIngredientsData = data.filter(item => item.type === "Ingredient" && item.userId === player.userfrontId);
+            const playerIngredients = ingredientsList.filter(ingredient => playerIngredientsData.some(item => item.itemId === ingredient.id));
+            for (let i = 0; i < playerIngredients.length; i++) {
+                playerIngredients[i].itemQuantity = playerIngredientsData.find(item => item.itemId === playerIngredients[i].id).itemQuantity;
+            }
+            setIngredients(playerIngredients);
+            setAlchemyStatus(true);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    // creates a new potion
+    const createPotion = async (potionId) => {
+        try {
+            if (potionCooldown === false) {
+                setPotionCooldown(true);
+                const { data } = await getItem();
+                const playerPotionData = data.filter(item => item.type === "Potion" && item.userId === player.userfrontId && item.itemId === potionId);
+                const potion = potionsList.find(item => item.id === potionId);
+                const newPotionData = {
+                    itemId: potion.id,
+                    type: "Potion",
+                    itemQuantity: playerPotionData[0] ? playerPotionData[0].itemQuantity + 1 : 1,
+                    userId: Userfront.user.userId,
+                };
+                await addItem(newPotionData);
+                await loadDataAlchemy();
+                setTimeout(() => {
+                    setPotionCooldown(false);
+                }, 1000);
+            }
         }
         catch (error) {
             console.log(error);
@@ -182,7 +292,7 @@ function Menu({
     return (
         <>
             <div className="color_white">
-                {!battleStatus ? <div><div className="inline_flex">
+                {!battleStatus && !alchemyStatus ? <div><div className="inline_flex">
                     <button className="game_button margin_small" onClick={() => {
                         setRelicsStatus(!relicsStatus); setTempleStatus(false); setSummonsStatus(false);
                         setStagesStatus(false);
@@ -238,7 +348,7 @@ function Menu({
                 </div>
                     : null
                 }
-                {!battleStatus ? <>
+                {!battleStatus && !alchemyStatus ? <>
                     <button className="game_button margin_small" onClick={() => {
                         setSummonsStatus(!summonsStatus); setTempleStatus(false); setRelicsStatus(false);
                         setStagesStatus(false);
@@ -297,7 +407,7 @@ function Menu({
                 </>
                     : null
                 }
-                {!battleStatus ? <>
+                {!battleStatus && !alchemyStatus ? <>
                     <button className="game_button margin_small" onClick={() => {
                         loadDataAlchemy(); setTempleStatus(false); setRelicsStatus(false); setSummonsStatus(false);
                         setStagesStatus(false);
@@ -305,13 +415,89 @@ function Menu({
                         Alchemy</button>
                 </>
                     : null}
-                {!battleStatus ? <>
+                {!battleStatus && !alchemyStatus ? <>
                     <button className="game_button margin_small" onClick={() => {
                         loadDataBattle(); setTempleStatus(false); setRelicsStatus(false); setSummonsStatus(false);
                         setStagesStatus(false);
                     }}>
                         Battle</button> </>
                     : null}
+                {
+                    alchemyStatus ? <div>
+                        <button className="game_button margin_small" onClick={() => {
+                            setAlchemyStatus(false); setRecipesStatus(false); setIngredientsStatus(false); setPotionsStatus(false);
+                        }}> Exit Alchemy</button><br />
+                        <button className="game_button margin_small" onClick={() => {
+                            setRecipesStatus(!recipesStatus); setIngredientsStatus(false); setPotionsStatus(false);
+                        }}> Recipes </button>
+                        <button className="game_button margin_small" onClick={() => {
+                            setPotionsStatus(!potionsStatus); setIngredientsStatus(false); setRecipesStatus(false);
+                        }}> Potions </button>< br />
+                        {recipesStatus ? <div>
+                            <h4 className="margin_small">Available Recipes</h4>
+                            <button className="game_button_small margin_small" onClick={() => { paginateRecipes(index3, "previous") }}>Previous</button>
+                            <button className="game_button_small margin_small" onClick={() => { paginateRecipes(index3, "next") }}>Next</button>
+                            {recipeList.slice(index3, index4).map((recipe) => (
+                                <div
+                                    className="recipe_option"
+                                    key={recipe.id}
+                                >
+                                    <button className="game_button_small margin_small" onClick={() => { createPotion(recipe.potionProductId) }} >Create</button>
+                                    <img onClick={() => alert(recipe.description)}
+                                        className="recipe_option_img"
+                                        src={recipe.imgPath}
+                                        alt={recipe.name}
+                                        width="96px"
+                                        height="96px" /><span className="recipe_info" onClick={() => alert(recipe.description)}>?</span>
+                                    <h5>Recipe: {recipe.name}</h5>
+                                </div>))}
+                        </div>
+                            : null}
+                        {potionsStatus ? <div>
+                            <h4 className="margin_small">Player Potions</h4>
+                            <button className="game_button_small margin_small" onClick={() => paginatePotions(indexE, "previous")}>Previous</button>
+                            <button className="game_button_small margin_small" onClick={() => paginatePotions(indexE, "next")}>Next</button>
+                            {potions.slice(indexE, indexF).map((potion) => (
+                                <div
+                                    className="alchemy_item_option"
+                                    key={potion.id}
+                                >
+                                    <button className="game_button_small margin_small" >Use</button>
+                                    <img onClick={() => alert(potion.description)}
+                                        className="alchemy_item_option_img"
+                                        src={potion.imgPath}
+                                        alt={potion.name}
+                                        width="48px"
+                                        height="48px" /><span className="alchemy_item_info" onClick={() => alert(potion.description)}>?</span>
+                                    <h5>{potion.name} x {potion.itemQuantity}</h5>
+                                </div>))}
+                        </div>
+                            : null}
+                        <button className="game_button margin_small" onClick={() => {
+                            setIngredientsStatus(!ingredientsStatus); setPotionsStatus(false); setRecipesStatus(false);
+                        }}> Ingredients </button>
+                        {ingredientsStatus ? <div>
+                            <h4 className="margin_small">Player Ingredients</h4>
+                            <button className="game_button_small margin_small" onClick={() => paginateIngredients(indexG, "previous")}>Previous</button>
+                            <button className="game_button_small margin_small" onClick={() => paginateIngredients(indexG, "next")}>Next</button>
+                            {ingredients.slice(indexG, indexH).map((ingredient) => (
+                                <div
+                                    className="alchemy_item_option"
+                                    key={ingredient.id}
+                                >
+                                    <img onClick={() => alert(ingredient.description)}
+                                        className="alchemy_item_option_img"
+                                        src={ingredient.imgPath}
+                                        alt={ingredient.name}
+                                        width="48px"
+                                        height="48px" /><span className="alchemy_item_info" onClick={() => alert(ingredient.description)}>?</span>
+                                    <h5>{ingredient.name} x {ingredient.itemQuantity}</h5>
+                                </div>))}
+                        </div>
+                            : null}
+                    </div>
+                        : null
+                }
             </div>
         </>
     );

@@ -276,6 +276,60 @@
   font-weight: bold;
 }
 
+.recipe_option {
+  margin: 0 auto;
+  padding: 5px;
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 250px;
+}
+
+.recipe_option_img {
+  margin: 5px;
+  border: 1px solid black;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.alchemy_item_option {
+  margin: 0 auto;
+  padding: 5px;
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 250px;
+}
+
+.alchemy_item_option_img {
+  margin: 5px;
+  border: 1px solid black;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.recipe_info {
+  cursor: pointer;
+  position: relative;
+  right: 100px;
+  bottom: 38px;
+  color: white;
+}
+
+.recipe_info:hover {
+  color: blue;
+}
+
+.alchemy_item_info {
+  cursor: pointer;
+  position: relative;
+  right: 55px;
+  bottom: 15px;
+  color: white;
+}
+
+.alchemy_item_info:hover {
+  color: blue;
+}
+
 // animations
 .special_effect_container {
   height: 0;

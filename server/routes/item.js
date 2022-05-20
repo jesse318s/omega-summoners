@@ -30,6 +30,8 @@ router.get("/", async (req, res) => {
         if (decoded) {
             const items = await Item.find({ userId: decoded.userId });
             res.send(items);
+        } else {
+            res.send("Unauthorized");
         }
     } catch (error) {
         res.send(error);

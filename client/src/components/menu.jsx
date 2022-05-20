@@ -41,7 +41,7 @@ function Menu({
     const [ingredientsStatus, setIngredientsStatus] = useState(false);
     // sets recipe status state
     const [recipesStatus, setRecipesStatus] = useState(false);
-    //create cooldown for potion creation
+    // sets potion cooldown state
     const [potionCooldown, setPotionCooldown] = useState(false);
 
     // paginates creatures for summons menu
@@ -277,11 +277,39 @@ function Menu({
                     itemQuantity: playerPotionData[0] ? playerPotionData[0].itemQuantity + 1 : 1,
                     userId: Userfront.user.userId,
                 };
-                await addItem(newPotionData);
-                await loadDataAlchemy();
-                setTimeout(() => {
-                    setPotionCooldown(false);
-                }, 1000);
+                const playerIngredientData = data.filter(item => item.type === "Ingredient" && item.userId === player.userfrontId);
+                const currentRecipe = recipeList.filter(item => item.potionProductId === potion.id);
+                // check if player has enough ingredients for recipe
+                const ingredient1Check = playerIngredientData.find(item => item.itemId === currentRecipe[0].ingredient1);
+                const ingredient2Check = playerIngredientData.find(item => item.itemId === currentRecipe[0].ingredient2);
+                if (ingredient1Check && ingredient2Check) {
+                    // confirm potion creation
+                    if (window.confirm(`Are you sure you want to create this potion?`) === true) {
+                        const currentIngredient1 = currentRecipe.map(item => playerIngredientData.find(ingredient => ingredient.itemId === item.ingredient1));
+                        let currentIngredient1Data = playerIngredientData.filter(item => currentIngredient1.some(ingredient => ingredient.itemId === item.itemId));
+                        const currentIngredient2 = currentRecipe.map(item => playerIngredientData.find(ingredient => ingredient.itemId === item.ingredient2));
+                        let currentIngredient2Data = playerIngredientData.filter(item => currentIngredient2.some(ingredient => ingredient.itemId === item.itemId));
+                        // delete the ingredients from the player's inventory
+                        currentIngredient1Data[0].itemQuantity -= 1;
+                        currentIngredient2Data[0].itemQuantity -= 1;
+                        await addItem(currentIngredient1Data[0]);
+                        await addItem(currentIngredient2Data[0]);
+                        // add the potion to the player's inventory
+                        await addItem(newPotionData);
+                        await loadDataAlchemy();
+                        setTimeout(() => {
+                            setPotionCooldown(false);
+                        }, 1000);
+                    }
+                    setTimeout(() => {
+                        setPotionCooldown(false);
+                    }, 1000);
+                } else {
+                    alert("You don't have enough ingredients for this potion.");
+                    setTimeout(() => {
+                        setPotionCooldown(false);
+                    }, 1000);
+                }
             }
         }
         catch (error) {

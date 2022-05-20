@@ -75,6 +75,8 @@ function App() {
   const [ingredients, setIngredients] = useState([]);
   // sets alchemy state
   const [alchemyStatus, setAlchemyStatus] = useState(false);
+  // sets player items state
+  const [playerItems, setPlayerItems] = useState([]);
 
   useEffect(() => {
     // checks for userfront authentication and redirects visitor if not authenticated
@@ -234,7 +236,8 @@ function App() {
               playerCreatureMP={playerCreatureMP} setPlayerCreatureMP={setPlayerCreatureMP} setCombatText={setCombatText} enemyCreature={enemyCreature}
               setEnemyCreature={setEnemyCreatureHP} battleUndecided={battleUndecided} setBattleUndecided={setBattleUndecided} enemyCreatureHP={enemyCreatureHP}
               setEnemyCreatureHP={setEnemyCreatureHP} Userfront={Userfront} loadAsyncDataPlayer={() => loadAsyncDataPlayer()} setCombatAlert={setCombatAlert}
-              relicsStatus={relicsStatus} templeStatus={templeStatus} stagesStatus={stagesStatus} alchemyStatus={alchemyStatus} />
+              relicsStatus={relicsStatus} templeStatus={templeStatus} stagesStatus={stagesStatus} alchemyStatus={alchemyStatus} playerItems={playerItems}
+              setPlayerItems={setPlayerItems} />
 
             <EnemyCreature battleStatus={battleStatus} enemyCreature={enemyCreature} playerAttackStatus={playerAttackStatus} enemyAttackStatus={enemyAttackStatus}
               critText={critText} combatText={combatText} enemyCreatureHP={enemyCreatureHP} spawn={spawn} />

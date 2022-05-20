@@ -1,10 +1,11 @@
 import { useRef } from "react";
 import { updateUser } from "../services/userServices";
+import { addItem, getItem } from "../services/itemServices";
 
 function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setEnemyAttackStatus, critText, setCritText, combatText, setCombatText, playerAttackStatus,
     setPlayerAttackStatus, chosenRelic, specialStatus, setSpecialStatus, battleStatus, setBattleStatus, player, creatureStatsStatus, playerCreatureHP, setPlayerCreatureHP,
     playerCreatureMP, setPlayerCreatureMP, enemyCreature, setEnemyCreature, battleUndecided, setBattleUndecided, enemyCreatureHP, setEnemyCreatureHP, Userfront,
-    loadAsyncDataPlayer, setCombatAlert, relicsStatus, templeStatus, stagesStatus, alchemyStatus }) {
+    loadAsyncDataPlayer, setCombatAlert, relicsStatus, templeStatus, stagesStatus, alchemyStatus, playerItems, setPlayerItems }) {
 
     // reference hook
     const ref = useRef(null);
@@ -203,6 +204,11 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                 var chancePlayer = false;
                 var criticalMultiplier = 1;
 
+                // retrieves player item records for adding drops
+                getItem().then(res => {
+                    setPlayerItems(res.data);
+                });
+
                 //checks for player magic move type and applies effect
                 if (moveType === "Magic") {
                     enemyDefense = 0;
@@ -245,6 +251,18 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                 userfrontId: Userfront.user.userId, experience: player.experience + enemyCreature[0].reward * 2,
                                 drachmas: player.drachmas + enemyCreature[0].reward
                             });
+                            // filter items for ingredients
+                            const playerIngredientData = playerItems.filter(item => item.type === "Ingredient");
+                            const greenMushroomsPlayer = playerIngredientData.find(item => item.itemId === 1);
+                            // drop green mushroom on chance
+                            if (Math.random() <= 0.2) {
+                                addItem({
+                                    itemId: 1,
+                                    type: "Ingredient",
+                                    itemQuantity: greenMushroomsPlayer === undefined ? 1 : greenMushroomsPlayer.itemQuantity + 1,
+                                    userId: Userfront.user.userId,
+                                })
+                            }
                         }, 250);
                         setTimeout(() => {
                             setBattleStatus(false);
@@ -306,6 +324,18 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                         userfrontId: Userfront.user.userId, experience: player.experience + enemyCreature[0].reward * 2,
                                         drachmas: player.drachmas + enemyCreature[0].reward
                                     });
+                                    // filter items for ingredients
+                                    const playerIngredientData = playerItems.filter(item => item.type === "Ingredient");
+                                    const greenMushroomsPlayer = playerIngredientData.find(item => item.itemId === 1);
+                                    // drop green mushroom on chance
+                                    if (Math.random() <= 0.2) {
+                                        addItem({
+                                            itemId: 1,
+                                            type: "Ingredient",
+                                            itemQuantity: greenMushroomsPlayer === undefined ? 1 : greenMushroomsPlayer.itemQuantity + 1,
+                                            userId: Userfront.user.userId,
+                                        })
+                                    }
                                 }, 250);
                                 setTimeout(() => {
                                     setBattleStatus(false);

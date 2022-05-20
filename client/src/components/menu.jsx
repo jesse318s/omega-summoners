@@ -300,10 +300,11 @@ function Menu({
                         setTimeout(() => {
                             setPotionCooldown(false);
                         }, 1000);
-                    }
+                    } else {
                     setTimeout(() => {
                         setPotionCooldown(false);
                     }, 1000);
+                }
                 } else {
                     alert("You don't have enough ingredients for this potion.");
                     setTimeout(() => {

@@ -269,7 +269,7 @@ function Menu({
             if (potionCooldown === false) {
                 setPotionCooldown(true);
                 const { data } = await getItem();
-                const playerPotionData = data.filter(item => item.type === "Potion" && item.userId === player.userfrontId && item.itemId === potionId);
+                const playerPotionData = data.filter(item => item.type === "Potion" && item.itemId === potionId);
                 const potion = potionsList.find(item => item.id === potionId);
                 const newPotionData = {
                     itemId: potion.id,
@@ -277,7 +277,7 @@ function Menu({
                     itemQuantity: playerPotionData[0] ? playerPotionData[0].itemQuantity + 1 : 1,
                     userId: Userfront.user.userId,
                 };
-                const playerIngredientData = data.filter(item => item.type === "Ingredient" && item.userId === player.userfrontId);
+                const playerIngredientData = data.filter(item => item.type === "Ingredient");
                 const currentRecipe = recipeList.filter(item => item.potionProductId === potion.id);
                 // check if player has enough ingredients for recipe
                 const ingredient1Check = playerIngredientData.find(item => item.itemId === currentRecipe[0].ingredient1);

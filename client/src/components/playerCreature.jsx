@@ -254,12 +254,30 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                             // filter items for ingredients
                             const playerIngredientData = playerItems.filter(item => item.type === "Ingredient");
                             const greenMushroomsPlayer = playerIngredientData.find(item => item.itemId === 1);
-                            // drop green mushroom on chance
-                            if (Math.random() <= 0.2) {
+                            const redMushroomsPlayer = playerIngredientData.find(item => item.itemId === 2);
+                            const blueMushroomsPlayer = playerIngredientData.find(item => item.itemId === 3);
+                            // drop mushrooms on chance
+                            if (Math.random() <= 0.15) {
                                 addItem({
                                     itemId: 1,
                                     type: "Ingredient",
                                     itemQuantity: greenMushroomsPlayer === undefined ? 1 : greenMushroomsPlayer.itemQuantity + 1,
+                                    userId: Userfront.user.userId,
+                                })
+                            }
+                            if (Math.random() <= 0.1) {
+                                addItem({
+                                    itemId: 2,
+                                    type: "Ingredient",
+                                    itemQuantity: redMushroomsPlayer === undefined ? 1 : redMushroomsPlayer.itemQuantity + 1,
+                                    userId: Userfront.user.userId,
+                                })
+                            }
+                            if (Math.random() <= 0.1) {
+                                addItem({
+                                    itemId: 3,
+                                    type: "Ingredient",
+                                    itemQuantity: blueMushroomsPlayer === undefined ? 1 : blueMushroomsPlayer.itemQuantity + 1,
                                     userId: Userfront.user.userId,
                                 })
                             }
@@ -327,12 +345,30 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                     // filter items for ingredients
                                     const playerIngredientData = playerItems.filter(item => item.type === "Ingredient");
                                     const greenMushroomsPlayer = playerIngredientData.find(item => item.itemId === 1);
-                                    // drop green mushroom on chance
-                                    if (Math.random() <= 0.2) {
+                                    const redMushroomsPlayer = playerIngredientData.find(item => item.itemId === 2);
+                                    const blueMushroomsPlayer = playerIngredientData.find(item => item.itemId === 3);
+                                    // drop mushrooms on chance
+                                    if (Math.random() <= 0.15) {
                                         addItem({
                                             itemId: 1,
                                             type: "Ingredient",
                                             itemQuantity: greenMushroomsPlayer === undefined ? 1 : greenMushroomsPlayer.itemQuantity + 1,
+                                            userId: Userfront.user.userId,
+                                        })
+                                    }
+                                    if (Math.random() <= 0.1) {
+                                        addItem({
+                                            itemId: 2,
+                                            type: "Ingredient",
+                                            itemQuantity: redMushroomsPlayer === undefined ? 1 : redMushroomsPlayer.itemQuantity + 1,
+                                            userId: Userfront.user.userId,
+                                        })
+                                    }
+                                    if (Math.random() <= 0.1) {
+                                        addItem({
+                                            itemId: 3,
+                                            type: "Ingredient",
+                                            itemQuantity: blueMushroomsPlayer === undefined ? 1 : blueMushroomsPlayer.itemQuantity + 1,
                                             userId: Userfront.user.userId,
                                         })
                                     }

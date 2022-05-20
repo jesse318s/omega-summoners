@@ -282,7 +282,7 @@ function Menu({
                 // check if player has enough ingredients for recipe
                 const ingredient1Check = playerIngredientData.find(item => item.itemId === currentRecipe[0].ingredient1);
                 const ingredient2Check = playerIngredientData.find(item => item.itemId === currentRecipe[0].ingredient2);
-                if (ingredient1Check && ingredient2Check) {
+                if (ingredient1Check && ingredient1Check.itemQuantity > 0 && ingredient2Check && ingredient2Check.itemQuantity > 0) {
                     // confirm potion creation
                     if (window.confirm(`Are you sure you want to create this potion?`) === true) {
                         const currentIngredient1 = currentRecipe.map(item => playerIngredientData.find(ingredient => ingredient.itemId === item.ingredient1));
@@ -301,10 +301,10 @@ function Menu({
                             setPotionCooldown(false);
                         }, 1000);
                     } else {
-                    setTimeout(() => {
-                        setPotionCooldown(false);
-                    }, 1000);
-                }
+                        setTimeout(() => {
+                            setPotionCooldown(false);
+                        }, 1000);
+                    }
                 } else {
                     alert("You don't have enough ingredients for this potion.");
                     setTimeout(() => {

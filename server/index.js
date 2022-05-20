@@ -8,6 +8,7 @@ const user = require("./routes/user");
 const lobby = require("./routes/lobby");
 const connectionRecord = require("./routes/connection");
 const item = require("./routes/item");
+const potionTimer = require("./routes/potionTimer");
 
 mongoose.connect(process.env.MONGO_URL);
 
@@ -23,6 +24,7 @@ app.use("/api/user", user);
 app.use("/api/lobby", lobby);
 app.use("/api/connection", connectionRecord);
 app.use("/api/item", item);
+app.use("/api/potionTimer", potionTimer);
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Listening on port ${port}...`));

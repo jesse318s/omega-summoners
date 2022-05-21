@@ -301,7 +301,7 @@ function MultiPlayerMenu({
                     : null
                 }
                 {!battleStatus ? <>
-                    <button className="game_button margin_small" onClick={() => { alert("Alchemy cannot be performed here."); }}>
+                    <button className="game_button margin_small" onClick={() => { alert("Alchemy cannot be performed here. (Multiplayer stage.)"); }}>
                         Alchemy</button> </>
                     : null}
                 {!battleStatus ? <>

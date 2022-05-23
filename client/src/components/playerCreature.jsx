@@ -1,11 +1,14 @@
 import { useRef } from "react";
 import { updateUser } from "../services/userServices";
 import { addItem, getItem } from "../services/itemServices";
+import { getPotionTimer } from "../services/potionTimerServices";
+import { potionsList } from "../constants/items";
 
 function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setEnemyAttackStatus, critText, setCritText, combatText, setCombatText, playerAttackStatus,
     setPlayerAttackStatus, chosenRelic, specialStatus, setSpecialStatus, battleStatus, setBattleStatus, player, creatureStatsStatus, playerCreatureHP, setPlayerCreatureHP,
     playerCreatureMP, setPlayerCreatureMP, enemyCreature, setEnemyCreature, battleUndecided, setBattleUndecided, enemyCreatureHP, setEnemyCreatureHP, Userfront,
-    loadAsyncDataPlayer, setCombatAlert, relicsStatus, templeStatus, stagesStatus, alchemyStatus, playerItems, setPlayerItems }) {
+    loadAsyncDataPlayer, setCombatAlert, relicsStatus, templeStatus, stagesStatus, alchemyStatus, playerItems, setPlayerItems, summonHPBonus, setSummonHPBonus,
+    summonMPBonus, setSummonMPBonus }) {
 
     // reference hook
     const ref = useRef(null);
@@ -196,6 +199,24 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
             // if the player and enemy aren't attacking and the battle is undecided
             if (!playerAttackStatus && !enemyAttackStatus && battleUndecided) {
 
+                // checks and sets potion timer
+                var potionTimer = [{}];
+                getPotionTimer().then(res => {
+                    potionTimer = res.data;
+                    // set to potion with same id
+                    if (res.data.length > 0) {
+                        const playerPotion = potionsList.find(potion => potion.id === potionTimer[0].potionId);
+                        const playerMPBonus = playerPotion.mpMod;
+                        const playerHPBonus = playerPotion.hpMod;
+                        setSummonMPBonus(playerMPBonus);
+                        setSummonHPBonus(playerHPBonus);
+                    }
+                    if (res.data.length === 0) {
+                        setSummonMPBonus(0);
+                        setSummonHPBonus(0);
+                    }
+                });
+
                 const playerCreatureAttack = playerCreature[0].attack + chosenRelic[0].attackMod;
                 const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
                 const playerCreatureCritical = (playerCreature[0].critical + chosenRelic[0].criticalMod) / 100;
@@ -306,13 +327,12 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                     }
 
                     setTimeout(() => {
-                        if (playerCreatureMP !== (playerCreature[0].mp + chosenRelic[0].mpMod) && (playerCreatureMP + playerCreature[0].mpRegen + chosenRelic[0].mpRegenMod)
-                            <= (playerCreature[0].mp + chosenRelic[0].mpMod)) {
+                        if (playerCreatureMP !== (playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus) && (playerCreatureMP + playerCreature[0].mpRegen + chosenRelic[0].mpRegenMod)
+                            <= (playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus)) {
                             setPlayerCreatureMP(playerCreatureMP + playerCreature[0].mpRegen + chosenRelic[0].mpRegenMod);
                         }
-
-                        if ((playerCreatureMP + playerCreature[0].mpRegen) > playerCreature[0].mp) {
-                            setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod);
+                        if ((playerCreatureMP + playerCreature[0].mpRegen + chosenRelic[0].mpRegenMod) > playerCreature[0].mp + chosenRelic.mpMod + summonMPBonus) {
+                            setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus);
                         }
                     }, 500);
                 } else {
@@ -405,8 +425,8 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                 specialAnimation();
                                 setTimeout(() => {
 
-                                    if (playerCreatureHP + playerCreatureSpecial * criticalMultiplier > playerCreature[0].hp + chosenRelic[0].hpMod) {
-                                        setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod);
+                                    if (playerCreatureHP + playerCreatureSpecial * criticalMultiplier > playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus) {
+                                        setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus);
                                         ref.current = playerCreature[0].hp + chosenRelic[0].hpMod;
                                     } else {
                                         setPlayerCreatureHP(playerCreatureHP + playerCreatureSpecial * criticalMultiplier);
@@ -472,14 +492,15 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                             <h4>{player.name}'s {creature.name}</h4>
                             {battleStatus ? <div className="progress_bar_container">
                                 <div className="progress_bar"
-                                    style={{ width: ((playerCreatureHP / (playerCreature[0].hp + chosenRelic[0].hpMod))) * 100 + "%" }} />
+                                    style={{ width: ((playerCreatureHP / (playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus))) * 100 + "%" }} />
                             </div>
                                 : null}
                             {!battleStatus ?
-                                <div className="inline_flex"><h5>HP: {creature.hp + chosenRelic[0].hpMod}</h5>&nbsp;|&nbsp;<h5>MP: {creature.mp + chosenRelic[0].mpMod}</h5></div>
+                                <div className="inline_flex"><h5>HP: {creature.hp + chosenRelic[0].hpMod + summonHPBonus}</h5>&nbsp;|&nbsp;<h5>MP: {creature.mp + chosenRelic[0].mpMod
+                                    + summonMPBonus}</h5></div>
                                 : <div className="inline_flex">
-                                    <h5>HP: {playerCreatureHP} / {creature.hp + chosenRelic[0].hpMod}</h5>&nbsp;|&nbsp;
-                                    <h5>MP: {playerCreatureMP} / {creature.mp + chosenRelic[0].mpMod}</h5></div>}
+                                    <h5>HP: {playerCreatureHP} / {creature.hp + chosenRelic[0].hpMod + summonHPBonus}</h5>&nbsp;|&nbsp;
+                                    <h5>MP: {playerCreatureMP} / {creature.mp + chosenRelic[0].mpMod + summonMPBonus}</h5></div>}
                             {creatureStatsStatus ?
                                 <div>
                                     <h5>Attack: {creature.attack + chosenRelic[0].attackMod} | Type: {creature.attackType}</h5>

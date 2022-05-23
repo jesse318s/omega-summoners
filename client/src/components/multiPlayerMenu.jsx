@@ -1,11 +1,14 @@
 import { Link } from "react-router-dom";
 import { updateUser } from "../services/userServices";
 import { useState } from "react";
+import { getPotionTimer } from "../services/potionTimerServices";
+import { potionsList } from "../constants/items";
 
 function MultiPlayerMenu({
     Userfront, battleStatus, setBattleStatus, player, relicsData, relicsStatus, setRelicsStatus, playerRelics, templeStatus, setTempleStatus, creatureData, enemyCreatureData,
     summonsStatus, setSummonsStatus, stagesStatus, setStagesStatus, combatAlert, loadAsyncDataPlayer, setPlayerCreatureHP, setPlayerCreatureMP, playerCreature, chosenRelic,
-    setEnemyCreature, setCombatAlert, setBattleUndecided, setSpawn, loadAsyncDataLobby, loadAsyncDataConnection, connections
+    setEnemyCreature, setCombatAlert, setBattleUndecided, setSpawn, loadAsyncDataLobby, loadAsyncDataConnection, connections, summonHPBonus, setSummonHPBonus,
+    summonMPBonus, setSummonMPBonus
 }) {
 
     // sets index 1 state
@@ -152,8 +155,26 @@ function MultiPlayerMenu({
             // if the player can afford the battle
             if (player.drachmas >= 500 && player.drachmas >= 500) {
                 if (window.confirm(`Are you sure you want to enter this battle? It will cost 750 drachmas and experience.`)) {
-                    setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod);
-                    setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod);
+                    // checks and sets potion timer
+                    var potionTimer = [{}];
+                    getPotionTimer().then(res => {
+                        potionTimer = res.data;
+                        // set to potion with same id
+                        if (res.data.length > 0) {
+                            const playerPotion = potionsList.find(potion => potion.id === potionTimer[0].potionId);
+                            const playerMPBonus = playerPotion.mpMod;
+                            const playerHPBonus = playerPotion.hpMod;
+                            setSummonMPBonus(playerMPBonus);
+                            setSummonHPBonus(playerHPBonus);
+                        }
+                        if (res.data.length === 0) {
+                            setSummonMPBonus(0);
+                            setSummonHPBonus(0);
+                        }
+                    });
+
+                    setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus);
+                    setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus);
                     spawnAnimation();
                     const enemyCreature = [enemyCreatureData[Math.floor(Math.random() * enemyCreatureData.length)]];
                     setEnemyCreature(enemyCreature);

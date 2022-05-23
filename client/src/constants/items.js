@@ -5,7 +5,9 @@ export const potionsList = [
         name: "Potion of Health",
         description: "Adds 50 HP for 10 minutes. (A creature may only have one active potion at a time.)",
         imgPath: "img/potion/potion1.png",
-
+        duration: 600000,
+        hpMod: 50,
+        mpMod: 0,
     },
     {
         id: 2,
@@ -13,6 +15,9 @@ export const potionsList = [
         name: "Potion of Mana",
         description: "Adds 50 MP for 10 minutes. (A creature may only have one active potion at a time.)",
         imgPath: "img/potion/potion2.png",
+        duration: 600000,
+        hpMod: 0,
+        mpMod: 50,
     }
 ];
 

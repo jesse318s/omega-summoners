@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { updateUser } from "../services/userServices";
 import { getItem, addItem } from "../services/itemServices";
+import { getPotionTimer, addPotionTimer } from "../services/potionTimerServices";
 import { useState } from "react";
 import { potionsList } from "../constants/items";
 import { ingredientsList } from "../constants/items";
@@ -9,7 +10,8 @@ import recipeList from "../constants/recipes";
 function Menu({
     Userfront, battleStatus, setBattleStatus, player, relicsData, relicsStatus, setRelicsStatus, playerRelics, templeStatus, setTempleStatus, creatureData, enemyCreatureData,
     summonsStatus, setSummonsStatus, stagesStatus, setStagesStatus, combatAlert, loadAsyncDataPlayer, setPlayerCreatureHP, setPlayerCreatureMP, playerCreature, chosenRelic,
-    setEnemyCreature, setEnemyCreatureHP, setCombatAlert, setBattleUndecided, setSpawn, alchemyStatus, setAlchemyStatus, potions, setPotions, ingredients, setIngredients
+    setEnemyCreature, setEnemyCreatureHP, setCombatAlert, setBattleUndecided, setSpawn, alchemyStatus, setAlchemyStatus, potions, setPotions, ingredients, setIngredients,
+    summonHPBonus, setSummonHPBonus, summonMPBonus, setSummonMPBonus
 }) {
     // sets index 1 state
     const [index1, setIndex1] = useState(0);
@@ -223,8 +225,26 @@ function Menu({
     // loads battle data
     const loadDataBattle = () => {
         try {
-            setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod);
-            setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod);
+            // checks and sets potion timer
+            var potionTimer = [{}];
+            getPotionTimer().then(res => {
+                potionTimer = res.data;
+                // set to potion with same id
+                if (res.data.length > 0) {
+                    const playerPotion = potionsList.find(potion => potion.id === potionTimer[0].potionId);
+                    const playerMPBonus = playerPotion.mpMod;
+                    const playerHPBonus = playerPotion.hpMod;
+                    setSummonMPBonus(playerMPBonus);
+                    setSummonHPBonus(playerHPBonus);
+                }
+                if (res.data.length === 0) {
+                    setSummonMPBonus(0);
+                    setSummonHPBonus(0);
+                }
+            });
+
+            setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus);
+            setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus);
             spawnAnimation();
             const enemyCreature = [enemyCreatureData[Math.floor(Math.random() * enemyCreatureData.length)]];
             setEnemyCreature(enemyCreature);
@@ -307,6 +327,76 @@ function Menu({
                     }
                 } else {
                     alert("You don't have enough ingredients for this potion.");
+                    setTimeout(() => {
+                        setPotionCooldown(false);
+                    }, 1000);
+                }
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    // uses selected potion
+    const consumePotion = async (potionId) => {
+        try {
+            if (potionCooldown === false) {
+                await getPotionTimer();
+                const timerData = await getPotionTimer();
+                setPotionCooldown(true);
+                const { data } = await getItem();
+                const playerPotionData = data.filter(item => item.type === "Potion" && item.itemId === potionId);
+                const potion = potionsList.find(item => item.id === potionId);
+                const currentPotionData = playerPotionData.filter(item => item.itemId === potionId);
+                // prevent over use
+                if (timerData.data.length !== 0) {
+                    alert("You already have an active potion. Please wait for it to expire.");
+                    setTimeout(() => {
+                        setPotionCooldown(false);
+                    }, 1000);
+                    return;
+                }
+                // check if player has enough potions
+                if (currentPotionData[0].itemQuantity > 0) {
+                    // confirm potion use
+                    if (window.confirm(`Are you sure you want to use this potion?`) === true) {
+                        // use potion
+                        currentPotionData[0].itemQuantity -= 1;
+                        await addItem(currentPotionData[0]);
+                        await addPotionTimer(
+                            {
+                                userId: Userfront.user.userId,
+                                potionId: potion.id,
+                                potionDuration: potion.duration,
+                            }
+                        );
+                        await loadDataAlchemy();
+                        // checks and sets potion timer
+                        var potionTimer = [{}];
+                        getPotionTimer().then(res => {
+                            potionTimer = res.data;
+                            // set to potion with same id
+                            if (res.data.length > 0) {
+                                const playerPotion = potionsList.find(potion => potion.id === potionTimer[0].potionId);
+                                const playerMPBonus = playerPotion.mpMod;
+                                const playerHPBonus = playerPotion.hpMod;
+                                setSummonMPBonus(playerMPBonus);
+                                setSummonHPBonus(playerHPBonus);
+                            }
+                            setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus);
+                            setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus);
+                        });
+                        setTimeout(() => {
+                            setPotionCooldown(false);
+                        }, 1000);
+                    } else {
+                        setTimeout(() => {
+                            setPotionCooldown(false);
+                        }, 1000);
+                    }
+                } else {
+                    alert("You don't have enough potions.");
                     setTimeout(() => {
                         setPotionCooldown(false);
                     }, 1000);
@@ -491,7 +581,7 @@ function Menu({
                                     className="alchemy_item_option"
                                     key={potion.id}
                                 >
-                                    <button className="game_button_small margin_small" >Use</button>
+                                    <button className="game_button_small margin_small" onClick={() => consumePotion(potion.id)}>Use</button>
                                     <img onClick={() => alert(potion.description)}
                                         className="alchemy_item_option_img"
                                         src={potion.imgPath}

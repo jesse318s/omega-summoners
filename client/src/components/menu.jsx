@@ -338,7 +338,7 @@ function Menu({
         }
     }
 
-    // uses selected potion
+    // uses clicked potion
     const consumePotion = async (potionId) => {
         try {
             if (potionCooldown === false) {

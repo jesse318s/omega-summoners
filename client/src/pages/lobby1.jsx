@@ -258,7 +258,7 @@ function Lobby1() {
                             stagesStatus={stagesStatus} setStagesStatus={setStagesStatus} combatAlert={combatAlert} loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
                             setPlayerCreatureHP={setPlayerCreatureHP} setPlayerCreatureMP={setPlayerCreatureMP} playerCreature={playerCreature} chosenRelic={chosenRelic}
                             setEnemyCreature={setEnemyCreature} setCombatAlert={setCombatAlert} setBattleUndecided={setBattleUndecided} setSpawn={setSpawn}
-                            loadAsyncDataLobby={() => loadAsyncDataLobby()} loadAsyncDataConnection={() => loadAsyncDataConnection()} connections={connections}
+                            loadAsyncDataLobby={() => loadAsyncDataLobby()} loadAsyncDataConnection={() => loadAsyncDataConnection()} connections={connections} setConnections={setConnections}
                             summonHPBonus={summonHPBonus} setSummonHPBonus={setSummonHPBonus}
                             summonMPBonus={summonMPBonus} setSummonMPBonus={setSummonMPBonus} />
 

@@ -17,6 +17,8 @@ export function addPotionTimer(potionTimer) {
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${Userfront.accessToken()}`,
+            Userkey: Userfront.user.data.userkey,
+            Userid: Userfront.user.userId,
         }
     });
 }

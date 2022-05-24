@@ -279,6 +279,11 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                             const blueMushroomsPlayer = playerIngredientData.find(item => item.itemId === 3);
                             // drop mushrooms on chance
                             if (Math.random() <= 0.15) {
+                                Userfront.user.update({
+                                    data: {
+                                        userkey: Userfront.user.data.userkey,
+                                    },
+                                });
                                 addItem({
                                     itemId: 1,
                                     type: "Ingredient",
@@ -287,6 +292,11 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                 })
                             }
                             if (Math.random() <= 0.1) {
+                                Userfront.user.update({
+                                    data: {
+                                        userkey: Userfront.user.data.userkey,
+                                    },
+                                });
                                 addItem({
                                     itemId: 2,
                                     type: "Ingredient",
@@ -295,6 +305,11 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                 })
                             }
                             if (Math.random() <= 0.1) {
+                                Userfront.user.update({
+                                    data: {
+                                        userkey: Userfront.user.data.userkey,
+                                    },
+                                });
                                 addItem({
                                     itemId: 3,
                                     type: "Ingredient",
@@ -369,6 +384,11 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                     const blueMushroomsPlayer = playerIngredientData.find(item => item.itemId === 3);
                                     // drop mushrooms on chance
                                     if (Math.random() <= 0.15) {
+                                        Userfront.user.update({
+                                            data: {
+                                                userkey: Userfront.user.data.userkey,
+                                            },
+                                        });
                                         addItem({
                                             itemId: 1,
                                             type: "Ingredient",
@@ -377,6 +397,11 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                         })
                                     }
                                     if (Math.random() <= 0.1) {
+                                        Userfront.user.update({
+                                            data: {
+                                                userkey: Userfront.user.data.userkey,
+                                            },
+                                        });
                                         addItem({
                                             itemId: 2,
                                             type: "Ingredient",
@@ -385,6 +410,11 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                         })
                                     }
                                     if (Math.random() <= 0.1) {
+                                        Userfront.user.update({
+                                            data: {
+                                                userkey: Userfront.user.data.userkey,
+                                            },
+                                        });
                                         addItem({
                                             itemId: 3,
                                             type: "Ingredient",

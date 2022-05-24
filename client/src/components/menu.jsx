@@ -314,9 +314,26 @@ function Menu({
                         // delete the ingredients from the player's inventory
                         currentIngredient1Data[0].itemQuantity -= 1;
                         currentIngredient2Data[0].itemQuantity -= 1;
+                        await Userfront.user.update({
+                            data: {
+                                userkey: Userfront.user.data.userkey,
+                            },
+                        });
                         await addItem(currentIngredient1Data[0]);
+                        await loadDataAlchemy();
+                        await Userfront.user.update({
+                            data: {
+                                userkey: Userfront.user.data.userkey,
+                            },
+                        });
                         await addItem(currentIngredient2Data[0]);
+                        await loadDataAlchemy();
                         // add the potion to the player's inventory
+                        await Userfront.user.update({
+                            data: {
+                                userkey: Userfront.user.data.userkey,
+                            },
+                        });
                         await addItem(newPotionData);
                         await loadDataAlchemy();
                         setTimeout(() => {
@@ -365,7 +382,18 @@ function Menu({
                     if (window.confirm(`Are you sure you want to use this potion?`) === true) {
                         // use potion
                         currentPotionData[0].itemQuantity -= 1;
+                        await Userfront.user.update({
+                            data: {
+                                userkey: Userfront.user.data.userkey,
+                            },
+                        });
                         await addItem(currentPotionData[0]);
+                        await loadDataAlchemy();
+                        await Userfront.user.update({
+                            data: {
+                                userkey: Userfront.user.data.userkey,
+                            },
+                        });
                         await addPotionTimer(
                             {
                                 userId: Userfront.user.userId,

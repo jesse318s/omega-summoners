@@ -2,7 +2,7 @@ const relics = [
   {
     id: 1,
     name: "Gust of Hermes",
-    description: "Grants the user's summon +5 speed.",
+    description: "Grants the user's summon +5 speed while relic is being used. (Infinite duration.)",
     imgPath: "img/relic/relic1.webp",
     effectClass: "relic_effect1",
     hpMod: 0,
@@ -18,7 +18,7 @@ const relics = [
   {
     id: 2,
     name: "Spark of Zeus",
-    description: "Grants the user's summon +10 attack.",
+    description: "Grants the user's summon +10 attack while relic is being used. (Infinite duration.)",
     imgPath: "img/relic/relic2.webp",
     effectClass: "relic_effect2",
     hpMod: 0,
@@ -34,7 +34,7 @@ const relics = [
   {
     id: 3,
     name: "Cup of Dionysus",
-    description: "Grants the user's summon +10 HP.",
+    description: "Grants the user's summon +10 HP while relic is being used. (Infinite duration.)",
     imgPath: "img/relic/relic3.webp",
     effectClass: "relic_effect3",
     hpMod: 10,

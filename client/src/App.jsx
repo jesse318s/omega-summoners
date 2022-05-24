@@ -69,6 +69,18 @@ function App() {
   const [critText, setCritText] = useState("combat_text");
   // sets spawn state
   const [spawn, setSpawn] = useState("");
+  // sets potions state
+  const [potions, setPotions] = useState([]);
+  // sets ingredients state
+  const [ingredients, setIngredients] = useState([]);
+  // sets alchemy state
+  const [alchemyStatus, setAlchemyStatus] = useState(false);
+  // sets player items state
+  const [playerItems, setPlayerItems] = useState([]);
+  // sets summonHPBonus state
+  const [summonHPBonus, setSummonHPBonus] = useState(0);
+  // sets summonMPBonus state
+  const [summonMPBonus, setSummonMPBonus] = useState(0);
 
   useEffect(() => {
     // checks for userfront authentication and redirects visitor if not authenticated
@@ -123,11 +135,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    Userfront.user.update({
-      data: {
-        userkey: Userfront.user.data.userkey,
-      },
-    });
     // if there is a player
     if (player) {
       try {
@@ -223,7 +230,10 @@ function App() {
               stagesStatus={stagesStatus} setStagesStatus={setStagesStatus} combatAlert={combatAlert} loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
               setPlayerCreatureHP={setPlayerCreatureHP} setPlayerCreatureMP={setPlayerCreatureMP} playerCreature={playerCreature} chosenRelic={chosenRelic}
               setEnemyCreature={setEnemyCreature} setEnemyCreatureHP={setEnemyCreatureHP} setCombatAlert={setCombatAlert} setBattleUndecided={setBattleUndecided}
-              setSpawn={setSpawn} />
+              setSpawn={setSpawn} alchemyStatus={alchemyStatus} setAlchemyStatus={setAlchemyStatus} potions={potions} setPotions={setPotions}
+              ingredients={ingredients} setIngredients={setIngredients}
+              summonHPBonus={summonHPBonus} setSummonHPBonus={setSummonHPBonus}
+              summonMPBonus={summonMPBonus} setSummonMPBonus={setSummonMPBonus} />
 
             <PlayerCreature summonsStatus={summonsStatus} playerCreature={playerCreature} enemyAttackStatus={enemyAttackStatus} setEnemyAttackStatus={setEnemyAttackStatus}
               critText={critText} setCritText={setCritText} combatText={combatText} playerAttackStatus={playerAttackStatus} setPlayerAttackStatus={setPlayerAttackStatus}
@@ -231,7 +241,10 @@ function App() {
               player={player} creatureStatsStatus={creatureStatsStatus} playerCreatureHP={playerCreatureHP} setPlayerCreatureHP={setPlayerCreatureHP}
               playerCreatureMP={playerCreatureMP} setPlayerCreatureMP={setPlayerCreatureMP} setCombatText={setCombatText} enemyCreature={enemyCreature}
               setEnemyCreature={setEnemyCreatureHP} battleUndecided={battleUndecided} setBattleUndecided={setBattleUndecided} enemyCreatureHP={enemyCreatureHP}
-              setEnemyCreatureHP={setEnemyCreatureHP} Userfront={Userfront} loadAsyncDataPlayer={() => loadAsyncDataPlayer()} setCombatAlert={setCombatAlert} />
+              setEnemyCreatureHP={setEnemyCreatureHP} Userfront={Userfront} loadAsyncDataPlayer={() => loadAsyncDataPlayer()} setCombatAlert={setCombatAlert}
+              relicsStatus={relicsStatus} templeStatus={templeStatus} stagesStatus={stagesStatus} alchemyStatus={alchemyStatus} playerItems={playerItems}
+              setPlayerItems={setPlayerItems} summonHPBonus={summonHPBonus} setSummonHPBonus={setSummonHPBonus}
+              summonMPBonus={summonMPBonus} setSummonMPBonus={setSummonMPBonus} />
 
             <EnemyCreature battleStatus={battleStatus} enemyCreature={enemyCreature} playerAttackStatus={playerAttackStatus} enemyAttackStatus={enemyAttackStatus}
               critText={critText} combatText={combatText} enemyCreatureHP={enemyCreatureHP} spawn={spawn} />

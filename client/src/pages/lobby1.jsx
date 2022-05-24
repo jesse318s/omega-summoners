@@ -78,8 +78,10 @@ function Lobby1() {
     const [lobbyTimer, setLobbyTimer] = useState(0);
     // sets connections state
     const [connections, setConnections] = useState([{}]);
-    // sets allies status state
-    const [alliesStatus, setAlliesStatus] = useState(false);
+    // sets summonHPBonus state
+    const [summonHPBonus, setSummonHPBonus] = useState(0);
+    // sets summonMPBonus state
+    const [summonMPBonus, setSummonMPBonus] = useState(0);
 
     useEffect(() => {
         // checks for userfront authentication and redirects visitor if not authenticated
@@ -132,11 +134,6 @@ function Lobby1() {
     }, []);
 
     useEffect(() => {
-        Userfront.user.update({
-            data: {
-                userkey: Userfront.user.data.userkey,
-            },
-        });
         // if there is a player
         if (player) {
             try {
@@ -210,6 +207,7 @@ function Lobby1() {
                 try {
                     const newConnection = {
                         userId: Userfront.user.userId,
+                        name: player.name
                     }
                     await addConnection(newConnection);
                 } catch (error) {
@@ -260,9 +258,9 @@ function Lobby1() {
                             stagesStatus={stagesStatus} setStagesStatus={setStagesStatus} combatAlert={combatAlert} loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
                             setPlayerCreatureHP={setPlayerCreatureHP} setPlayerCreatureMP={setPlayerCreatureMP} playerCreature={playerCreature} chosenRelic={chosenRelic}
                             setEnemyCreature={setEnemyCreature} setCombatAlert={setCombatAlert} setBattleUndecided={setBattleUndecided} setSpawn={setSpawn}
-                            loadAsyncDataLobby={() => loadAsyncDataLobby()} loadAsyncDataConnection={() => loadAsyncDataConnection()} connections={connections}
-                            alliesStatus={alliesStatus} setAlliesStatus={setAlliesStatus}
-                        />
+                            loadAsyncDataLobby={() => loadAsyncDataLobby()} loadAsyncDataConnection={() => loadAsyncDataConnection()} connections={connections} setConnections={setConnections}
+                            summonHPBonus={summonHPBonus} setSummonHPBonus={setSummonHPBonus}
+                            summonMPBonus={summonMPBonus} setSummonMPBonus={setSummonMPBonus} />
 
                         <MultiPlayerCreature summonsStatus={summonsStatus} playerCreature={playerCreature} enemyAttackStatus={enemyAttackStatus}
                             setEnemyAttackStatus={setEnemyAttackStatus} critText={critText} setCritText={setCritText} combatText={combatText} playerAttackStatus={playerAttackStatus}
@@ -271,7 +269,10 @@ function Lobby1() {
                             setPlayerCreatureHP={setPlayerCreatureHP} playerCreatureMP={playerCreatureMP} setPlayerCreatureMP={setPlayerCreatureMP} setCombatText={setCombatText}
                             enemyCreature={enemyCreature} setEnemyCreature={setEnemyCreature} battleUndecided={battleUndecided} setBattleUndecided={setBattleUndecided}
                             Userfront={Userfront} loadAsyncDataPlayer={() => loadAsyncDataPlayer()} setCombatAlert={setCombatAlert} lobby={lobby}
-                            loadAsyncDataLobby={() => loadAsyncDataLobby()} lobbyTimer={lobbyTimer} setLobbyTimer={setLobbyTimer} />
+                            loadAsyncDataLobby={() => loadAsyncDataLobby()} lobbyTimer={lobbyTimer} setLobbyTimer={setLobbyTimer} relicsStatus={relicsStatus}
+                            templeStatus={templeStatus} stagesStatus={stagesStatus}
+                            summonHPBonus={summonHPBonus} setSummonHPBonus={setSummonHPBonus}
+                            summonMPBonus={summonMPBonus} setSummonMPBonus={setSummonMPBonus} />
 
                         <BossEnemyCreature battleStatus={battleStatus} enemyCreature={enemyCreature} playerAttackStatus={playerAttackStatus} enemyAttackStatus={enemyAttackStatus}
                             critText={critText} combatText={combatText} spawn={spawn} lobby={lobby} />

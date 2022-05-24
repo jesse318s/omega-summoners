@@ -561,7 +561,7 @@ function Menu({
                                     className="recipe_option"
                                     key={recipe.id}
                                 >
-                                    <button className="game_button_small margin_small" onClick={() => { createPotion(recipe.potionProductId) }} >Create</button>
+                                    <button className="game_button_small margin_small" onClick={() => { createPotion(recipe.potionProductId) }} >Create<br/>Potion</button>
                                     <img onClick={() => alert(recipe.description)}
                                         className="recipe_option_img"
                                         src={recipe.imgPath}

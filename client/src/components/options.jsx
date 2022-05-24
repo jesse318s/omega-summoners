@@ -5,7 +5,7 @@ function Options({ Userfront, player, optionsStatus, nameOptionStatus, setNameOp
     // toggles display creature stats in database
     const toggleDisplayCreatureStats = async () => {
         try {
-            Userfront.user.update({
+            await Userfront.user.update({
                 data: {
                     userkey: Userfront.user.data.userkey,
                 },
@@ -24,7 +24,7 @@ function Options({ Userfront, player, optionsStatus, nameOptionStatus, setNameOp
             if (e === "") {
                 alert("Please enter a name.");
             } else if (e.length < 20) {
-                Userfront.user.update({
+                await Userfront.user.update({
                     data: {
                         userkey: Userfront.user.data.userkey,
                     },
@@ -43,7 +43,7 @@ function Options({ Userfront, player, optionsStatus, nameOptionStatus, setNameOp
     // updates player avatar path in database
     const selectAvatar = async (avatarPath) => {
         try {
-            Userfront.user.update({
+            await Userfront.user.update({
                 data: {
                     userkey: Userfront.user.data.userkey,
                 },

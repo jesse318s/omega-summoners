@@ -47,7 +47,7 @@ function Menu({
     const [potionCooldown, setPotionCooldown] = useState(false);
 
     // paginates creatures for summons menu
-    const paginateCreatures = (index1, direction) => {
+    const paginateCreatures = async (index1, direction) => {
         try {
             if (direction === "next" && index1 < creatureData.length - 5) {
                 setIndex1(index1 + 5);
@@ -64,7 +64,7 @@ function Menu({
     }
 
     // paginates player relics for relics menu
-    const paginateRelics = (indexA, direction) => {
+    const paginateRelics = async (indexA, direction) => {
         try {
             if (direction === "next" && indexA < playerRelics.length - 7) {
                 setIndexA(indexA + 7);
@@ -81,7 +81,7 @@ function Menu({
     }
 
     // paginates relics for temple menu
-    const paginateTempleRelics = (indexC, direction) => {
+    const paginateTempleRelics = async (indexC, direction) => {
         try {
             if (direction === "next" && indexC < relicsData.length - 7) {
                 setIndexC(indexC + 7);
@@ -98,7 +98,7 @@ function Menu({
     }
 
     // paginates recipes for alchemy menu
-    const paginateRecipes = (index3, direction) => {
+    const paginateRecipes = async (index3, direction) => {
         try {
             if (direction === "next" && index3 < recipeList.length - 5) {
                 setIndex3(index3 + 5);
@@ -115,7 +115,7 @@ function Menu({
     }
 
     // paginates potions for alchemy menu
-    const paginatePotions = (indexE, direction) => {
+    const paginatePotions = async (indexE, direction) => {
         try {
             if (direction === "next" && indexE < potions.length - 7) {
                 setIndexE(indexE + 7);
@@ -132,7 +132,7 @@ function Menu({
     }
 
     // paginates ingredients for alchemy menu
-    const paginateIngredients = (indexG, direction) => {
+    const paginateIngredients = async (indexG, direction) => {
         try {
             if (direction === "next" && indexG < ingredients.length - 7) {
                 setIndexG(indexG + 7);
@@ -151,7 +151,7 @@ function Menu({
     // updates player chosen relic in database
     const selectRelic = async (relicId) => {
         try {
-            Userfront.user.update({
+            await Userfront.user.update({
                 data: {
                     userkey: Userfront.user.data.userkey,
                 },
@@ -170,7 +170,7 @@ function Menu({
             // if the player can afford the relic and doesn't own it
             if (player.drachmas >= relicPrice && !player.relics.includes(relicId)) {
                 if (window.confirm(`Are you sure you want to buy this relic? It will cost ${relicPrice} drachmas.`)) {
-                    Userfront.user.update({
+                    await Userfront.user.update({
                         data: {
                             userkey: Userfront.user.data.userkey,
                         },
@@ -193,7 +193,7 @@ function Menu({
             // if the player can afford the creature and isn't already using it
             if (player.experience >= creaturePrice && player.creatureId !== creatureId) {
                 if (window.confirm(`Are you sure you want to swap your creature for this one? It will cost ${creaturePrice} experience.`)) {
-                    Userfront.user.update({
+                    await Userfront.user.update({
                         data: {
                             userkey: Userfront.user.data.userkey,
                         },
@@ -211,7 +211,7 @@ function Menu({
     }
 
     // enemy spawn animation
-    const spawnAnimation = () => {
+    const spawnAnimation = async () => {
         try {
             setSpawn("spawn_effect");
             setTimeout(() => {

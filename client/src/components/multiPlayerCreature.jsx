@@ -196,6 +196,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
     const attackEnemy = (moveName, moveType) => {
         try {
             loadAsyncDataPlayer();
+
             // if the player and enemy aren't attacking and the battle is undecided
             if (!playerAttackStatus && !enemyAttackStatus && battleUndecided && !lobbyTimer) {
                 setLobbyTimer(true);
@@ -223,6 +224,13 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                     setLobbyTimer(false);
                     loadAsyncDataLobby();
                 }, 1000);
+                
+                // updates userkey
+                Userfront.user.update({
+                    data: {
+                        userkey: Userfront.user.data.userkey,
+                    },
+                });
 
                 const playerCreatureAttack = playerCreature[0].attack + chosenRelic[0].attackMod;
                 const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;

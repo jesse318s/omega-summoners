@@ -162,51 +162,38 @@ function MultiPlayerMenu({
                 alert("There cannot be more than 3 summoners in this battle. Please try again later.");
                 return;
             }
-            // if the player can afford the battle
-            if (player.drachmas >= 500 && player.drachmas >= 500) {
-                if (window.confirm(`Are you sure you want to enter this battle? It will cost 750 drachmas and experience.`)) {
-                    // checks and sets potion timer
-                    var potionTimer = [{}];
-                    getPotionTimer().then(res => {
-                        potionTimer = res.data;
-                        // set to potion with same id
-                        if (res.data.length > 0) {
-                            const playerPotion = potionsList.find(potion => potion.id === potionTimer[0].potionId);
-                            const playerMPBonus = playerPotion.mpMod;
-                            const playerHPBonus = playerPotion.hpMod;
-                            setSummonMPBonus(playerMPBonus);
-                            setSummonHPBonus(playerHPBonus);
-                        }
-                        if (res.data.length === 0) {
-                            setSummonMPBonus(0);
-                            setSummonHPBonus(0);
-                        }
-                    });
 
-                    setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus);
-                    setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus);
-                    spawnAnimation();
-                    const enemyCreature = [enemyCreatureData[Math.floor(Math.random() * enemyCreatureData.length)]];
-                    setEnemyCreature(enemyCreature);
-                    loadAsyncDataLobby();
-                    setCombatAlert("The battle has begun!");
-                    setBattleStatus(true);
-                    setBattleUndecided(true);
-                    Userfront.user.update({
-                        data: {
-                            userkey: Userfront.user.data.userkey,
-                        },
-                    });
-                    updateUser(player._id, { userfrontId: Userfront.user.userId, experience: player.experience - 750, drachmas: player.drachmas - 750 });
-                    loadAsyncDataPlayer();
-                    setTimeout(() => {
-                        loadAsyncDataLobby();
-                    }
-                        , 1000);
+            // checks and sets potion timer
+            var potionTimer = [{}];
+            getPotionTimer().then(res => {
+                potionTimer = res.data;
+                // set to potion with same id
+                if (res.data.length > 0) {
+                    const playerPotion = potionsList.find(potion => potion.id === potionTimer[0].potionId);
+                    const playerMPBonus = playerPotion.mpMod;
+                    const playerHPBonus = playerPotion.hpMod;
+                    setSummonMPBonus(playerMPBonus);
+                    setSummonHPBonus(playerHPBonus);
                 }
-            } else {
-                alert("You can't afford this battle.");
+                if (res.data.length === 0) {
+                    setSummonMPBonus(0);
+                    setSummonHPBonus(0);
+                }
+            });
+
+            setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus);
+            setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus);
+            spawnAnimation();
+            const enemyCreature = [enemyCreatureData[Math.floor(Math.random() * enemyCreatureData.length)]];
+            setEnemyCreature(enemyCreature);
+            loadAsyncDataLobby();
+            setCombatAlert("The battle has begun!");
+            setBattleStatus(true);
+            setBattleUndecided(true);
+            setTimeout(() => {
+                loadAsyncDataLobby();
             }
+                , 1000);
         }
         catch (error) {
             console.log(error);

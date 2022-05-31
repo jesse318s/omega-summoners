@@ -98,7 +98,7 @@ function App() {
 
   useEffect(() => {
     // checks for userkey and generates new player if needed
-    const genDataPlayer = async () => {
+    const genAsyncDataPlayer = async () => {
       try {
         // if there is no user key
         if (Userfront.user.data.userkey === undefined) {
@@ -130,7 +130,7 @@ function App() {
         console.log(error);
       }
     }
-    genDataPlayer();
+    genAsyncDataPlayer();
     loadAsyncDataPlayer();
   }, []);
 

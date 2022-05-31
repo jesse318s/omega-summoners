@@ -263,12 +263,6 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                         setBattleUndecided(false);
                         playerAttackAnimation();
                         playerAttackCT(playerCreatureAttack, criticalMultiplier, enemyDefense);
-                        // updates userkey
-                        Userfront.user.update({
-                            data: {
-                                userkey: Userfront.user.data.userkey,
-                            },
-                        });
                         setTimeout(() => {
                             Userfront.user.update({
                                 data: {
@@ -301,12 +295,6 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                         if (chancePlayer) {
                             playerAttackAnimation();
                             playerAttackCT(playerCreatureAttack, criticalMultiplier, enemyDefense);
-                            // updates userkey
-                            Userfront.user.update({
-                                data: {
-                                    userkey: Userfront.user.data.userkey,
-                                },
-                            });
                             setTimeout(() => {
                                 Userfront.user.update({
                                     data: {
@@ -345,12 +333,6 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                                 playerAttackAnimation();
                                 specialAnimation();
                                 playerSpecialCT(playerCreatureSpecial, criticalMultiplier, enemyDefense);
-                                // updates userkey
-                                Userfront.user.update({
-                                    data: {
-                                        userkey: Userfront.user.data.userkey,
-                                    },
-                                });
                                 setTimeout(() => {
                                     Userfront.user.update({
                                         data: {
@@ -384,12 +366,6 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                                     playerAttackAnimation();
                                     playerSpecialCT(playerCreatureSpecial, criticalMultiplier, enemyDefense);
                                     specialAnimation();
-                                    // updates userkey
-                                    Userfront.user.update({
-                                        data: {
-                                            userkey: Userfront.user.data.userkey,
-                                        },
-                                    });
                                     setTimeout(() => {
                                         Userfront.user.update({
                                             data: {

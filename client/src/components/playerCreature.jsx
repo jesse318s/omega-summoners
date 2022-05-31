@@ -195,23 +195,20 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
             // if the player and enemy aren't attacking and the battle is undecided
             if (!playerAttackStatus && !enemyAttackStatus && battleUndecided) {
 
-                // checks and sets potion timer
-                var potionTimer = [{}];
-                await getPotionTimer().then(res => {
-                    potionTimer = res.data;
-                    // set to potion with same id
-                    if (res.data.length > 0) {
-                        const playerPotion = potionsList.find(potion => potion.id === potionTimer[0].potionId);
-                        const playerMPBonus = playerPotion.mpMod;
-                        const playerHPBonus = playerPotion.hpMod;
-                        setSummonMPBonus(playerMPBonus);
-                        setSummonHPBonus(playerHPBonus);
-                    }
-                    if (res.data.length === 0) {
-                        setSummonMPBonus(0);
-                        setSummonHPBonus(0);
-                    }
-                });
+                // checks and sets potion timer/stats
+                const potionTimer = await getPotionTimer()
+                // set to potion with same id
+                if (potionTimer.data.length > 0) {
+                    const playerPotion = potionsList.find(potion => potion.id === potionTimer.data[0].potionId);
+                    const playerMPBonus = playerPotion.mpMod;
+                    const playerHPBonus = playerPotion.hpMod;
+                    setSummonMPBonus(playerMPBonus);
+                    setSummonHPBonus(playerHPBonus);
+                }
+                if (potionTimer.data.length === 0) {
+                    setSummonMPBonus(0);
+                    setSummonHPBonus(0);
+                }
 
                 await loadAsyncDataPlayer();
 

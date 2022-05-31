@@ -225,7 +225,7 @@ function Menu({
     }
 
     // loads battle data
-    const loadDataBattle = () => {
+    const loadDataBattle = async () => {
         try {
             // checks and sets potion timer
             var potionTimer = [{}];

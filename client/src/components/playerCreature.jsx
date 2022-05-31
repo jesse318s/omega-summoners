@@ -1,6 +1,5 @@
 import { useRef } from "react";
 import { updateUser } from "../services/userServices";
-import { getItem } from "../services/itemServices";
 import { getPotionTimer } from "../services/potionTimerServices";
 import { potionsList } from "../constants/items";
 
@@ -146,7 +145,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                     if (playerCreatureHP > 0) {
                         setCombatAlert("The battle continues...");
                     };
-                }, 500);
+                }, 750);
             }
             // checks for player speed failure
             if (chanceEnemy && !chancePlayer) {
@@ -198,7 +197,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
 
                 // checks and sets potion timer
                 var potionTimer = [{}];
-                getPotionTimer().then(res => {
+                await getPotionTimer().then(res => {
                     potionTimer = res.data;
                     // set to potion with same id
                     if (res.data.length > 0) {
@@ -214,6 +213,8 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                     }
                 });
 
+                await loadAsyncDataPlayer();
+
                 const playerCreatureAttack = playerCreature[0].attack + chosenRelic[0].attackMod;
                 const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
                 const playerCreatureCritical = (playerCreature[0].critical + chosenRelic[0].criticalMod) / 100;
@@ -221,11 +222,6 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                 var enemyDefense = enemyCreature[0].defense / 100;
                 var chancePlayer = false;
                 var criticalMultiplier = 1;
-
-                // retrieves player item records for adding drops
-                getItem().then(res => {
-                    setPlayerItems(res.data);
-                });
 
                 //checks for player magic move type and applies effect
                 if (moveType === "Magic") {

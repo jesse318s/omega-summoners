@@ -157,7 +157,7 @@ function MultiPlayerMenu({
             await getConnection();
             const { data } = await getConnection();
             setConnections(data);
-            loadAsyncDataPlayer();
+            await loadAsyncDataPlayer();
             if (connections.length > 2 && connections.filter(connection => connection.userId === Userfront.user.userId).length < 1) {
                 alert("There cannot be more than 3 summoners in this battle. Please try again later.");
                 return;
@@ -165,7 +165,7 @@ function MultiPlayerMenu({
 
             // checks and sets potion timer
             var potionTimer = [{}];
-            getPotionTimer().then(res => {
+            await getPotionTimer().then(res => {
                 potionTimer = res.data;
                 // set to potion with same id
                 if (res.data.length > 0) {
@@ -189,7 +189,8 @@ function MultiPlayerMenu({
             setCombatAlert("The battle has begun!");
             setBattleStatus(true);
             setBattleUndecided(true);
-            loadAsyncDataLobby();
+            await loadAsyncDataLobby();
+            await loadAsyncDataPlayer();
         }
         catch (error) {
             console.log(error);

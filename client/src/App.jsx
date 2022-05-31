@@ -159,7 +159,7 @@ function App() {
                 },
               });
               await updateUser(player._id, { userfrontId: Userfront.user.userId, creatureId: randomCreature });
-              loadAsyncDataPlayer();
+              await loadAsyncDataPlayer();
             }
           }
           catch (error) {
@@ -167,13 +167,13 @@ function App() {
           }
         }
         // loads player creature data and sets player creature state
-        const loadDataPlayerCreature = () => {
+        const loadAsyncDataPlayerCreature = async () => {
           const playerCreatureData = creatureData.filter(creature => creature.id === player.creatureId);
           setPlayerCreature(playerCreatureData);
           setCreatureStatsStatus(player.displayCreatureStats);
         }
         genAsyncPlayerCreature();
-        loadDataPlayerCreature();
+        loadAsyncDataPlayerCreature();
       } catch (error) {
         console.log(error);
       }

@@ -189,8 +189,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
     // initiates chance to attack enemy creature
     const attackEnemy = async (moveName, moveType) => {
         try {
-            // updates ui
-            loadAsyncDataPlayer();
+            await loadAsyncDataLobby();
 
             // if the player and enemy aren't attacking and the battle is undecided
             if (!playerAttackStatus && !enemyAttackStatus && battleUndecided && !lobbyTimer) {
@@ -198,7 +197,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
 
                 // checks and sets potion timer
                 var potionTimer = [{}];
-                getPotionTimer().then(res => {
+                await getPotionTimer().then(res => {
                     potionTimer = res.data;
                     // set to potion with same id
                     if (res.data.length > 0) {
@@ -214,10 +213,13 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                     }
                 });
 
+                await loadAsyncDataPlayer();
+
                 // timeout for lobby timer
                 setTimeout(() => {
                     setLobbyTimer(false);
                     loadAsyncDataLobby();
+                    loadAsyncDataPlayer();
                 }, 1250);
 
                 const playerCreatureAttack = playerCreature[0].attack + chosenRelic[0].attackMod;

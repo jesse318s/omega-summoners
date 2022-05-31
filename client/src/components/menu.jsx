@@ -229,7 +229,7 @@ function Menu({
         try {
             // checks and sets potion timer
             var potionTimer = [{}];
-            getPotionTimer().then(res => {
+            await getPotionTimer().then(res => {
                 potionTimer = res.data;
                 // set to potion with same id
                 if (res.data.length > 0) {
@@ -254,6 +254,7 @@ function Menu({
             setCombatAlert("The battle has begun!");
             setBattleStatus(true);
             setBattleUndecided(true);
+            await loadAsyncDataPlayer();
         }
         catch (error) {
             console.log(error);
@@ -360,7 +361,7 @@ function Menu({
     // uses clicked potion
     const consumePotion = async (potionId) => {
         try {
-            if (potionCooldown === false) {
+            if (!potionCooldown) {
                 await getPotionTimer();
                 const timerData = await getPotionTimer();
                 setPotionCooldown(true);

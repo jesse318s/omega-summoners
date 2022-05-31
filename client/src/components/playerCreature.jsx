@@ -130,32 +130,35 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
             if (enemyCreature[0].speed / 100 === playerCreatureSpeed) {
                 chanceEnemy = Math.random() >= 0.5;
             } else {
-                chanceEnemy = Math.random() >= playerCreatureSpeed - enemyCreature[0].speed / 100;
+                chanceEnemy = Math.random() >= (playerCreatureSpeed - enemyCreature[0].speed) / 100;
             }
             // series of checks for enemy counter attack based on speed
             if (!chanceEnemy && chancePlayer) {
                 setTimeout(() => {
                     setCombatAlert("Enemy was too slow!");
-                }, 250);
+                }, 500);
             }
             if (!chanceEnemy && !chancePlayer) {
                 attackEnemy(moveName, moveType);
             }
             if (chanceEnemy && chancePlayer) {
                 setTimeout(() => {
-                    setCombatAlert("The battle continues...");
+                    if (playerCreatureHP > 0) {
+                        setCombatAlert("The battle continues...");
+                    };
                 }, 500);
             }
             // checks for player speed failure
             if (chanceEnemy && !chancePlayer) {
                 setTimeout(() => {
                     setCombatAlert("Your summon was too slow!");
-                }, 250);
+                }, 750);
             }
             if (battleStatus && chanceEnemy) {
                 setTimeout(() => {
                     enemyAttackAnimation();
-                }, 500);
+                    enemyAttackCT(criticalMultiplier, playerCreatureDefense);
+                }, 750);
 
                 // checks enemy critical hit
                 if (Math.random() <= enemyCreature[0].critical / 100) {
@@ -170,16 +173,14 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                 // checks for player death, and damages player otherwise
                 if (ref.current - ((enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalMultiplier) <= 0) {
                     setBattleUndecided(false);
-                    enemyAttackCT(criticalMultiplier, playerCreatureDefense);
                     setPlayerCreatureHP(0);
                     setCombatAlert("Defeat!");
                     setTimeout(() => {
-                    setBattleStatus(false);
-                    setEnemyCreature({});
-                    setEnemyCreatureHP(0);
-                    }, 1000);
+                        setBattleStatus(false);
+                        setEnemyCreature({});
+                        setEnemyCreatureHP(0);
+                    }, 750);
                 } else {
-                    enemyAttackCT(criticalMultiplier, playerCreatureDefense);
                     setPlayerCreatureHP(ref.current - (enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalMultiplier);
                 }
 

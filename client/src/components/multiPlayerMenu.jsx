@@ -151,11 +151,11 @@ function MultiPlayerMenu({
     }
 
     // loads battle data
-    const loadDataBattle = () => {
+    const loadDataBattle = async () => {
         try {
             // get and check connections
-            getConnection();
-            const { data } = getConnection();
+            await getConnection();
+            const { data } = await getConnection();
             setConnections(data);
             loadAsyncDataPlayer();
             if (connections.length > 2 && connections.filter(connection => connection.userId === Userfront.user.userId).length < 1) {
@@ -186,14 +186,10 @@ function MultiPlayerMenu({
             spawnAnimation();
             const enemyCreature = [enemyCreatureData[Math.floor(Math.random() * enemyCreatureData.length)]];
             setEnemyCreature(enemyCreature);
-            loadAsyncDataLobby();
             setCombatAlert("The battle has begun!");
             setBattleStatus(true);
             setBattleUndecided(true);
-            setTimeout(() => {
-                loadAsyncDataLobby();
-            }
-                , 1000);
+            loadAsyncDataLobby();
         }
         catch (error) {
             console.log(error);

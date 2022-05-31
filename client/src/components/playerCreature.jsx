@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { updateUser } from "../services/userServices";
-import { addItem, getItem } from "../services/itemServices";
+import { getItem } from "../services/itemServices";
 import { getPotionTimer } from "../services/potionTimerServices";
 import { potionsList } from "../constants/items";
 

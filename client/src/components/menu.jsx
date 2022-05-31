@@ -288,7 +288,7 @@ function Menu({
     // creates a new potion
     const createPotion = async (potionId) => {
         try {
-            if (potionCooldown === false) {
+            if (!potionCooldown) {
                 setPotionCooldown(true);
                 const { data } = await getItem();
                 const playerPotionData = data.filter(item => item.type === "Potion" && item.itemId === potionId);
@@ -306,7 +306,7 @@ function Menu({
                 const ingredient2Check = playerIngredientData.find(item => item.itemId === currentRecipe[0].ingredient2);
                 if (ingredient1Check && ingredient1Check.itemQuantity > 0 && ingredient2Check && ingredient2Check.itemQuantity > 0) {
                     // confirm potion creation
-                    if (window.confirm(`Are you sure you want to create this potion?`) === true) {
+                    if (window.confirm(`Are you sure you want to create this potion?`)) {
                         const currentIngredient1 = currentRecipe.map(item => playerIngredientData.find(ingredient => ingredient.itemId === item.ingredient1));
                         let currentIngredient1Data = playerIngredientData.filter(item => currentIngredient1.some(ingredient => ingredient.itemId === item.itemId));
                         const currentIngredient2 = currentRecipe.map(item => playerIngredientData.find(ingredient => ingredient.itemId === item.ingredient2));

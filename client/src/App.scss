@@ -499,6 +499,44 @@
   }
 }
 
+.special_effect6 {
+  position: relative;
+  bottom: 128px;
+  height: 100px;
+  border-radius: 50%;
+  background: lightgreen;
+  filter: blur(100px);
+  animation: nukeCloak 375ms;
+
+  @keyframes nukeCloak {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(0.5);
+    }
+  }
+}
+
+.special_effect7 {
+  position: relative;
+  bottom: 128px;
+  height: 100px;
+  border-radius: 50%;
+  background: darkblue;
+  filter: blur(100px);
+  animation: electroCloak 375ms;
+
+  @keyframes electroCloak {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(0.5);
+    }
+  }
+}
+
 // media query
 @media screen and (min-width: 2000px) {
   .player_creature {

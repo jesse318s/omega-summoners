@@ -225,25 +225,22 @@ function Menu({
     }
 
     // loads battle data
-    const loadDataBattle = () => {
+    const loadDataBattle = async () => {
         try {
-            // checks and sets potion timer
-            var potionTimer = [{}];
-            getPotionTimer().then(res => {
-                potionTimer = res.data;
-                // set to potion with same id
-                if (res.data.length > 0) {
-                    const playerPotion = potionsList.find(potion => potion.id === potionTimer[0].potionId);
-                    const playerMPBonus = playerPotion.mpMod;
-                    const playerHPBonus = playerPotion.hpMod;
-                    setSummonMPBonus(playerMPBonus);
-                    setSummonHPBonus(playerHPBonus);
-                }
-                if (res.data.length === 0) {
-                    setSummonMPBonus(0);
-                    setSummonHPBonus(0);
-                }
-            });
+            // checks and sets potion timer/stats
+            const potionTimer = await getPotionTimer()
+            // set to potion with same id
+            if (potionTimer.data.length > 0) {
+                const playerPotion = potionsList.find(potion => potion.id === potionTimer.data[0].potionId);
+                const playerMPBonus = playerPotion.mpMod;
+                const playerHPBonus = playerPotion.hpMod;
+                setSummonMPBonus(playerMPBonus);
+                setSummonHPBonus(playerHPBonus);
+            }
+            if (potionTimer.data.length === 0) {
+                setSummonMPBonus(0);
+                setSummonHPBonus(0);
+            }
 
             setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus);
             setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus);
@@ -254,6 +251,7 @@ function Menu({
             setCombatAlert("The battle has begun!");
             setBattleStatus(true);
             setBattleUndecided(true);
+            await loadAsyncDataPlayer();
         }
         catch (error) {
             console.log(error);
@@ -278,7 +276,6 @@ function Menu({
                 playerIngredients[i].itemQuantity = playerIngredientsData.find(item => item.itemId === playerIngredients[i].id).itemQuantity;
             }
             setIngredients(playerIngredients);
-            setAlchemyStatus(true);
         }
         catch (error) {
             console.log(error);
@@ -288,7 +285,7 @@ function Menu({
     // creates a new potion
     const createPotion = async (potionId) => {
         try {
-            if (potionCooldown === false) {
+            if (!potionCooldown) {
                 setPotionCooldown(true);
                 const { data } = await getItem();
                 const playerPotionData = data.filter(item => item.type === "Potion" && item.itemId === potionId);
@@ -306,7 +303,7 @@ function Menu({
                 const ingredient2Check = playerIngredientData.find(item => item.itemId === currentRecipe[0].ingredient2);
                 if (ingredient1Check && ingredient1Check.itemQuantity > 0 && ingredient2Check && ingredient2Check.itemQuantity > 0) {
                     // confirm potion creation
-                    if (window.confirm(`Are you sure you want to create this potion?`) === true) {
+                    if (window.confirm(`Are you sure you want to create this potion?`)) {
                         const currentIngredient1 = currentRecipe.map(item => playerIngredientData.find(ingredient => ingredient.itemId === item.ingredient1));
                         let currentIngredient1Data = playerIngredientData.filter(item => currentIngredient1.some(ingredient => ingredient.itemId === item.itemId));
                         const currentIngredient2 = currentRecipe.map(item => playerIngredientData.find(ingredient => ingredient.itemId === item.ingredient2));
@@ -360,7 +357,7 @@ function Menu({
     // uses clicked potion
     const consumePotion = async (potionId) => {
         try {
-            if (potionCooldown === false) {
+            if (!potionCooldown) {
                 await getPotionTimer();
                 const timerData = await getPotionTimer();
                 setPotionCooldown(true);
@@ -402,21 +399,18 @@ function Menu({
                             }
                         );
                         await loadDataAlchemy();
-                        // checks and sets potion timer
-                        var potionTimer = [{}];
-                        getPotionTimer().then(res => {
-                            potionTimer = res.data;
-                            // set to potion with same id
-                            if (res.data.length > 0) {
-                                const playerPotion = potionsList.find(potion => potion.id === potionTimer[0].potionId);
-                                const playerMPBonus = playerPotion.mpMod;
-                                const playerHPBonus = playerPotion.hpMod;
-                                setSummonMPBonus(playerMPBonus);
-                                setSummonHPBonus(playerHPBonus);
-                            }
-                            setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus);
-                            setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus);
-                        });
+                        // checks and sets potion timer/stats
+                        const potionTimer = await getPotionTimer()
+                        // set to potion with same id
+                        if (potionTimer.data.length > 0) {
+                            const playerPotion = potionsList.find(potion => potion.id === potionTimer.data[0].potionId);
+                            const playerMPBonus = playerPotion.mpMod;
+                            const playerHPBonus = playerPotion.hpMod;
+                            setSummonMPBonus(playerMPBonus);
+                            setSummonHPBonus(playerHPBonus);
+                        }
+                        setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus);
+                        setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus);
                         setTimeout(() => {
                             setPotionCooldown(false);
                         }, 1000);
@@ -559,7 +553,7 @@ function Menu({
                 {!battleStatus && !alchemyStatus ? <>
                     <button className="game_button margin_small" onClick={() => {
                         loadDataAlchemy(); setTempleStatus(false); setRelicsStatus(false); setSummonsStatus(false);
-                        setStagesStatus(false);
+                        setStagesStatus(false); setAlchemyStatus(true);
                     }}>
                         Alchemy</button>
                 </>

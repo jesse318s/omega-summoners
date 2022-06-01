@@ -12,6 +12,7 @@ import EnemyCreature from "./components/enemyCreature";
 import creatures from "./constants/creatures";
 import relics from "./constants/relics";
 import { enemyCreaturesHome } from "./constants/enemyCreatures";
+import { getItem } from "./services/itemServices";
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
@@ -98,7 +99,7 @@ function App() {
 
   useEffect(() => {
     // checks for userkey and generates new player if needed
-    const genDataPlayer = async () => {
+    const genAsyncDataPlayer = async () => {
       try {
         // if there is no user key
         if (Userfront.user.data.userkey === undefined) {
@@ -130,7 +131,7 @@ function App() {
         console.log(error);
       }
     }
-    genDataPlayer();
+    genAsyncDataPlayer();
     loadAsyncDataPlayer();
   }, []);
 
@@ -159,7 +160,7 @@ function App() {
                 },
               });
               await updateUser(player._id, { userfrontId: Userfront.user.userId, creatureId: randomCreature });
-              loadAsyncDataPlayer();
+              await loadAsyncDataPlayer();
             }
           }
           catch (error) {
@@ -167,13 +168,13 @@ function App() {
           }
         }
         // loads player creature data and sets player creature state
-        const loadDataPlayerCreature = () => {
+        const loadAsyncDataPlayerCreature = async () => {
           const playerCreatureData = creatureData.filter(creature => creature.id === player.creatureId);
           setPlayerCreature(playerCreatureData);
           setCreatureStatsStatus(player.displayCreatureStats);
         }
         genAsyncPlayerCreature();
-        loadDataPlayerCreature();
+        loadAsyncDataPlayerCreature();
       } catch (error) {
         console.log(error);
       }
@@ -200,6 +201,8 @@ function App() {
     try {
       const { data } = await getUser();
       setPlayer(data);
+      const { dataItems } = await getItem();
+      setPlayerItems(dataItems);
     } catch (error) {
       console.log(error);
     }

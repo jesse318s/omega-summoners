@@ -1,20 +1,19 @@
 import { useRef } from "react";
 import { updateUser } from "../services/userServices";
-import { addItem, getItem } from "../services/itemServices";
 import { getPotionTimer } from "../services/potionTimerServices";
 import { potionsList } from "../constants/items";
+import { getItem, addItem } from "../services/itemServices";
 
 function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setEnemyAttackStatus, critText, setCritText, combatText, setCombatText, playerAttackStatus,
     setPlayerAttackStatus, chosenRelic, specialStatus, setSpecialStatus, battleStatus, setBattleStatus, player, creatureStatsStatus, playerCreatureHP, setPlayerCreatureHP,
     playerCreatureMP, setPlayerCreatureMP, enemyCreature, setEnemyCreature, battleUndecided, setBattleUndecided, enemyCreatureHP, setEnemyCreatureHP, Userfront,
-    loadAsyncDataPlayer, setCombatAlert, relicsStatus, templeStatus, stagesStatus, alchemyStatus, playerItems, setPlayerItems, summonHPBonus, setSummonHPBonus,
-    summonMPBonus, setSummonMPBonus }) {
+    loadAsyncDataPlayer, setCombatAlert, relicsStatus, templeStatus, stagesStatus, alchemyStatus, summonHPBonus, setSummonHPBonus, summonMPBonus, setSummonMPBonus }) {
 
     // reference hook
     const ref = useRef(null);
 
     // player attack animation
-    const playerAttackAnimation = () => {
+    const playerAttackAnimation = async () => {
         try {
             setPlayerAttackStatus(true);
             setTimeout(() => {
@@ -26,7 +25,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
     }
 
     // player attack Combat Text animation
-    const playerAttackCT = (playerCreatureAttack, criticalMultiplier, enemyDefense) => {
+    const playerAttackCT = async (playerCreatureAttack, criticalMultiplier, enemyDefense) => {
         try {
             if (criticalMultiplier > 1) {
                 setCritText("crit_text");
@@ -42,7 +41,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
     }
 
     // special animation
-    const specialAnimation = () => {
+    const specialAnimation = async () => {
         try {
             setSpecialStatus(true);
             setTimeout(() => {
@@ -54,7 +53,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
     }
 
     // player special Combat Text animation
-    const playerSpecialCT = (playerCreatureSpecial, criticalMultiplier, enemyDefense) => {
+    const playerSpecialCT = async (playerCreatureSpecial, criticalMultiplier, enemyDefense) => {
         try {
             if (criticalMultiplier > 1) {
                 setCritText("crit_text");
@@ -70,7 +69,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
     }
 
     // player healing Combat Text animation
-    const playerHealCT = (playerCreatureSpecial, criticalMultiplier) => {
+    const playerHealCT = async (playerCreatureSpecial, criticalMultiplier) => {
         try {
             setCritText("heal_combat_text");
             if (criticalMultiplier > 1) {
@@ -87,7 +86,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
     }
 
     // enemy attack animation
-    const enemyAttackAnimation = () => {
+    const enemyAttackAnimation = async () => {
         try {
             setEnemyAttackStatus(true);
             setTimeout(() => {
@@ -99,7 +98,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
     }
 
     // enemy attack Combat Text animation
-    const enemyAttackCT = (criticalMultiplier, playerCreatureDefense) => {
+    const enemyAttackCT = async (criticalMultiplier, playerCreatureDefense) => {
         try {
             if (criticalMultiplier > 1) {
                 setCritText("crit_text");
@@ -115,7 +114,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
     }
 
     // initiates chance of enemy counter attack
-    const enemyCounterAttack = (chancePlayer, moveName, moveType) => {
+    const enemyCounterAttack = async (chancePlayer, moveName, moveType) => {
         try {
             const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
             var playerCreatureDefense = (playerCreature[0].defense + chosenRelic[0].defenseMod) / 100;
@@ -130,32 +129,35 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
             if (enemyCreature[0].speed / 100 === playerCreatureSpeed) {
                 chanceEnemy = Math.random() >= 0.5;
             } else {
-                chanceEnemy = Math.random() >= playerCreatureSpeed - enemyCreature[0].speed / 100;
+                chanceEnemy = Math.random() >= (playerCreatureSpeed - enemyCreature[0].speed) / 100;
             }
             // series of checks for enemy counter attack based on speed
             if (!chanceEnemy && chancePlayer) {
                 setTimeout(() => {
                     setCombatAlert("Enemy was too slow!");
-                }, 250);
+                }, 500);
             }
             if (!chanceEnemy && !chancePlayer) {
                 attackEnemy(moveName, moveType);
             }
             if (chanceEnemy && chancePlayer) {
                 setTimeout(() => {
-                    setCombatAlert("The battle continues...");
-                }, 500);
+                    if (playerCreatureHP > 0) {
+                        setCombatAlert("The battle continues...");
+                    };
+                }, 750);
             }
             // checks for player speed failure
             if (chanceEnemy && !chancePlayer) {
                 setTimeout(() => {
                     setCombatAlert("Your summon was too slow!");
-                }, 250);
+                }, 750);
             }
             if (battleStatus && chanceEnemy) {
                 setTimeout(() => {
                     enemyAttackAnimation();
-                }, 500);
+                    enemyAttackCT(criticalMultiplier, playerCreatureDefense);
+                }, 750);
 
                 // checks enemy critical hit
                 if (Math.random() <= enemyCreature[0].critical / 100) {
@@ -170,21 +172,15 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                 // checks for player death, and damages player otherwise
                 if (ref.current - ((enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalMultiplier) <= 0) {
                     setBattleUndecided(false);
-                    setTimeout(() => {
-                        enemyAttackCT(criticalMultiplier, playerCreatureDefense);
-                        setPlayerCreatureHP(0);
-                        setCombatAlert("Defeat!");
-                    }, 750);
+                    setPlayerCreatureHP(0);
+                    setCombatAlert("Defeat!");
                     setTimeout(() => {
                         setBattleStatus(false);
                         setEnemyCreature({});
                         setEnemyCreatureHP(0);
-                    }, 2750);
-                } else {
-                    setTimeout(() => {
-                        enemyAttackCT(criticalMultiplier, playerCreatureDefense);
-                        setPlayerCreatureHP(ref.current - (enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalMultiplier);
                     }, 750);
+                } else {
+                    setPlayerCreatureHP(ref.current - (enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalMultiplier);
                 }
 
             }
@@ -194,28 +190,27 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
     }
 
     // initiates chance to attack enemy creature
-    const attackEnemy = (moveName, moveType) => {
+    const attackEnemy = async (moveName, moveType) => {
         try {
             // if the player and enemy aren't attacking and the battle is undecided
             if (!playerAttackStatus && !enemyAttackStatus && battleUndecided) {
 
-                // checks and sets potion timer
-                var potionTimer = [{}];
-                getPotionTimer().then(res => {
-                    potionTimer = res.data;
-                    // set to potion with same id
-                    if (res.data.length > 0) {
-                        const playerPotion = potionsList.find(potion => potion.id === potionTimer[0].potionId);
-                        const playerMPBonus = playerPotion.mpMod;
-                        const playerHPBonus = playerPotion.hpMod;
-                        setSummonMPBonus(playerMPBonus);
-                        setSummonHPBonus(playerHPBonus);
-                    }
-                    if (res.data.length === 0) {
-                        setSummonMPBonus(0);
-                        setSummonHPBonus(0);
-                    }
-                });
+                // checks and sets potion timer/stats
+                const potionTimer = await getPotionTimer()
+                // set to potion with same id
+                if (potionTimer.data.length > 0) {
+                    const playerPotion = potionsList.find(potion => potion.id === potionTimer.data[0].potionId);
+                    const playerMPBonus = playerPotion.mpMod;
+                    const playerHPBonus = playerPotion.hpMod;
+                    setSummonMPBonus(playerMPBonus);
+                    setSummonHPBonus(playerHPBonus);
+                }
+                if (potionTimer.data.length === 0) {
+                    setSummonMPBonus(0);
+                    setSummonHPBonus(0);
+                }
+
+                await loadAsyncDataPlayer();
 
                 const playerCreatureAttack = playerCreature[0].attack + chosenRelic[0].attackMod;
                 const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
@@ -224,11 +219,6 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                 var enemyDefense = enemyCreature[0].defense / 100;
                 var chancePlayer = false;
                 var criticalMultiplier = 1;
-
-                // retrieves player item records for adding drops
-                getItem().then(res => {
-                    setPlayerItems(res.data);
-                });
 
                 //checks for player magic move type and applies effect
                 if (moveType === "Magic") {
@@ -239,7 +229,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                 if (playerCreatureSpeed === enemyCreature[0].speed / 100) {
                     chancePlayer = Math.random() >= 0.5;
                 } else {
-                    chancePlayer = Math.random() >= enemyCreature[0].speed / 100 - playerCreatureSpeed;
+                    chancePlayer = Math.random() >= (enemyCreature[0].speed / 100) - playerCreatureSpeed;
                 }
 
                 // checks for player critical hit
@@ -260,96 +250,96 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                         setBattleUndecided(false);
                         playerAttackAnimation();
                         playerAttackCT(playerCreatureAttack, criticalMultiplier, enemyDefense);
-                        setTimeout(() => {
-                            setEnemyCreatureHP(0);
-                            setCombatAlert("Victory!");
-                            Userfront.user.update({
-                                data: {
-                                    userkey: Userfront.user.data.userkey,
-                                },
-                            });
-                            updateUser(player._id, {
-                                userfrontId: Userfront.user.userId, experience: player.experience + enemyCreature[0].reward * 2,
-                                drachmas: player.drachmas + enemyCreature[0].reward
-                            });
-                            // filter items for ingredients
-                            const playerIngredientData = playerItems.filter(item => item.type === "Ingredient");
-                            const greenMushroomsPlayer = playerIngredientData.find(item => item.itemId === 1);
-                            const redMushroomsPlayer = playerIngredientData.find(item => item.itemId === 2);
-                            const blueMushroomsPlayer = playerIngredientData.find(item => item.itemId === 3);
-                            // drop mushrooms on chance
+                        setEnemyCreatureHP(0);
+                        setCombatAlert("Victory!");
+                        await Userfront.user.update({
+                            data: {
+                                userkey: Userfront.user.data.userkey,
+                            },
+                        });
+                        await updateUser(player._id, {
+                            userfrontId: Userfront.user.userId, experience: player.experience + enemyCreature[0].reward * 2,
+                            drachmas: player.drachmas + enemyCreature[0].reward
+                        });
+                        // retrieves items
+                        const playerItemsData = await getItem();
+                        const playerItems = playerItemsData.data;
+                        // filter for ingredients
+                        const greenMushroomsPlayer = playerItems.filter(item => item.itemId === 1 && item.type === "Ingredient");
+                        const redMushroomsPlayer = playerItems.filter(item => item.itemId === 2 && item.type === "Ingredient");
+                        const blueMushroomsPlayer = playerItems.filter(item => item.itemId === 3 && item.type === "Ingredient");
+                        // drops mushrooms on chance
+                        if (playerItems !== undefined) {
+                            const newGreenMushrooms = greenMushroomsPlayer[0];
+                            const newRedMushrooms = redMushroomsPlayer[0];
+                            const newBlueMushrooms = blueMushroomsPlayer[0];
                             if (Math.random() <= 0.15) {
-                                Userfront.user.update({
+                                await Userfront.user.update({
                                     data: {
                                         userkey: Userfront.user.data.userkey,
                                     },
                                 });
-                                addItem({
+                                await addItem({
                                     itemId: 1,
                                     type: "Ingredient",
-                                    itemQuantity: greenMushroomsPlayer === undefined ? 1 : greenMushroomsPlayer.itemQuantity + 1,
+                                    itemQuantity: newGreenMushrooms === undefined ? 1 : newGreenMushrooms.itemQuantity + 1,
                                     userId: Userfront.user.userId,
                                 })
-                            }
-                            if (Math.random() <= 0.1) {
-                                Userfront.user.update({
-                                    data: {
-                                        userkey: Userfront.user.data.userkey,
-                                    },
-                                });
-                                addItem({
-                                    itemId: 2,
-                                    type: "Ingredient",
-                                    itemQuantity: redMushroomsPlayer === undefined ? 1 : redMushroomsPlayer.itemQuantity + 1,
-                                    userId: Userfront.user.userId,
-                                })
-                            }
-                            if (Math.random() <= 0.1) {
-                                Userfront.user.update({
-                                    data: {
-                                        userkey: Userfront.user.data.userkey,
-                                    },
-                                });
-                                addItem({
-                                    itemId: 3,
-                                    type: "Ingredient",
-                                    itemQuantity: blueMushroomsPlayer === undefined ? 1 : blueMushroomsPlayer.itemQuantity + 1,
-                                    userId: Userfront.user.userId,
-                                })
-                            }
-                        }, 250);
+                            } else
+                                if (Math.random() <= 0.1) {
+                                    if (Math.random() <= 0.5) {
+                                        await Userfront.user.update({
+                                            data: {
+                                                userkey: Userfront.user.data.userkey,
+                                            },
+                                        });
+                                        await addItem({
+                                            itemId: 2,
+                                            type: "Ingredient",
+                                            itemQuantity: newRedMushrooms === undefined ? 1 : newRedMushrooms.itemQuantity + 1,
+                                            userId: Userfront.user.userId,
+                                        })
+                                    } else {
+                                        await Userfront.user.update({
+                                            data: {
+                                                userkey: Userfront.user.data.userkey,
+                                            },
+                                        });
+                                        await addItem({
+                                            itemId: 3,
+                                            type: "Ingredient",
+                                            itemQuantity: newBlueMushrooms === undefined ? 1 : newBlueMushrooms.itemQuantity + 1,
+                                            userId: Userfront.user.userId,
+                                        })
+                                    }
+                                }
+                        }
                         setTimeout(() => {
                             setBattleStatus(false);
                             setEnemyCreature({});
                             setPlayerCreatureHP(0);
-                        }, 2250);
-                        setTimeout(() => {
                             loadAsyncDataPlayer();
-                        }, 2250);
+                        }, 1000);
                     } else {
 
                         // damages enemy
                         if (chancePlayer) {
                             playerAttackAnimation();
                             playerAttackCT(playerCreatureAttack, criticalMultiplier, enemyDefense);
-                            setTimeout(() => {
-                                setEnemyCreatureHP(enemyCreatureHP - (playerCreatureAttack - playerCreatureAttack * enemyDefense) * criticalMultiplier);
-                            }, 250);
+                            setEnemyCreatureHP(enemyCreatureHP - (playerCreatureAttack - playerCreatureAttack * enemyDefense) * criticalMultiplier);
                         }
 
                         ref.current = playerCreatureHP;
                         enemyCounterAttack(chancePlayer, moveName, moveType);
                     }
 
-                    setTimeout(() => {
-                        if (playerCreatureMP !== (playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus) && (playerCreatureMP + playerCreature[0].mpRegen + chosenRelic[0].mpRegenMod)
-                            <= (playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus)) {
-                            setPlayerCreatureMP(playerCreatureMP + playerCreature[0].mpRegen + chosenRelic[0].mpRegenMod);
-                        }
-                        if ((playerCreatureMP + playerCreature[0].mpRegen + chosenRelic[0].mpRegenMod) > playerCreature[0].mp + chosenRelic.mpMod + summonMPBonus) {
-                            setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus);
-                        }
-                    }, 500);
+                    if (playerCreatureMP !== (playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus) && (playerCreatureMP + playerCreature[0].mpRegen + chosenRelic[0].mpRegenMod)
+                        <= (playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus)) {
+                        setPlayerCreatureMP(playerCreatureMP + playerCreature[0].mpRegen + chosenRelic[0].mpRegenMod);
+                    }
+                    if ((playerCreatureMP + playerCreature[0].mpRegen + chosenRelic[0].mpRegenMod) > playerCreature[0].mp + chosenRelic.mpMod + summonMPBonus) {
+                        setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus);
+                    }
                 } else {
 
                     // checks to see if the player has enough mana to use special attack
@@ -365,72 +355,76 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                 playerAttackAnimation();
                                 specialAnimation();
                                 playerSpecialCT(playerCreatureSpecial, criticalMultiplier, enemyDefense);
-                                setTimeout(() => {
-                                    setEnemyCreatureHP(0);
-                                    setCombatAlert("Victory!");
-                                    Userfront.user.update({
-                                        data: {
-                                            userkey: Userfront.user.data.userkey,
-                                        },
-                                    });
-                                    updateUser(player._id, {
-                                        userfrontId: Userfront.user.userId, experience: player.experience + enemyCreature[0].reward * 2,
-                                        drachmas: player.drachmas + enemyCreature[0].reward
-                                    });
-                                    // filter items for ingredients
-                                    const playerIngredientData = playerItems.filter(item => item.type === "Ingredient");
-                                    const greenMushroomsPlayer = playerIngredientData.find(item => item.itemId === 1);
-                                    const redMushroomsPlayer = playerIngredientData.find(item => item.itemId === 2);
-                                    const blueMushroomsPlayer = playerIngredientData.find(item => item.itemId === 3);
-                                    // drop mushrooms on chance
+                                setEnemyCreatureHP(0);
+                                setCombatAlert("Victory!");
+                                await Userfront.user.update({
+                                    data: {
+                                        userkey: Userfront.user.data.userkey,
+                                    },
+                                });
+                                await updateUser(player._id, {
+                                    userfrontId: Userfront.user.userId, experience: player.experience + enemyCreature[0].reward * 2,
+                                    drachmas: player.drachmas + enemyCreature[0].reward
+                                });
+                                // retrieves items
+                                const playerItemsData = await getItem();
+                                const playerItems = playerItemsData.data;
+                                // filter for ingredients
+                                const greenMushroomsPlayer = playerItems.filter(item => item.itemId === 1 && item.type === "Ingredient");
+                                const redMushroomsPlayer = playerItems.filter(item => item.itemId === 2 && item.type === "Ingredient");
+                                const blueMushroomsPlayer = playerItems.filter(item => item.itemId === 3 && item.type === "Ingredient");
+                                // drops mushrooms on chance
+                                if (playerItems !== undefined) {
+                                    const newGreenMushrooms = greenMushroomsPlayer[0];
+                                    const newRedMushrooms = redMushroomsPlayer[0];
+                                    const newBlueMushrooms = blueMushroomsPlayer[0];
                                     if (Math.random() <= 0.15) {
-                                        Userfront.user.update({
+                                        await Userfront.user.update({
                                             data: {
                                                 userkey: Userfront.user.data.userkey,
                                             },
                                         });
-                                        addItem({
+                                        await addItem({
                                             itemId: 1,
                                             type: "Ingredient",
-                                            itemQuantity: greenMushroomsPlayer === undefined ? 1 : greenMushroomsPlayer.itemQuantity + 1,
+                                            itemQuantity: newGreenMushrooms === undefined ? 1 : newGreenMushrooms.itemQuantity + 1,
                                             userId: Userfront.user.userId,
                                         })
-                                    }
-                                    if (Math.random() <= 0.1) {
-                                        Userfront.user.update({
-                                            data: {
-                                                userkey: Userfront.user.data.userkey,
-                                            },
-                                        });
-                                        addItem({
-                                            itemId: 2,
-                                            type: "Ingredient",
-                                            itemQuantity: redMushroomsPlayer === undefined ? 1 : redMushroomsPlayer.itemQuantity + 1,
-                                            userId: Userfront.user.userId,
-                                        })
-                                    }
-                                    if (Math.random() <= 0.1) {
-                                        Userfront.user.update({
-                                            data: {
-                                                userkey: Userfront.user.data.userkey,
-                                            },
-                                        });
-                                        addItem({
-                                            itemId: 3,
-                                            type: "Ingredient",
-                                            itemQuantity: blueMushroomsPlayer === undefined ? 1 : blueMushroomsPlayer.itemQuantity + 1,
-                                            userId: Userfront.user.userId,
-                                        })
-                                    }
-                                }, 250);
+                                    } else
+                                        if (Math.random() <= 0.1) {
+                                            if (Math.random() <= 0.5) {
+                                                await Userfront.user.update({
+                                                    data: {
+                                                        userkey: Userfront.user.data.userkey,
+                                                    },
+                                                });
+                                                await addItem({
+                                                    itemId: 2,
+                                                    type: "Ingredient",
+                                                    itemQuantity: newRedMushrooms === undefined ? 1 : newRedMushrooms.itemQuantity + 1,
+                                                    userId: Userfront.user.userId,
+                                                })
+                                            } else {
+                                                await Userfront.user.update({
+                                                    data: {
+                                                        userkey: Userfront.user.data.userkey,
+                                                    },
+                                                });
+                                                await addItem({
+                                                    itemId: 3,
+                                                    type: "Ingredient",
+                                                    itemQuantity: newBlueMushrooms === undefined ? 1 : newBlueMushrooms.itemQuantity + 1,
+                                                    userId: Userfront.user.userId,
+                                                })
+                                            }
+                                        }
+                                }
                                 setTimeout(() => {
                                     setBattleStatus(false);
                                     setEnemyCreature({});
                                     setPlayerCreatureHP(0);
-                                }, 2250);
-                                setTimeout(() => {
                                     loadAsyncDataPlayer();
-                                }, 2250);
+                                }, 1000);
                             } else {
 
                                 // damages enemy
@@ -438,9 +432,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                     playerAttackAnimation();
                                     playerSpecialCT(playerCreatureSpecial, criticalMultiplier, enemyDefense);
                                     specialAnimation();
-                                    setTimeout(() => {
-                                        setEnemyCreatureHP(enemyCreatureHP - (playerCreatureSpecial - playerCreatureSpecial * enemyDefense) * criticalMultiplier);
-                                    }, 250);
+                                    setEnemyCreatureHP(enemyCreatureHP - (playerCreatureSpecial - playerCreatureSpecial * enemyDefense) * criticalMultiplier);
                                 }
 
                                 ref.current = playerCreatureHP;
@@ -453,19 +445,17 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                             if (chancePlayer) {
                                 playerHealCT(playerCreatureSpecial, criticalMultiplier);
                                 specialAnimation();
-                                setTimeout(() => {
 
-                                    if (playerCreatureHP + playerCreatureSpecial * criticalMultiplier > playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus) {
-                                        setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus);
-                                        ref.current = playerCreature[0].hp + chosenRelic[0].hpMod;
-                                    } else {
-                                        setPlayerCreatureHP(playerCreatureHP + playerCreatureSpecial * criticalMultiplier);
-                                        ref.current = playerCreatureHP + playerCreatureSpecial * criticalMultiplier;
-                                    }
+                                if (playerCreatureHP + playerCreatureSpecial * criticalMultiplier > playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus) {
+                                    setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus);
+                                    ref.current = playerCreature[0].hp + chosenRelic[0].hpMod;
+                                } else {
+                                    setPlayerCreatureHP(playerCreatureHP + playerCreatureSpecial * criticalMultiplier);
+                                    ref.current = playerCreatureHP + playerCreatureSpecial * criticalMultiplier;
+                                }
 
-                                    enemyCounterAttack(chancePlayer, moveName, moveType);
+                                enemyCounterAttack(chancePlayer, moveName, moveType);
 
-                                }, 250)
                             } else {
                                 ref.current = playerCreatureHP;
 

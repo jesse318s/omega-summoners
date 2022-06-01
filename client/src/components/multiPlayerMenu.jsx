@@ -151,49 +151,43 @@ function MultiPlayerMenu({
     }
 
     // loads battle data
-    const loadDataBattle = () => {
+    const loadDataBattle = async () => {
         try {
             // get and check connections
-            getConnection();
-            const { data } = getConnection();
+            await getConnection();
+            const { data } = await getConnection();
             setConnections(data);
-            loadAsyncDataPlayer();
+            await loadAsyncDataPlayer();
             if (connections.length > 2 && connections.filter(connection => connection.userId === Userfront.user.userId).length < 1) {
                 alert("There cannot be more than 3 summoners in this battle. Please try again later.");
                 return;
             }
 
-            // checks and sets potion timer
-            var potionTimer = [{}];
-            getPotionTimer().then(res => {
-                potionTimer = res.data;
-                // set to potion with same id
-                if (res.data.length > 0) {
-                    const playerPotion = potionsList.find(potion => potion.id === potionTimer[0].potionId);
-                    const playerMPBonus = playerPotion.mpMod;
-                    const playerHPBonus = playerPotion.hpMod;
-                    setSummonMPBonus(playerMPBonus);
-                    setSummonHPBonus(playerHPBonus);
-                }
-                if (res.data.length === 0) {
-                    setSummonMPBonus(0);
-                    setSummonHPBonus(0);
-                }
-            });
+            // checks and sets potion timer/stats
+            const potionTimer = await getPotionTimer()
+            // set to potion with same id
+            if (potionTimer.data.length > 0) {
+                const playerPotion = potionsList.find(potion => potion.id === potionTimer.data[0].potionId);
+                const playerMPBonus = playerPotion.mpMod;
+                const playerHPBonus = playerPotion.hpMod;
+                setSummonMPBonus(playerMPBonus);
+                setSummonHPBonus(playerHPBonus);
+            }
+            if (potionTimer.data.length === 0) {
+                setSummonMPBonus(0);
+                setSummonHPBonus(0);
+            }
 
             setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus);
             setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus);
             spawnAnimation();
             const enemyCreature = [enemyCreatureData[Math.floor(Math.random() * enemyCreatureData.length)]];
             setEnemyCreature(enemyCreature);
-            loadAsyncDataLobby();
             setCombatAlert("The battle has begun!");
             setBattleStatus(true);
             setBattleUndecided(true);
-            setTimeout(() => {
-                loadAsyncDataLobby();
-            }
-                , 1000);
+            await loadAsyncDataLobby();
+            await loadAsyncDataPlayer();
         }
         catch (error) {
             console.log(error);

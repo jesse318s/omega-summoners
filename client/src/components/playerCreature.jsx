@@ -229,7 +229,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                 if (playerCreatureSpeed === enemyCreature[0].speed / 100) {
                     chancePlayer = Math.random() >= 0.5;
                 } else {
-                    chancePlayer = Math.random() >= enemyCreature[0].speed / 100 - playerCreatureSpeed;
+                    chancePlayer = Math.random() >= (enemyCreature[0].speed / 100) - playerCreatureSpeed;
                 }
 
                 // checks for player critical hit
@@ -268,13 +268,11 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                         const greenMushroomsPlayer = playerItems.filter(item => item.itemId === 1 && item.type === "Ingredient");
                         const redMushroomsPlayer = playerItems.filter(item => item.itemId === 2 && item.type === "Ingredient");
                         const blueMushroomsPlayer = playerItems.filter(item => item.itemId === 3 && item.type === "Ingredient");
-                        if (greenMushroomsPlayer && redMushroomsPlayer && blueMushroomsPlayer) {
-                            var newGreenMushrooms = greenMushroomsPlayer[0];
-                            var newRedMushrooms = redMushroomsPlayer[0];
-                            var newBlueMushrooms = blueMushroomsPlayer[0];
-                        };
-                        //drop mushrooms on chance
-                        if (newGreenMushrooms && newRedMushrooms && newBlueMushrooms) {
+                        // drops mushrooms on chance
+                        if (playerItems !== undefined) {
+                            const newGreenMushrooms = greenMushroomsPlayer[0];
+                            const newRedMushrooms = redMushroomsPlayer[0];
+                            const newBlueMushrooms = blueMushroomsPlayer[0];
                             if (Math.random() <= 0.15) {
                                 await Userfront.user.update({
                                     data: {
@@ -375,13 +373,11 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                 const greenMushroomsPlayer = playerItems.filter(item => item.itemId === 1 && item.type === "Ingredient");
                                 const redMushroomsPlayer = playerItems.filter(item => item.itemId === 2 && item.type === "Ingredient");
                                 const blueMushroomsPlayer = playerItems.filter(item => item.itemId === 3 && item.type === "Ingredient");
-                                if (greenMushroomsPlayer && redMushroomsPlayer && blueMushroomsPlayer) {
-                                    var newGreenMushroomsB = greenMushroomsPlayer[0];
-                                    var newRedMushroomsB = redMushroomsPlayer[0];
-                                    var newBlueMushroomsB = blueMushroomsPlayer[0];
-                                };
-                                //drop mushrooms on chance
-                                if (newGreenMushroomsB && newRedMushroomsB && newBlueMushroomsB) {
+                                // drops mushrooms on chance
+                                if (playerItems !== undefined) {
+                                    const newGreenMushrooms = greenMushroomsPlayer[0];
+                                    const newRedMushrooms = redMushroomsPlayer[0];
+                                    const newBlueMushrooms = blueMushroomsPlayer[0];
                                     if (Math.random() <= 0.15) {
                                         await Userfront.user.update({
                                             data: {
@@ -391,7 +387,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                         await addItem({
                                             itemId: 1,
                                             type: "Ingredient",
-                                            itemQuantity: newGreenMushroomsB === undefined ? 1 : newGreenMushroomsB.itemQuantity + 1,
+                                            itemQuantity: newGreenMushrooms === undefined ? 1 : newGreenMushrooms.itemQuantity + 1,
                                             userId: Userfront.user.userId,
                                         })
                                     } else
@@ -405,7 +401,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                                 await addItem({
                                                     itemId: 2,
                                                     type: "Ingredient",
-                                                    itemQuantity: newRedMushroomsB === undefined ? 1 : newRedMushroomsB.itemQuantity + 1,
+                                                    itemQuantity: newRedMushrooms === undefined ? 1 : newRedMushrooms.itemQuantity + 1,
                                                     userId: Userfront.user.userId,
                                                 })
                                             } else {
@@ -417,7 +413,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                                 await addItem({
                                                     itemId: 3,
                                                     type: "Ingredient",
-                                                    itemQuantity: newBlueMushroomsB === undefined ? 1 : newBlueMushroomsB.itemQuantity + 1,
+                                                    itemQuantity: newBlueMushrooms === undefined ? 1 : newBlueMushrooms.itemQuantity + 1,
                                                     userId: Userfront.user.userId,
                                                 })
                                             }

@@ -2,12 +2,12 @@ import { useRef } from "react";
 import { updateUser } from "../services/userServices";
 import { getPotionTimer } from "../services/potionTimerServices";
 import { potionsList } from "../constants/items";
+import { getItem, addItem } from "../services/itemServices";
 
 function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setEnemyAttackStatus, critText, setCritText, combatText, setCombatText, playerAttackStatus,
     setPlayerAttackStatus, chosenRelic, specialStatus, setSpecialStatus, battleStatus, setBattleStatus, player, creatureStatsStatus, playerCreatureHP, setPlayerCreatureHP,
     playerCreatureMP, setPlayerCreatureMP, enemyCreature, setEnemyCreature, battleUndecided, setBattleUndecided, enemyCreatureHP, setEnemyCreatureHP, Userfront,
-    loadAsyncDataPlayer, setCombatAlert, relicsStatus, templeStatus, stagesStatus, alchemyStatus, playerItems, setPlayerItems, summonHPBonus, setSummonHPBonus,
-    summonMPBonus, setSummonMPBonus }) {
+    loadAsyncDataPlayer, setCombatAlert, relicsStatus, templeStatus, stagesStatus, alchemyStatus, summonHPBonus, setSummonHPBonus, summonMPBonus, setSummonMPBonus }) {
 
     // reference hook
     const ref = useRef(null);
@@ -261,6 +261,61 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                             userfrontId: Userfront.user.userId, experience: player.experience + enemyCreature[0].reward * 2,
                             drachmas: player.drachmas + enemyCreature[0].reward
                         });
+                        // retrieves items
+                        const playerItemsData = await getItem();
+                        const playerItems = playerItemsData.data;
+                        // filter for ingredients
+                        const greenMushroomsPlayer = playerItems.filter(item => item.itemId === 1 && item.type === "Ingredient");
+                        const redMushroomsPlayer = playerItems.filter(item => item.itemId === 2 && item.type === "Ingredient");
+                        const blueMushroomsPlayer = playerItems.filter(item => item.itemId === 3 && item.type === "Ingredient");
+                        if (greenMushroomsPlayer && redMushroomsPlayer && blueMushroomsPlayer) {
+                            var newGreenMushrooms = greenMushroomsPlayer[0];
+                            var newRedMushrooms = redMushroomsPlayer[0];
+                            var newBlueMushrooms = blueMushroomsPlayer[0];
+                        };
+                        //drop mushrooms on chance
+                        if (newGreenMushrooms && newRedMushrooms && newBlueMushrooms) {
+                            if (Math.random() <= 0.15) {
+                                await Userfront.user.update({
+                                    data: {
+                                        userkey: Userfront.user.data.userkey,
+                                    },
+                                });
+                                await addItem({
+                                    itemId: 1,
+                                    type: "Ingredient",
+                                    itemQuantity: newGreenMushrooms === undefined ? 1 : newGreenMushrooms.itemQuantity + 1,
+                                    userId: Userfront.user.userId,
+                                })
+                            } else
+                                if (Math.random() <= 0.1) {
+                                    if (Math.random() <= 0.5) {
+                                        await Userfront.user.update({
+                                            data: {
+                                                userkey: Userfront.user.data.userkey,
+                                            },
+                                        });
+                                        await addItem({
+                                            itemId: 2,
+                                            type: "Ingredient",
+                                            itemQuantity: newRedMushrooms === undefined ? 1 : newRedMushrooms.itemQuantity + 1,
+                                            userId: Userfront.user.userId,
+                                        })
+                                    } else {
+                                        await Userfront.user.update({
+                                            data: {
+                                                userkey: Userfront.user.data.userkey,
+                                            },
+                                        });
+                                        await addItem({
+                                            itemId: 3,
+                                            type: "Ingredient",
+                                            itemQuantity: newBlueMushrooms === undefined ? 1 : newBlueMushrooms.itemQuantity + 1,
+                                            userId: Userfront.user.userId,
+                                        })
+                                    }
+                                }
+                        }
                         setTimeout(() => {
                             setBattleStatus(false);
                             setEnemyCreature({});
@@ -313,6 +368,61 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                     userfrontId: Userfront.user.userId, experience: player.experience + enemyCreature[0].reward * 2,
                                     drachmas: player.drachmas + enemyCreature[0].reward
                                 });
+                                // retrieves items
+                                const playerItemsData = await getItem();
+                                const playerItems = playerItemsData.data;
+                                // filter for ingredients
+                                const greenMushroomsPlayer = playerItems.filter(item => item.itemId === 1 && item.type === "Ingredient");
+                                const redMushroomsPlayer = playerItems.filter(item => item.itemId === 2 && item.type === "Ingredient");
+                                const blueMushroomsPlayer = playerItems.filter(item => item.itemId === 3 && item.type === "Ingredient");
+                                if (greenMushroomsPlayer && redMushroomsPlayer && blueMushroomsPlayer) {
+                                    var newGreenMushroomsB = greenMushroomsPlayer[0];
+                                    var newRedMushroomsB = redMushroomsPlayer[0];
+                                    var newBlueMushroomsB = blueMushroomsPlayer[0];
+                                };
+                                //drop mushrooms on chance
+                                if (newGreenMushroomsB && newRedMushroomsB && newBlueMushroomsB) {
+                                    if (Math.random() <= 0.15) {
+                                        await Userfront.user.update({
+                                            data: {
+                                                userkey: Userfront.user.data.userkey,
+                                            },
+                                        });
+                                        await addItem({
+                                            itemId: 1,
+                                            type: "Ingredient",
+                                            itemQuantity: newGreenMushroomsB === undefined ? 1 : newGreenMushroomsB.itemQuantity + 1,
+                                            userId: Userfront.user.userId,
+                                        })
+                                    } else
+                                        if (Math.random() <= 0.1) {
+                                            if (Math.random() <= 0.5) {
+                                                await Userfront.user.update({
+                                                    data: {
+                                                        userkey: Userfront.user.data.userkey,
+                                                    },
+                                                });
+                                                await addItem({
+                                                    itemId: 2,
+                                                    type: "Ingredient",
+                                                    itemQuantity: newRedMushroomsB === undefined ? 1 : newRedMushroomsB.itemQuantity + 1,
+                                                    userId: Userfront.user.userId,
+                                                })
+                                            } else {
+                                                await Userfront.user.update({
+                                                    data: {
+                                                        userkey: Userfront.user.data.userkey,
+                                                    },
+                                                });
+                                                await addItem({
+                                                    itemId: 3,
+                                                    type: "Ingredient",
+                                                    itemQuantity: newBlueMushroomsB === undefined ? 1 : newBlueMushroomsB.itemQuantity + 1,
+                                                    userId: Userfront.user.userId,
+                                                })
+                                            }
+                                        }
+                                }
                                 setTimeout(() => {
                                     setBattleStatus(false);
                                     setEnemyCreature({});

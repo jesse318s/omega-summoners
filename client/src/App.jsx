@@ -71,13 +71,13 @@ function App() {
   // sets spawn state
   const [spawn, setSpawn] = useState("");
   // sets potions state
-  const [potions, setPotions] = useState([]);
+  const [potions, setPotions] = useState([{}]);
   // sets ingredients state
-  const [ingredients, setIngredients] = useState([]);
+  const [ingredients, setIngredients] = useState([{}]);
   // sets alchemy state
   const [alchemyStatus, setAlchemyStatus] = useState(false);
   // sets player items state
-  const [playerItems, setPlayerItems] = useState([]);
+  const [playerItems, setPlayerItems] = useState([{}]);
   // sets summonHPBonus state
   const [summonHPBonus, setSummonHPBonus] = useState(0);
   // sets summonMPBonus state

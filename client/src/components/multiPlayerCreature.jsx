@@ -143,26 +143,26 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
             if (chanceEnemy && chancePlayer) {
                 setTimeout(() => {
                     setCombatAlert("The battle continues...");
-                }, 750);
+                }, 600);
             }
             // checks for player speed failure
             if (chanceEnemy && !chancePlayer) {
                 setTimeout(() => {
                     setCombatAlert("Your summon was too slow!");
-                }, 750);
+                }, 500);
             }
             if (battleStatus && chanceEnemy) {
                 setTimeout(() => {
                     enemyAttackAnimation();
                     enemyAttackCT(criticalMultiplier, playerCreatureDefense);
-                }, 750);
+                }, 600);
 
                 // checks enemy critical hit
                 if (Math.random() <= enemyCreature[0].critical / 100) {
                     criticalMultiplier = 1.5;
                 }
 
-                //checks for player poison move type and crit, then applies effect
+                //checks for enemy poison move type and crit, then applies effect
                 if (enemyCreature[0].attackType === "Poison" && criticalMultiplier === 1) {
                     criticalMultiplier = 1.5;
                 }
@@ -175,7 +175,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                     setTimeout(() => {
                         setBattleStatus(false);
                         setEnemyCreature({});
-                    }, 750);
+                    }, 600);
                 } else {
                     setPlayerCreatureHP(ref.current - (enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalMultiplier);
                 }
@@ -217,7 +217,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                     setLobbyTimer(false);
                     loadAsyncDataLobby();
                     loadAsyncDataPlayer();
-                }, 1250);
+                }, 1100);
 
                 const playerCreatureAttack = playerCreature[0].attack + chosenRelic[0].attackMod;
                 const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;

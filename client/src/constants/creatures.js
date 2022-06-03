@@ -116,7 +116,7 @@ const creatures = [
         special: 32.5,
         specialCost: 50,
         specialName: "Rad Cloak",
-        specialType: "Heal",
+        specialType: "Magic",
         specialEffect: "special_effect6"
     },
     {

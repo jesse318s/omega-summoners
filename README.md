@@ -35,12 +35,13 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
     - #### `App.jsx` - This is what renders the primary MERN app, should not change
     - #### `index.js` - This is what renders all of our browser routes
 - #### `package.json` - Defines npm behaviors and packages for the client
+- #### `README` - Getting Started with Create React App
 #### `server` - Holds the server application
 - #### `.env` - This holds our configuration files, like mongoDB uri
 - #### `models` - This holds all of our data models
 - #### `routes` - This holds all of our HTTP to URL path associations for each unique url
 - #### `index.js` - Defines npm behaviors and packages for the client
-#### `package.json` - Defines npm behaviors like the scripts
+- #### `package.json` - Defines npm behaviors like the scripts
 #### `.gitignore` - Tells git which files to ignore
 #### `README` - This file!
 

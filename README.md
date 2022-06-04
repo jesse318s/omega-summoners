@@ -25,8 +25,12 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ## File structure
 #### `client` - Holds the client application
-- #### `public` - This holds all of our static files
+- #### `public` - This holds all of our static files aside from some assets
 - #### `src`
+    - #### `assets` - This holds our static assets that aren't stored in the public file
+    - #### `components` - This holds our React components that aren't pages
+    - #### `constants` - This holds our constant JavaScript objects
+    - #### `pages` - This holds our React components that are routed to as pages
     - #### `services` - Holds all of our services
     - #### `App.jsx` - This is what renders the primary MERN app, should not change
     - #### `index.js` - This is what renders all of our browser routes

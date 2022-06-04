@@ -43,7 +43,7 @@ const relics = [
     defenseMod: 0,
     criticalMod: 0,
     mpMod: 0,
-    mpRegenMod: 20,
+    mpRegenMod: 25,
     specialMod: 0,
     price: 500,
   }

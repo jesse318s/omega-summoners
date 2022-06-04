@@ -129,7 +129,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
             if (enemyCreature[0].speed / 100 === playerCreatureSpeed) {
                 chanceEnemy = Math.random() >= 0.5;
             } else {
-                chanceEnemy = Math.random() >= (playerCreatureSpeed - enemyCreature[0].speed) / 100;
+                chanceEnemy = Math.random() >= playerCreatureSpeed - (enemyCreature[0].speed / 100);
             }
             // series of checks for enemy counter attack based on speed
             if (!chanceEnemy && chancePlayer) {

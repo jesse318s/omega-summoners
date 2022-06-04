@@ -129,7 +129,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
             if (enemyCreature[0].speed / 100 === playerCreatureSpeed) {
                 chanceEnemy = Math.random() >= 0.5;
             } else {
-                chanceEnemy = Math.random() >= (playerCreatureSpeed - enemyCreature[0].speed) / 100;
+                chanceEnemy = Math.random() >= playerCreatureSpeed - (enemyCreature[0].speed / 100);
             }
             // series of checks for enemy counter attack based on speed
             if (!chanceEnemy && chancePlayer) {
@@ -145,26 +145,26 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                     if (playerCreatureHP > 0) {
                         setCombatAlert("The battle continues...");
                     };
-                }, 750);
+                }, 600);
             }
             // checks for player speed failure
             if (chanceEnemy && !chancePlayer) {
                 setTimeout(() => {
                     setCombatAlert("Your summon was too slow!");
-                }, 750);
+                }, 600);
             }
             if (battleStatus && chanceEnemy) {
                 setTimeout(() => {
                     enemyAttackAnimation();
                     enemyAttackCT(criticalMultiplier, playerCreatureDefense);
-                }, 750);
+                }, 600);
 
                 // checks enemy critical hit
                 if (Math.random() <= enemyCreature[0].critical / 100) {
                     criticalMultiplier = 1.5;
                 }
 
-                //checks for player poison move type and crit, then applies effect
+                //checks for enemy poison move type and crit, then applies effect
                 if (enemyCreature[0].attackType === "Poison" && criticalMultiplier === 1) {
                     criticalMultiplier = 1.5;
                 }
@@ -178,7 +178,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                         setBattleStatus(false);
                         setEnemyCreature({});
                         setEnemyCreatureHP(0);
-                    }, 750);
+                    }, 600);
                 } else {
                     setPlayerCreatureHP(ref.current - (enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalMultiplier);
                 }
@@ -284,7 +284,9 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                     type: "Ingredient",
                                     itemQuantity: newGreenMushrooms === undefined ? 1 : newGreenMushrooms.itemQuantity + 1,
                                     userId: Userfront.user.userId,
-                                })
+                                }).then(() => {
+                                    alert("Green mushroom aquired!");
+                                });
                             } else
                                 if (Math.random() <= 0.1) {
                                     if (Math.random() <= 0.5) {
@@ -298,7 +300,9 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                             type: "Ingredient",
                                             itemQuantity: newRedMushrooms === undefined ? 1 : newRedMushrooms.itemQuantity + 1,
                                             userId: Userfront.user.userId,
-                                        })
+                                        }).then(() => {
+                                            alert("Red mushroom aquired!");
+                                        });
                                     } else {
                                         await Userfront.user.update({
                                             data: {
@@ -310,7 +314,9 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                             type: "Ingredient",
                                             itemQuantity: newBlueMushrooms === undefined ? 1 : newBlueMushrooms.itemQuantity + 1,
                                             userId: Userfront.user.userId,
-                                        })
+                                        }).then(() => {
+                                            alert("Blue mushroom aquired!");
+                                        });
                                     }
                                 }
                         }
@@ -389,7 +395,9 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                             type: "Ingredient",
                                             itemQuantity: newGreenMushrooms === undefined ? 1 : newGreenMushrooms.itemQuantity + 1,
                                             userId: Userfront.user.userId,
-                                        })
+                                        }).then(() => {
+                                            alert("Green mushroom aquired!");
+                                        });
                                     } else
                                         if (Math.random() <= 0.1) {
                                             if (Math.random() <= 0.5) {
@@ -403,7 +411,9 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                                     type: "Ingredient",
                                                     itemQuantity: newRedMushrooms === undefined ? 1 : newRedMushrooms.itemQuantity + 1,
                                                     userId: Userfront.user.userId,
-                                                })
+                                                }).then(() => {
+                                                    alert("Red mushroom aquired!");
+                                                });
                                             } else {
                                                 await Userfront.user.update({
                                                     data: {
@@ -415,7 +425,9 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                                     type: "Ingredient",
                                                     itemQuantity: newBlueMushrooms === undefined ? 1 : newBlueMushrooms.itemQuantity + 1,
                                                     userId: Userfront.user.userId,
-                                                })
+                                                }).then(() => {
+                                                    alert("Blue mushroom aquired!");
+                                                });
                                             }
                                         }
                                 }

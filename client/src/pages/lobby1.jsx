@@ -75,7 +75,7 @@ function Lobby1() {
     // sets lobby state
     const [lobby, setLobby] = useState({});
     // sets lobby timer state
-    const [lobbyTimer, setLobbyTimer] = useState(0);
+    const [lobbyTimer, setLobbyTimer] = useState(false);
     // sets connections state
     const [connections, setConnections] = useState([{}]);
     // sets summonHPBonus state

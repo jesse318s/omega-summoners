@@ -98,6 +98,46 @@ const creatures = [
         specialName: "Ice Cloak",
         specialType: "Heal",
         specialEffect: "special_effect5"
+    },
+    {
+        id: 6,
+        name: "Nuclear Golem",
+        imgPath: "img/creature/nuke_golem_creature.png",
+        price: 500,
+        hp: 60,
+        attack: 50,
+        attackName: "Slice",
+        attackType: "Magic",
+        speed: 60,
+        defense: 20,
+        critical: 25,
+        mp: 100,
+        mpRegen: 25,
+        special: 37.5,
+        specialCost: 50,
+        specialName: "Rad Cloak",
+        specialType: "Magic",
+        specialEffect: "special_effect6"
+    },
+    {
+        id: 7,
+        name: "Quantum Golem",
+        imgPath: "img/creature/quantum_golem_creature.png",
+        price: 500,
+        hp: 60,
+        attack: 50,
+        attackName: "Slice",
+        attackType: "Magic",
+        speed: 60,
+        defense: 20,
+        critical: 25,
+        mp: 100,
+        mpRegen: 25,
+        special: 37.5,
+        specialCost: 50,
+        specialName: "Electro Cloak",
+        specialType: "Heal",
+        specialEffect: "special_effect7"
     }
 ];
 

@@ -364,7 +364,7 @@
   left: 170px;
   transform: rotateX(-20deg) rotateY(20deg) translateX(200px) scaleX(2)
     scaleY(0.89);
-  animation: harvestSoul 750ms infinite linear;
+  animation: soulHarvest 750ms infinite linear;
   width: 30px;
   height: 5px;
   background: linear-gradient(
@@ -375,7 +375,7 @@
   );
   box-shadow: 1px 2px 0 red;
 
-  @keyframes harvestSoul {
+  @keyframes soulHarvest {
     50% {
       transform: rotateX(-20deg) rotateY(20deg) translateX(-20px) scaleX(1);
     }
@@ -394,7 +394,7 @@
   bottom: 77px;
   left: 370px;
   transform: translateX(-200px) scaleX(2) scaleY(0.89);
-  animation: stareLaser 750ms infinite linear;
+  animation: starePetrify 750ms infinite linear;
   width: 80px;
   height: 3px;
   background: linear-gradient(
@@ -405,7 +405,7 @@
   );
   box-shadow: 1px 2px 0 lightblue;
 
-  @keyframes stareLaser {
+  @keyframes starePetrify {
     50% {
       transform: rotateY(180deg) translateX(-20px) scaleX(1);
     }
@@ -490,6 +490,44 @@
   animation: iceCloak 375ms;
 
   @keyframes iceCloak {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(0.5);
+    }
+  }
+}
+
+.special_effect6 {
+  position: relative;
+  bottom: 128px;
+  height: 100px;
+  border-radius: 50%;
+  background: lightgreen;
+  filter: blur(100px);
+  animation: nukeCloak 375ms;
+
+  @keyframes nukeCloak {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(0.5);
+    }
+  }
+}
+
+.special_effect7 {
+  position: relative;
+  bottom: 128px;
+  height: 100px;
+  border-radius: 50%;
+  background: darkblue;
+  filter: blur(100px);
+  animation: electroCloak 375ms;
+
+  @keyframes electroCloak {
     0% {
       transform: scale(1);
     }

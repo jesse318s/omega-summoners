@@ -284,9 +284,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                     type: "Ingredient",
                                     itemQuantity: newGreenMushrooms === undefined ? 1 : newGreenMushrooms.itemQuantity + 1,
                                     userId: Userfront.user.userId,
-                                }).then(() => {
-                                    alert("Green mushroom aquired!");
-                                });
+                                })
                             } else
                                 if (Math.random() <= 0.1) {
                                     if (Math.random() <= 0.5) {
@@ -300,9 +298,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                             type: "Ingredient",
                                             itemQuantity: newRedMushrooms === undefined ? 1 : newRedMushrooms.itemQuantity + 1,
                                             userId: Userfront.user.userId,
-                                        }).then(() => {
-                                            alert("Red mushroom aquired!");
-                                        });
+                                        })
                                     } else {
                                         await Userfront.user.update({
                                             data: {
@@ -314,9 +310,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                             type: "Ingredient",
                                             itemQuantity: newBlueMushrooms === undefined ? 1 : newBlueMushrooms.itemQuantity + 1,
                                             userId: Userfront.user.userId,
-                                        }).then(() => {
-                                            alert("Blue mushroom aquired!");
-                                        });
+                                        })
                                     }
                                 }
                         }
@@ -395,9 +389,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                             type: "Ingredient",
                                             itemQuantity: newGreenMushrooms === undefined ? 1 : newGreenMushrooms.itemQuantity + 1,
                                             userId: Userfront.user.userId,
-                                        }).then(() => {
-                                            alert("Green mushroom aquired!");
-                                        });
+                                        })
                                     } else
                                         if (Math.random() <= 0.1) {
                                             if (Math.random() <= 0.5) {
@@ -411,9 +403,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                                     type: "Ingredient",
                                                     itemQuantity: newRedMushrooms === undefined ? 1 : newRedMushrooms.itemQuantity + 1,
                                                     userId: Userfront.user.userId,
-                                                }).then(() => {
-                                                    alert("Red mushroom aquired!");
-                                                });
+                                                })
                                             } else {
                                                 await Userfront.user.update({
                                                     data: {
@@ -425,9 +415,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                                     type: "Ingredient",
                                                     itemQuantity: newBlueMushrooms === undefined ? 1 : newBlueMushrooms.itemQuantity + 1,
                                                     userId: Userfront.user.userId,
-                                                }).then(() => {
-                                                    alert("Blue mushroom aquired!");
-                                                });
+                                                })
                                             }
                                         }
                                 }

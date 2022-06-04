@@ -18,11 +18,11 @@ const relics = [
   {
     id: 2,
     name: "Spark of Zeus",
-    description: "Grants the user's summon +10 attack while relic is being used. (Infinite duration.)",
+    description: "Grants the user's summon +15 attack while relic is being used. (Infinite duration.)",
     imgPath: "img/relic/relic2.webp",
     effectClass: "relic_effect2",
     hpMod: 0,
-    attackMod: 10,
+    attackMod: 15,
     speedMod: 0,
     defenseMod: 0,
     criticalMod: 0,
@@ -34,7 +34,7 @@ const relics = [
   {
     id: 3,
     name: "Cup of Dionysus",
-    description: "Grants the user's summon +10 MP regen relic is being used. (Infinite duration.)",
+    description: "Grants the user's summon +25 MP regen while relic is being used. (Infinite duration.)",
     imgPath: "img/relic/relic3.webp",
     effectClass: "relic_effect3",
     hpMod: 0,
@@ -43,7 +43,7 @@ const relics = [
     defenseMod: 0,
     criticalMod: 0,
     mpMod: 0,
-    mpRegenMod: 10,
+    mpRegenMod: 20,
     specialMod: 0,
     price: 500,
   }

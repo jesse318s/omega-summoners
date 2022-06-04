@@ -8,7 +8,7 @@ This project does not have a mongoDB connection setup.
 ## Getting Started
 This repository aims to assist you in beginning work on a MERN stack application for heroku deployment with a solid file structure as a foundation.
 
-Since this project will hold both the client application and the server application there will be node modules in two different places. First run `npm install` from the root. After this you will run `npm run-script install-all` from the root. From now on run this command anytime you want to install all modules again. This is a script we have defined in package.json. Alternatively your group may choose to simplify this process by using yarn workspaces as specified [here](https://yarnpkg.com/lang/en/docs/workspaces/).
+Since this project will hold both the client application and the server application there will be node modules in two different places. First run `npm install` from the root.
 
 For more information on deploying to heroku reference the extra resources at the bottom of this file.
 

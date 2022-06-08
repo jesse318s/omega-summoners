@@ -311,7 +311,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                         //deducts MP
                         setPlayerCreatureMP(playerCreatureMP - playerCreature[0].specialCost);
 
-                        if (moveType !== "Heal") {
+                        if (moveType === "Poison" || moveType === "Magic" || moveType === "Lifesteal") {
 
                             // checks for enemy death
                             if (lobby.enemyHP - ((playerCreatureSpecial - playerCreatureSpecial * enemyDefense) * criticalMultiplier) <= 0) {
@@ -360,6 +360,18 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                                 }
 
                                 ref.current = playerCreatureHP;
+
+                                //life steal to player
+                                if (moveType === "Lifesteal") {
+                                    if (playerCreatureHP + ((playerCreatureSpecial * criticalMultiplier) * 0.2) > playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus) {
+                                        setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus);
+                                        ref.current = playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus;
+                                    } else {
+                                        setPlayerCreatureHP(playerCreatureHP + ((playerCreatureSpecial * criticalMultiplier) * 0.2));
+                                        ref.current = playerCreatureHP + ((playerCreatureSpecial * criticalMultiplier) * 0.2);
+                                    }
+                                }
+
                                 enemyCounterAttack(chancePlayer, moveName, moveType);
                             }
 
@@ -372,7 +384,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
 
                                 if (playerCreatureHP + playerCreatureSpecial * criticalMultiplier > playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus) {
                                     setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus);
-                                    ref.current = playerCreature[0].hp + chosenRelic[0].hpMod;
+                                    ref.current = playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus;
                                 } else {
                                     setPlayerCreatureHP(playerCreatureHP + playerCreatureSpecial * criticalMultiplier);
                                     ref.current = playerCreatureHP + playerCreatureSpecial * criticalMultiplier;

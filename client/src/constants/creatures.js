@@ -16,7 +16,7 @@ const creatures = [
         special: 75,
         specialCost: 100,
         specialName: "Harvest",
-        specialType: "Poison",
+        specialType: "Lifesteal",
         specialEffect: "special_effect1"
     },
     {
@@ -116,7 +116,7 @@ const creatures = [
         special: 37.5,
         specialCost: 50,
         specialName: "Rad Cloak",
-        specialType: "Magic",
+        specialType: "Lifesteal",
         specialEffect: "special_effect6"
     },
     {

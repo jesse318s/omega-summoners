@@ -517,7 +517,8 @@ function Menu({
                             <img onClick={() => alert("HP: " + creature.hp + "\nAttack: " + creature.attack + " | Attack type: " +
                                 creature.attackType + "\nSpeed: " + creature.speed + "\nCritical: " + creature.critical + "%\nDefense: " + creature.defense
                                 + "%\nMP: " + creature.mp + " | MP Regen: " + creature.mpRegen + "\nSpecial: " + creature.special + " | Special type: " +
-                                creature.specialType + " | Special cost: " + creature.specialCost + "\n\nMagic attacks ignore defense, and poison attacks are always critical.")}
+                                creature.specialType + " | Special cost: " + creature.specialCost + "\n\n(Poison always crits, Magic ignores armor, and " +
+                                "Lifesteal restores 20% of damage as health)")}
                                 className="summon_option_img"
                                 src={creature.imgPath}
                                 alt={creature.name}
@@ -525,7 +526,8 @@ function Menu({
                                 height="96px" /><span className="summon_info" onClick={() => alert("HP: " + creature.hp + "\nAttack: " + creature.attack + " | Attack type: " +
                                     creature.attackType + "\nSpeed: " + creature.speed + "\nCritical: " + creature.critical + "%\nDefense: " + creature.defense
                                     + "%\nMP: " + creature.mp + " | MP Regen: " + creature.mpRegen + "\nSpecial: " + creature.special + " | Special type: " +
-                                    creature.specialType + " | Special cost: " + creature.specialCost + "\n\nMagic attacks ignore defense, and poison attacks are always critical.")}>?</span>
+                                    creature.specialType + " | Special cost: " + creature.specialCost + "\n\n(Poison always crits, Magic ignores armor, and " +
+                                    "Lifesteal restores 20% of damage as health)")}>?</span>
                             <br />
                             {creature.name} - {creature.price} XP {creature.id === player.creatureId ? <i>{"\u2713"}</i> : null}
                         </div>))}

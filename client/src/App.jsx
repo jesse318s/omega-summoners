@@ -112,7 +112,8 @@ function App() {
             relics: [1],
             chosenRelic: 1,
             creatureId: 0,
-            displayCreatureStats: false
+            displayCreatureStats: false,
+            preferredSpecial: 1,
           }
           await addUser(newUser);
           alert("Welcome to the game! You have been assigned a new account. Please log in again to continue.");

@@ -28,7 +28,10 @@ const userSchema = new Schema({
     },
     chosenRelic: {
         type: Number,
-    }
+    },
+    preferredSpecial: {
+        type: Number,
+    },
 });
 
 module.exports = mongoose.model("user", userSchema);

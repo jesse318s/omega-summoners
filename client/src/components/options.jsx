@@ -61,8 +61,8 @@ function Options({ Userfront, player, optionsStatus, nameOptionStatus, setNameOp
             {optionsStatus ?
                 <div className="color_white">
                     <h3>Game Options</h3>
-                    <button className="game_button margin_small" onClick={() => { toggleDisplayCreatureStats() }}>Display Summon Stats
-                        {player.displayCreatureStats ? " - ON" : " - OFF"}</button>
+                    <button className="game_button margin_small" onClick={() => { toggleDisplayCreatureStats() }}>Display Summon Stats:
+                        {player.displayCreatureStats ? " ON" : " OFF"}</button>
                     <h3>Player Options</h3>
                     <button className="game_button margin_small" onClick={() => { setAvatarOptionStatus(!avatarOptionStatus); setNameOptionStatus(false); }}> Change Avatar</button>
                     <button className="game_button margin_small" onClick={() => { setNameOptionStatus(!nameOptionStatus); setAvatarOptionStatus(false); }}>Change Name</button>

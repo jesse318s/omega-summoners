@@ -126,7 +126,9 @@ function MultiPlayerMenu({
                             userkey: Userfront.user.data.userkey,
                         },
                     });
-                    await updateUser(player._id, { userfrontId: Userfront.user.userId, experience: player.experience - creaturePrice, creatureId: creatureId });
+                    await updateUser(player._id, {
+                        userfrontId: Userfront.user.userId, experience: player.experience - creaturePrice, creatureId: creatureId, preferredSpecial: 1
+                    });
                     await loadAsyncDataPlayer();
                 }
             } else {
@@ -277,18 +279,22 @@ function MultiPlayerMenu({
                                 key={creature.id}
                             >
                                 <button className="game_button_small" onClick={() => swapCreature(creature.id, creature.price)}>Swap</button>
-                                <img onClick={() => alert("HP: " + creature.hp + "\nAttack: " + creature.attack + " | Attack type: " +
+                                <img onClick={() => alert("HP: " + creature.hp + "\nAttack: " + creature.attack + " | Type: " +
                                     creature.attackType + "\nSpeed: " + creature.speed + "\nCritical: " + creature.critical + "%\nDefense: " + creature.defense
-                                    + "%\nMP: " + creature.mp + " | MP Regen: " + creature.mpRegen + "\nSpecial: " + creature.special + " | Special type: " +
-                                    creature.specialType + " | Special cost: " + creature.specialCost + "\n\nMagic attacks ignore defense, and poison attacks are always critical.")}
+                                    + "%\nMP: " + creature.mp + " | MP Regen: " + creature.mpRegen + "\nSpecial: " + creature.special + " | Type: " +
+                                    creature.specialType + " | Cost: " + creature.specialCost + "\nSpecial 2: " + creature.special2 + " | Type: " +
+                                    creature.specialType2 + " | Cost: " + creature.specialCost2 + "\n\n(Poison always crits, Magic ignores armor, and " +
+                                    "Lifesteal restores 20% of damage as health)")}
                                     className="summon_option_img"
                                     src={creature.imgPath}
                                     alt={creature.name}
                                     width="96px"
-                                    height="96px" /><span className="summon_info" onClick={() => alert("HP: " + creature.hp + "\nAttack: " + creature.attack + " | Attack type: " +
+                                    height="96px" /><span className="summon_info" onClick={() => alert("HP: " + creature.hp + "\nAttack: " + creature.attack + " | Type: " +
                                         creature.attackType + "\nSpeed: " + creature.speed + "\nCritical: " + creature.critical + "%\nDefense: " + creature.defense
                                         + "%\nMP: " + creature.mp + " | MP Regen: " + creature.mpRegen + "\nSpecial: " + creature.special + " | Special type: " +
-                                        creature.specialType + " | Special cost: " + creature.specialCost + "\n\nMagic attacks ignore defense, and poison attacks are always critical.")}>?</span>
+                                        creature.specialType + " | Cost: " + creature.specialCost + "\nSpecial 2: " + creature.special2 + " | Type: " +
+                                        creature.specialType2 + " | Cost: " + creature.specialCost2 + "\n\n(Poison always crits, Magic ignores armor, and " +
+                                        "Lifesteal restores 20% of damage as health)")}>?</span>
                                 <br />
                                 {creature.name} - {creature.price} XP {creature.id === player.creatureId ? <i>{"\u2713"}</i> : null}
                             </div>))}
@@ -314,7 +320,7 @@ function MultiPlayerMenu({
                         : null
                     }
                     {!battleStatus ? <>
-                        <button className="game_button margin_small" onClick={() => { alert("Alchemy cannot be performed here. (Multiplayer stage.)"); }}>
+                        <button className="game_button margin_small" onClick={() => { alert("Alchemy cannot be performed here. (Multiplayer stage)"); }}>
                             Alchemy</button> </>
                         : null}
                     {!battleStatus ? <>

@@ -16,8 +16,13 @@ const creatures = [
         special: 75,
         specialCost: 100,
         specialName: "Harvest",
-        specialType: "Poison",
-        specialEffect: "special_effect1"
+        specialType: "Lifesteal",
+        specialEffect: "special_effect1",
+        special2: 75,
+        specialCost2: 100,
+        specialName2: "Sunder",
+        specialType2: "Magic",
+        specialEffect2: "special_effect1",
     },
     {
         id: 2,
@@ -37,7 +42,12 @@ const creatures = [
         specialCost: 100,
         specialName: "Petrify",
         specialType: "Magic",
-        specialEffect: "special_effect2"
+        specialEffect: "special_effect2",
+        special2: 75,
+        specialCost2: 100,
+        specialName2: "Entrance",
+        specialType2: "Lifesteal",
+        specialEffect2: "special_effect1",
     },
     {
         id: 3,
@@ -57,7 +67,12 @@ const creatures = [
         specialCost: 100,
         specialName: "Fireball",
         specialType: "Magic",
-        specialEffect: "special_effect3"
+        specialEffect: "special_effect3",
+        special2: 75,
+        specialCost2: 100,
+        specialName2: "Spit",
+        specialType2: "Poison",
+        specialEffect2: "special_effect4",
     },
     {
         id: 4,
@@ -77,7 +92,12 @@ const creatures = [
         specialCost: 100,
         specialName: "Inject",
         specialType: "Poison",
-        specialEffect: "special_effect4"
+        specialEffect: "special_effect4",
+        special2: 75,
+        specialCost2: 100,
+        specialName2: "Foresight",
+        specialType2: "Magic",
+        specialEffect2: "special_effect2",
     },
     {
         id: 5,
@@ -97,7 +117,12 @@ const creatures = [
         specialCost: 100,
         specialName: "Ice Cloak",
         specialType: "Heal",
-        specialEffect: "special_effect5"
+        specialEffect: "special_effect5",
+        special2: 75,
+        specialCost2: 100,
+        specialName2: "Ice Bomb",
+        specialType2: "Magic",
+        specialEffect2: "special_effect5",
     },
     {
         id: 6,
@@ -115,9 +140,14 @@ const creatures = [
         mpRegen: 25,
         special: 37.5,
         specialCost: 50,
-        specialName: "Rad Cloak",
-        specialType: "Magic",
-        specialEffect: "special_effect6"
+        specialName: "Mutate",
+        specialType: "Lifesteal",
+        specialEffect: "special_effect6",
+        special2: 75,
+        specialCost2: 100,
+        specialName2: "Radiate",
+        specialType2: "Magic",
+        specialEffect2: "special_effect6",
     },
     {
         id: 7,
@@ -135,9 +165,14 @@ const creatures = [
         mpRegen: 25,
         special: 37.5,
         specialCost: 50,
-        specialName: "Electro Cloak",
+        specialName: "Phase Shift",
         specialType: "Heal",
-        specialEffect: "special_effect7"
+        specialEffect: "special_effect7",
+        special2: 75,
+        specialCost2: 100,
+        specialName2: "Entangle",
+        specialType2: "Lifesteal",
+        specialEffect2: "special_effect2",
     }
 ];
 

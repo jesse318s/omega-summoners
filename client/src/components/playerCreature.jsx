@@ -12,6 +12,26 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
     // reference hook
     const ref = useRef(null);
 
+    // toggles special choice
+    const toggleSpecial = async () => {
+        try {
+            var newSpecial = 1;
+            if (player.preferredSpecial === 1) {
+                newSpecial = 2;
+            }
+            await Userfront.user.update({
+                data: {
+                    userkey: Userfront.user.data.userkey,
+                },
+            });
+            await updateUser(player._id, { userfrontId: Userfront.user.userId, preferredSpecial: newSpecial });
+            await loadAsyncDataPlayer();
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
     // player attack animation
     const playerAttackAnimation = async () => {
         try {
@@ -212,10 +232,17 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
 
                 await loadAsyncDataPlayer();
 
+                // assigns preferred player special and cost
+                var playerCreatureSpecial = playerCreature[0].special + chosenRelic[0].specialMod;
+                var playerCreatureSpecialCost = playerCreature[0].specialCost;
+                if (player.preferredSpecial === 2) {
+                    playerCreatureSpecial = playerCreature[0].special2 + chosenRelic[0].specialMod;
+                    playerCreatureSpecialCost = playerCreature[0].specialCost2;
+                }
+
                 const playerCreatureAttack = playerCreature[0].attack + chosenRelic[0].attackMod;
                 const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
                 const playerCreatureCritical = (playerCreature[0].critical + chosenRelic[0].criticalMod) / 100;
-                const playerCreatureSpecial = playerCreature[0].special + chosenRelic[0].specialMod;
                 var enemyDefense = enemyCreature[0].defense / 100;
                 var chancePlayer = false;
                 var criticalMultiplier = 1;
@@ -343,11 +370,11 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                 } else {
 
                     // checks to see if the player has enough mana to use special attack
-                    if (playerCreatureMP >= playerCreature[0].specialCost) {
+                    if (playerCreatureMP >= playerCreatureSpecialCost) {
                         //deducts MP
-                        setPlayerCreatureMP(playerCreatureMP - playerCreature[0].specialCost);
+                        setPlayerCreatureMP(playerCreatureMP - playerCreatureSpecialCost);
 
-                        if (moveType !== "Heal") {
+                        if (moveType === "Poison" || moveType === "Magic" || moveType === "Lifesteal") {
 
                             // checks for enemy death
                             if (enemyCreatureHP - ((playerCreatureSpecial - playerCreatureSpecial * enemyDefense) * criticalMultiplier) <= 0 && chancePlayer) {
@@ -436,6 +463,18 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                 }
 
                                 ref.current = playerCreatureHP;
+
+                                //life steal to player
+                                if (moveType === "Lifesteal") {
+                                    if (playerCreatureHP + ((playerCreatureSpecial * criticalMultiplier) * 0.2) > playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus) {
+                                        setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus);
+                                        ref.current = playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus;
+                                    } else {
+                                        setPlayerCreatureHP(playerCreatureHP + ((playerCreatureSpecial * criticalMultiplier) * 0.2));
+                                        ref.current = playerCreatureHP + ((playerCreatureSpecial * criticalMultiplier) * 0.2);
+                                    }
+                                }
+
                                 enemyCounterAttack(chancePlayer, moveName, moveType);
                             }
 
@@ -448,7 +487,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
 
                                 if (playerCreatureHP + playerCreatureSpecial * criticalMultiplier > playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus) {
                                     setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus);
-                                    ref.current = playerCreature[0].hp + chosenRelic[0].hpMod;
+                                    ref.current = playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus;
                                 } else {
                                     setPlayerCreatureHP(playerCreatureHP + playerCreatureSpecial * criticalMultiplier);
                                     ref.current = playerCreatureHP + playerCreatureSpecial * criticalMultiplier;
@@ -503,12 +542,17 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                     width="128px"
                                     height="128px" />
                         }
-                        {specialStatus ? <div className="special_effect_container"><div className={creature.specialEffect} /></div> : null}
+                        {specialStatus ? <div className="special_effect_container">{player.preferredSpecial === 1 ? <div className={creature.specialEffect} /> :
+                            <div className={creature.specialEffect2} />} </div> : null}
+                        {!battleStatus ? <button className="game_button_small margin_small" onClick={() => { toggleSpecial() }} > Special: {player.preferredSpecial} </button> : null}
                         <div className="creature_panel">
                             {battleStatus ? <div className="inline_flex">
                                 <button className="game_button attack_button" onClick={() => { attackEnemy(creature.attackName, creature.attackType) }}>{creature.attackName}</button>
-                                <button className="game_button special_button" onClick={() => { attackEnemy(creature.specialName, creature.specialType) }}>{creature.specialName}<br />
-                                    Cost: {creature.specialCost} MP</button></div> : null}
+                                {player.preferredSpecial === 1 ?
+                                    <button className="game_button special_button" onClick={() => { attackEnemy(creature.specialName, creature.specialType) }}>{creature.specialName}<br />
+                                        Cost: {creature.specialCost} MP</button> :
+                                    <button className="game_button special_button" onClick={() => { attackEnemy(creature.specialName2, creature.specialType2) }}>{creature.specialName2}<br />
+                                        Cost: {creature.specialCost2} MP</button>}</div> : null}
                             <h4>{player.name}'s {creature.name}</h4>
                             {battleStatus ? <div className="progress_bar_container">
                                 <div className="progress_bar"
@@ -524,7 +568,8 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                             {creatureStatsStatus ?
                                 <div>
                                     <h5>Attack: {creature.attack + chosenRelic[0].attackMod} | Type: {creature.attackType}</h5>
-                                    <h5>Special: {creature.special + chosenRelic[0].specialMod} | Type: {creature.specialType}</h5>
+                                    {player.preferredSpecial === 1 ? <h5>Special: {creature.special + chosenRelic[0].specialMod} | Type: {creature.specialType} | {creature.specialCost} </h5> :
+                                        <h5>Special: {creature.special2 + chosenRelic[0].specialMod} | Type: {creature.specialType2} | {creature.specialCost2} </h5>}
                                     <h5>MP Regen: {creature.mpRegen + chosenRelic[0].mpRegenMod} | Speed: {creature.speed + chosenRelic[0].speedMod}</h5>
                                     <h5>Critical: {creature.critical + chosenRelic[0].criticalMod}% | Defense: {creature.defense + chosenRelic[0].defenseMod}%</h5>
                                 </div>

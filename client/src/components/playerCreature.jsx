@@ -264,7 +264,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                     criticalMultiplier = 1.5;
                 }
 
-                //checks for player poison move type and crit, then applies effect
+                // checks for player poison move type and crit, then applies effect
                 if (moveType === "Poison" && criticalMultiplier === 1) {
                     criticalMultiplier = 1.5;
                 }

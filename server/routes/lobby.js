@@ -4,7 +4,7 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const axios = require('axios');
 
-// Retreives lobby and restores enemy HP if enemy HP is 0
+// retreives lobby and restores enemy HP if enemy HP is 0
 router.get("/:id", async (req, res) => {
     try {
         const accessToken = req.headers.authorization.replace("Bearer ", "");
@@ -28,7 +28,7 @@ router.get("/:id", async (req, res) => {
     }
 });
 
-// Updates lobby enemy HP and restores enemy HP if enemy HP is 0
+// updates lobby enemy HP and restores enemy HP if enemy HP is 0
 router.put("/:id", async (req, res) => {
     try {
         const options = {

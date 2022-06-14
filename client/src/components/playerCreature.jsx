@@ -379,7 +379,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
 
                     // checks to see if the player has enough mana to use special attack
                     if (playerCreatureMP >= playerCreatureSpecialCost) {
-                        //deducts MP
+                        // deducts MP
                         setPlayerCreatureMP(playerCreatureMP - playerCreatureSpecialCost);
 
                         if (moveType === "Poison" || moveType === "Magic" || moveType === "Lifesteal") {
@@ -427,6 +427,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                             userId: Userfront.user.userId,
                                         })
                                     } else
+
                                         if (Math.random() <= 0.1) {
                                             if (Math.random() <= 0.5) {
                                                 await Userfront.user.update({
@@ -454,6 +455,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                                 })
                                             }
                                         }
+
                                 }
 
                                 setTimeout(() => {
@@ -475,7 +477,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
 
                                 ref.current = playerCreatureHP;
 
-                                //life steal to player
+                                // life steal to player
                                 if (moveType === "Lifesteal") {
 
                                     if (playerCreatureHP + ((playerCreatureSpecial * criticalMultiplier) * 0.2) > playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus) {

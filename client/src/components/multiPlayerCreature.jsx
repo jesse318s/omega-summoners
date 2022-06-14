@@ -182,7 +182,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                     criticalMultiplier = 1.5;
                 }
 
-                //checks for enemy poison move type and crit, then applies effect
+                // checks for enemy poison move type and crit, then applies effect
                 if (enemyCreature[0].attackType === "Poison" && criticalMultiplier === 1) {
                     criticalMultiplier = 1.5;
                 }
@@ -271,7 +271,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                     criticalMultiplier = 1.5;
                 }
 
-                //checks for player poison move type and crit, then applies effect
+                // checks for player poison move type and crit, then applies effect
                 if (moveType === "Poison" && criticalMultiplier === 1) {
                     criticalMultiplier = 1.5;
                 }
@@ -337,7 +337,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
 
                     // checks to see if the player has enough mana to use special attack
                     if (playerCreatureMP >= playerCreatureSpecialCost) {
-                        //deducts MP
+                        // deducts MP
                         setPlayerCreatureMP(playerCreatureMP - playerCreatureSpecialCost);
 
                         if (moveType === "Poison" || moveType === "Magic" || moveType === "Lifesteal") {
@@ -390,7 +390,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
 
                                 ref.current = playerCreatureHP;
 
-                                //life steal to player
+                                // life steal to player
                                 if (moveType === "Lifesteal") {
 
                                     if (playerCreatureHP + ((playerCreatureSpecial * criticalMultiplier) * 0.2) > playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus) {

@@ -4,6 +4,7 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const axios = require('axios');
 
+// create a new user item record and destroys old item record
 router.post("/", async (req, res) => {
     try {
         const options = {
@@ -48,6 +49,7 @@ router.post("/", async (req, res) => {
     }
 });
 
+// retrieves user item records
 router.get("/", async (req, res) => {
     try {
         const accessToken = req.headers.authorization.replace("Bearer ", "");

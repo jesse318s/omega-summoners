@@ -27,7 +27,7 @@ router.post("/", async (req, res) => {
         const userkey = await getUserkey();
         const accessToken = req.headers.authorization.replace("Bearer ", "");
         const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, { algorithms: ["RS256"] });
-        var check = false;
+        let check = false;
         for await (const doc of PotionTimer.find()) {
             if (doc.userId === req.body.userId) {
                 check = true;
@@ -54,7 +54,7 @@ router.get("/", async (req, res) => {
         const accessToken = req.headers.authorization.replace("Bearer ", "");
         const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, { algorithms: ["RS256"] });
         if (decoded) {
-            var count = 0;
+            let count = 0;
             for await (const doc of PotionTimer.find()) {
                 if (doc.userId === decoded.userId) {
                     count++;

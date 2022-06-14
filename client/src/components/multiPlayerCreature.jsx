@@ -15,7 +15,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
     // toggles special choice
     const toggleSpecial = async () => {
         try {
-            var newSpecial = 1;
+            let newSpecial = 1;
             if (player.preferredSpecial === 1) {
                 newSpecial = 2;
             }
@@ -137,9 +137,9 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
     const enemyCounterAttack = async (chancePlayer, moveName, moveType) => {
         try {
             const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
-            var playerCreatureDefense = (playerCreature[0].defense + chosenRelic[0].defenseMod) / 100;
-            var criticalMultiplier = 1;
-            var chanceEnemy = false;
+            let playerCreatureDefense = (playerCreature[0].defense + chosenRelic[0].defenseMod) / 100;
+            let criticalMultiplier = 1;
+            let chanceEnemy = false;
 
             // checks for attack type
             if (enemyCreature[0].attackType === "Magic") {
@@ -239,20 +239,20 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                     loadAsyncDataPlayer();
                 }, 1100);
 
+                const playerCreatureAttack = playerCreature[0].attack + chosenRelic[0].attackMod;
+                const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
+                const playerCreatureCritical = (playerCreature[0].critical + chosenRelic[0].criticalMod) / 100;
+                let playerCreatureSpecial = playerCreature[0].special + chosenRelic[0].specialMod;
+                let playerCreatureSpecialCost = playerCreature[0].specialCost;
+                let enemyDefense = enemyCreature[0].defense / 100;
+                let chancePlayer = false;
+                let criticalMultiplier = 1;
+
                 // assigns preferred player special and cost
-                var playerCreatureSpecial = playerCreature[0].special + chosenRelic[0].specialMod;
-                var playerCreatureSpecialCost = playerCreature[0].specialCost;
                 if (player.preferredSpecial === 2) {
                     playerCreatureSpecial = playerCreature[0].special2 + chosenRelic[0].specialMod;
                     playerCreatureSpecialCost = playerCreature[0].specialCost2;
                 }
-
-                const playerCreatureAttack = playerCreature[0].attack + chosenRelic[0].attackMod;
-                const playerCreatureSpeed = (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
-                const playerCreatureCritical = (playerCreature[0].critical + chosenRelic[0].criticalMod) / 100;
-                var enemyDefense = enemyCreature[0].defense / 100;
-                var chancePlayer = false;
-                var criticalMultiplier = 1;
 
                 // checks for player magic move type and applies effect
                 if (moveType === "Magic") {
@@ -306,6 +306,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                             setPlayerCreatureHP(0);
                             loadAsyncDataPlayer();
                         }, 1000);
+
                     } else {
 
                         // damages enemy
@@ -331,6 +332,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                     if ((playerCreatureMP + playerCreature[0].mpRegen + chosenRelic[0].mpRegenMod) > playerCreature[0].mp + chosenRelic.mpMod + summonMPBonus) {
                         setPlayerCreatureMP(playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus);
                     }
+
                 } else {
 
                     // checks to see if the player has enough mana to use special attack
@@ -390,6 +392,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
 
                                 //life steal to player
                                 if (moveType === "Lifesteal") {
+
                                     if (playerCreatureHP + ((playerCreatureSpecial * criticalMultiplier) * 0.2) > playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus) {
                                         setPlayerCreatureHP(playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus);
                                         ref.current = playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus;
@@ -397,6 +400,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                                         setPlayerCreatureHP(playerCreatureHP + ((playerCreatureSpecial * criticalMultiplier) * 0.2));
                                         ref.current = playerCreatureHP + ((playerCreatureSpecial * criticalMultiplier) * 0.2);
                                     }
+
                                 }
 
                                 enemyCounterAttack(chancePlayer, moveName, moveType);
@@ -421,9 +425,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
 
                             } else {
                                 ref.current = playerCreatureHP;
-
                                 enemyCounterAttack(chancePlayer, moveName, moveType);
-
                             }
 
                         }

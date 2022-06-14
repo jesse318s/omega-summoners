@@ -11,6 +11,7 @@ const options = {
     }
 };
 
+// Creates a new user if there isn't one
 router.post("/", async (req, res) => {
     try {
         const payload = {
@@ -43,6 +44,7 @@ router.post("/", async (req, res) => {
     }
 });
 
+// Gets user data
 router.get("/", async (req, res) => {
     try {
         const accessToken = req.headers.authorization.replace("Bearer ", "");
@@ -54,6 +56,7 @@ router.get("/", async (req, res) => {
     }
 });
 
+// Updates user data
 router.put("/:id", async (req, res) => {
     try {
         const payload = {

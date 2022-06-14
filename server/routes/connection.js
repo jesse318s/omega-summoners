@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 
+// create a new user connection for lobby if there isn't one
 router.post("/", async (req, res) => {
     try {
         const accessToken = req.headers.authorization.replace("Bearer ", "");
@@ -25,6 +26,7 @@ router.post("/", async (req, res) => {
     }
 });
 
+// retrieves lobby user connections and deletes old or extra connections
 router.get("/", async (req, res) => {
     try {
         const accessToken = req.headers.authorization.replace("Bearer ", "");

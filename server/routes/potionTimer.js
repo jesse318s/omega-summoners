@@ -4,7 +4,7 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const axios = require('axios');
 
-// Creates a new user potion timer if there isn't one
+// creates a new user potion timer if there isn't one
 router.post("/", async (req, res) => {
     try {
         const options = {
@@ -50,7 +50,7 @@ router.post("/", async (req, res) => {
     }
 });
 
-// Retrieves user potion timer and deletes old or extra timers
+// retrieves user potion timer and deletes old or extra timers
 router.get("/", async (req, res) => {
     try {
         const accessToken = req.headers.authorization.replace("Bearer ", "");

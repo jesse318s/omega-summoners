@@ -4,7 +4,7 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const axios = require('axios');
 
-// create a new user item record and destroys old item record
+// create a new user item record and deletes old item record
 router.post("/", async (req, res) => {
     try {
         const options = {

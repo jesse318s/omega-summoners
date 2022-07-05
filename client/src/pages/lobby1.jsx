@@ -32,13 +32,14 @@ function Lobby1() {
     const [optionsStatus, setOptionsStatus] = useState(false);
     const [avatarOptionStatus, setAvatarOptionStatus] = useState(false);
     const [nameOptionStatus, setNameOptionStatus] = useState(false);
-    // sets relics, temple, and summons state
+    // sets relics, temple, summons, and stages state
     const [relicsStatus, setRelicsStatus] = useState(false);
     const [templeStatus, setTempleStatus] = useState(false);
     const [summonsStatus, setSummonsStatus] = useState(false);
     const [stagesStatus, setStagesStatus] = useState(false);
     // sets player and enemy creatures state
     const [creatureData] = useState(creatures);
+    // sets enemy creature state
     const [enemyCreatureData] = useState(bossEnemyCreatureStage1);
     // sets player creature state
     const [playerCreature, setPlayerCreature] = useState({});
@@ -78,9 +79,9 @@ function Lobby1() {
     const [lobbyTimer, setLobbyTimer] = useState(false);
     // sets connections state
     const [connections, setConnections] = useState([{}]);
-    // sets summonHPBonus state
+    // sets summons HP bonus state
     const [summonHPBonus, setSummonHPBonus] = useState(0);
-    // sets summonMPBonus state
+    // sets summons MP bonus state
     const [summonMPBonus, setSummonMPBonus] = useState(0);
 
     useEffect(() => {

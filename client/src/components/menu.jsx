@@ -7,12 +7,11 @@ import { potionsList } from "../constants/items";
 import { ingredientsList } from "../constants/items";
 import recipeList from "../constants/recipes";
 
-function Menu({
-    Userfront, battleStatus, setBattleStatus, player, relicsData, relicsStatus, setRelicsStatus, playerRelics, templeStatus, setTempleStatus, creatureData, enemyCreatureData,
-    summonsStatus, setSummonsStatus, stagesStatus, setStagesStatus, combatAlert, loadAsyncDataPlayer, setPlayerCreatureHP, setPlayerCreatureMP, playerCreature, chosenRelic,
-    setEnemyCreature, setEnemyCreatureHP, setCombatAlert, setBattleUndecided, setSpawn, alchemyStatus, setAlchemyStatus, potions, setPotions, ingredients, setIngredients,
-    summonHPBonus, setSummonHPBonus, summonMPBonus, setSummonMPBonus
-}) {
+function Menu({ Userfront, battleStatus, setBattleStatus, player, relicsData, relicsStatus, setRelicsStatus, playerRelics, templeStatus, setTempleStatus, creatureData,
+    enemyCreatureData, summonsStatus, setSummonsStatus, stagesStatus, setStagesStatus, combatAlert, loadAsyncDataPlayer, setPlayerCreatureHP, setPlayerCreatureMP, playerCreature,
+    chosenRelic, setEnemyCreature, setEnemyCreatureHP, setCombatAlert, setBattleUndecided, setSpawn, alchemyStatus, setAlchemyStatus, potions, setPotions, ingredients, setIngredients,
+    summonHPBonus, setSummonHPBonus, summonMPBonus, setSummonMPBonus }) {
+
     // sets index 1 state
     const [index1, setIndex1] = useState(0);
     // sets index 2 state

@@ -429,6 +429,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                     } else
 
                                         if (Math.random() <= 0.1) {
+
                                             if (Math.random() <= 0.5) {
                                                 await Userfront.user.update({
                                                     data: {
@@ -454,6 +455,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                                     userId: Userfront.user.userId,
                                                 })
                                             }
+
                                         }
 
                                 }

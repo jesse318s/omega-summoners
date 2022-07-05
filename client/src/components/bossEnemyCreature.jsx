@@ -1,3 +1,5 @@
+import React from 'react';
+
 function BossEnemyCreature({ battleStatus, enemyCreature, playerAttackStatus, enemyAttackStatus, critText, combatText, spawn, lobby }) {
     return (
         <>
@@ -40,4 +42,4 @@ function BossEnemyCreature({ battleStatus, enemyCreature, playerAttackStatus, en
     );
 }
 
-export default BossEnemyCreature;
+export default React.memo(BossEnemyCreature);

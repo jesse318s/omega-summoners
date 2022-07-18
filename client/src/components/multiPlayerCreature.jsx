@@ -241,7 +241,7 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                 setIsFighting(true);
 
                 setLobbyTimer(true);
-                
+
                 await loadAsyncDataLobby();
 
                 // checks and sets potion timer/stats
@@ -481,12 +481,18 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
     return (<>
         {!summonsStatus && !relicsStatus && !templeStatus && !stagesStatus ? <>
             <div className="player_creature">
+
+                {/* maps the player creature with combat text, special visual effect, and creature control/stat panel */}
                 {playerCreature.map((creature) => (
                     <div
                         key={creature.id}
                     >
+
+                        {/* displays combat text */}
                         {enemyAttackStatus || critText === "heal_crit_text" || critText === "heal_combat_text" ? <div className="special_effect_container">
                             <div className={critText}>{combatText}</div></div> : null}
+
+                        {/* displays creature based on attack state */}
                         {playerAttackStatus
                             ? <img className={chosenRelic[0].effectClass}
                                 src={creature.imgPath.slice(0, -4) + "_attack.png"}
@@ -505,10 +511,15 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                                     width="128px"
                                     height="128px" />
                         }
+
+                        {/* displays the player creature special when special is used */}
                         {specialStatus ? <div className="special_effect_container">{player.preferredSpecial === 1 ? <div className={creature.specialEffect} /> :
                             <div className={creature.specialEffect2} />} </div> : null}
+
+                        {/* displays player creature controls based on battle status and selected special, and player creature stats based on user preference */}
                         {!battleStatus ? <button className="game_button_small margin_small" onClick={() => { toggleSpecial() }} > Special: {player.preferredSpecial} </button> : null}
                         <div className="creature_panel">
+
                             {battleStatus ? <div className="inline_flex">
                                 <button className="game_button attack_button" onClick={() => { attackEnemy(creature.attackName, creature.attackType) }}>{creature.attackName}</button>
                                 {player.preferredSpecial === 1 ?
@@ -516,18 +527,22 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                                         Cost: {creature.specialCost} MP</button> :
                                     <button className="game_button special_button" onClick={() => { attackEnemy(creature.specialName2, creature.specialType2) }}>{creature.specialName2}<br />
                                         Cost: {creature.specialCost2} MP</button>}</div> : null}
+
                             <h4>{player.name}'s {creature.name}</h4>
+
                             {battleStatus ? <div className="progress_bar_container">
                                 <div className="progress_bar"
                                     style={{ width: ((playerCreatureHP / (playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus))) * 100 + "%" }} />
                             </div>
                                 : null}
+
                             {!battleStatus ?
                                 <div className="inline_flex"><h5>HP: {creature.hp + chosenRelic[0].hpMod + summonHPBonus}</h5>&nbsp;|&nbsp;<h5>MP: {creature.mp + chosenRelic[0].mpMod
                                     + summonMPBonus}</h5></div>
                                 : <div className="inline_flex">
                                     <h5>HP: {playerCreatureHP} / {creature.hp + chosenRelic[0].hpMod + summonHPBonus}</h5>&nbsp;|&nbsp;
                                     <h5>MP: {playerCreatureMP} / {creature.mp + chosenRelic[0].mpMod + summonMPBonus}</h5></div>}
+
                             {creatureStatsStatus ?
                                 <div>
                                     <h5>Attack: {creature.attack + chosenRelic[0].attackMod} | Type: {creature.attackType}</h5>
@@ -537,7 +552,9 @@ function MultiPlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus,
                                     <h5>Critical: {creature.critical + chosenRelic[0].criticalMod}% | Defense: {creature.defense + chosenRelic[0].defenseMod}%</h5>
                                 </div>
                                 : null}
+
                         </div>
+
                     </div>
                 ))}
             </div>

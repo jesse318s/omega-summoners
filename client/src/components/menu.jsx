@@ -436,6 +436,8 @@ function Menu({ Userfront, battleStatus, setBattleStatus, player, relicsData, re
     return (
         <>
             <div className="color_white">
+
+                {/* if there is no battle, displays buttons for selecting temple or relics from menu to display */}
                 {!battleStatus && !alchemyStatus ? <div><div className="inline_flex">
                     <button className="game_button margin_small" onClick={() => {
                         setRelicsStatus(!relicsStatus); setTempleStatus(false); setSummonsStatus(false);
@@ -447,8 +449,12 @@ function Menu({ Userfront, battleStatus, setBattleStatus, player, relicsData, re
                     }}>Temple</button>
                 </div></div>
                     : null}
+
+                {/* displays the combat alert if there is a battle */}
                 {battleStatus ? <div><p className="combat_alert">{combatAlert}</p></div>
                     : null}
+
+                {/* displays player relics if relics button is clicked */}
                 {relicsStatus ? <div>
                     <h4>Player Relics</h4>
                     <button className="game_button_small margin_small" onClick={() => paginateRelics(indexA, "previous")}>Previous</button>
@@ -470,6 +476,8 @@ function Menu({ Userfront, battleStatus, setBattleStatus, player, relicsData, re
                 </div>
                     : null
                 }
+
+                {/* displays temple relics if temple button is clicked */}
                 {templeStatus ? <div>
                     <h4>Temple Relics</h4>
                     <button className="game_button_small margin_small" onClick={() => paginateTempleRelics(indexC, "previous")}>Previous</button>
@@ -492,6 +500,8 @@ function Menu({ Userfront, battleStatus, setBattleStatus, player, relicsData, re
                 </div>
                     : null
                 }
+
+                {/* if there is no battle, displays buttons for selecting summons or stages from menu to display */}
                 {!battleStatus && !alchemyStatus ? <>
                     <button className="game_button margin_small" onClick={() => {
                         setSummonsStatus(!summonsStatus); setTempleStatus(false); setRelicsStatus(false);
@@ -505,6 +515,8 @@ function Menu({ Userfront, battleStatus, setBattleStatus, player, relicsData, re
                         Stages</button>< br />
                 </>
                     : null}
+
+                {/* displays player summons if summons button is clicked */}
                 {summonsStatus ? <div>
                     <h4>Available Summons</h4>
                     <button className="game_button_small margin_small" onClick={() => paginateCreatures(index1, "previous")}>Previous</button>
@@ -537,6 +549,8 @@ function Menu({ Userfront, battleStatus, setBattleStatus, player, relicsData, re
                 </div>
                     : null
                 }
+
+                {/* displays stages if stages button is clicked */}
                 {stagesStatus ? <>
                     <h4>Battle Stages</h4>
                     <div className="stage_options">
@@ -555,6 +569,8 @@ function Menu({ Userfront, battleStatus, setBattleStatus, player, relicsData, re
                 </>
                     : null
                 }
+
+                {/* if there is no battle, displays button for selecting alchemy from menu to display */}
                 {!battleStatus && !alchemyStatus ? <>
                     <button className="game_button margin_small" onClick={() => {
                         loadDataAlchemy(); setTempleStatus(false); setRelicsStatus(false); setSummonsStatus(false);
@@ -563,6 +579,8 @@ function Menu({ Userfront, battleStatus, setBattleStatus, player, relicsData, re
                         Alchemy</button>
                 </>
                     : null}
+
+                {/* if there is no battle, displays a button to start a battle at the current stage */}
                 {!battleStatus && !alchemyStatus ? <>
                     <button className="game_button margin_small" onClick={() => {
                         loadDataBattle(); setTempleStatus(false); setRelicsStatus(false); setSummonsStatus(false);
@@ -570,17 +588,24 @@ function Menu({ Userfront, battleStatus, setBattleStatus, player, relicsData, re
                     }}>
                         Battle</button> </>
                     : null}
+
+                {/* displays new alchemy menu if alchemy button is clicked */}
                 {
                     alchemyStatus ? <div>
+
                         <button className="game_button margin_small" onClick={() => {
                             setAlchemyStatus(false); setRecipesStatus(false); setIngredientsStatus(false); setPotionsStatus(false);
                         }}> Exit Alchemy</button><br />
+
                         <button className="game_button margin_small" onClick={() => {
                             setRecipesStatus(!recipesStatus); setIngredientsStatus(false); setPotionsStatus(false);
                         }}> Recipes </button>
+
                         <button className="game_button margin_small" onClick={() => {
                             setPotionsStatus(!potionsStatus); setIngredientsStatus(false); setRecipesStatus(false);
                         }}> Potions </button>< br />
+
+                        {/* dispalys recipes if recipes button is clicked */}
                         {recipesStatus ? <div>
                             <h4 className="margin_small">Available Recipes</h4>
                             <button className="game_button_small margin_small" onClick={() => { paginateRecipes(index3, "previous") }}>Previous</button>
@@ -601,6 +626,8 @@ function Menu({ Userfront, battleStatus, setBattleStatus, player, relicsData, re
                                 </div>))}
                         </div>
                             : null}
+
+                        {/* displays player potions if potions button is clicked */}
                         {potionsStatus ? <div>
                             <h4 className="margin_small">Player Potions</h4>
                             <button className="game_button_small margin_small" onClick={() => paginatePotions(indexE, "previous")}>Previous</button>
@@ -621,9 +648,12 @@ function Menu({ Userfront, battleStatus, setBattleStatus, player, relicsData, re
                                 </div>))}
                         </div>
                             : null}
+
                         <button className="game_button margin_small" onClick={() => {
                             setIngredientsStatus(!ingredientsStatus); setPotionsStatus(false); setRecipesStatus(false);
                         }}> Ingredients </button>
+
+                        {/* displays player ingredients if ingredients button is clicked */}
                         {ingredientsStatus ? <div>
                             <h4 className="margin_small">Player Ingredients</h4>
                             <button className="game_button_small margin_small" onClick={() => paginateIngredients(indexG, "previous")}>Previous</button>
@@ -643,6 +673,7 @@ function Menu({ Userfront, battleStatus, setBattleStatus, player, relicsData, re
                                 </div>))}
                         </div>
                             : null}
+
                     </div>
                         : null
                 }

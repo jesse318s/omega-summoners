@@ -198,6 +198,8 @@ function MultiPlayerMenu({ Userfront, battleStatus, setBattleStatus, player, rel
         return (
             <>
                 <div className="color_white">
+
+                    {/* if there is no battle, displays buttons for selecting temple or relics from menu to display */}
                     {!battleStatus ? <div><div className="inline_flex">
                         <button className="game_button margin_small" onClick={() => {
                             setRelicsStatus(!relicsStatus); setTempleStatus(false); setSummonsStatus(false);
@@ -209,8 +211,12 @@ function MultiPlayerMenu({ Userfront, battleStatus, setBattleStatus, player, rel
                         }}>Temple</button>
                     </div></div>
                         : null}
+
+                    {/* displays the combat alert if there is a battle */}
                     {battleStatus ? <div><p className="combat_alert">{combatAlert}</p></div>
                         : null}
+
+                    {/* displays player relics if relics button is clicked */}
                     {relicsStatus ? <div>
                         <h4>Player Relics</h4>
                         <button className="game_button_small margin_small" onClick={() => paginateRelics(indexA, "previous")}>Previous</button>
@@ -232,6 +238,8 @@ function MultiPlayerMenu({ Userfront, battleStatus, setBattleStatus, player, rel
                     </div>
                         : null
                     }
+
+                    {/* displays temple relics if temple button is clicked */}
                     {templeStatus ? <div>
                         <h4>Temple Relics</h4>
                         <button className="game_button_small margin_small" onClick={() => paginateTempleRelics(indexC, "previous")}>Previous</button>
@@ -254,6 +262,8 @@ function MultiPlayerMenu({ Userfront, battleStatus, setBattleStatus, player, rel
                     </div>
                         : null
                     }
+
+                    {/* if there is no battle, displays buttons for selecting summons or stages from menu to display */}
                     {!battleStatus ? <>
                         <button className="game_button margin_small" onClick={() => {
                             setSummonsStatus(!summonsStatus); setTempleStatus(false); setRelicsStatus(false);
@@ -267,6 +277,8 @@ function MultiPlayerMenu({ Userfront, battleStatus, setBattleStatus, player, rel
                             Stages</button>< br />
                     </>
                         : null}
+
+                    {/* displays player summons if summons button is clicked */}
                     {summonsStatus ? <div>
                         <h4>Available Summons</h4>
                         <button className="game_button_small margin_small" onClick={() => paginateCreatures(index1, "previous")}>Previous</button>
@@ -299,6 +311,8 @@ function MultiPlayerMenu({ Userfront, battleStatus, setBattleStatus, player, rel
                     </div>
                         : null
                     }
+
+                    {/* displays stages if stages button is clicked */}
                     {stagesStatus ? <>
                         <h4>Battle Stages</h4>
                         <div className="stage_options">
@@ -317,10 +331,14 @@ function MultiPlayerMenu({ Userfront, battleStatus, setBattleStatus, player, rel
                     </>
                         : null
                     }
+
+                    {/* if there is no battle, displays button for attempting to select alchemy from menu, but alerts user instead */}
                     {!battleStatus ? <>
                         <button className="game_button margin_small" onClick={() => { alert("Alchemy cannot be performed here. (Multiplayer stage)"); }}>
                             Alchemy</button> </>
                         : null}
+
+                    {/* if there is no battle, displays a button to start a battle at the current stage */}
                     {!battleStatus ? <>
                         <button className="game_button margin_small" onClick={() => {
                             loadDataBattle(); setTempleStatus(false); setRelicsStatus(false); setSummonsStatus(false);
@@ -328,6 +346,8 @@ function MultiPlayerMenu({ Userfront, battleStatus, setBattleStatus, player, rel
                         }}>
                             Battle</button> </>
                         : null}
+
+                    {/* displays allies that are online and fighting */}
                     {!relicsStatus && !templeStatus && !summonsStatus && !stagesStatus ? <>
                         <h4 className="margin_small">Allies online:</h4>
                         {connections.length > 1 ? <>

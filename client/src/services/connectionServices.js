@@ -3,7 +3,8 @@ import Userfront from "@userfront/core";
 const apiUrl = "http://localhost:8080/api/connection";
 Userfront.init("rbvqd5nd");
 
-export function getConnection() {
+// retrieves the lobby connections, and refreshes connections
+export function getConnections() {
     return axios.get(apiUrl, {
         headers: {
             "Content-Type": "application/json",
@@ -12,6 +13,7 @@ export function getConnection() {
     });
 }
 
+// adds a connection to lobby
 export function addConnection(connection) {
     return axios.post(apiUrl, connection, {
         headers: {

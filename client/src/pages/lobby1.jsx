@@ -15,7 +15,7 @@ import relics from "../constants/relics";
 import { bossEnemyCreatureStage1 } from "../constants/enemyCreatures";
 import { lobby1 } from "../constants/lobbies";
 import { getLobby } from "../services/lobbyServices";
-import { getConnection, addConnection } from "../services/connectionServices";
+import { getConnections, addConnection } from "../services/connectionServices";
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
@@ -174,7 +174,7 @@ function Lobby1() {
     // retrieves connection data and updates connections
     const loadAsyncDataConnection = async () => {
         try {
-            const { data } = await getConnection();
+            const { data } = await getConnections();
             setConnections(data);
         } catch (error) {
             console.log(error);
@@ -199,7 +199,7 @@ function Lobby1() {
             // retrieves connection data and updates connections
             const loadAsyncDataConnection = async () => {
                 try {
-                    const { data } = await getConnection();
+                    const { data } = await getConnections();
                     setConnections(data);
                 } catch (error) {
                     console.log(error);

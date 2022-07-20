@@ -3,6 +3,7 @@ import Userfront from "@userfront/core";
 const apiUrl = "http://localhost:8080/api/user";
 Userfront.init("rbvqd5nd");
 
+// gets user player data
 export function getUser() {
     return axios.get(apiUrl, {
         headers: {
@@ -12,6 +13,7 @@ export function getUser() {
     });
 }
 
+// adds new user player data
 export function addUser(user) {
     return axios.post(apiUrl, user, {
         headers: {
@@ -21,6 +23,7 @@ export function addUser(user) {
     });
 }
 
+// updates user player data
 export function updateUser(id, user) {
     return axios.put(apiUrl + "/" + id, user, {
         headers: {

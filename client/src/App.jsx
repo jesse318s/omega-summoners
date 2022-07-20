@@ -12,7 +12,7 @@ import EnemyCreature from "./components/enemyCreature";
 import creatures from "./constants/creatures";
 import relics from "./constants/relics";
 import { enemyCreaturesHome } from "./constants/enemyCreatures";
-import { getItem } from "./services/itemServices";
+import { getItems } from "./services/itemServices";
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
@@ -182,7 +182,7 @@ function App() {
     try {
       const { data } = await getUser();
       setPlayer(data);
-      const { dataItems } = await getItem();
+      const { dataItems } = await getItems();
       setPlayerItems(dataItems);
     } catch (error) {
       console.log(error);

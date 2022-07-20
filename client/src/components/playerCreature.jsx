@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { updateUser } from "../services/userServices";
 import { getPotionTimer } from "../services/potionTimerServices";
 import { potionsList } from "../constants/items";
-import { getItem, addItem } from "../services/itemServices";
+import { getItems, addItem } from "../services/itemServices";
 
 function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setEnemyAttackStatus, critText, setCritText, combatText, setCombatText, playerAttackStatus,
     setPlayerAttackStatus, chosenRelic, specialStatus, setSpecialStatus, battleStatus, setBattleStatus, player, creatureStatsStatus, playerCreatureHP, setPlayerCreatureHP,
@@ -315,7 +315,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                             drachmas: player.drachmas + enemyCreature[0].reward
                         });
                         // retrieves items
-                        const playerItemsData = await getItem();
+                        const playerItemsData = await getItems();
                         const playerItems = playerItemsData.data;
                         // filter for ingredients
                         const greenMushroomsPlayer = playerItems.filter(item => item.itemId === 1 && item.type === "Ingredient");
@@ -432,7 +432,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                     drachmas: player.drachmas + enemyCreature[0].reward
                                 });
                                 // retrieves items
-                                const playerItemsData = await getItem();
+                                const playerItemsData = await getItems();
                                 const playerItems = playerItemsData.data;
                                 // filter for ingredients
                                 const greenMushroomsPlayer = playerItems.filter(item => item.itemId === 1 && item.type === "Ingredient");

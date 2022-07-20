@@ -3,6 +3,7 @@ import Userfront from "@userfront/core";
 const apiUrl = "http://localhost:8080/api/potionTimer";
 Userfront.init("rbvqd5nd");
 
+// gets player potion timer, and refreshes potion timers
 export function getPotionTimer() {
     return axios.get(apiUrl, {
         headers: {
@@ -12,6 +13,7 @@ export function getPotionTimer() {
     });
 }
 
+// adds player potion timer
 export function addPotionTimer(potionTimer) {
     return axios.post(apiUrl, potionTimer, {
         headers: {

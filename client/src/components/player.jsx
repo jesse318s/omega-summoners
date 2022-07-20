@@ -1,4 +1,5 @@
 function Player({ player }) {
+    // render player with player details panel
     return (
         <div className="color_white">
             <img src={player.avatarPath}

@@ -242,9 +242,8 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                 // begins fight
                 setIsFighting(true);
 
-                // checks and sets potion timer/stats
-                const potionTimer = await getPotionTimer()
-                // set to potion with same id
+                // checks and sets potion timer
+                const potionTimer = await getPotionTimer();
                 if (potionTimer.data.length > 0) {
                     const playerPotion = potionsList.find(potion => potion.id === potionTimer.data[0].potionId);
                     const playerMPBonus = playerPotion.mpMod;
@@ -397,6 +396,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                         enemyCounterAttack(chancePlayer, moveName, moveType);
                     }
 
+                    // regens mp
                     if (playerCreatureMP !== (playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus) && (playerCreatureMP + playerCreature[0].mpRegen + chosenRelic[0].mpRegenMod)
                         <= (playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus)) {
                         setPlayerCreatureMP(playerCreatureMP + playerCreature[0].mpRegen + chosenRelic[0].mpRegenMod);

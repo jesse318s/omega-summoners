@@ -12,37 +12,24 @@ function Menu({ Userfront, battleStatus, setBattleStatus, player, relicsData, re
     chosenRelic, setEnemyCreature, setEnemyCreatureHP, setCombatAlert, setBattleUndecided, setSpawn, alchemyStatus, setAlchemyStatus, potions, setPotions, ingredients, setIngredients,
     summonHPBonus, setSummonHPBonus, summonMPBonus, setSummonMPBonus }) {
 
-    // sets index 1 state
+    // numbered index state (summons, and recipes pagination)
     const [index1, setIndex1] = useState(0);
-    // sets index 2 state
     const [index2, setIndex2] = useState(5);
-    // sets index 3 state
     const [index3, setIndex3] = useState(0);
-    // sets index 4 state
     const [index4, setIndex4] = useState(4);
-    // sets index A state
+    // lettered index state (relics, potions, and ingredients pagination)
     const [indexA, setIndexA] = useState(0);
-    // sets index B state
     const [indexB, setIndexB] = useState(7);
-    // sets index C state
     const [indexC, setIndexC] = useState(0);
-    // sets index D state
     const [indexD, setIndexD] = useState(7);
-    // sets index E state
     const [indexE, setIndexE] = useState(0);
-    // sets index F state
     const [indexF, setIndexF] = useState(7);
-    // sets index G state
     const [indexG, setIndexG] = useState(0);
-    // sets index H state
     const [indexH, setIndexH] = useState(7);
-    // sets potion status state
+    // alchemy menu state
     const [potionsStatus, setPotionsStatus] = useState(false);
-    // sets ingredient status state
     const [ingredientsStatus, setIngredientsStatus] = useState(false);
-    // sets recipe status state
     const [recipesStatus, setRecipesStatus] = useState(false);
-    // sets potion cooldown state
     const [potionCooldown, setPotionCooldown] = useState(false);
 
     // paginates creatures for summons menu
@@ -228,9 +215,8 @@ function Menu({ Userfront, battleStatus, setBattleStatus, player, relicsData, re
     // loads battle data
     const loadDataBattle = async () => {
         try {
-            // checks and sets potion timer/stats
-            const potionTimer = await getPotionTimer()
-            // set to potion with same id
+            // checks and sets potion timer
+            const potionTimer = await getPotionTimer();
             if (potionTimer.data.length > 0) {
                 const playerPotion = potionsList.find(potion => potion.id === potionTimer.data[0].potionId);
                 const playerMPBonus = playerPotion.mpMod;
@@ -400,9 +386,8 @@ function Menu({ Userfront, battleStatus, setBattleStatus, player, relicsData, re
                             }
                         );
                         await loadDataAlchemy();
-                        // checks and sets potion timer/stats
-                        const potionTimer = await getPotionTimer()
-                        // set to potion with same id
+                        // checks and sets potion timer
+                        const potionTimer = await getPotionTimer();
                         if (potionTimer.data.length > 0) {
                             const playerPotion = potionsList.find(potion => potion.id === potionTimer.data[0].potionId);
                             const playerMPBonus = playerPotion.mpMod;

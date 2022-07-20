@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../App.scss";
-import "./lobby1.scss";
+import "./lobby1.css";
 import Userfront from "@userfront/core";
 import { useNavigate } from "react-router-dom";
 import { getUser } from "../services/userServices";
@@ -26,63 +26,44 @@ function Lobby1() {
     // navigation hook
     const navigate = useNavigate();
 
-    // sets player state
+    // player option state
     const [player, setPlayer] = useState({});
-    // sets player options states
     const [optionsStatus, setOptionsStatus] = useState(false);
     const [avatarOptionStatus, setAvatarOptionStatus] = useState(false);
     const [nameOptionStatus, setNameOptionStatus] = useState(false);
-    // sets relics, temple, summons, and stages state
+    // game menu state
     const [relicsStatus, setRelicsStatus] = useState(false);
     const [templeStatus, setTempleStatus] = useState(false);
     const [summonsStatus, setSummonsStatus] = useState(false);
     const [stagesStatus, setStagesStatus] = useState(false);
-    // sets player and enemy creatures state
+    // creature and combat state
     const [creatureData] = useState(creatures);
-    // sets enemy creature state
     const [enemyCreatureData] = useState(bossEnemyCreatureStage1);
-    // sets player creature state
     const [playerCreature, setPlayerCreature] = useState({});
-    // sets creature stats state
     const [creatureStatsStatus, setCreatureStatsStatus] = useState(false);
-    // sets battle and enemy creature state
     const [battleStatus, setBattleStatus] = useState(false);
     const [enemyCreature, setEnemyCreature] = useState({});
-    // sets player and enemy creature attack state
     const [playerAttackStatus, setPlayerAttackStatus] = useState(false);
     const [enemyAttackStatus, setEnemyAttackStatus] = useState(false);
-    // sets special status state
     const [specialStatus, setSpecialStatus] = useState(false);
-    // sets player and enemy creature hp state
     const [playerCreatureHP, setPlayerCreatureHP] = useState(0);
-    // sets player creature MP state
     const [playerCreatureMP, setPlayerCreatureMP] = useState(0);
-    // sets relics state
-    const [relicsData] = useState(relics);
-    // sets player relics state
-    const [playerRelics, setPlayerRelics] = useState([{}]);
-    // sets chosen relic state
-    const [chosenRelic, setChosenRelic] = useState({});
-    // sets combat alert state
     const [combatAlert, setCombatAlert] = useState("");
-    // sets battle decision state
     const [battleUndecided, setBattleUndecided] = useState(false);
-    // sets combat text state
     const [combatText, setCombatText] = useState("");
-    // sets crit text state
     const [critText, setCritText] = useState("combat_text");
-    // sets spawn state
     const [spawn, setSpawn] = useState("");
-    // sets lobby state
-    const [lobby, setLobby] = useState({});
-    // sets lobby timer state
-    const [lobbyTimer, setLobbyTimer] = useState(false);
-    // sets connections state
-    const [connections, setConnections] = useState([{}]);
-    // sets summons HP bonus state
+    // relic state
+    const [relicsData] = useState(relics);
+    const [playerRelics, setPlayerRelics] = useState([{}]);
+    const [chosenRelic, setChosenRelic] = useState({});
+    // alchemy state
     const [summonHPBonus, setSummonHPBonus] = useState(0);
-    // sets summons MP bonus state
     const [summonMPBonus, setSummonMPBonus] = useState(0);
+    // lobby state
+    const [lobby, setLobby] = useState({});
+    const [lobbyTimer, setLobbyTimer] = useState(false);
+    const [connections, setConnections] = useState([{}]);
 
     useEffect(() => {
         // checks for userfront authentication and redirects visitor if not authenticated

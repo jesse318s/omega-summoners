@@ -10,17 +10,13 @@ function MultiPlayerMenu({ Userfront, battleStatus, setBattleStatus, player, rel
     chosenRelic, setEnemyCreature, setCombatAlert, setBattleUndecided, setSpawn, loadAsyncDataLobby, loadAsyncDataConnection, connections, setConnections, summonHPBonus,
     setSummonHPBonus, summonMPBonus, setSummonMPBonus }) {
 
-    // sets index 1 state
+    // numbered index state (summons pagination)
     const [index1, setIndex1] = useState(0);
-    // sets index 2 state
     const [index2, setIndex2] = useState(5);
-    // sets index A state
+    // lettered index state (relics pagination)
     const [indexA, setIndexA] = useState(0);
-    // sets index B state
     const [indexB, setIndexB] = useState(7);
-    // sets index C state
     const [indexC, setIndexC] = useState(0);
-    // sets index D state
     const [indexD, setIndexD] = useState(7);
 
     // paginates creatures for summons menu
@@ -163,9 +159,8 @@ function MultiPlayerMenu({ Userfront, battleStatus, setBattleStatus, player, rel
                 return;
             }
 
-            // checks and sets potion timer/stats
+            // checks and sets potion timer
             const potionTimer = await getPotionTimer()
-            // set to potion with same id
             if (potionTimer.data.length > 0) {
                 const playerPotion = potionsList.find(potion => potion.id === potionTimer.data[0].potionId);
                 const playerMPBonus = playerPotion.mpMod;

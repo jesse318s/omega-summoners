@@ -40,6 +40,7 @@
   margin-right: 20px;
 }
 
+// game UI and player
 .game_section {
   background-image: url("assets/img_background/backgroundHome.webp");
   background-size: cover;
@@ -236,6 +237,7 @@
   border-color: rgba(gold, 0.75);
 }
 
+// creatures and combat
 .player_creature {
   float: left;
   margin-left: 10px;
@@ -276,6 +278,7 @@
   font-weight: bold;
 }
 
+// alchemy
 .recipe_option {
   margin: 0 auto;
   padding: 5px;

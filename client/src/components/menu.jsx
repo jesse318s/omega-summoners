@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { updateUser } from "../services/userServices";
-import { getItem, addItem } from "../services/itemServices";
+import { getItems, addItem } from "../services/itemServices";
 import { getPotionTimer, addPotionTimer } from "../services/potionTimerServices";
 import { useState } from "react";
 import { potionsList } from "../constants/items";
@@ -250,7 +250,7 @@ function Menu({ Userfront, battleStatus, setBattleStatus, player, relicsData, re
         try {
             setPotions([]);
             setIngredients([]);
-            const { data } = await getItem();
+            const { data } = await getItems();
             const playerPotionsData = data.filter(item => item.type === "Potion" && item.userId === player.userfrontId);
             const playerPotions = potionsList.filter(potion => playerPotionsData.some(item => item.itemId === potion.id));
             for (let i = 0; i < playerPotions.length; i++) {
@@ -274,7 +274,7 @@ function Menu({ Userfront, battleStatus, setBattleStatus, player, relicsData, re
         try {
             if (!potionCooldown) {
                 setPotionCooldown(true);
-                const { data } = await getItem();
+                const { data } = await getItems();
                 const playerPotionData = data.filter(item => item.type === "Potion" && item.itemId === potionId);
                 const potion = potionsList.find(item => item.id === potionId);
                 const newPotionData = {
@@ -348,7 +348,7 @@ function Menu({ Userfront, battleStatus, setBattleStatus, player, relicsData, re
                 await getPotionTimer();
                 const timerData = await getPotionTimer();
                 setPotionCooldown(true);
-                const { data } = await getItem();
+                const { data } = await getItems();
                 const playerPotionData = data.filter(item => item.type === "Potion" && item.itemId === potionId);
                 const potion = potionsList.find(item => item.id === potionId);
                 const currentPotionData = playerPotionData.filter(item => item.itemId === potionId);

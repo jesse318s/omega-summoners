@@ -3,7 +3,7 @@ import { updateUser } from "../services/userServices";
 import { useState } from "react";
 import { getPotionTimer } from "../services/potionTimerServices";
 import { potionsList } from "../constants/items";
-import { getConnection } from "../services/connectionServices";
+import { getConnections } from "../services/connectionServices";
 
 function MultiPlayerMenu({ Userfront, battleStatus, setBattleStatus, player, relicsData, relicsStatus, setRelicsStatus, playerRelics, templeStatus, setTempleStatus, creatureData,
     enemyCreatureData, summonsStatus, setSummonsStatus, stagesStatus, setStagesStatus, combatAlert, loadAsyncDataPlayer, setPlayerCreatureHP, setPlayerCreatureMP, playerCreature,
@@ -150,8 +150,8 @@ function MultiPlayerMenu({ Userfront, battleStatus, setBattleStatus, player, rel
     const loadDataBattle = async () => {
         try {
             // get and check connections
-            await getConnection();
-            const { data } = await getConnection();
+            await getConnections();
+            const { data } = await getConnections();
             setConnections(data);
             await loadAsyncDataPlayer();
             if (connections.length > 2 && connections.filter(connection => connection.userId === Userfront.user.userId).length < 1) {

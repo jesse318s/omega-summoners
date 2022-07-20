@@ -7,43 +7,29 @@ import { potionsList } from "../constants/items";
 import { ingredientsList } from "../constants/items";
 import recipeList from "../constants/recipes";
 
-function Menu({
-    Userfront, battleStatus, setBattleStatus, player, relicsData, relicsStatus, setRelicsStatus, playerRelics, templeStatus, setTempleStatus, creatureData, enemyCreatureData,
-    summonsStatus, setSummonsStatus, stagesStatus, setStagesStatus, combatAlert, loadAsyncDataPlayer, setPlayerCreatureHP, setPlayerCreatureMP, playerCreature, chosenRelic,
-    setEnemyCreature, setEnemyCreatureHP, setCombatAlert, setBattleUndecided, setSpawn, alchemyStatus, setAlchemyStatus, potions, setPotions, ingredients, setIngredients,
-    summonHPBonus, setSummonHPBonus, summonMPBonus, setSummonMPBonus
-}) {
-    // sets index 1 state
+function Menu({ Userfront, battleStatus, setBattleStatus, player, relicsData, relicsStatus, setRelicsStatus, playerRelics, templeStatus, setTempleStatus, creatureData,
+    enemyCreatureData, summonsStatus, setSummonsStatus, stagesStatus, setStagesStatus, combatAlert, loadAsyncDataPlayer, setPlayerCreatureHP, setPlayerCreatureMP, playerCreature,
+    chosenRelic, setEnemyCreature, setEnemyCreatureHP, setCombatAlert, setBattleUndecided, setSpawn, alchemyStatus, setAlchemyStatus, potions, setPotions, ingredients, setIngredients,
+    summonHPBonus, setSummonHPBonus, summonMPBonus, setSummonMPBonus }) {
+
+    // numbered index state (summons, and recipes pagination)
     const [index1, setIndex1] = useState(0);
-    // sets index 2 state
     const [index2, setIndex2] = useState(5);
-    // sets index 3 state
     const [index3, setIndex3] = useState(0);
-    // sets index 4 state
     const [index4, setIndex4] = useState(4);
-    // sets index A state
+    // lettered index state (relics, potions, and ingredients pagination)
     const [indexA, setIndexA] = useState(0);
-    // sets index B state
     const [indexB, setIndexB] = useState(7);
-    // sets index C state
     const [indexC, setIndexC] = useState(0);
-    // sets index D state
     const [indexD, setIndexD] = useState(7);
-    // sets index E state
     const [indexE, setIndexE] = useState(0);
-    // sets index F state
     const [indexF, setIndexF] = useState(7);
-    // sets index G state
     const [indexG, setIndexG] = useState(0);
-    // sets index H state
     const [indexH, setIndexH] = useState(7);
-    // sets potion status state
+    // alchemy menu state
     const [potionsStatus, setPotionsStatus] = useState(false);
-    // sets ingredient status state
     const [ingredientsStatus, setIngredientsStatus] = useState(false);
-    // sets recipe status state
     const [recipesStatus, setRecipesStatus] = useState(false);
-    // sets potion cooldown state
     const [potionCooldown, setPotionCooldown] = useState(false);
 
     // paginates creatures for summons menu
@@ -229,9 +215,8 @@ function Menu({
     // loads battle data
     const loadDataBattle = async () => {
         try {
-            // checks and sets potion timer/stats
-            const potionTimer = await getPotionTimer()
-            // set to potion with same id
+            // checks and sets potion timer
+            const potionTimer = await getPotionTimer();
             if (potionTimer.data.length > 0) {
                 const playerPotion = potionsList.find(potion => potion.id === potionTimer.data[0].potionId);
                 const playerMPBonus = playerPotion.mpMod;
@@ -401,9 +386,8 @@ function Menu({
                             }
                         );
                         await loadDataAlchemy();
-                        // checks and sets potion timer/stats
-                        const potionTimer = await getPotionTimer()
-                        // set to potion with same id
+                        // checks and sets potion timer
+                        const potionTimer = await getPotionTimer();
                         if (potionTimer.data.length > 0) {
                             const playerPotion = potionsList.find(potion => potion.id === potionTimer.data[0].potionId);
                             const playerMPBonus = playerPotion.mpMod;
@@ -437,6 +421,8 @@ function Menu({
     return (
         <>
             <div className="color_white">
+
+                {/* if there is no battle, displays buttons for selecting temple or relics from menu to display */}
                 {!battleStatus && !alchemyStatus ? <div><div className="inline_flex">
                     <button className="game_button margin_small" onClick={() => {
                         setRelicsStatus(!relicsStatus); setTempleStatus(false); setSummonsStatus(false);
@@ -448,8 +434,12 @@ function Menu({
                     }}>Temple</button>
                 </div></div>
                     : null}
+
+                {/* displays the combat alert if there is a battle */}
                 {battleStatus ? <div><p className="combat_alert">{combatAlert}</p></div>
                     : null}
+
+                {/* displays player relics if relics button is clicked */}
                 {relicsStatus ? <div>
                     <h4>Player Relics</h4>
                     <button className="game_button_small margin_small" onClick={() => paginateRelics(indexA, "previous")}>Previous</button>
@@ -471,6 +461,8 @@ function Menu({
                 </div>
                     : null
                 }
+
+                {/* displays temple relics if temple button is clicked */}
                 {templeStatus ? <div>
                     <h4>Temple Relics</h4>
                     <button className="game_button_small margin_small" onClick={() => paginateTempleRelics(indexC, "previous")}>Previous</button>
@@ -493,6 +485,8 @@ function Menu({
                 </div>
                     : null
                 }
+
+                {/* if there is no battle, displays buttons for selecting summons or stages from menu to display */}
                 {!battleStatus && !alchemyStatus ? <>
                     <button className="game_button margin_small" onClick={() => {
                         setSummonsStatus(!summonsStatus); setTempleStatus(false); setRelicsStatus(false);
@@ -506,6 +500,8 @@ function Menu({
                         Stages</button>< br />
                 </>
                     : null}
+
+                {/* displays player summons if summons button is clicked */}
                 {summonsStatus ? <div>
                     <h4>Available Summons</h4>
                     <button className="game_button_small margin_small" onClick={() => paginateCreatures(index1, "previous")}>Previous</button>
@@ -538,6 +534,8 @@ function Menu({
                 </div>
                     : null
                 }
+
+                {/* displays stages if stages button is clicked */}
                 {stagesStatus ? <>
                     <h4>Battle Stages</h4>
                     <div className="stage_options">
@@ -556,6 +554,8 @@ function Menu({
                 </>
                     : null
                 }
+
+                {/* if there is no battle, displays button for selecting alchemy from menu to display */}
                 {!battleStatus && !alchemyStatus ? <>
                     <button className="game_button margin_small" onClick={() => {
                         loadDataAlchemy(); setTempleStatus(false); setRelicsStatus(false); setSummonsStatus(false);
@@ -564,6 +564,8 @@ function Menu({
                         Alchemy</button>
                 </>
                     : null}
+
+                {/* if there is no battle, displays a button to start a battle at the current stage */}
                 {!battleStatus && !alchemyStatus ? <>
                     <button className="game_button margin_small" onClick={() => {
                         loadDataBattle(); setTempleStatus(false); setRelicsStatus(false); setSummonsStatus(false);
@@ -571,17 +573,24 @@ function Menu({
                     }}>
                         Battle</button> </>
                     : null}
+
+                {/* displays new alchemy menu if alchemy button is clicked */}
                 {
                     alchemyStatus ? <div>
+
                         <button className="game_button margin_small" onClick={() => {
                             setAlchemyStatus(false); setRecipesStatus(false); setIngredientsStatus(false); setPotionsStatus(false);
                         }}> Exit Alchemy</button><br />
+
                         <button className="game_button margin_small" onClick={() => {
                             setRecipesStatus(!recipesStatus); setIngredientsStatus(false); setPotionsStatus(false);
                         }}> Recipes </button>
+
                         <button className="game_button margin_small" onClick={() => {
                             setPotionsStatus(!potionsStatus); setIngredientsStatus(false); setRecipesStatus(false);
                         }}> Potions </button>< br />
+
+                        {/* dispalys recipes if recipes button is clicked */}
                         {recipesStatus ? <div>
                             <h4 className="margin_small">Available Recipes</h4>
                             <button className="game_button_small margin_small" onClick={() => { paginateRecipes(index3, "previous") }}>Previous</button>
@@ -602,6 +611,8 @@ function Menu({
                                 </div>))}
                         </div>
                             : null}
+
+                        {/* displays player potions if potions button is clicked */}
                         {potionsStatus ? <div>
                             <h4 className="margin_small">Player Potions</h4>
                             <button className="game_button_small margin_small" onClick={() => paginatePotions(indexE, "previous")}>Previous</button>
@@ -622,9 +633,12 @@ function Menu({
                                 </div>))}
                         </div>
                             : null}
+
                         <button className="game_button margin_small" onClick={() => {
                             setIngredientsStatus(!ingredientsStatus); setPotionsStatus(false); setRecipesStatus(false);
                         }}> Ingredients </button>
+
+                        {/* displays player ingredients if ingredients button is clicked */}
                         {ingredientsStatus ? <div>
                             <h4 className="margin_small">Player Ingredients</h4>
                             <button className="game_button_small margin_small" onClick={() => paginateIngredients(indexG, "previous")}>Previous</button>
@@ -644,6 +658,7 @@ function Menu({
                                 </div>))}
                         </div>
                             : null}
+
                     </div>
                         : null
                 }

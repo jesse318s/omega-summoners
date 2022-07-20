@@ -60,18 +60,26 @@ function Options({ Userfront, player, optionsStatus, nameOptionStatus, setNameOp
         <>
             {optionsStatus ?
                 <div className="color_white">
+
+                    {/* displays gameplay option menu */}
                     <h3>Game Options</h3>
                     <button className="game_button margin_small" onClick={() => { toggleDisplayCreatureStats() }}>Display Summon Stats:
                         {player.displayCreatureStats ? " ON" : " OFF"}</button>
+
+                    {/* displays player profile option menu */}
                     <h3>Player Options</h3>
                     <button className="game_button margin_small" onClick={() => { setAvatarOptionStatus(!avatarOptionStatus); setNameOptionStatus(false); }}> Change Avatar</button>
                     <button className="game_button margin_small" onClick={() => { setNameOptionStatus(!nameOptionStatus); setAvatarOptionStatus(false); }}>Change Name</button>
+
+                    {/* displays player name selection on change name button click */}
                     {nameOptionStatus && !avatarOptionStatus ? <div>
                         <label htmlFor="name">Player name:&nbsp;</label>
                         <input className="margin_small" type="text" name="name" placeholder={player.name} /><br />
                         <button className="game_button_small margin_small" onClick={() => selectName(document.querySelector("input[name='name']").value)}>Submit Name</button>
                     </div>
                         : null}
+
+                    {/* displays player avatar selection on change avatar button click */}
                     {avatarOptionStatus && !nameOptionStatus ? <div>
                         <div className="inline_flex">
                             <div className="margin_small" onClick={() => selectAvatar("img/avatar/f_mage_avatar.png")}>
@@ -99,6 +107,7 @@ function Options({ Userfront, player, optionsStatus, nameOptionStatus, setNameOp
                         </div>
                     </div>
                         : null}
+
                 </div>
                 : null}
         </>

@@ -1,4 +1,7 @@
+import React from 'react';
+
 function BossEnemyCreature({ battleStatus, enemyCreature, playerAttackStatus, enemyAttackStatus, critText, combatText, spawn, lobby }) {
+    // renders boss enemy creature with stats panel for multiplayer
     return (
         <>
             {battleStatus ?
@@ -8,7 +11,9 @@ function BossEnemyCreature({ battleStatus, enemyCreature, playerAttackStatus, en
                             key={creature.id}
                         >
                             <div className="special_effect_container"><div className={spawn} /></div>
+
                             {playerAttackStatus ? <div className="special_effect_container"><div className={spawn} /><div className={critText}>{combatText}</div></div> : null}
+
                             {enemyAttackStatus ? <img className="enemy_creature_img"
                                 src={creature.imgPath.slice(0, -4) + "_attack.png"}
                                 alt={creature.name}
@@ -24,6 +29,7 @@ function BossEnemyCreature({ battleStatus, enemyCreature, playerAttackStatus, en
                                         alt={creature.name}
                                         width="256px"
                                         height="256px" />}
+
                             <div className="creature_panel">
                                 <h4>Enemy {creature.name}</h4>
                                 <div className="progress_bar_container">
@@ -32,6 +38,7 @@ function BossEnemyCreature({ battleStatus, enemyCreature, playerAttackStatus, en
                                 </div>
                                 <h5>HP: {lobby.enemyHP} / {creature.hp}</h5>
                             </div>
+
                         </div>
                     ))}
                 </div>
@@ -40,4 +47,4 @@ function BossEnemyCreature({ battleStatus, enemyCreature, playerAttackStatus, en
     );
 }
 
-export default BossEnemyCreature;
+export default React.memo(BossEnemyCreature);

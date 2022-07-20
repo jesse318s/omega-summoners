@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { updateUser } from "../services/userServices";
 import { getPotionTimer } from "../services/potionTimerServices";
 import { potionsList } from "../constants/items";
@@ -11,6 +11,9 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
 
     // reference hook
     const ref = useRef(null);
+
+    // sets the fighting state
+    const [isFighting, setIsFighting] = useState(false);
 
     // toggles special choice
     const toggleSpecial = async () => {
@@ -35,10 +38,12 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
     // player attack animation
     const playerAttackAnimation = async () => {
         try {
-            setPlayerAttackStatus(true);
-            setTimeout(() => {
-                setPlayerAttackStatus(false);
-            }, 500);
+            if (battleStatus) {
+                setPlayerAttackStatus(true);
+                setTimeout(() => {
+                    setPlayerAttackStatus(false);
+                }, 500);
+            }
         } catch (error) {
             console.log(error);
         }
@@ -47,14 +52,16 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
     // player attack Combat Text animation
     const playerAttackCT = async (playerCreatureAttack, criticalMultiplier, enemyDefense) => {
         try {
-            if (criticalMultiplier > 1) {
-                setCritText("crit_text");
+            if (battleStatus) {
+                if (criticalMultiplier > 1) {
+                    setCritText("crit_text");
+                }
+                setCombatText((playerCreatureAttack - playerCreatureAttack * enemyDefense) * criticalMultiplier)
+                setTimeout(() => {
+                    setCombatText("");
+                    setCritText("combat_text");
+                }, 500);
             }
-            setCombatText((playerCreatureAttack - playerCreatureAttack * enemyDefense) * criticalMultiplier)
-            setTimeout(() => {
-                setCombatText("");
-                setCritText("combat_text");
-            }, 500);
         } catch (error) {
             console.log(error);
         }
@@ -63,10 +70,12 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
     // special animation
     const specialAnimation = async () => {
         try {
-            setSpecialStatus(true);
-            setTimeout(() => {
-                setSpecialStatus(false);
-            }, 500);
+            if (battleStatus) {
+                setSpecialStatus(true);
+                setTimeout(() => {
+                    setSpecialStatus(false);
+                }, 500);
+            }
         } catch (error) {
             console.log(error);
         }
@@ -75,14 +84,16 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
     // player special Combat Text animation
     const playerSpecialCT = async (playerCreatureSpecial, criticalMultiplier, enemyDefense) => {
         try {
-            if (criticalMultiplier > 1) {
-                setCritText("crit_text");
+            if (battleStatus) {
+                if (criticalMultiplier > 1) {
+                    setCritText("crit_text");
+                }
+                setCombatText((playerCreatureSpecial - playerCreatureSpecial * enemyDefense) * criticalMultiplier)
+                setTimeout(() => {
+                    setCombatText("");
+                    setCritText("combat_text");
+                }, 500);
             }
-            setCombatText((playerCreatureSpecial - playerCreatureSpecial * enemyDefense) * criticalMultiplier)
-            setTimeout(() => {
-                setCombatText("");
-                setCritText("combat_text");
-            }, 500);
         } catch (error) {
             console.log(error);
         }
@@ -91,15 +102,17 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
     // player healing Combat Text animation
     const playerHealCT = async (playerCreatureSpecial, criticalMultiplier) => {
         try {
-            setCritText("heal_combat_text");
-            if (criticalMultiplier > 1) {
-                setCritText("heal_crit_text");
+            if (battleStatus) {
+                setCritText("heal_combat_text");
+                if (criticalMultiplier > 1) {
+                    setCritText("heal_crit_text");
+                }
+                setCombatText((playerCreatureSpecial * criticalMultiplier));
+                setTimeout(() => {
+                    setCombatText("");
+                    setCritText("combat_text");
+                }, 500);
             }
-            setCombatText((playerCreatureSpecial * criticalMultiplier));
-            setTimeout(() => {
-                setCombatText("");
-                setCritText("combat_text");
-            }, 500);
         } catch (error) {
             console.log(error);
         }
@@ -108,10 +121,12 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
     // enemy attack animation
     const enemyAttackAnimation = async () => {
         try {
-            setEnemyAttackStatus(true);
-            setTimeout(() => {
-                setEnemyAttackStatus(false);
-            }, 500);
+            if (battleStatus) {
+                setEnemyAttackStatus(true);
+                setTimeout(() => {
+                    setEnemyAttackStatus(false);
+                }, 500);
+            }
         } catch (error) {
             console.log(error);
         }
@@ -120,14 +135,16 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
     // enemy attack Combat Text animation
     const enemyAttackCT = async (criticalMultiplier, playerCreatureDefense) => {
         try {
-            if (criticalMultiplier > 1) {
-                setCritText("crit_text");
+            if (battleStatus) {
+                if (criticalMultiplier > 1) {
+                    setCritText("crit_text");
+                }
+                setCombatText((enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalMultiplier)
+                setTimeout(() => {
+                    setCombatText("");
+                    setCritText("combat_text");
+                }, 500);
             }
-            setCombatText((enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalMultiplier)
-            setTimeout(() => {
-                setCombatText("");
-                setCritText("combat_text");
-            }, 500);
         } catch (error) {
             console.log(error);
         }
@@ -194,6 +211,8 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                     setBattleUndecided(false);
                     setPlayerCreatureHP(0);
                     setCombatAlert("Defeat!");
+                    // ends fight
+                    setIsFighting(false);
                     setTimeout(() => {
                         setBattleStatus(false);
                         setEnemyCreature({});
@@ -201,8 +220,13 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                     }, 600);
                 } else {
                     setPlayerCreatureHP(ref.current - (enemyCreature[0].attack - enemyCreature[0].attack * playerCreatureDefense) * criticalMultiplier);
+                    // ends fight
+                    setIsFighting(false);
                 }
 
+            } else {
+                // ends fight
+                setIsFighting(false);
             }
         } catch (error) {
             console.log(error);
@@ -213,11 +237,13 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
     const attackEnemy = async (moveName, moveType) => {
         try {
             // if the player and enemy aren't attacking and the battle is undecided
-            if (!playerAttackStatus && !enemyAttackStatus && battleUndecided) {
+            if (!playerAttackStatus && !enemyAttackStatus && battleUndecided && !isFighting) {
 
-                // checks and sets potion timer/stats
-                const potionTimer = await getPotionTimer()
-                // set to potion with same id
+                // begins fight
+                setIsFighting(true);
+
+                // checks and sets potion timer
+                const potionTimer = await getPotionTimer();
                 if (potionTimer.data.length > 0) {
                     const playerPotion = potionsList.find(potion => potion.id === potionTimer.data[0].potionId);
                     const playerMPBonus = playerPotion.mpMod;
@@ -348,6 +374,9 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
 
                         }
 
+                        // ends fight
+                        setIsFighting(false);
+
                         setTimeout(() => {
                             setBattleStatus(false);
                             setEnemyCreature({});
@@ -367,6 +396,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                         enemyCounterAttack(chancePlayer, moveName, moveType);
                     }
 
+                    // regens mp
                     if (playerCreatureMP !== (playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus) && (playerCreatureMP + playerCreature[0].mpRegen + chosenRelic[0].mpRegenMod)
                         <= (playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus)) {
                         setPlayerCreatureMP(playerCreatureMP + playerCreature[0].mpRegen + chosenRelic[0].mpRegenMod);
@@ -429,6 +459,7 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                     } else
 
                                         if (Math.random() <= 0.1) {
+
                                             if (Math.random() <= 0.5) {
                                                 await Userfront.user.update({
                                                     data: {
@@ -454,9 +485,13 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                                     userId: Userfront.user.userId,
                                                 })
                                             }
+
                                         }
 
                                 }
+
+                                // ends fight
+                                setIsFighting(false);
 
                                 setTimeout(() => {
                                     setBattleStatus(false);
@@ -531,12 +566,18 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
     return (<>
         {!summonsStatus && !relicsStatus && !templeStatus && !stagesStatus && !alchemyStatus ? <>
             <div className="player_creature">
+
+                {/* maps the player creature with combat text, special visual effect, and creature control/stat panel */}
                 {playerCreature.map((creature) => (
                     <div
                         key={creature.id}
                     >
+
+                        {/* displays combat text */}
                         {enemyAttackStatus || critText === "heal_crit_text" || critText === "heal_combat_text" ? <div className="special_effect_container">
                             <div className={critText}>{combatText}</div></div> : null}
+
+                        {/* displays creature based on attack state */}
                         {playerAttackStatus
                             ? <img className={chosenRelic[0].effectClass}
                                 src={creature.imgPath.slice(0, -4) + "_attack.png"}
@@ -555,10 +596,15 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                     width="128px"
                                     height="128px" />
                         }
+
+                        {/* displays the player creature special when special is used */}
                         {specialStatus ? <div className="special_effect_container">{player.preferredSpecial === 1 ? <div className={creature.specialEffect} /> :
                             <div className={creature.specialEffect2} />} </div> : null}
+
+                        {/* displays player creature controls based on battle status and selected special, and player creature stats based on user preference */}
                         {!battleStatus ? <button className="game_button_small margin_small" onClick={() => { toggleSpecial() }} > Special: {player.preferredSpecial} </button> : null}
                         <div className="creature_panel">
+
                             {battleStatus ? <div className="inline_flex">
                                 <button className="game_button attack_button" onClick={() => { attackEnemy(creature.attackName, creature.attackType) }}>{creature.attackName}</button>
                                 {player.preferredSpecial === 1 ?
@@ -566,18 +612,22 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                         Cost: {creature.specialCost} MP</button> :
                                     <button className="game_button special_button" onClick={() => { attackEnemy(creature.specialName2, creature.specialType2) }}>{creature.specialName2}<br />
                                         Cost: {creature.specialCost2} MP</button>}</div> : null}
+
                             <h4>{player.name}'s {creature.name}</h4>
+
                             {battleStatus ? <div className="progress_bar_container">
                                 <div className="progress_bar"
                                     style={{ width: ((playerCreatureHP / (playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus))) * 100 + "%" }} />
                             </div>
                                 : null}
+
                             {!battleStatus ?
                                 <div className="inline_flex"><h5>HP: {creature.hp + chosenRelic[0].hpMod + summonHPBonus}</h5>&nbsp;|&nbsp;<h5>MP: {creature.mp + chosenRelic[0].mpMod
                                     + summonMPBonus}</h5></div>
                                 : <div className="inline_flex">
                                     <h5>HP: {playerCreatureHP} / {creature.hp + chosenRelic[0].hpMod + summonHPBonus}</h5>&nbsp;|&nbsp;
                                     <h5>MP: {playerCreatureMP} / {creature.mp + chosenRelic[0].mpMod + summonMPBonus}</h5></div>}
+
                             {creatureStatsStatus ?
                                 <div>
                                     <h5>Attack: {creature.attack + chosenRelic[0].attackMod} | Type: {creature.attackType}</h5>
@@ -587,7 +637,9 @@ function PlayerCreature({ summonsStatus, playerCreature, enemyAttackStatus, setE
                                     <h5>Critical: {creature.critical + chosenRelic[0].criticalMod}% | Defense: {creature.defense + chosenRelic[0].defenseMod}%</h5>
                                 </div>
                                 : null}
+
                         </div>
+
                     </div>
                 ))}
             </div>

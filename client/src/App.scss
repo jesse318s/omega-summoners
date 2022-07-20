@@ -40,6 +40,7 @@
   margin-right: 20px;
 }
 
+// game UI and player
 .game_section {
   background-image: url("assets/img_background/backgroundHome.webp");
   background-size: cover;
@@ -236,6 +237,7 @@
   border-color: rgba(gold, 0.75);
 }
 
+// creatures and combat
 .player_creature {
   float: left;
   margin-left: 10px;
@@ -276,6 +278,7 @@
   font-weight: bold;
 }
 
+// alchemy
 .recipe_option {
   margin: 0 auto;
   padding: 5px;
@@ -533,6 +536,32 @@
     }
     100% {
       transform: scale(0.5);
+    }
+  }
+}
+
+.special_effect8 {
+  position: relative;
+  bottom: 75px;
+  left: 210px;
+  transform: rotateX(-20deg) rotateY(20deg) translateX(200px) scaleX(2)
+    scaleY(0.89);
+  animation: quantumEntangle 750ms infinite linear;
+  border-radius: 25px;
+  width: 10px;
+  height: 10px;
+  background: linear-gradient(
+    to top,
+    rgb(0, 153, 255) 0%,
+    rgb(55, 0, 255) 33%,
+    rgb(0, 0, 0) 100%
+  );
+  @keyframes quantumEntangle {
+    50% {
+      transform: rotateX(180deg);
+    }
+    100% {
+      transform: rotateX(-180deg) translateX(-20px);
     }
   }
 }

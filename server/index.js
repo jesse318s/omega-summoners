@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const connection = require("./db");
 require("dotenv").config();
 const express = require("express");
 const app = express();
@@ -10,21 +10,21 @@ const connectionRecord = require("./routes/connection");
 const item = require("./routes/item");
 const potionTimer = require("./routes/potionTimer");
 
-mongoose.connect(process.env.MONGO_URL);
+// make connection
+connection();
 
-const connection = mongoose.connection;
-
-connection.once("open", () => { console.log("MongoDB database connection established successfully.") });
-
+// use packages
 app.use(express.json());
 app.use(cors());
 app.use(compression());
 
+// use routes
 app.use("/api/user", user);
 app.use("/api/lobby", lobby);
 app.use("/api/connection", connectionRecord);
 app.use("/api/item", item);
 app.use("/api/potionTimer", potionTimer);
 
+// listen for connection
 const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Listening on port ${port}...`));

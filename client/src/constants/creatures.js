@@ -172,7 +172,7 @@ const creatures = [
         specialCost2: 100,
         specialName2: "Entangle",
         specialType2: "Lifesteal",
-        specialEffect2: "special_effect2",
+        specialEffect2: "special_effect8",
     }
 ];
 

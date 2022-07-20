@@ -1,4 +1,7 @@
+import React from 'react';
+
 function EnemyCreature({ battleStatus, enemyCreature, playerAttackStatus, enemyAttackStatus, critText, combatText, enemyCreatureHP, spawn }) {
+    // renders enemy creature with stats panel
     return (
         <>
             {battleStatus ?
@@ -8,7 +11,9 @@ function EnemyCreature({ battleStatus, enemyCreature, playerAttackStatus, enemyA
                             key={creature.id}
                         >
                             <div className="special_effect_container"><div className={spawn} /></div>
+
                             {playerAttackStatus ? <div className="special_effect_container"><div className={spawn} /><div className={critText}>{combatText}</div></div> : null}
+
                             {enemyAttackStatus ? <img className="enemy_creature_img"
                                 src={creature.imgPath.slice(0, -4) + "_attack.png"}
                                 alt={creature.name}
@@ -24,6 +29,7 @@ function EnemyCreature({ battleStatus, enemyCreature, playerAttackStatus, enemyA
                                         alt={creature.name}
                                         width="128px"
                                         height="128px" />}
+
                             <div className="creature_panel">
                                 <h4>Enemy {creature.name}</h4>
                                 <div className="progress_bar_container">
@@ -32,6 +38,7 @@ function EnemyCreature({ battleStatus, enemyCreature, playerAttackStatus, enemyA
                                 </div>
                                 <h5>HP: {enemyCreatureHP} / {creature.hp}</h5>
                             </div>
+
                         </div>
                     ))}
                 </div>
@@ -40,4 +47,4 @@ function EnemyCreature({ battleStatus, enemyCreature, playerAttackStatus, enemyA
     );
 }
 
-export default EnemyCreature;
+export default React.memo(EnemyCreature);

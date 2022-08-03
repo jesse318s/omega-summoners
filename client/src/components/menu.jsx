@@ -37,7 +37,7 @@ function Menu({
   setEnemyCreatureHP,
   setCombatAlert,
   setBattleUndecided,
-  setSpawn,
+  setSpawnAnimation,
   alchemyStatus,
   setAlchemyStatus,
   potions,
@@ -250,9 +250,9 @@ function Menu({
   // enemy spawn animation
   const displaySpawnAnimation = async () => {
     try {
-      setSpawn("spawn_effect");
+      setSpawnAnimation("spawn_effect");
       setTimeout(() => {
-        setSpawn("");
+        setSpawnAnimation("");
       }, 200);
     } catch (error) {
       console.log(error);

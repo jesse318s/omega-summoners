@@ -50,7 +50,7 @@ function App() {
   const [battleUndecided, setBattleUndecided] = useState(false);
   const [combatText, setCombatText] = useState("");
   const [critText, setCritText] = useState("combat_text");
-  const [spawn, setSpawn] = useState("");
+  const [spawnAnimation, setSpawnAnimation] = useState("");
   // relic state
   const [relicsData] = useState(relics);
   const [playerRelics, setPlayerRelics] = useState([{}]);
@@ -260,7 +260,7 @@ function App() {
                 setEnemyCreatureHP={setEnemyCreatureHP}
                 setCombatAlert={setCombatAlert}
                 setBattleUndecided={setBattleUndecided}
-                setSpawn={setSpawn}
+                setSpawnAnimation={setSpawnAnimation}
                 alchemyStatus={alchemyStatus}
                 setAlchemyStatus={setAlchemyStatus}
                 potions={potions}
@@ -324,7 +324,7 @@ function App() {
                 critText={critText}
                 combatText={combatText}
                 enemyCreatureHP={enemyCreatureHP}
-                spawn={spawn}
+                spawnAnimation={spawnAnimation}
               />
             </>
           ) : null}

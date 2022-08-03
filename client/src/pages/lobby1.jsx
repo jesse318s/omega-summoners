@@ -51,7 +51,7 @@ function Lobby1() {
   const [battleUndecided, setBattleUndecided] = useState(false);
   const [combatText, setCombatText] = useState("");
   const [critText, setCritText] = useState("combat_text");
-  const [spawn, setSpawn] = useState("");
+  const [spawnAnimation, setSpawnAnimation] = useState("");
   // relic state
   const [relicsData] = useState(relics);
   const [playerRelics, setPlayerRelics] = useState([{}]);
@@ -275,7 +275,7 @@ function Lobby1() {
                 setEnemyCreature={setEnemyCreature}
                 setCombatAlert={setCombatAlert}
                 setBattleUndecided={setBattleUndecided}
-                setSpawn={setSpawn}
+                setSpawnAnimation={setSpawnAnimation}
                 loadAsyncDataLobby={() => loadAsyncDataLobby()}
                 loadAsyncDataConnection={() => loadAsyncDataConnection()}
                 connections={connections}
@@ -335,7 +335,7 @@ function Lobby1() {
                 enemyAttackStatus={enemyAttackStatus}
                 critText={critText}
                 combatText={combatText}
-                spawn={spawn}
+                spawnAnimation={spawnAnimation}
                 lobby={lobby}
               />
             </>

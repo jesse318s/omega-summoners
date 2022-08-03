@@ -8,7 +8,7 @@ function EnemyCreature({
   critText,
   combatText,
   enemyCreatureHP,
-  spawn,
+  spawnAnimation,
 }) {
   // renders enemy creature with stats panel
   return (
@@ -18,12 +18,12 @@ function EnemyCreature({
           {enemyCreature.map((creature) => (
             <div key={creature.id}>
               <div className="special_effect_container">
-                <div className={spawn} />
+                <div className={spawnAnimation} />
               </div>
 
               {playerAttackStatus ? (
                 <div className="special_effect_container">
-                  <div className={spawn} />
+                  <div className={spawnAnimation} />
                   <div className={critText}>{combatText}</div>
                 </div>
               ) : null}

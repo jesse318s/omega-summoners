@@ -7,7 +7,7 @@ function BossEnemyCreature({
   enemyAttackStatus,
   critText,
   combatText,
-  spawn,
+  spawnAnimation,
   lobby,
 }) {
   // renders boss enemy creature with stats panel for multiplayer
@@ -18,12 +18,12 @@ function BossEnemyCreature({
           {enemyCreature.map((creature) => (
             <div key={creature.id}>
               <div className="special_effect_container">
-                <div className={spawn} />
+                <div className={spawnAnimation} />
               </div>
 
               {playerAttackStatus ? (
                 <div className="special_effect_container">
-                  <div className={spawn} />
+                  <div className={spawnAnimation} />
                   <div className={critText}>{combatText}</div>
                 </div>
               ) : null}

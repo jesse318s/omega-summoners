@@ -1,17 +1,18 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const connectionSchema = new Schema({
+const connectionSchema = new Schema(
+  {
     userId: {
-        type: Number,
+      type: Number,
     },
     name: {
-        type: String,
-    }
-},
-    {
-        timestamps: true
-    }
+      type: String,
+    },
+  },
+  {
+    timestamps: true,
+  }
 );
 
 module.exports = mongoose.model("connection", connectionSchema);

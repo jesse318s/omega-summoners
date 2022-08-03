@@ -2,7 +2,8 @@ const relics = [
   {
     id: 1,
     name: "Gust of Hermes",
-    description: "Grants the user's summon +5 speed while relic is being used. (Infinite duration, and only one relic can be active at a time)",
+    description:
+      "Grants the user's summon +5 speed while relic is being used. (Infinite duration, and only one relic can be active at a time)",
     imgPath: "img/relic/relic1.webp",
     effectClass: "relic_effect1",
     hpMod: 0,
@@ -18,7 +19,8 @@ const relics = [
   {
     id: 2,
     name: "Spark of Zeus",
-    description: "Grants the user's summon +15 attack while relic is being used. (Infinite duration, and only one relic can be active at a time)",
+    description:
+      "Grants the user's summon +15 attack while relic is being used. (Infinite duration, and only one relic can be active at a time)",
     imgPath: "img/relic/relic2.webp",
     effectClass: "relic_effect2",
     hpMod: 0,
@@ -34,7 +36,8 @@ const relics = [
   {
     id: 3,
     name: "Cup of Dionysus",
-    description: "Grants the user's summon +25 MP regen while relic is being used. (Infinite duration, and only one relic can be active at a time)",
+    description:
+      "Grants the user's summon +25 MP regen while relic is being used. (Infinite duration, and only one relic can be active at a time)",
     imgPath: "img/relic/relic3.webp",
     effectClass: "relic_effect3",
     hpMod: 0,
@@ -46,7 +49,7 @@ const relics = [
     mpRegenMod: 25,
     specialMod: 0,
     price: 500,
-  }
+  },
 ];
 
 export default relics;

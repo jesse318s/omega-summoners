@@ -1,20 +1,21 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const potionTimerSchema = new Schema({
+const potionTimerSchema = new Schema(
+  {
     userId: {
-        type: Number,
+      type: Number,
     },
     potionId: {
-        type: Number,
+      type: Number,
     },
     potionDuration: {
-        type: Number,
-    }
-},
-    {
-        timestamps: true
-    }
+      type: Number,
+    },
+  },
+  {
+    timestamps: true,
+  }
 );
 
 module.exports = mongoose.model("potionTimer", potionTimerSchema);

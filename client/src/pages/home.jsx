@@ -84,8 +84,9 @@ function Home() {
   };
 
   // sends email to reset userfront password for current user email
-  const resetPassword = () => {
+  const resetPassword = (e) => {
     try {
+      e.preventDefault();
       Userfront.sendResetLink(email).catch((error) => {
         alert(error.message);
       });

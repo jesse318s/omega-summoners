@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Userfront from "@userfront/core";
-import { Link } from "react-router-dom";
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
@@ -49,18 +48,17 @@ function Reset() {
 
   return (
     <>
+      <h2 className="mt-2 text-light">Password Reset</h2>
+
       {/* password reset form */}
-      <Link to="/">
-        <button className="btn btn-primary">Home</button>
-      </Link>
       <form
-        className="text-light justify-content-center"
+        className="text-light justify-content-center mt-1"
         onSubmit={handleSubmit}
       >
-        <label className="mt-5">
+        <label>
           Password:
           <input
-            className="mx-1"
+            className="mb-1"
             name="password"
             type="password"
             value={password}
@@ -68,10 +66,10 @@ function Reset() {
           />
         </label>
         <br />
-        <label className="mt-1">
+        <label>
           Re-type password:
           <input
-            className="mx-1"
+            className="my-1"
             name="passwordVerify"
             type="password"
             value={passwordVerify}
@@ -79,7 +77,7 @@ function Reset() {
           />
         </label>
         <br />
-        <button className="btn btn-primary mt-1" type="submit">
+        <button className="btn btn-primary mt-1 mb-2" type="submit">
           Reset password
         </button>
       </form>

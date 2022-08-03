@@ -48,7 +48,7 @@ function MultiPlayerCreature({
   // reference hook
   const ref = useRef(null);
 
-  // sets the fighting state
+  // fighting battle state
   const [isFighting, setIsFighting] = useState(false);
 
   // toggles special choice
@@ -113,7 +113,7 @@ function MultiPlayerCreature({
   };
 
   // special animation
-  const displaySpecialAnimation = async () => {
+  const displayPlayerSpecialAnimation = async () => {
     try {
       if (battleStatus) {
         setSpecialStatus(true);
@@ -509,7 +509,7 @@ function MultiPlayerCreature({
               ) {
                 setBattleUndecided(false);
                 displayPlayerAttackAnimation();
-                displaySpecialAnimation();
+                displayPlayerSpecialAnimation();
                 displayPlayerSpecialCT(
                   playerCreatureSpecial,
                   criticalMultiplier,
@@ -551,7 +551,7 @@ function MultiPlayerCreature({
                     criticalMultiplier,
                     enemyDefense
                   );
-                  displaySpecialAnimation();
+                  displayPlayerSpecialAnimation();
                   await Userfront.user.update({
                     data: {
                       userkey: Userfront.user.data.userkey,
@@ -601,7 +601,7 @@ function MultiPlayerCreature({
               // heals player
               if (chancePlayer) {
                 displayPlayerHealCT(playerCreatureSpecial, criticalMultiplier);
-                displaySpecialAnimation();
+                displayPlayerSpecialAnimation();
 
                 if (
                   playerCreatureHP +

@@ -47,7 +47,7 @@ function PlayerCreature({
   // reference hook
   const ref = useRef(null);
 
-  // sets the fighting state
+  // fighting battle state
   const [isFighting, setIsFighting] = useState(false);
 
   // toggles special choice
@@ -112,7 +112,7 @@ function PlayerCreature({
   };
 
   // special animation
-  const displaySpecialAnimation = async () => {
+  const displayPlayerSpecialAnimation = async () => {
     try {
       if (battleStatus) {
         setSpecialStatus(true);
@@ -559,7 +559,7 @@ function PlayerCreature({
               ) {
                 setBattleUndecided(false);
                 displayPlayerAttackAnimation();
-                displaySpecialAnimation();
+                displayPlayerSpecialAnimation();
                 displayPlayerSpecialCT(
                   playerCreatureSpecial,
                   criticalMultiplier,
@@ -664,7 +664,7 @@ function PlayerCreature({
                     criticalMultiplier,
                     enemyDefense
                   );
-                  displaySpecialAnimation();
+                  displayPlayerSpecialAnimation();
                   setEnemyCreatureHP(
                     enemyCreatureHP -
                       (playerCreatureSpecial -
@@ -708,7 +708,7 @@ function PlayerCreature({
               // heals player
               if (chancePlayer) {
                 displayPlayerHealCT(playerCreatureSpecial, criticalMultiplier);
-                displaySpecialAnimation();
+                displayPlayerSpecialAnimation();
 
                 if (
                   playerCreatureHP +

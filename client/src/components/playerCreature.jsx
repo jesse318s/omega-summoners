@@ -738,6 +738,8 @@ function PlayerCreature({
             }
           } else {
             setCombatAlert("Not enough MP!");
+            // ends fight
+            setIsFighting(false);
           }
         }
       }

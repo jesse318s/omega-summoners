@@ -58,7 +58,7 @@ function Reset() {
         <label>
           Password:
           <input
-            className="mb-1"
+            className="ms-2 mb-1 text-dark bg-light"
             name="password"
             type="password"
             value={password}
@@ -69,7 +69,7 @@ function Reset() {
         <label>
           Re-type password:
           <input
-            className="my-1"
+            className="ms-2 my-1 text-dark bg-light"
             name="passwordVerify"
             type="password"
             value={passwordVerify}

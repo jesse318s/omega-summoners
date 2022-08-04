@@ -17,6 +17,25 @@
 }
 
 // animations
+
+// title animation
+@keyframes blink {
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.blink {
+  animation: blinker 2s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+// background animation
 @mixin sp-layout {
   @media screen and (max-width: 750px) {
     @content;
@@ -115,21 +134,5 @@
   100% {
     width: 0;
     opacity: 0;
-  }
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0.6;
-  }
-}
-
-.blink {
-  animation: blinker 2s linear infinite;
-}
-
-@keyframes blinker {
-  50% {
-    opacity: 0.5;
   }
 }

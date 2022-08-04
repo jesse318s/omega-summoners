@@ -337,7 +337,7 @@ function PlayerCreature({
           criticalMultiplier = 1.5;
         }
 
-        //checks for enemy poison move type and crit, then applies effect
+        // checks for enemy poison move type and crit, then applies effect
         if (
           enemyCreature[0].attackType === "Poison" &&
           criticalMultiplier === 1
@@ -433,7 +433,7 @@ function PlayerCreature({
           playerCreatureSpecialCost = playerCreature[0].specialCost2;
         }
 
-        //checks for player magic move type and applies effect
+        // checks for player magic move type and applies effect
         if (moveType === "Magic") {
           enemyDefense = 0;
         }

@@ -5,22 +5,22 @@ Userfront.init("rbvqd5nd");
 
 // retrieves lobby by id, and refreshes the lobby
 export function getLobby(id) {
-    return axios.get(apiUrl + "/" + id, {
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${Userfront.accessToken()}`,
-        }
-    });
+  return axios.get(apiUrl + "/" + id, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${Userfront.accessToken()}`,
+    },
+  });
 }
 
 // updates lobby by id
 export function updateLobby(id, Lobby) {
-    return axios.put(apiUrl + "/" + id, Lobby, {
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${Userfront.accessToken()}`,
-            Userkey: Userfront.user.data.userkey,
-            Userid: Userfront.user.userId,
-        }
-    });
+  return axios.put(apiUrl + "/" + id, Lobby, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${Userfront.accessToken()}`,
+      Userkey: Userfront.user.data.userkey,
+      Userid: Userfront.user.userId,
+    },
+  });
 }

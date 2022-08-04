@@ -5,22 +5,22 @@ Userfront.init("rbvqd5nd");
 
 // retrieves player items
 export function getItems() {
-    return axios.get(apiUrl, {
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${Userfront.accessToken()}`,
-        }
-    });
+  return axios.get(apiUrl, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${Userfront.accessToken()}`,
+    },
+  });
 }
 
 // adds player item
 export function addItem(item) {
-    return axios.post(apiUrl, item, {
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${Userfront.accessToken()}`,
-            Userkey: Userfront.user.data.userkey,
-            Userid: Userfront.user.userId,
-        }
-    });
+  return axios.post(apiUrl, item, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${Userfront.accessToken()}`,
+      Userkey: Userfront.user.data.userkey,
+      Userid: Userfront.user.userId,
+    },
+  });
 }

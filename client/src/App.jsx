@@ -19,7 +19,6 @@ Userfront.init("rbvqd5nd");
 
 // main app component
 function App() {
-
   // navigation hook
   const navigate = useNavigate();
 
@@ -51,7 +50,7 @@ function App() {
   const [battleUndecided, setBattleUndecided] = useState(false);
   const [combatText, setCombatText] = useState("");
   const [critText, setCritText] = useState("combat_text");
-  const [spawn, setSpawn] = useState("");
+  const [spawnAnimation, setSpawnAnimation] = useState("");
   // relic state
   const [relicsData] = useState(relics);
   const [playerRelics, setPlayerRelics] = useState([{}]);
@@ -68,12 +67,12 @@ function App() {
     const checkAuth = () => {
       try {
         if (!Userfront.accessToken()) {
-          navigate('/');
+          navigate("/");
         }
       } catch (error) {
         console.log(error);
       }
-    }
+    };
     checkAuth();
   });
 
@@ -94,15 +93,17 @@ function App() {
             creatureId: 0,
             displayCreatureStats: false,
             preferredSpecial: 1,
-          }
+          };
           await addUser(newUser);
-          alert("Welcome to the game! You have been assigned a new account. Please log in again to continue.");
+          alert(
+            "Welcome to the game! You have been assigned a new account. Please log in again to continue."
+          );
           await Userfront.logout();
         }
       } catch (error) {
         console.log(error);
       }
-    }
+    };
     // retrieves user data and updates player state
     const loadAsyncDataPlayer = async () => {
       try {
@@ -111,7 +112,7 @@ function App() {
       } catch (error) {
         console.log(error);
       }
-    }
+    };
     genAsyncDataPlayer();
     loadAsyncDataPlayer();
   }, []);
@@ -130,30 +131,36 @@ function App() {
             } catch (error) {
               console.log(error);
             }
-          }
+          };
           try {
             // if there is no player creature data
             if (player.creatureId === 0) {
-              const randomCreature = creatureData[Math.floor(Math.random() * creatureData.length)].id;
+              const randomCreature =
+                creatureData[Math.floor(Math.random() * creatureData.length)]
+                  .id;
               Userfront.user.update({
                 data: {
                   userkey: Userfront.user.data.userkey,
                 },
               });
-              await updateUser(player._id, { userfrontId: Userfront.user.userId, creatureId: randomCreature });
+              await updateUser(player._id, {
+                userfrontId: Userfront.user.userId,
+                creatureId: randomCreature,
+              });
               await loadAsyncDataPlayer();
             }
-          }
-          catch (error) {
+          } catch (error) {
             console.log(error);
           }
-        }
+        };
         // loads player creature data and sets player creature state
         const loadAsyncDataPlayerCreature = async () => {
-          const playerCreatureData = creatureData.filter(creature => creature.id === player.creatureId);
+          const playerCreatureData = creatureData.filter(
+            (creature) => creature.id === player.creatureId
+          );
           setPlayerCreature(playerCreatureData);
           setCreatureStatsStatus(player.displayCreatureStats);
-        }
+        };
         genAsyncPlayerCreature();
         loadAsyncDataPlayerCreature();
       } catch (error) {
@@ -164,11 +171,15 @@ function App() {
         if (player.relics) {
           // loads player relics data
           const loadDataPlayerRelics = () => {
-            const playerRelicsData = relicsData.filter(relic => player.relics.includes(relic.id));
+            const playerRelicsData = relicsData.filter((relic) =>
+              player.relics.includes(relic.id)
+            );
             setPlayerRelics(playerRelicsData);
-            const chosenRelicData = playerRelicsData.filter(relic => relic.id === player.chosenRelic);
+            const chosenRelicData = playerRelicsData.filter(
+              (relic) => relic.id === player.chosenRelic
+            );
             setChosenRelic(chosenRelicData);
-          }
+          };
           loadDataPlayerRelics();
         }
       } catch (error) {
@@ -187,58 +198,140 @@ function App() {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   // renders if a relic is bestowed
   if (chosenRelic[0]) {
     return (
       <>
         <header>
-          <GameNav Userfront={Userfront} optionsStatus={optionsStatus} setOptionsStatus={setOptionsStatus} setNameOptionStatus={setNameOptionStatus}
-            setAvatarOptionStatus={setAvatarOptionStatus} />
+          <GameNav
+            Userfront={Userfront}
+            optionsStatus={optionsStatus}
+            setOptionsStatus={setOptionsStatus}
+            setNameOptionStatus={setNameOptionStatus}
+            setAvatarOptionStatus={setAvatarOptionStatus}
+          />
         </header>
 
         <main className="game_section">
-          <Options Userfront={Userfront} player={player} optionsStatus={optionsStatus} nameOptionStatus={nameOptionStatus} setNameOptionStatus={setNameOptionStatus}
-            avatarOptionStatus={avatarOptionStatus} setAvatarOptionStatus={setAvatarOptionStatus} creatureStatsStatus={creatureStatsStatus}
-            loadAsyncDataPlayer={() => loadAsyncDataPlayer()} />
+          <Options
+            Userfront={Userfront}
+            player={player}
+            optionsStatus={optionsStatus}
+            nameOptionStatus={nameOptionStatus}
+            setNameOptionStatus={setNameOptionStatus}
+            avatarOptionStatus={avatarOptionStatus}
+            setAvatarOptionStatus={setAvatarOptionStatus}
+            creatureStatsStatus={creatureStatsStatus}
+            loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
+          />
 
           <Player player={player} />
 
           {/* menu and creatures wrapped in options status check */}
-          {!optionsStatus ? <>
+          {!optionsStatus ? (
+            <>
+              <Menu
+                Userfront={Userfront}
+                battleStatus={battleStatus}
+                setBattleStatus={setBattleStatus}
+                player={player}
+                setPlayer={setPlayer}
+                relicsData={relicsData}
+                relicsStatus={relicsStatus}
+                setRelicsStatus={setRelicsStatus}
+                playerRelics={playerRelics}
+                templeStatus={templeStatus}
+                setTempleStatus={setTempleStatus}
+                creatureData={creatureData}
+                enemyCreatureData={enemyCreatureData}
+                summonsStatus={summonsStatus}
+                setSummonsStatus={setSummonsStatus}
+                stagesStatus={stagesStatus}
+                setStagesStatus={setStagesStatus}
+                combatAlert={combatAlert}
+                loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
+                setPlayerCreatureHP={setPlayerCreatureHP}
+                setPlayerCreatureMP={setPlayerCreatureMP}
+                playerCreature={playerCreature}
+                chosenRelic={chosenRelic}
+                setEnemyCreature={setEnemyCreature}
+                setEnemyCreatureHP={setEnemyCreatureHP}
+                setCombatAlert={setCombatAlert}
+                setBattleUndecided={setBattleUndecided}
+                setSpawnAnimation={setSpawnAnimation}
+                alchemyStatus={alchemyStatus}
+                setAlchemyStatus={setAlchemyStatus}
+                potions={potions}
+                setPotions={setPotions}
+                ingredients={ingredients}
+                setIngredients={setIngredients}
+                summonHPBonus={summonHPBonus}
+                setSummonHPBonus={setSummonHPBonus}
+                summonMPBonus={summonMPBonus}
+                setSummonMPBonus={setSummonMPBonus}
+              />
 
-            <Menu Userfront={Userfront} battleStatus={battleStatus} setBattleStatus={setBattleStatus} player={player} setPlayer={setPlayer} relicsData={relicsData}
-              relicsStatus={relicsStatus} setRelicsStatus={setRelicsStatus} playerRelics={playerRelics} templeStatus={templeStatus} setTempleStatus={setTempleStatus}
-              creatureData={creatureData} enemyCreatureData={enemyCreatureData} summonsStatus={summonsStatus} setSummonsStatus={setSummonsStatus}
-              stagesStatus={stagesStatus} setStagesStatus={setStagesStatus} combatAlert={combatAlert} loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
-              setPlayerCreatureHP={setPlayerCreatureHP} setPlayerCreatureMP={setPlayerCreatureMP} playerCreature={playerCreature} chosenRelic={chosenRelic}
-              setEnemyCreature={setEnemyCreature} setEnemyCreatureHP={setEnemyCreatureHP} setCombatAlert={setCombatAlert} setBattleUndecided={setBattleUndecided}
-              setSpawn={setSpawn} alchemyStatus={alchemyStatus} setAlchemyStatus={setAlchemyStatus} potions={potions} setPotions={setPotions}
-              ingredients={ingredients} setIngredients={setIngredients}
-              summonHPBonus={summonHPBonus} setSummonHPBonus={setSummonHPBonus}
-              summonMPBonus={summonMPBonus} setSummonMPBonus={setSummonMPBonus} />
+              <PlayerCreature
+                summonsStatus={summonsStatus}
+                playerCreature={playerCreature}
+                enemyAttackStatus={enemyAttackStatus}
+                setEnemyAttackStatus={setEnemyAttackStatus}
+                critText={critText}
+                setCritText={setCritText}
+                combatText={combatText}
+                playerAttackStatus={playerAttackStatus}
+                setPlayerAttackStatus={setPlayerAttackStatus}
+                chosenRelic={chosenRelic}
+                specialStatus={specialStatus}
+                setSpecialStatus={setSpecialStatus}
+                battleStatus={battleStatus}
+                setBattleStatus={setBattleStatus}
+                player={player}
+                creatureStatsStatus={creatureStatsStatus}
+                playerCreatureHP={playerCreatureHP}
+                setPlayerCreatureHP={setPlayerCreatureHP}
+                playerCreatureMP={playerCreatureMP}
+                setPlayerCreatureMP={setPlayerCreatureMP}
+                setCombatText={setCombatText}
+                enemyCreature={enemyCreature}
+                setEnemyCreature={setEnemyCreatureHP}
+                battleUndecided={battleUndecided}
+                setBattleUndecided={setBattleUndecided}
+                enemyCreatureHP={enemyCreatureHP}
+                setEnemyCreatureHP={setEnemyCreatureHP}
+                Userfront={Userfront}
+                loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
+                setCombatAlert={setCombatAlert}
+                relicsStatus={relicsStatus}
+                templeStatus={templeStatus}
+                stagesStatus={stagesStatus}
+                alchemyStatus={alchemyStatus}
+                playerItems={playerItems}
+                setPlayerItems={setPlayerItems}
+                summonHPBonus={summonHPBonus}
+                setSummonHPBonus={setSummonHPBonus}
+                summonMPBonus={summonMPBonus}
+                setSummonMPBonus={setSummonMPBonus}
+              />
 
-            <PlayerCreature summonsStatus={summonsStatus} playerCreature={playerCreature} enemyAttackStatus={enemyAttackStatus} setEnemyAttackStatus={setEnemyAttackStatus}
-              critText={critText} setCritText={setCritText} combatText={combatText} playerAttackStatus={playerAttackStatus} setPlayerAttackStatus={setPlayerAttackStatus}
-              chosenRelic={chosenRelic} specialStatus={specialStatus} setSpecialStatus={setSpecialStatus} battleStatus={battleStatus} setBattleStatus={setBattleStatus}
-              player={player} creatureStatsStatus={creatureStatsStatus} playerCreatureHP={playerCreatureHP} setPlayerCreatureHP={setPlayerCreatureHP}
-              playerCreatureMP={playerCreatureMP} setPlayerCreatureMP={setPlayerCreatureMP} setCombatText={setCombatText} enemyCreature={enemyCreature}
-              setEnemyCreature={setEnemyCreatureHP} battleUndecided={battleUndecided} setBattleUndecided={setBattleUndecided} enemyCreatureHP={enemyCreatureHP}
-              setEnemyCreatureHP={setEnemyCreatureHP} Userfront={Userfront} loadAsyncDataPlayer={() => loadAsyncDataPlayer()} setCombatAlert={setCombatAlert}
-              relicsStatus={relicsStatus} templeStatus={templeStatus} stagesStatus={stagesStatus} alchemyStatus={alchemyStatus} playerItems={playerItems}
-              setPlayerItems={setPlayerItems} summonHPBonus={summonHPBonus} setSummonHPBonus={setSummonHPBonus}
-              summonMPBonus={summonMPBonus} setSummonMPBonus={setSummonMPBonus} />
-
-            <EnemyCreature battleStatus={battleStatus} enemyCreature={enemyCreature} playerAttackStatus={playerAttackStatus} enemyAttackStatus={enemyAttackStatus}
-              critText={critText} combatText={combatText} enemyCreatureHP={enemyCreatureHP} spawn={spawn} />
-
-          </> : null}
+              <EnemyCreature
+                battleStatus={battleStatus}
+                enemyCreature={enemyCreature}
+                playerAttackStatus={playerAttackStatus}
+                enemyAttackStatus={enemyAttackStatus}
+                critText={critText}
+                combatText={combatText}
+                enemyCreatureHP={enemyCreatureHP}
+                spawnAnimation={spawnAnimation}
+              />
+            </>
+          ) : null}
         </main>
       </>
     );
-  }
-  else return (<></>);
+  } else return <></>;
 }
 
 export default App;

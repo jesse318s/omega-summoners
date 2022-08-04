@@ -5,20 +5,20 @@ Userfront.init("rbvqd5nd");
 
 // retrieves the lobby connections, and refreshes connections
 export function getConnections() {
-    return axios.get(apiUrl, {
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${Userfront.accessToken()}`,
-        }
-    });
+  return axios.get(apiUrl, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${Userfront.accessToken()}`,
+    },
+  });
 }
 
 // adds a connection to lobby
 export function addConnection(connection) {
-    return axios.post(apiUrl, connection, {
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${Userfront.accessToken()}`,
-        }
-    });
+  return axios.post(apiUrl, connection, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${Userfront.accessToken()}`,
+    },
+  });
 }

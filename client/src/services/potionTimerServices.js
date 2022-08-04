@@ -5,22 +5,22 @@ Userfront.init("rbvqd5nd");
 
 // gets player potion timer, and refreshes potion timers
 export function getPotionTimer() {
-    return axios.get(apiUrl, {
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${Userfront.accessToken()}`,
-        }
-    });
+  return axios.get(apiUrl, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${Userfront.accessToken()}`,
+    },
+  });
 }
 
 // adds player potion timer
 export function addPotionTimer(potionTimer) {
-    return axios.post(apiUrl, potionTimer, {
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${Userfront.accessToken()}`,
-            Userkey: Userfront.user.data.userkey,
-            Userid: Userfront.user.userId,
-        }
-    });
+  return axios.post(apiUrl, potionTimer, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${Userfront.accessToken()}`,
+      Userkey: Userfront.user.data.userkey,
+      Userid: Userfront.user.userId,
+    },
+  });
 }

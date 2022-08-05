@@ -326,7 +326,7 @@ function MultiPlayerCreature({
     }
   };
 
-  // damages enemy on succesful attack
+  // damages enemy
   const damageEnemy = async (
     chancePlayer,
     playerCreatureAttack,
@@ -335,7 +335,6 @@ function MultiPlayerCreature({
     moveName,
     moveType
   ) => {
-    // damages enemy
     if (chancePlayer) {
       displayPlayerAttackAnimation();
       displayPlayerAttackCT(
@@ -382,7 +381,7 @@ function MultiPlayerCreature({
     }
   };
 
-  // kills enemy on succesful attack with enough damage
+  // kills enemy on successful attack with enough damage
   const killEnemy = async (
     playerCreatureAttack,
     criticalMultiplier,

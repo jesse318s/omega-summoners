@@ -247,7 +247,7 @@ function Menu({
     }
   };
 
-  // enemy spawn animation
+  // displays enemy spawn animation
   const displaySpawnAnimation = async () => {
     try {
       setSpawnAnimation("spawn_effect");

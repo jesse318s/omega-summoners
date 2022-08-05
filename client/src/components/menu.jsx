@@ -262,7 +262,7 @@ function Menu({
   // loads battle data
   const loadDataBattle = async () => {
     try {
-      // checks and sets potion timer
+      // checks potion timer
       const potionTimer = await getPotionTimer();
       if (potionTimer.data.length > 0) {
         const playerPotion = potionsList.find(

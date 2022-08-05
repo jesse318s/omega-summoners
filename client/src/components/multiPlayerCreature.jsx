@@ -308,6 +308,24 @@ function MultiPlayerCreature({
     }
   };
 
+  // checks potion timer
+  const checkPotionTimer = async () => {
+    const potionTimer = await getPotionTimer();
+    if (potionTimer.data.length > 0) {
+      const playerPotion = potionsList.find(
+        (potion) => potion.id === potionTimer.data[0].potionId
+      );
+      const playerMPBonus = playerPotion.mpMod;
+      const playerHPBonus = playerPotion.hpMod;
+      setSummonMPBonus(playerMPBonus);
+      setSummonHPBonus(playerHPBonus);
+    }
+    if (potionTimer.data.length === 0) {
+      setSummonMPBonus(0);
+      setSummonHPBonus(0);
+    }
+  };
+
   // damages enemy on succesful attack
   const damageEnemy = async (
     chancePlayer,
@@ -581,21 +599,7 @@ function MultiPlayerCreature({
 
         await loadAsyncDataLobby();
 
-        // checks and sets potion timer
-        const potionTimer = await getPotionTimer();
-        if (potionTimer.data.length > 0) {
-          const playerPotion = potionsList.find(
-            (potion) => potion.id === potionTimer.data[0].potionId
-          );
-          const playerMPBonus = playerPotion.mpMod;
-          const playerHPBonus = playerPotion.hpMod;
-          setSummonMPBonus(playerMPBonus);
-          setSummonHPBonus(playerHPBonus);
-        }
-        if (potionTimer.data.length === 0) {
-          setSummonMPBonus(0);
-          setSummonHPBonus(0);
-        }
+        checkPotionTimer();
 
         await loadAsyncDataPlayer();
 

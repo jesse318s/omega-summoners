@@ -211,78 +211,6 @@ function PlayerCreature({
     }
   };
 
-  // chance to drop ingredients for player
-  const dropIngredientsOnChance = async () => {
-    // retrieves items
-    const playerItemsData = await getItems();
-    const playerItems = playerItemsData.data;
-    // filter for ingredients
-    const greenMushroomsPlayer = playerItems.filter(
-      (item) => item.itemId === 1 && item.type === "Ingredient"
-    );
-    const redMushroomsPlayer = playerItems.filter(
-      (item) => item.itemId === 2 && item.type === "Ingredient"
-    );
-    const blueMushroomsPlayer = playerItems.filter(
-      (item) => item.itemId === 3 && item.type === "Ingredient"
-    );
-
-    // drops ingredients on chance
-    if (playerItems !== undefined) {
-      const newGreenMushrooms = greenMushroomsPlayer[0];
-      const newRedMushrooms = redMushroomsPlayer[0];
-      const newBlueMushrooms = blueMushroomsPlayer[0];
-      if (Math.random() <= 0.15) {
-        await Userfront.user.update({
-          data: {
-            userkey: Userfront.user.data.userkey,
-          },
-        });
-        await addItem({
-          itemId: 1,
-          type: "Ingredient",
-          itemQuantity:
-            newGreenMushrooms === undefined
-              ? 1
-              : newGreenMushrooms.itemQuantity + 1,
-          userId: Userfront.user.userId,
-        });
-      } else if (Math.random() <= 0.1) {
-        if (Math.random() <= 0.5) {
-          await Userfront.user.update({
-            data: {
-              userkey: Userfront.user.data.userkey,
-            },
-          });
-          await addItem({
-            itemId: 2,
-            type: "Ingredient",
-            itemQuantity:
-              newRedMushrooms === undefined
-                ? 1
-                : newRedMushrooms.itemQuantity + 1,
-            userId: Userfront.user.userId,
-          });
-        } else {
-          await Userfront.user.update({
-            data: {
-              userkey: Userfront.user.data.userkey,
-            },
-          });
-          await addItem({
-            itemId: 3,
-            type: "Ingredient",
-            itemQuantity:
-              newBlueMushrooms === undefined
-                ? 1
-                : newBlueMushrooms.itemQuantity + 1,
-            userId: Userfront.user.userId,
-          });
-        }
-      }
-    }
-  };
-
   // initiates chance of enemy counter attack
   const callEnemyCounterAttack = async (chancePlayer, moveName, moveType) => {
     try {
@@ -382,6 +310,24 @@ function PlayerCreature({
     }
   };
 
+  // checks potion timer
+  const checkPotionTimer = async () => {
+    const potionTimer = await getPotionTimer();
+    if (potionTimer.data.length > 0) {
+      const playerPotion = potionsList.find(
+        (potion) => potion.id === potionTimer.data[0].potionId
+      );
+      const playerMPBonus = playerPotion.mpMod;
+      const playerHPBonus = playerPotion.hpMod;
+      setSummonMPBonus(playerMPBonus);
+      setSummonHPBonus(playerHPBonus);
+    }
+    if (potionTimer.data.length === 0) {
+      setSummonMPBonus(0);
+      setSummonHPBonus(0);
+    }
+  };
+
   // damages enemy on succesful attack
   const damageEnemy = async (
     chancePlayer,
@@ -429,6 +375,78 @@ function PlayerCreature({
       setPlayerCreatureMP(
         playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus
       );
+    }
+  };
+
+  // chance to drop ingredients for player
+  const dropIngredientsOnChance = async () => {
+    // retrieves items
+    const playerItemsData = await getItems();
+    const playerItems = playerItemsData.data;
+    // filter for ingredients
+    const greenMushroomsPlayer = playerItems.filter(
+      (item) => item.itemId === 1 && item.type === "Ingredient"
+    );
+    const redMushroomsPlayer = playerItems.filter(
+      (item) => item.itemId === 2 && item.type === "Ingredient"
+    );
+    const blueMushroomsPlayer = playerItems.filter(
+      (item) => item.itemId === 3 && item.type === "Ingredient"
+    );
+
+    // drops ingredients on chance
+    if (playerItems !== undefined) {
+      const newGreenMushrooms = greenMushroomsPlayer[0];
+      const newRedMushrooms = redMushroomsPlayer[0];
+      const newBlueMushrooms = blueMushroomsPlayer[0];
+      if (Math.random() <= 0.15) {
+        await Userfront.user.update({
+          data: {
+            userkey: Userfront.user.data.userkey,
+          },
+        });
+        await addItem({
+          itemId: 1,
+          type: "Ingredient",
+          itemQuantity:
+            newGreenMushrooms === undefined
+              ? 1
+              : newGreenMushrooms.itemQuantity + 1,
+          userId: Userfront.user.userId,
+        });
+      } else if (Math.random() <= 0.1) {
+        if (Math.random() <= 0.5) {
+          await Userfront.user.update({
+            data: {
+              userkey: Userfront.user.data.userkey,
+            },
+          });
+          await addItem({
+            itemId: 2,
+            type: "Ingredient",
+            itemQuantity:
+              newRedMushrooms === undefined
+                ? 1
+                : newRedMushrooms.itemQuantity + 1,
+            userId: Userfront.user.userId,
+          });
+        } else {
+          await Userfront.user.update({
+            data: {
+              userkey: Userfront.user.data.userkey,
+            },
+          });
+          await addItem({
+            itemId: 3,
+            type: "Ingredient",
+            itemQuantity:
+              newBlueMushrooms === undefined
+                ? 1
+                : newBlueMushrooms.itemQuantity + 1,
+            userId: Userfront.user.userId,
+          });
+        }
+      }
     }
   };
 
@@ -633,21 +651,7 @@ function PlayerCreature({
         // begins fight
         setIsFighting(true);
 
-        // checks and sets potion timer
-        const potionTimer = await getPotionTimer();
-        if (potionTimer.data.length > 0) {
-          const playerPotion = potionsList.find(
-            (potion) => potion.id === potionTimer.data[0].potionId
-          );
-          const playerMPBonus = playerPotion.mpMod;
-          const playerHPBonus = playerPotion.hpMod;
-          setSummonMPBonus(playerMPBonus);
-          setSummonHPBonus(playerHPBonus);
-        }
-        if (potionTimer.data.length === 0) {
-          setSummonMPBonus(0);
-          setSummonHPBonus(0);
-        }
+        checkPotionTimer();
 
         await loadAsyncDataPlayer();
 

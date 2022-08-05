@@ -258,12 +258,10 @@ function MultiPlayerCreature({
           viewEnemyAttackAnimation();
           viewEnemyAttackCT(criticalMultiplier, playerCreatureDefense);
         }, 600);
-
         // checks enemy critical hit
         if (Math.random() <= enemyCreature[0].critical / 100) {
           criticalMultiplier = 1.5;
         }
-
         // checks for enemy poison move type and crit, then applies effect
         if (
           enemyCreature[0].attackType === "Poison" &&
@@ -271,7 +269,6 @@ function MultiPlayerCreature({
         ) {
           criticalMultiplier = 1.5;
         }
-
         // checks for player death, and damages player otherwise
         if (
           ref.current -
@@ -354,10 +351,8 @@ function MultiPlayerCreature({
             criticalMultiplier,
       });
     }
-
     ref.current = playerCreatureHP;
     callEnemyCounterAttack(chancePlayer, moveName, moveType);
-
     // regens mp
     if (
       playerCreatureMP !==
@@ -411,10 +406,8 @@ function MultiPlayerCreature({
       experience: player.experience + enemyCreature[0].reward * 2,
       drachmas: player.drachmas + enemyCreature[0].reward,
     });
-
     // ends fight
     setIsFighting(false);
-
     setTimeout(() => {
       setBattleStatus(false);
       setEnemyCreature({});
@@ -434,7 +427,6 @@ function MultiPlayerCreature({
     if (chancePlayer) {
       displayPlayerHealCT(playerCreatureSpecial, criticalMultiplier);
       displayPlayerSpecialAnimation();
-
       if (
         playerCreatureHP + playerCreatureSpecial * criticalMultiplier >
         playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus
@@ -451,7 +443,6 @@ function MultiPlayerCreature({
         ref.current =
           playerCreatureHP + playerCreatureSpecial * criticalMultiplier;
       }
-
       callEnemyCounterAttack(chancePlayer, moveName, moveType);
     } else {
       ref.current = playerCreatureHP;
@@ -471,7 +462,6 @@ function MultiPlayerCreature({
   ) => {
     // deducts MP
     setPlayerCreatureMP(playerCreatureMP - playerCreatureSpecialCost);
-
     if (
       moveType === "Poison" ||
       moveType === "Magic" ||
@@ -509,10 +499,8 @@ function MultiPlayerCreature({
           experience: player.experience + enemyCreature[0].reward * 2,
           drachmas: player.drachmas + enemyCreature[0].reward,
         });
-
         // ends fight
         setIsFighting(false);
-
         setTimeout(() => {
           setBattleStatus(false);
           setEnemyCreature({});
@@ -541,9 +529,7 @@ function MultiPlayerCreature({
                 criticalMultiplier,
           });
         }
-
         ref.current = playerCreatureHP;
-
         // life steal to player
         if (moveType === "Lifesteal") {
           if (
@@ -566,7 +552,6 @@ function MultiPlayerCreature({
               playerCreatureSpecial * criticalMultiplier * 0.2;
           }
         }
-
         callEnemyCounterAttack(chancePlayer, moveName, moveType);
       }
     } else {

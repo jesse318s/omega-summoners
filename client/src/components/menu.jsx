@@ -490,7 +490,7 @@ function Menu({
               potionDuration: potion.duration,
             });
             await loadDataAlchemy();
-            // checks and sets potion timer
+            // checks potion timer
             const potionTimer = await getPotionTimer();
             if (potionTimer.data.length > 0) {
               const playerPotion = potionsList.find(
@@ -501,6 +501,7 @@ function Menu({
               setSummonMPBonus(playerMPBonus);
               setSummonHPBonus(playerHPBonus);
             }
+
             setPlayerCreatureMP(
               playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus
             );

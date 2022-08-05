@@ -382,6 +382,244 @@ function PlayerCreature({
     }
   };
 
+  // damages enemy on succesful attack
+  const damageEnemy = async (
+    chancePlayer,
+    playerCreatureAttack,
+    criticalMultiplier,
+    enemyDefense,
+    moveName,
+    moveType
+  ) => {
+    // damages enemy
+    if (chancePlayer) {
+      displayPlayerAttackAnimation();
+      displayPlayerAttackCT(
+        playerCreatureAttack,
+        criticalMultiplier,
+        enemyDefense
+      );
+      setEnemyCreatureHP(
+        enemyCreatureHP -
+          (playerCreatureAttack - playerCreatureAttack * enemyDefense) *
+            criticalMultiplier
+      );
+    }
+
+    ref.current = playerCreatureHP;
+    callEnemyCounterAttack(chancePlayer, moveName, moveType);
+
+    // regens mp
+    if (
+      playerCreatureMP !==
+        playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus &&
+      playerCreatureMP +
+        playerCreature[0].mpRegen +
+        chosenRelic[0].mpRegenMod <=
+        playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus
+    ) {
+      setPlayerCreatureMP(
+        playerCreatureMP + playerCreature[0].mpRegen + chosenRelic[0].mpRegenMod
+      );
+    }
+    if (
+      playerCreatureMP + playerCreature[0].mpRegen + chosenRelic[0].mpRegenMod >
+      playerCreature[0].mp + chosenRelic.mpMod + summonMPBonus
+    ) {
+      setPlayerCreatureMP(
+        playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus
+      );
+    }
+  };
+
+  // kills enemy on succesful attack with enough damage
+  const killEnemy = async (
+    playerCreatureAttack,
+    criticalMultiplier,
+    enemyDefense
+  ) => {
+    setBattleUndecided(false);
+    displayPlayerAttackAnimation();
+    displayPlayerAttackCT(
+      playerCreatureAttack,
+      criticalMultiplier,
+      enemyDefense
+    );
+    setEnemyCreatureHP(0);
+    setCombatAlert("Victory!");
+    await Userfront.user.update({
+      data: {
+        userkey: Userfront.user.data.userkey,
+      },
+    });
+    await updateUser(player._id, {
+      userfrontId: Userfront.user.userId,
+      experience: player.experience + enemyCreature[0].reward * 2,
+      drachmas: player.drachmas + enemyCreature[0].reward,
+    });
+
+    dropIngredientsOnChance();
+
+    // ends fight
+    setIsFighting(false);
+
+    setTimeout(() => {
+      setBattleStatus(false);
+      setEnemyCreature({});
+      setPlayerCreatureHP(0);
+      loadAsyncDataPlayer();
+    }, 1000);
+  };
+
+  // heals player creature with enough mana
+  const healPlayerCreature = async (
+    chancePlayer,
+    playerCreatureSpecial,
+    criticalMultiplier,
+    moveName,
+    moveType
+  ) => {
+    if (chancePlayer) {
+      displayPlayerHealCT(playerCreatureSpecial, criticalMultiplier);
+      displayPlayerSpecialAnimation();
+
+      if (
+        playerCreatureHP + playerCreatureSpecial * criticalMultiplier >
+        playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus
+      ) {
+        setPlayerCreatureHP(
+          playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus
+        );
+        ref.current =
+          playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus;
+      } else {
+        setPlayerCreatureHP(
+          playerCreatureHP + playerCreatureSpecial * criticalMultiplier
+        );
+        ref.current =
+          playerCreatureHP + playerCreatureSpecial * criticalMultiplier;
+      }
+
+      callEnemyCounterAttack(chancePlayer, moveName, moveType);
+    } else {
+      ref.current = playerCreatureHP;
+      callEnemyCounterAttack(chancePlayer, moveName, moveType);
+    }
+  };
+
+  // performs player special if mana is enough
+  const performSpecial = async (
+    chancePlayer,
+    playerCreatureSpecial,
+    playerCreatureSpecialCost,
+    criticalMultiplier,
+    enemyDefense,
+    moveName,
+    moveType
+  ) => {
+    // deducts MP
+    setPlayerCreatureMP(playerCreatureMP - playerCreatureSpecialCost);
+
+    if (
+      moveType === "Poison" ||
+      moveType === "Magic" ||
+      moveType === "Lifesteal"
+    ) {
+      // checks for enemy death
+      if (
+        enemyCreatureHP -
+          (playerCreatureSpecial - playerCreatureSpecial * enemyDefense) *
+            criticalMultiplier <=
+          0 &&
+        chancePlayer
+      ) {
+        setBattleUndecided(false);
+        displayPlayerAttackAnimation();
+        displayPlayerSpecialAnimation();
+        displayPlayerSpecialCT(
+          playerCreatureSpecial,
+          criticalMultiplier,
+          enemyDefense
+        );
+        setEnemyCreatureHP(0);
+        setCombatAlert("Victory!");
+        await Userfront.user.update({
+          data: {
+            userkey: Userfront.user.data.userkey,
+          },
+        });
+        await updateUser(player._id, {
+          userfrontId: Userfront.user.userId,
+          experience: player.experience + enemyCreature[0].reward * 2,
+          drachmas: player.drachmas + enemyCreature[0].reward,
+        });
+
+        dropIngredientsOnChance();
+
+        // ends fight
+        setIsFighting(false);
+
+        setTimeout(() => {
+          setBattleStatus(false);
+          setEnemyCreature({});
+          setPlayerCreatureHP(0);
+          loadAsyncDataPlayer();
+        }, 1000);
+      } else {
+        // damages enemy
+        if (chancePlayer) {
+          displayPlayerAttackAnimation();
+          displayPlayerSpecialCT(
+            playerCreatureSpecial,
+            criticalMultiplier,
+            enemyDefense
+          );
+          displayPlayerSpecialAnimation();
+          setEnemyCreatureHP(
+            enemyCreatureHP -
+              (playerCreatureSpecial - playerCreatureSpecial * enemyDefense) *
+                criticalMultiplier
+          );
+        }
+
+        ref.current = playerCreatureHP;
+
+        // life steal to player
+        if (moveType === "Lifesteal") {
+          if (
+            playerCreatureHP +
+              playerCreatureSpecial * criticalMultiplier * 0.2 >
+            playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus
+          ) {
+            setPlayerCreatureHP(
+              playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus
+            );
+            ref.current =
+              playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus;
+          } else {
+            setPlayerCreatureHP(
+              playerCreatureHP +
+                playerCreatureSpecial * criticalMultiplier * 0.2
+            );
+            ref.current =
+              playerCreatureHP +
+              playerCreatureSpecial * criticalMultiplier * 0.2;
+          }
+        }
+
+        callEnemyCounterAttack(chancePlayer, moveName, moveType);
+      }
+    } else {
+      healPlayerCreature(
+        chancePlayer,
+        playerCreatureSpecial,
+        criticalMultiplier,
+        moveName,
+        moveType
+      );
+    }
+  };
+
   // initiates chance to attack enemy creature
   const attackEnemy = async (moveName, moveType) => {
     try {
@@ -466,215 +704,29 @@ function PlayerCreature({
               0 &&
             chancePlayer
           ) {
-            setBattleUndecided(false);
-            displayPlayerAttackAnimation();
-            displayPlayerAttackCT(
+            killEnemy(playerCreatureAttack, criticalMultiplier, enemyDefense);
+          } else {
+            damageEnemy(
+              chancePlayer,
               playerCreatureAttack,
               criticalMultiplier,
-              enemyDefense
-            );
-            setEnemyCreatureHP(0);
-            setCombatAlert("Victory!");
-            await Userfront.user.update({
-              data: {
-                userkey: Userfront.user.data.userkey,
-              },
-            });
-            await updateUser(player._id, {
-              userfrontId: Userfront.user.userId,
-              experience: player.experience + enemyCreature[0].reward * 2,
-              drachmas: player.drachmas + enemyCreature[0].reward,
-            });
-
-            dropIngredientsOnChance();
-
-            // ends fight
-            setIsFighting(false);
-
-            setTimeout(() => {
-              setBattleStatus(false);
-              setEnemyCreature({});
-              setPlayerCreatureHP(0);
-              loadAsyncDataPlayer();
-            }, 1000);
-          } else {
-            // damages enemy
-            if (chancePlayer) {
-              displayPlayerAttackAnimation();
-              displayPlayerAttackCT(
-                playerCreatureAttack,
-                criticalMultiplier,
-                enemyDefense
-              );
-              setEnemyCreatureHP(
-                enemyCreatureHP -
-                  (playerCreatureAttack - playerCreatureAttack * enemyDefense) *
-                    criticalMultiplier
-              );
-            }
-
-            ref.current = playerCreatureHP;
-            callEnemyCounterAttack(chancePlayer, moveName, moveType);
-          }
-
-          // regens mp
-          if (
-            playerCreatureMP !==
-              playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus &&
-            playerCreatureMP +
-              playerCreature[0].mpRegen +
-              chosenRelic[0].mpRegenMod <=
-              playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus
-          ) {
-            setPlayerCreatureMP(
-              playerCreatureMP +
-                playerCreature[0].mpRegen +
-                chosenRelic[0].mpRegenMod
-            );
-          }
-          if (
-            playerCreatureMP +
-              playerCreature[0].mpRegen +
-              chosenRelic[0].mpRegenMod >
-            playerCreature[0].mp + chosenRelic.mpMod + summonMPBonus
-          ) {
-            setPlayerCreatureMP(
-              playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus
+              enemyDefense,
+              moveName,
+              moveType
             );
           }
         } else {
           // checks to see if the player has enough mana to use special attack
           if (playerCreatureMP >= playerCreatureSpecialCost) {
-            // deducts MP
-            setPlayerCreatureMP(playerCreatureMP - playerCreatureSpecialCost);
-
-            if (
-              moveType === "Poison" ||
-              moveType === "Magic" ||
-              moveType === "Lifesteal"
-            ) {
-              // checks for enemy death
-              if (
-                enemyCreatureHP -
-                  (playerCreatureSpecial -
-                    playerCreatureSpecial * enemyDefense) *
-                    criticalMultiplier <=
-                  0 &&
-                chancePlayer
-              ) {
-                setBattleUndecided(false);
-                displayPlayerAttackAnimation();
-                displayPlayerSpecialAnimation();
-                displayPlayerSpecialCT(
-                  playerCreatureSpecial,
-                  criticalMultiplier,
-                  enemyDefense
-                );
-                setEnemyCreatureHP(0);
-                setCombatAlert("Victory!");
-                await Userfront.user.update({
-                  data: {
-                    userkey: Userfront.user.data.userkey,
-                  },
-                });
-                await updateUser(player._id, {
-                  userfrontId: Userfront.user.userId,
-                  experience: player.experience + enemyCreature[0].reward * 2,
-                  drachmas: player.drachmas + enemyCreature[0].reward,
-                });
-
-                dropIngredientsOnChance();
-
-                // ends fight
-                setIsFighting(false);
-
-                setTimeout(() => {
-                  setBattleStatus(false);
-                  setEnemyCreature({});
-                  setPlayerCreatureHP(0);
-                  loadAsyncDataPlayer();
-                }, 1000);
-              } else {
-                // damages enemy
-                if (chancePlayer) {
-                  displayPlayerAttackAnimation();
-                  displayPlayerSpecialCT(
-                    playerCreatureSpecial,
-                    criticalMultiplier,
-                    enemyDefense
-                  );
-                  displayPlayerSpecialAnimation();
-                  setEnemyCreatureHP(
-                    enemyCreatureHP -
-                      (playerCreatureSpecial -
-                        playerCreatureSpecial * enemyDefense) *
-                        criticalMultiplier
-                  );
-                }
-
-                ref.current = playerCreatureHP;
-
-                // life steal to player
-                if (moveType === "Lifesteal") {
-                  if (
-                    playerCreatureHP +
-                      playerCreatureSpecial * criticalMultiplier * 0.2 >
-                    playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus
-                  ) {
-                    setPlayerCreatureHP(
-                      playerCreature[0].hp +
-                        chosenRelic[0].hpMod +
-                        summonHPBonus
-                    );
-                    ref.current =
-                      playerCreature[0].hp +
-                      chosenRelic[0].hpMod +
-                      summonHPBonus;
-                  } else {
-                    setPlayerCreatureHP(
-                      playerCreatureHP +
-                        playerCreatureSpecial * criticalMultiplier * 0.2
-                    );
-                    ref.current =
-                      playerCreatureHP +
-                      playerCreatureSpecial * criticalMultiplier * 0.2;
-                  }
-                }
-
-                callEnemyCounterAttack(chancePlayer, moveName, moveType);
-              }
-            } else {
-              // heals player
-              if (chancePlayer) {
-                displayPlayerHealCT(playerCreatureSpecial, criticalMultiplier);
-                displayPlayerSpecialAnimation();
-
-                if (
-                  playerCreatureHP +
-                    playerCreatureSpecial * criticalMultiplier >
-                  playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus
-                ) {
-                  setPlayerCreatureHP(
-                    playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus
-                  );
-                  ref.current =
-                    playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus;
-                } else {
-                  setPlayerCreatureHP(
-                    playerCreatureHP +
-                      playerCreatureSpecial * criticalMultiplier
-                  );
-                  ref.current =
-                    playerCreatureHP +
-                    playerCreatureSpecial * criticalMultiplier;
-                }
-
-                callEnemyCounterAttack(chancePlayer, moveName, moveType);
-              } else {
-                ref.current = playerCreatureHP;
-                callEnemyCounterAttack(chancePlayer, moveName, moveType);
-              }
-            }
+            performSpecial(
+              chancePlayer,
+              playerCreatureSpecial,
+              playerCreatureSpecialCost,
+              criticalMultiplier,
+              enemyDefense,
+              moveName,
+              moveType
+            );
           } else {
             setCombatAlert("Not enough MP!");
             // ends fight

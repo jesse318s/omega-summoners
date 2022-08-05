@@ -37,8 +37,16 @@ body {
   font-size: 40px;
 }
 
+.color_black {
+  color: black;
+}
+
 .color_white {
   color: white;
+}
+
+.background_white {
+  background-color: white;
 }
 
 /* game styles */

@@ -104,36 +104,36 @@ function Stage1() {
   useEffect(() => {
     // if there is a player
     if (player) {
-      try {
-        // checks player level for stage requirements
-        const checkLevelPlayer = () => {
-          try {
-            if (Math.floor(Math.sqrt(player.experience) * 0.25) < 5) {
-              alert("You must be level 5 to battle at this stage.");
-              navigate(-1);
-            }
-          } catch (error) {
-            console.log(error);
+      // checks player level for stage requirements
+      const checkLevelPlayer = () => {
+        try {
+          if (Math.floor(Math.sqrt(player.experience) * 0.25) < 5) {
+            alert("You must be level 5 to battle at this stage.");
+            navigate(-1);
           }
-        };
-        // loads player creature data and sets player creature state
-        const loadDataPlayerCreature = () => {
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      // loads player creature data and sets player creature state
+      const loadDataPlayerCreature = () => {
+        try {
           const playerCreatureData = creatureData.filter(
             (creature) => creature.id === player.creatureId
           );
           setPlayerCreature(playerCreatureData);
           setCreatureStatsStatus(player.displayCreatureStats);
-        };
-        checkLevelPlayer();
-        loadDataPlayerCreature();
-      } catch (error) {
-        console.log(error);
-      }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      checkLevelPlayer();
+      loadDataPlayerCreature();
       // if there are player relics
       if (player.relics) {
-        try {
-          // loads player relics data
-          const loadDataPlayerRelics = () => {
+        // loads player relics data
+        const loadDataPlayerRelics = () => {
+          try {
             const playerRelicsData = relicsData.filter((relic) =>
               player.relics.includes(relic.id)
             );
@@ -142,11 +142,11 @@ function Stage1() {
               (relic) => relic.id === player.chosenRelic
             );
             setChosenRelic(chosenRelicData);
-          };
-          loadDataPlayerRelics();
-        } catch (error) {
-          console.log(error);
-        }
+          } catch (error) {
+            console.log(error);
+          }
+        };
+        loadDataPlayerRelics();
       }
     }
   }, [player, relicsData, creatureData, navigate]);

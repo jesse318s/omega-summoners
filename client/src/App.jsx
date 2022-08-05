@@ -120,9 +120,9 @@ function App() {
   useEffect(() => {
     // if there is a player
     if (player) {
-      try {
-        // if needed, generates random creature and updates player in database
-        const genAsyncPlayerCreature = async () => {
+      // if needed, generates random creature and updates player in database
+      const genAsyncPlayerCreature = async () => {
+        try {
           // retrieves user data and updates player state
           const loadAsyncDataPlayer = async () => {
             try {
@@ -132,45 +132,44 @@ function App() {
               console.log(error);
             }
           };
-          try {
-            // if there is no player creature data
-            if (player.creatureId === 0) {
-              const randomCreature =
-                creatureData[Math.floor(Math.random() * creatureData.length)]
-                  .id;
-              Userfront.user.update({
-                data: {
-                  userkey: Userfront.user.data.userkey,
-                },
-              });
-              await updateUser(player._id, {
-                userfrontId: Userfront.user.userId,
-                creatureId: randomCreature,
-              });
-              await loadAsyncDataPlayer();
-            }
-          } catch (error) {
-            console.log(error);
+          // if there is no player creature data
+          if (player.creatureId === 0) {
+            const randomCreature =
+              creatureData[Math.floor(Math.random() * creatureData.length)].id;
+            Userfront.user.update({
+              data: {
+                userkey: Userfront.user.data.userkey,
+              },
+            });
+            await updateUser(player._id, {
+              userfrontId: Userfront.user.userId,
+              creatureId: randomCreature,
+            });
+            await loadAsyncDataPlayer();
           }
-        };
-        // loads player creature data and sets player creature state
-        const loadAsyncDataPlayerCreature = async () => {
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      // loads player creature data and sets player creature state
+      const loadAsyncDataPlayerCreature = async () => {
+        try {
           const playerCreatureData = creatureData.filter(
             (creature) => creature.id === player.creatureId
           );
           setPlayerCreature(playerCreatureData);
           setCreatureStatsStatus(player.displayCreatureStats);
-        };
-        genAsyncPlayerCreature();
-        loadAsyncDataPlayerCreature();
-      } catch (error) {
-        console.log(error);
-      }
-      try {
-        // if there are player relics
-        if (player.relics) {
-          // loads player relics data
-          const loadDataPlayerRelics = () => {
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      genAsyncPlayerCreature();
+      loadAsyncDataPlayerCreature();
+      // if there are player relics
+      if (player.relics) {
+        // loads player relics data
+        const loadDataPlayerRelics = () => {
+          try {
             const playerRelicsData = relicsData.filter((relic) =>
               player.relics.includes(relic.id)
             );
@@ -179,11 +178,11 @@ function App() {
               (relic) => relic.id === player.chosenRelic
             );
             setChosenRelic(chosenRelicData);
-          };
-          loadDataPlayerRelics();
-        }
-      } catch (error) {
-        console.log(error);
+          } catch (error) {
+            console.log(error);
+          }
+        };
+        loadDataPlayerRelics();
       }
     }
   }, [player, relicsData, creatureData]);

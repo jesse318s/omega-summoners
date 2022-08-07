@@ -226,7 +226,7 @@ function PlayerCreature({
         playerCreatureDefense = 0;
       }
       // checks enemy creature speeed vs player creature speed and sets chance
-      if (enemyCreature.speed <= playerCreatureSpeed) {
+      if (enemyCreature.speed < playerCreatureSpeed) {
         chanceEnemy = Math.random() >= 0.5;
       } else {
         chanceEnemy = Math.random() >= 0.8;
@@ -652,7 +652,7 @@ function PlayerCreature({
         }
 
         // checks player creature speed vs enemy creature speed and sets chance
-        if (playerCreatureSpeed <= enemyCreature.speed) {
+        if (playerCreatureSpeed < enemyCreature.speed) {
           chancePlayer = Math.random() >= 0.5;
         } else {
           chancePlayer = Math.random() >= 0.8;

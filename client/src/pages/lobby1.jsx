@@ -55,7 +55,7 @@ function Lobby1() {
   // relic state
   const [relicsData] = useState(relics);
   const [playerRelics, setPlayerRelics] = useState([{}]);
-  const [chosenRelic, setChosenRelic] = useState({});
+  const [chosenRelic, setChosenRelic] = useState(undefined);
   // alchemy state
   const [summonHPBonus, setSummonHPBonus] = useState(0);
   const [summonMPBonus, setSummonMPBonus] = useState(0);
@@ -153,7 +153,7 @@ function Lobby1() {
             const chosenRelicData = playerRelicsData.filter(
               (relic) => relic.id === player.chosenRelic
             );
-            setChosenRelic(chosenRelicData);
+            setChosenRelic(chosenRelicData[0]);
           } catch (error) {
             console.log(error);
           }
@@ -187,7 +187,7 @@ function Lobby1() {
   const loadAsyncDataLobby = async () => {
     try {
       // checks for connection and generates new connection if needed
-      const genDataConnection = async () => {
+      const genAsyncDataConnection = async () => {
         try {
           const newConnection = {
             userId: Userfront.user.userId,
@@ -207,7 +207,7 @@ function Lobby1() {
           console.log(error);
         }
       };
-      genDataConnection();
+      genAsyncDataConnection();
       loadAsyncDataConnection();
       const { data } = await getLobby(lobby1);
       setLobby(data);
@@ -217,7 +217,7 @@ function Lobby1() {
   };
 
   // renders if a player creature and relic is bestowed
-  if (playerCreature && chosenRelic[0]) {
+  if (playerCreature && chosenRelic) {
     return (
       <>
         <header>

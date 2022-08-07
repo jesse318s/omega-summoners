@@ -226,10 +226,10 @@ function MultiPlayerMenu({
       }
 
       setPlayerCreatureMP(
-        playerCreature.mp + chosenRelic[0].mpMod + summonMPBonus
+        playerCreature.mp + chosenRelic.mpMod + summonMPBonus
       );
       setPlayerCreatureHP(
-        playerCreature.hp + chosenRelic[0].hpMod + summonHPBonus
+        playerCreature.hp + chosenRelic.hpMod + summonHPBonus
       );
       displaySpawnAnimation();
       const enemyCreature = [

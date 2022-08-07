@@ -54,7 +54,7 @@ function Stage1() {
   // relic state
   const [relicsData] = useState(relics);
   const [playerRelics, setPlayerRelics] = useState([{}]);
-  const [chosenRelic, setChosenRelic] = useState({});
+  const [chosenRelic, setChosenRelic] = useState(undefined);
   // alchemy state
   const [potions, setPotions] = useState([{}]);
   const [ingredients, setIngredients] = useState([{}]);
@@ -141,7 +141,7 @@ function Stage1() {
             const chosenRelicData = playerRelicsData.filter(
               (relic) => relic.id === player.chosenRelic
             );
-            setChosenRelic(chosenRelicData);
+            setChosenRelic(chosenRelicData[0]);
           } catch (error) {
             console.log(error);
           }
@@ -162,7 +162,7 @@ function Stage1() {
   };
 
   // renders if a player creature and relic is bestowed
-  if (playerCreature && chosenRelic[0]) {
+  if (playerCreature && chosenRelic) {
     return (
       <>
         <header>

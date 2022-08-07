@@ -216,8 +216,8 @@ function Lobby1() {
     }
   };
 
-  // renders if a relic is bestowed
-  if (chosenRelic[0]) {
+  // renders if a player creature and relic is bestowed
+  if (playerCreature && chosenRelic[0]) {
     return (
       <>
         <header>

@@ -278,9 +278,9 @@ function PlayerCreature({
           setBattleUndecided(false);
           setPlayerCreatureHP(0);
           setCombatAlert("Defeat!");
-          // ends fight
-          setIsFighting(false);
           setTimeout(() => {
+            // ends fight
+            setIsFighting(false);
             setBattleStatus(false);
             setEnemyCreature({});
             setEnemyCreatureHP(0);

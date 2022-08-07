@@ -277,9 +277,9 @@ function MultiPlayerCreature({
           setBattleUndecided(false);
           setPlayerCreatureHP(0);
           setCombatAlert("Defeat!");
-          // ends fight
-          setIsFighting(false);
           setTimeout(() => {
+            // ends fight
+            setIsFighting(false);
             setBattleStatus(false);
             setEnemyCreature({});
           }, 600);

@@ -566,23 +566,6 @@ function MultiPlayerCreature({
         !lobbyTimer &&
         !isFighting
       ) {
-        // begins fight
-        setIsFighting(true);
-
-        // sets lobby timer
-        setLobbyTimer(true);
-        setTimeout(() => {
-          setLobbyTimer(false);
-          loadAsyncDataLobby();
-          loadAsyncDataPlayer();
-        }, 1100);
-
-        await loadAsyncDataLobby();
-
-        checkPotionTimer();
-
-        await loadAsyncDataPlayer();
-
         const playerCreatureAttack =
           playerCreature.attack + chosenRelic.attackMod;
         const playerCreatureSpeed =
@@ -603,6 +586,23 @@ function MultiPlayerCreature({
             playerCreature.special2 + chosenRelic.specialMod;
           playerCreatureSpecialCost = playerCreature.specialCost2;
         }
+
+        // begins fight
+        setIsFighting(true);
+
+        // sets lobby timer
+        setLobbyTimer(true);
+        setTimeout(() => {
+          setLobbyTimer(false);
+          loadAsyncDataLobby();
+          loadAsyncDataPlayer();
+        }, 1100);
+
+        await loadAsyncDataLobby();
+
+        checkPotionTimer();
+
+        await loadAsyncDataPlayer();
 
         // checks for player magic move type and applies effect
         if (moveType === "Magic") {

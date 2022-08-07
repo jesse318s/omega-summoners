@@ -620,13 +620,6 @@ function PlayerCreature({
         battleUndecided &&
         !isFighting
       ) {
-        // begins fight
-        setIsFighting(true);
-
-        checkPotionTimer();
-
-        await loadAsyncDataPlayer();
-
         const playerCreatureAttack =
           playerCreature.attack + chosenRelic.attackMod;
         const playerCreatureSpeed = playerCreature.speed + chosenRelic.speedMod;
@@ -645,6 +638,13 @@ function PlayerCreature({
             playerCreature.special2 + chosenRelic.specialMod;
           playerCreatureSpecialCost = playerCreature.specialCost2;
         }
+
+        // begins fight
+        setIsFighting(true);
+
+        checkPotionTimer();
+
+        await loadAsyncDataPlayer();
 
         // checks for player magic move type and applies effect
         if (moveType === "Magic") {

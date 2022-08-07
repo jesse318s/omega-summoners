@@ -279,16 +279,16 @@ function Menu({
       }
 
       setPlayerCreatureMP(
-        playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus
+        playerCreature.mp + chosenRelic[0].mpMod + summonMPBonus
       );
       setPlayerCreatureHP(
-        playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus
+        playerCreature.hp + chosenRelic[0].hpMod + summonHPBonus
       );
       displaySpawnAnimation();
       const enemyCreature = [
         enemyCreatureData[Math.floor(Math.random() * enemyCreatureData.length)],
       ];
-      setEnemyCreature(enemyCreature);
+      setEnemyCreature(enemyCreature[0]);
       setEnemyCreatureHP(enemyCreature[0].hp);
       setCombatAlert("The battle has begun!");
       setBattleStatus(true);
@@ -358,13 +358,13 @@ function Menu({
         );
         const currentRecipe = recipeList.filter(
           (item) => item.potionProductId === potion.id
-        );
+        )[0];
         // check if player has enough ingredients for recipe
         const ingredient1Check = playerIngredientData.find(
-          (item) => item.itemId === currentRecipe[0].ingredient1
+          (item) => item.itemId === currentRecipe.ingredient1
         );
         const ingredient2Check = playerIngredientData.find(
-          (item) => item.itemId === currentRecipe[0].ingredient2
+          (item) => item.itemId === currentRecipe.ingredient2
         );
         if (
           ingredient1Check &&
@@ -374,20 +374,16 @@ function Menu({
         ) {
           // confirm potion creation
           if (window.confirm(`Are you sure you want to create this potion?`)) {
-            const currentIngredient1 = currentRecipe.map((item) =>
-              playerIngredientData.find(
-                (ingredient) => ingredient.itemId === item.ingredient1
-              )
+            const currentIngredient1 = playerIngredientData.find(
+              (ingredient) => ingredient.itemId === currentRecipe.ingredient1
             );
             let currentIngredient1Data = playerIngredientData.filter((item) =>
               currentIngredient1.some(
                 (ingredient) => ingredient.itemId === item.itemId
               )
             );
-            const currentIngredient2 = currentRecipe.map((item) =>
-              playerIngredientData.find(
-                (ingredient) => ingredient.itemId === item.ingredient2
-              )
+            const currentIngredient2 = playerIngredientData.find(
+              (ingredient) => ingredient.itemId === currentRecipe.ingredient2
             );
             let currentIngredient2Data = playerIngredientData.filter((item) =>
               currentIngredient2.some(
@@ -503,10 +499,10 @@ function Menu({
             }
 
             setPlayerCreatureMP(
-              playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus
+              playerCreature.mp + chosenRelic[0].mpMod + summonMPBonus
             );
             setPlayerCreatureHP(
-              playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus
+              playerCreature.hp + chosenRelic[0].hpMod + summonHPBonus
             );
             setTimeout(() => {
               setPotionCooldown(false);

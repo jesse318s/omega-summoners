@@ -121,7 +121,7 @@ function Stage1() {
           const playerCreatureData = creatureData.filter(
             (creature) => creature.id === player.creatureId
           );
-          setPlayerCreature(playerCreatureData);
+          setPlayerCreature(playerCreatureData[0]);
           setCreatureStatsStatus(player.displayCreatureStats);
         } catch (error) {
           console.log(error);

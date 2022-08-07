@@ -9,7 +9,7 @@ import Options from "../components/options";
 import Player from "../components/player";
 import MultiPlayerMenu from "../components/multiPlayerMenu";
 import MultiPlayerCreature from "../components/multiPlayerCreature";
-import BossEnemyCreature from "../components/bossEnemyCreature";
+import MultiPlayerEnemyCreature from "../components/multiPlayerEnemyCreature";
 import creatures from "../constants/creatures";
 import relics from "../constants/relics";
 import { bossEnemyCreatureStage1 } from "../constants/enemyCreatures";
@@ -133,7 +133,7 @@ function Lobby1() {
           const playerCreatureData = creatureData.filter(
             (creature) => creature.id === player.creatureId
           );
-          setPlayerCreature(playerCreatureData);
+          setPlayerCreature(playerCreatureData[0]);
           setCreatureStatsStatus(player.displayCreatureStats);
         } catch (error) {
           console.log(error);
@@ -328,7 +328,7 @@ function Lobby1() {
                 setSummonMPBonus={setSummonMPBonus}
               />
 
-              <BossEnemyCreature
+              <MultiPlayerEnemyCreature
                 battleStatus={battleStatus}
                 enemyCreature={enemyCreature}
                 playerAttackStatus={playerAttackStatus}

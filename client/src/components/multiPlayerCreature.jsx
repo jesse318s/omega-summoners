@@ -198,8 +198,8 @@ function MultiPlayerCreature({
           setCritText("crit_text");
         }
         setCombatText(
-          (enemyCreature[0].attack -
-            enemyCreature[0].attack * playerCreatureDefense) *
+          (enemyCreature.attack -
+            enemyCreature.attack * playerCreatureDefense) *
             criticalMultiplier
         );
         setTimeout(() => {
@@ -216,24 +216,24 @@ function MultiPlayerCreature({
   const callEnemyCounterAttack = async (chancePlayer, moveName, moveType) => {
     try {
       const playerCreatureSpeed =
-        (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
+        playerCreature.speed + chosenRelic[0].speedMod;
       let playerCreatureDefense =
-        (playerCreature[0].defense + chosenRelic[0].defenseMod) / 100;
+        (playerCreature.defense + chosenRelic[0].defenseMod) / 100;
+      let enemyCreatureCritical = enemyCreature.critical / 100;
       let criticalMultiplier = 1;
       let chanceEnemy = false;
 
       // checks for attack type
-      if (enemyCreature[0].attackType === "Magic") {
+      if (enemyCreature.attackType === "Magic") {
         playerCreatureDefense = 0;
       }
-      // checks for equal player and enemy speed
-      if (enemyCreature[0].speed / 100 === playerCreatureSpeed) {
+      // checks enemy creature speeed vs player creature speed and sets chance
+      if (enemyCreature.speed <= playerCreatureSpeed) {
         chanceEnemy = Math.random() >= 0.5;
       } else {
-        chanceEnemy =
-          Math.random() >= playerCreatureSpeed - enemyCreature[0].speed / 100;
+        chanceEnemy = Math.random() >= 0.8;
       }
-      // series of checks for enemy counter attack based on speed
+      // series of checks for enemy counter attack based on chance
       if (!chanceEnemy && chancePlayer) {
         setTimeout(() => {
           setCombatAlert("Enemy was too slow!");
@@ -247,7 +247,7 @@ function MultiPlayerCreature({
           setCombatAlert("The battle continues...");
         }, 600);
       }
-      // checks for player speed failure
+      // checks for player chance failure
       if (chanceEnemy && !chancePlayer) {
         setTimeout(() => {
           setCombatAlert("Your summon was too slow!");
@@ -259,21 +259,18 @@ function MultiPlayerCreature({
           viewEnemyAttackCT(criticalMultiplier, playerCreatureDefense);
         }, 600);
         // checks enemy critical hit
-        if (Math.random() <= enemyCreature[0].critical / 100) {
+        if (Math.random() <= enemyCreatureCritical) {
           criticalMultiplier = 1.5;
         }
         // checks for enemy poison move type and crit, then applies effect
-        if (
-          enemyCreature[0].attackType === "Poison" &&
-          criticalMultiplier === 1
-        ) {
+        if (enemyCreature.attackType === "Poison" && criticalMultiplier === 1) {
           criticalMultiplier = 1.5;
         }
         // checks for player death, and damages player otherwise
         if (
           ref.current -
-            (enemyCreature[0].attack -
-              enemyCreature[0].attack * playerCreatureDefense) *
+            (enemyCreature.attack -
+              enemyCreature.attack * playerCreatureDefense) *
               criticalMultiplier <=
           0
         ) {
@@ -289,8 +286,8 @@ function MultiPlayerCreature({
         } else {
           setPlayerCreatureHP(
             ref.current -
-              (enemyCreature[0].attack -
-                enemyCreature[0].attack * playerCreatureDefense) *
+              (enemyCreature.attack -
+                enemyCreature.attack * playerCreatureDefense) *
                 criticalMultiplier
           );
           // ends fight
@@ -356,22 +353,20 @@ function MultiPlayerCreature({
     // regens mp
     if (
       playerCreatureMP !==
-        playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus &&
-      playerCreatureMP +
-        playerCreature[0].mpRegen +
-        chosenRelic[0].mpRegenMod <=
-        playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus
+        playerCreature.mp + chosenRelic[0].mpMod + summonMPBonus &&
+      playerCreatureMP + playerCreature.mpRegen + chosenRelic[0].mpRegenMod <=
+        playerCreature.mp + chosenRelic[0].mpMod + summonMPBonus
     ) {
       setPlayerCreatureMP(
-        playerCreatureMP + playerCreature[0].mpRegen + chosenRelic[0].mpRegenMod
+        playerCreatureMP + playerCreature.mpRegen + chosenRelic[0].mpRegenMod
       );
     }
     if (
-      playerCreatureMP + playerCreature[0].mpRegen + chosenRelic[0].mpRegenMod >
-      playerCreature[0].mp + chosenRelic.mpMod + summonMPBonus
+      playerCreatureMP + playerCreature.mpRegen + chosenRelic[0].mpRegenMod >
+      playerCreature.mp + chosenRelic.mpMod + summonMPBonus
     ) {
       setPlayerCreatureMP(
-        playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus
+        playerCreature.mp + chosenRelic[0].mpMod + summonMPBonus
       );
     }
   };
@@ -403,15 +398,14 @@ function MultiPlayerCreature({
     });
     await updateUser(player._id, {
       userfrontId: Userfront.user.userId,
-      experience: player.experience + enemyCreature[0].reward * 2,
-      drachmas: player.drachmas + enemyCreature[0].reward,
+      experience: player.experience + enemyCreature.reward * 2,
+      drachmas: player.drachmas + enemyCreature.reward,
     });
-    // ends fight
-    setIsFighting(false);
     setTimeout(() => {
+      // ends fight
+      setIsFighting(false);
       setBattleStatus(false);
       setEnemyCreature({});
-      setPlayerCreatureHP(0);
       loadAsyncDataPlayer();
     }, 1000);
   };
@@ -429,13 +423,12 @@ function MultiPlayerCreature({
       displayPlayerSpecialAnimation();
       if (
         playerCreatureHP + playerCreatureSpecial * criticalMultiplier >
-        playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus
+        playerCreature.hp + chosenRelic[0].hpMod + summonHPBonus
       ) {
         setPlayerCreatureHP(
-          playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus
+          playerCreature.hp + chosenRelic[0].hpMod + summonHPBonus
         );
-        ref.current =
-          playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus;
+        ref.current = playerCreature.hp + chosenRelic[0].hpMod + summonHPBonus;
       } else {
         setPlayerCreatureHP(
           playerCreatureHP + playerCreatureSpecial * criticalMultiplier
@@ -496,15 +489,14 @@ function MultiPlayerCreature({
         });
         await updateUser(player._id, {
           userfrontId: Userfront.user.userId,
-          experience: player.experience + enemyCreature[0].reward * 2,
-          drachmas: player.drachmas + enemyCreature[0].reward,
+          experience: player.experience + enemyCreature.reward * 2,
+          drachmas: player.drachmas + enemyCreature.reward,
         });
-        // ends fight
-        setIsFighting(false);
         setTimeout(() => {
+          // ends fight
+          setIsFighting(false);
           setBattleStatus(false);
           setEnemyCreature({});
-          setPlayerCreatureHP(0);
           loadAsyncDataPlayer();
         }, 1000);
       } else {
@@ -535,13 +527,13 @@ function MultiPlayerCreature({
           if (
             playerCreatureHP +
               playerCreatureSpecial * criticalMultiplier * 0.2 >
-            playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus
+            playerCreature.hp + chosenRelic[0].hpMod + summonHPBonus
           ) {
             setPlayerCreatureHP(
-              playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus
+              playerCreature.hp + chosenRelic[0].hpMod + summonHPBonus
             );
             ref.current =
-              playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus;
+              playerCreature.hp + chosenRelic[0].hpMod + summonHPBonus;
           } else {
             setPlayerCreatureHP(
               playerCreatureHP +
@@ -595,23 +587,24 @@ function MultiPlayerCreature({
         }, 1100);
 
         const playerCreatureAttack =
-          playerCreature[0].attack + chosenRelic[0].attackMod;
+          playerCreature.attack + chosenRelic[0].attackMod;
         const playerCreatureSpeed =
-          (playerCreature[0].speed + chosenRelic[0].speedMod) / 100;
+          (playerCreature.speed + chosenRelic[0].speedMod) / 100;
         const playerCreatureCritical =
-          (playerCreature[0].critical + chosenRelic[0].criticalMod) / 100;
+          (playerCreature.critical + chosenRelic[0].criticalMod) / 100;
         let playerCreatureSpecial =
-          playerCreature[0].special + chosenRelic[0].specialMod;
-        let playerCreatureSpecialCost = playerCreature[0].specialCost;
-        let enemyDefense = enemyCreature[0].defense / 100;
+          playerCreature.special + chosenRelic[0].specialMod;
+        let playerCreatureSpecialCost = playerCreature.specialCost;
+        let enemyCreatureSpeed = enemyCreature.speed / 100;
+        let enemyDefense = enemyCreature.defense / 100;
         let chancePlayer = false;
         let criticalMultiplier = 1;
 
         // assigns preferred player special and cost
         if (player.preferredSpecial === 2) {
           playerCreatureSpecial =
-            playerCreature[0].special2 + chosenRelic[0].specialMod;
-          playerCreatureSpecialCost = playerCreature[0].specialCost2;
+            playerCreature.special2 + chosenRelic[0].specialMod;
+          playerCreatureSpecialCost = playerCreature.specialCost2;
         }
 
         // checks for player magic move type and applies effect
@@ -619,12 +612,11 @@ function MultiPlayerCreature({
           enemyDefense = 0;
         }
 
-        // checks for equal player and enemy speed
-        if (playerCreatureSpeed === enemyCreature[0].speed / 100) {
+        // checks player creature speed vs enemy creature speed and sets chance
+        if (playerCreatureSpeed <= enemyCreatureSpeed) {
           chancePlayer = Math.random() >= 0.5;
         } else {
-          chancePlayer =
-            Math.random() >= enemyCreature[0].speed / 100 - playerCreatureSpeed;
+          chancePlayer = Math.random() >= 0.8;
         }
 
         // checks for player critical hit
@@ -638,7 +630,7 @@ function MultiPlayerCreature({
         }
 
         // if the player's attack is regular
-        if (moveName === playerCreature[0].attackName) {
+        if (moveName === playerCreature.attackName) {
           // checks for enemy death
           if (
             lobby.enemyHP -
@@ -685,191 +677,195 @@ function MultiPlayerCreature({
     <>
       {!summonsStatus && !relicsStatus && !templeStatus && !stagesStatus ? (
         <>
+          {/* displays the player creature with combat text, special visual effect, and creature control/stat panel */}
           <div className="player_creature">
-            {/* maps the player creature with combat text, special visual effect, and creature control/stat panel */}
-            {playerCreature.map((creature) => (
-              <div key={creature.id}>
-                {/* displays combat text */}
-                {enemyAttackStatus ||
-                critText === "heal_crit_text" ||
-                critText === "heal_combat_text" ? (
-                  <div className="special_effect_container">
-                    <div className={critText}>{combatText}</div>
-                  </div>
-                ) : null}
+            {/* displays combat text */}
+            {enemyAttackStatus ||
+            critText === "heal_crit_text" ||
+            critText === "heal_combat_text" ? (
+              <div className="special_effect_container">
+                <div className={critText}>{combatText}</div>
+              </div>
+            ) : null}
 
-                {/* displays creature based on attack state */}
-                {playerAttackStatus ? (
-                  <img
-                    className={chosenRelic[0].effectClass}
-                    src={creature.imgPath.slice(0, -4) + "_attack.png"}
-                    alt={creature.name}
-                    width="128px"
-                    height="128px"
-                  />
-                ) : enemyAttackStatus ? (
-                  <img
-                    className={chosenRelic[0].effectClass}
-                    src={creature.imgPath.slice(0, -4) + "_hurt.png"}
-                    alt={creature.name}
-                    width="128px"
-                    height="128px"
-                  />
+            {/* displays creature based on attack state */}
+            {playerAttackStatus ? (
+              <img
+                className={chosenRelic[0].effectClass}
+                src={playerCreature.imgPath.slice(0, -4) + "_attack.png"}
+                alt={playerCreature.name}
+                width="128px"
+                height="128px"
+              />
+            ) : enemyAttackStatus ? (
+              <img
+                className={chosenRelic[0].effectClass}
+                src={playerCreature.imgPath.slice(0, -4) + "_hurt.png"}
+                alt={playerCreature.name}
+                width="128px"
+                height="128px"
+              />
+            ) : (
+              <img
+                className={chosenRelic[0].effectClass}
+                src={playerCreature.imgPath}
+                alt={playerCreature.name}
+                width="128px"
+                height="128px"
+              />
+            )}
+
+            {/* displays the player creature special when special is used */}
+            {specialStatus ? (
+              <div className="special_effect_container">
+                {player.preferredSpecial === 1 ? (
+                  <div className={playerCreature.specialEffect} />
                 ) : (
-                  <img
-                    className={chosenRelic[0].effectClass}
-                    src={creature.imgPath}
-                    alt={creature.name}
-                    width="128px"
-                    height="128px"
-                  />
-                )}
+                  <div className={playerCreature.specialEffect2} />
+                )}{" "}
+              </div>
+            ) : null}
 
-                {/* displays the player creature special when special is used */}
-                {specialStatus ? (
-                  <div className="special_effect_container">
-                    {player.preferredSpecial === 1 ? (
-                      <div className={creature.specialEffect} />
-                    ) : (
-                      <div className={creature.specialEffect2} />
-                    )}{" "}
-                  </div>
-                ) : null}
-
-                {/* displays player creature controls based on battle status and selected special, and player creature stats based on user preference */}
-                {!battleStatus ? (
+            {/* displays player creature controls based on battle status and selected special, and player creature stats based on user preference */}
+            {!battleStatus ? (
+              <button
+                className="game_button_small margin_small"
+                onClick={() => {
+                  toggleSpecial();
+                }}
+              >
+                {" "}
+                Special: {player.preferredSpecial}{" "}
+              </button>
+            ) : null}
+            <div className="creature_panel">
+              {battleStatus ? (
+                <div className="inline_flex">
                   <button
-                    className="game_button_small margin_small"
+                    className="game_button attack_button"
                     onClick={() => {
-                      toggleSpecial();
+                      attackEnemy(
+                        playerCreature.attackName,
+                        playerCreature.attackType
+                      );
                     }}
                   >
-                    {" "}
-                    Special: {player.preferredSpecial}{" "}
+                    {playerCreature.attackName}
                   </button>
-                ) : null}
-                <div className="creature_panel">
-                  {battleStatus ? (
-                    <div className="inline_flex">
-                      <button
-                        className="game_button attack_button"
-                        onClick={() => {
-                          attackEnemy(creature.attackName, creature.attackType);
-                        }}
-                      >
-                        {creature.attackName}
-                      </button>
-                      {player.preferredSpecial === 1 ? (
-                        <button
-                          className="game_button special_button"
-                          onClick={() => {
-                            attackEnemy(
-                              creature.specialName,
-                              creature.specialType
-                            );
-                          }}
-                        >
-                          {creature.specialName}
-                          <br />
-                          Cost: {creature.specialCost} MP
-                        </button>
-                      ) : (
-                        <button
-                          className="game_button special_button"
-                          onClick={() => {
-                            attackEnemy(
-                              creature.specialName2,
-                              creature.specialType2
-                            );
-                          }}
-                        >
-                          {creature.specialName2}
-                          <br />
-                          Cost: {creature.specialCost2} MP
-                        </button>
-                      )}
-                    </div>
-                  ) : null}
-
-                  <h4>
-                    {player.name}'s {creature.name}
-                  </h4>
-
-                  {battleStatus ? (
-                    <div className="progress_bar_container">
-                      <div
-                        className="progress_bar"
-                        style={{
-                          width:
-                            (playerCreatureHP /
-                              (playerCreature[0].hp +
-                                chosenRelic[0].hpMod +
-                                summonHPBonus)) *
-                              100 +
-                            "%",
-                        }}
-                      />
-                    </div>
-                  ) : null}
-
-                  {!battleStatus ? (
-                    <div className="inline_flex">
-                      <h5>
-                        HP: {creature.hp + chosenRelic[0].hpMod + summonHPBonus}
-                      </h5>
-                      &nbsp;|&nbsp;
-                      <h5>
-                        MP: {creature.mp + chosenRelic[0].mpMod + summonMPBonus}
-                      </h5>
-                    </div>
+                  {player.preferredSpecial === 1 ? (
+                    <button
+                      className="game_button special_button"
+                      onClick={() => {
+                        attackEnemy(
+                          playerCreature.specialName,
+                          playerCreature.specialType
+                        );
+                      }}
+                    >
+                      {playerCreature.specialName}
+                      <br />
+                      Cost: {playerCreature.specialCost} MP
+                    </button>
                   ) : (
-                    <div className="inline_flex">
-                      <h5>
-                        HP: {playerCreatureHP} /{" "}
-                        {creature.hp + chosenRelic[0].hpMod + summonHPBonus}
-                      </h5>
-                      &nbsp;|&nbsp;
-                      <h5>
-                        MP: {playerCreatureMP} /{" "}
-                        {creature.mp + chosenRelic[0].mpMod + summonMPBonus}
-                      </h5>
-                    </div>
+                    <button
+                      className="game_button special_button"
+                      onClick={() => {
+                        attackEnemy(
+                          playerCreature.specialName2,
+                          playerCreature.specialType2
+                        );
+                      }}
+                    >
+                      {playerCreature.specialName2}
+                      <br />
+                      Cost: {playerCreature.specialCost2} MP
+                    </button>
                   )}
-
-                  {creatureStatsStatus ? (
-                    <div>
-                      <h5>
-                        Attack: {creature.attack + chosenRelic[0].attackMod} |
-                        Type: {creature.attackType}
-                      </h5>
-                      {player.preferredSpecial === 1 ? (
-                        <h5>
-                          Special:{" "}
-                          {creature.special + chosenRelic[0].specialMod} | Type:{" "}
-                          {creature.specialType} | {creature.specialCost}{" "}
-                        </h5>
-                      ) : (
-                        <h5>
-                          Special:{" "}
-                          {creature.special2 + chosenRelic[0].specialMod} |
-                          Type: {creature.specialType2} |{" "}
-                          {creature.specialCost2}{" "}
-                        </h5>
-                      )}
-                      <h5>
-                        MP Regen: {creature.mpRegen + chosenRelic[0].mpRegenMod}{" "}
-                        | Speed: {creature.speed + chosenRelic[0].speedMod}
-                      </h5>
-                      <h5>
-                        Critical:{" "}
-                        {creature.critical + chosenRelic[0].criticalMod}% |
-                        Defense: {creature.defense + chosenRelic[0].defenseMod}%
-                      </h5>
-                    </div>
-                  ) : null}
                 </div>
-              </div>
-            ))}
+              ) : null}
+
+              <h4>
+                {player.name}'s {playerCreature.name}
+              </h4>
+
+              {battleStatus ? (
+                <div className="progress_bar_container">
+                  <div
+                    className="progress_bar"
+                    style={{
+                      width:
+                        (playerCreatureHP /
+                          (playerCreature.hp +
+                            chosenRelic[0].hpMod +
+                            summonHPBonus)) *
+                          100 +
+                        "%",
+                    }}
+                  />
+                </div>
+              ) : null}
+
+              {!battleStatus ? (
+                <div className="inline_flex">
+                  <h5>
+                    HP:{" "}
+                    {playerCreature.hp + chosenRelic[0].hpMod + summonHPBonus}
+                  </h5>
+                  &nbsp;|&nbsp;
+                  <h5>
+                    MP:{" "}
+                    {playerCreature.mp + chosenRelic[0].mpMod + summonMPBonus}
+                  </h5>
+                </div>
+              ) : (
+                <div className="inline_flex">
+                  <h5>
+                    HP: {playerCreatureHP} /{" "}
+                    {playerCreature.hp + chosenRelic[0].hpMod + summonHPBonus}
+                  </h5>
+                  &nbsp;|&nbsp;
+                  <h5>
+                    MP: {playerCreatureMP} /{" "}
+                    {playerCreature.mp + chosenRelic[0].mpMod + summonMPBonus}
+                  </h5>
+                </div>
+              )}
+
+              {creatureStatsStatus ? (
+                <div>
+                  <h5>
+                    Attack: {playerCreature.attack + chosenRelic[0].attackMod} |
+                    Type: {playerCreature.attackType}
+                  </h5>
+                  {player.preferredSpecial === 1 ? (
+                    <h5>
+                      Special:{" "}
+                      {playerCreature.special + chosenRelic[0].specialMod} |
+                      Type: {playerCreature.specialType} |{" "}
+                      {playerCreature.specialCost}{" "}
+                    </h5>
+                  ) : (
+                    <h5>
+                      Special:{" "}
+                      {playerCreature.special2 + chosenRelic[0].specialMod} |
+                      Type: {playerCreature.specialType2} |{" "}
+                      {playerCreature.specialCost2}{" "}
+                    </h5>
+                  )}
+                  <h5>
+                    MP Regen:{" "}
+                    {playerCreature.mpRegen + chosenRelic[0].mpRegenMod} |
+                    Speed: {playerCreature.speed + chosenRelic[0].speedMod}
+                  </h5>
+                  <h5>
+                    Critical:{" "}
+                    {playerCreature.critical + chosenRelic[0].criticalMod}% |
+                    Defense:{" "}
+                    {playerCreature.defense + chosenRelic[0].defenseMod}%
+                  </h5>
+                </div>
+              ) : null}
+            </div>
           </div>
         </>
       ) : null}

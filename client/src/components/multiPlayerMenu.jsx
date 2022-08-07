@@ -226,16 +226,16 @@ function MultiPlayerMenu({
       }
 
       setPlayerCreatureMP(
-        playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus
+        playerCreature.mp + chosenRelic[0].mpMod + summonMPBonus
       );
       setPlayerCreatureHP(
-        playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus
+        playerCreature.hp + chosenRelic[0].hpMod + summonHPBonus
       );
       displaySpawnAnimation();
       const enemyCreature = [
         enemyCreatureData[Math.floor(Math.random() * enemyCreatureData.length)],
       ];
-      setEnemyCreature(enemyCreature);
+      setEnemyCreature(enemyCreature[0]);
       setCombatAlert("The battle has begun!");
       setBattleStatus(true);
       setBattleUndecided(true);

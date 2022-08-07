@@ -377,35 +377,25 @@ function Menu({
             const currentIngredient1 = playerIngredientData.find(
               (ingredient) => ingredient.itemId === currentRecipe.ingredient1
             );
-            let currentIngredient1Data = playerIngredientData.filter((item) =>
-              currentIngredient1.some(
-                (ingredient) => ingredient.itemId === item.itemId
-              )
-            );
             const currentIngredient2 = playerIngredientData.find(
               (ingredient) => ingredient.itemId === currentRecipe.ingredient2
             );
-            let currentIngredient2Data = playerIngredientData.filter((item) =>
-              currentIngredient2.some(
-                (ingredient) => ingredient.itemId === item.itemId
-              )
-            );
             // delete the ingredients from the player's inventory
-            currentIngredient1Data[0].itemQuantity -= 1;
-            currentIngredient2Data[0].itemQuantity -= 1;
+            currentIngredient1.itemQuantity -= 1;
+            currentIngredient2.itemQuantity -= 1;
             await Userfront.user.update({
               data: {
                 userkey: Userfront.user.data.userkey,
               },
             });
-            await addItem(currentIngredient1Data[0]);
+            await addItem(currentIngredient1);
             await loadDataAlchemy();
             await Userfront.user.update({
               data: {
                 userkey: Userfront.user.data.userkey,
               },
             });
-            await addItem(currentIngredient2Data[0]);
+            await addItem(currentIngredient2);
             await loadDataAlchemy();
             // add the potion to the player's inventory
             await Userfront.user.update({

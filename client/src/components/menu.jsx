@@ -903,7 +903,7 @@ function Menu({
             </button>
             <br />
 
-            {/* dispalys recipes if recipes button is clicked */}
+            {/* displays recipes if recipes button is clicked */}
             {recipesStatus ? (
               <div>
                 <h4 className="margin_small">Available Recipes</h4>

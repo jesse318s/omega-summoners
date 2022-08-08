@@ -221,7 +221,6 @@ function PlayerCreature({
       let criticalMultiplier = 1;
       let chanceEnemy = false;
 
-      // checks for attack type
       if (enemyCreature.attackType === "Magic") {
         playerCreatureDefense = 0;
       }
@@ -238,7 +237,7 @@ function PlayerCreature({
         }, 500);
       }
       if (!chanceEnemy && !chancePlayer) {
-        attackEnemy(moveName, moveType);
+        attackEnemyOrHeal(moveName, moveType);
       }
       if (chanceEnemy && chancePlayer) {
         setTimeout(() => {
@@ -262,7 +261,6 @@ function PlayerCreature({
         if (Math.random() <= enemyCreatureCritical) {
           criticalMultiplier = 1.5;
         }
-        // checks for enemy poison move type and crit, then applies effect
         if (enemyCreature.attackType === "Poison" && criticalMultiplier === 1) {
           criticalMultiplier = 1.5;
         }
@@ -438,7 +436,7 @@ function PlayerCreature({
     }
   };
 
-  // kills enemy on successful attack with enough damage
+  // kills enemy
   const killEnemy = async (
     playerCreatureAttack,
     criticalMultiplier,
@@ -473,7 +471,35 @@ function PlayerCreature({
     }, 1000);
   };
 
-  // heals player creature with enough mana
+  // completes player lifesteal check and heal
+  const completeLifesteal = async (
+    playerCreatureSpecial,
+    criticalMultiplier,
+    chancePlayer,
+    moveName,
+    moveType
+  ) => {
+    if (moveType === "Lifesteal") {
+      if (
+        playerCreatureHP + playerCreatureSpecial * criticalMultiplier * 0.2 >
+        playerCreature.hp + chosenRelic.hpMod + summonHPBonus
+      ) {
+        setPlayerCreatureHP(
+          playerCreature.hp + chosenRelic.hpMod + summonHPBonus
+        );
+        ref.current = playerCreature.hp + chosenRelic.hpMod + summonHPBonus;
+      } else {
+        setPlayerCreatureHP(
+          playerCreatureHP + playerCreatureSpecial * criticalMultiplier * 0.2
+        );
+        ref.current =
+          playerCreatureHP + playerCreatureSpecial * criticalMultiplier * 0.2;
+      }
+    }
+    callEnemyCounterAttack(chancePlayer, moveName, moveType);
+  };
+
+  // heals player creature
   const healPlayerCreature = async (
     chancePlayer,
     playerCreatureSpecial,
@@ -506,7 +532,7 @@ function PlayerCreature({
     }
   };
 
-  // performs player special if mana is enough
+  // performs creature special
   const performSpecial = async (
     chancePlayer,
     playerCreatureSpecial,
@@ -576,28 +602,13 @@ function PlayerCreature({
           );
         }
         ref.current = playerCreatureHP;
-        // life steal to player
-        if (moveType === "Lifesteal") {
-          if (
-            playerCreatureHP +
-              playerCreatureSpecial * criticalMultiplier * 0.2 >
-            playerCreature.hp + chosenRelic.hpMod + summonHPBonus
-          ) {
-            setPlayerCreatureHP(
-              playerCreature.hp + chosenRelic.hpMod + summonHPBonus
-            );
-            ref.current = playerCreature.hp + chosenRelic.hpMod + summonHPBonus;
-          } else {
-            setPlayerCreatureHP(
-              playerCreatureHP +
-                playerCreatureSpecial * criticalMultiplier * 0.2
-            );
-            ref.current =
-              playerCreatureHP +
-              playerCreatureSpecial * criticalMultiplier * 0.2;
-          }
-        }
-        callEnemyCounterAttack(chancePlayer, moveName, moveType);
+        completeLifesteal(
+          playerCreatureSpecial,
+          criticalMultiplier,
+          chancePlayer,
+          moveName,
+          moveType
+        );
       }
     } else {
       healPlayerCreature(
@@ -610,8 +621,8 @@ function PlayerCreature({
     }
   };
 
-  // initiates chance to attack enemy creature
-  const attackEnemy = async (moveName, moveType) => {
+  // initiates chance to attack enemy creature or heal player creature
+  const attackEnemyOrHeal = async (moveName, moveType) => {
     try {
       // if the player and enemy aren't attacking and the battle is undecided
       if (
@@ -632,42 +643,32 @@ function PlayerCreature({
         let chancePlayer = false;
         let criticalMultiplier = 1;
 
+        // begins fight
+        setIsFighting(true);
+        checkPotionTimer();
+        await loadAsyncDataPlayer();
         // assigns preferred player special and cost
         if (player.preferredSpecial === 2) {
           playerCreatureSpecial =
             playerCreature.special2 + chosenRelic.specialMod;
           playerCreatureSpecialCost = playerCreature.specialCost2;
         }
-
-        // begins fight
-        setIsFighting(true);
-
-        checkPotionTimer();
-
-        await loadAsyncDataPlayer();
-
-        // checks for player magic move type and applies effect
         if (moveType === "Magic") {
           enemyDefense = 0;
         }
-
         // checks player creature speed vs enemy creature speed and sets chance
         if (playerCreatureSpeed < enemyCreature.speed) {
           chancePlayer = Math.random() >= 0.5;
         } else {
           chancePlayer = Math.random() >= 0.8;
         }
-
         // checks for player critical hit
         if (Math.random() <= playerCreatureCritical) {
           criticalMultiplier = 1.5;
         }
-
-        // checks for player poison move type and crit, then applies effect
         if (moveType === "Poison" && criticalMultiplier === 1) {
           criticalMultiplier = 1.5;
         }
-
         // if the player's attack is regular
         if (moveName === playerCreature.attackName) {
           // checks for enemy death
@@ -788,7 +789,7 @@ function PlayerCreature({
                   <button
                     className="game_button attack_button"
                     onClick={() => {
-                      attackEnemy(
+                      attackEnemyOrHeal(
                         playerCreature.attackName,
                         playerCreature.attackType
                       );
@@ -800,7 +801,7 @@ function PlayerCreature({
                     <button
                       className="game_button special_button"
                       onClick={() => {
-                        attackEnemy(
+                        attackEnemyOrHeal(
                           playerCreature.specialName,
                           playerCreature.specialType
                         );
@@ -814,7 +815,7 @@ function PlayerCreature({
                     <button
                       className="game_button special_button"
                       onClick={() => {
-                        attackEnemy(
+                        attackEnemyOrHeal(
                           playerCreature.specialName2,
                           playerCreature.specialType2
                         );

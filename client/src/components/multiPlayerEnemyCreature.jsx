@@ -10,7 +10,7 @@ function MultiPlayerEnemyCreature({
   spawnAnimation,
   lobby,
 }) {
-  // renders spawn portal, and boss enemy creature with stats panel for multiplayer
+  // renders spawn portal, enemy combat text, and boss enemy creature with stats panel for multiplayer
   return (
     <>
       {battleStatus ? (

@@ -10,7 +10,7 @@ function EnemyCreature({
   enemyCreatureHP,
   spawnAnimation,
 }) {
-  // renders spawn portal, and enemy creature with stats panel
+  // renders spawn portal, enemy combat text, and enemy creature with stats panel
   return (
     <>
       {battleStatus ? (

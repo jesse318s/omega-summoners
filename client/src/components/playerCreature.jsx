@@ -16,8 +16,6 @@ function PlayerCreature({
   playerAttackStatus,
   setPlayerAttackStatus,
   chosenRelic,
-  specialStatus,
-  setSpecialStatus,
   battleStatus,
   setBattleStatus,
   player,
@@ -49,6 +47,8 @@ function PlayerCreature({
 
   // fighting battle state
   const [isFighting, setIsFighting] = useState(false);
+  // player creature special status state
+  const [specialStatus, setSpecialStatus] = useState(false);
 
   // toggles special choice
   const toggleSpecial = async () => {

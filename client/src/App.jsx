@@ -46,7 +46,6 @@ function App() {
   const [enemyCreature, setEnemyCreature] = useState({});
   const [playerAttackStatus, setPlayerAttackStatus] = useState(false);
   const [enemyAttackStatus, setEnemyAttackStatus] = useState(false);
-  const [specialStatus, setSpecialStatus] = useState(false);
   const [playerCreatureHP, setPlayerCreatureHP] = useState(0);
   const [enemyCreatureHP, setEnemyCreatureHP] = useState(0);
   const [playerCreatureMP, setPlayerCreatureMP] = useState(0);
@@ -506,8 +505,6 @@ function App() {
                 playerAttackStatus={playerAttackStatus}
                 setPlayerAttackStatus={setPlayerAttackStatus}
                 chosenRelic={chosenRelic}
-                specialStatus={specialStatus}
-                setSpecialStatus={setSpecialStatus}
                 battleStatus={battleStatus}
                 setBattleStatus={setBattleStatus}
                 player={player}

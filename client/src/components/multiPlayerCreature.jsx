@@ -317,6 +317,28 @@ function MultiPlayerCreature({
     }
   };
 
+  // regens player creature mp
+  const regenMP = async () => {
+    if (
+      playerCreatureMP !==
+        playerCreature.mp + chosenRelic.mpMod + summonMPBonus &&
+      playerCreatureMP + playerCreature.mpRegen + chosenRelic.mpRegenMod <=
+        playerCreature.mp + chosenRelic.mpMod + summonMPBonus
+    ) {
+      setPlayerCreatureMP(
+        playerCreatureMP + playerCreature.mpRegen + chosenRelic.mpRegenMod
+      );
+    }
+    if (
+      playerCreatureMP + playerCreature.mpRegen + chosenRelic.mpRegenMod >
+      playerCreature.mp + chosenRelic.mpMod + summonMPBonus
+    ) {
+      setPlayerCreatureMP(
+        playerCreature.mp + chosenRelic.mpMod + summonMPBonus
+      );
+    }
+  };
+
   // damages enemy
   const damageEnemy = async (
     chancePlayer,
@@ -347,25 +369,7 @@ function MultiPlayerCreature({
     }
     ref.current = playerCreatureHP;
     callEnemyCounterAttack(chancePlayer, moveName, moveType);
-    // regens mp
-    if (
-      playerCreatureMP !==
-        playerCreature.mp + chosenRelic.mpMod + summonMPBonus &&
-      playerCreatureMP + playerCreature.mpRegen + chosenRelic.mpRegenMod <=
-        playerCreature.mp + chosenRelic.mpMod + summonMPBonus
-    ) {
-      setPlayerCreatureMP(
-        playerCreatureMP + playerCreature.mpRegen + chosenRelic.mpRegenMod
-      );
-    }
-    if (
-      playerCreatureMP + playerCreature.mpRegen + chosenRelic.mpRegenMod >
-      playerCreature.mp + chosenRelic.mpMod + summonMPBonus
-    ) {
-      setPlayerCreatureMP(
-        playerCreature.mp + chosenRelic.mpMod + summonMPBonus
-      );
-    }
+    regenMP();
   };
 
   // kills enemy

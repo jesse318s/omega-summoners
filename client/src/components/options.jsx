@@ -114,7 +114,8 @@ function Options({
             <div>
               <label htmlFor="name">Player name:&nbsp;</label>
               <input
-                className="margin_small"
+                id="name"
+                className="margin_small color_black background_white"
                 type="text"
                 name="name"
                 placeholder={player.name}

@@ -177,7 +177,7 @@ function MultiPlayerMenu({
     }
   };
 
-  // enemy spawn animation
+  // displays enemy spawn animation
   const displaySpawnAnimation = async () => {
     try {
       setSpawnAnimation("spawn_effect");
@@ -209,7 +209,7 @@ function MultiPlayerMenu({
         return;
       }
 
-      // checks and sets potion timer
+      // checks potion timer
       const potionTimer = await getPotionTimer();
       if (potionTimer.data.length > 0) {
         const playerPotion = potionsList.find(
@@ -226,16 +226,16 @@ function MultiPlayerMenu({
       }
 
       setPlayerCreatureMP(
-        playerCreature[0].mp + chosenRelic[0].mpMod + summonMPBonus
+        playerCreature.mp + chosenRelic.mpMod + summonMPBonus
       );
       setPlayerCreatureHP(
-        playerCreature[0].hp + chosenRelic[0].hpMod + summonHPBonus
+        playerCreature.hp + chosenRelic.hpMod + summonHPBonus
       );
       displaySpawnAnimation();
       const enemyCreature = [
         enemyCreatureData[Math.floor(Math.random() * enemyCreatureData.length)],
       ];
-      setEnemyCreature(enemyCreature);
+      setEnemyCreature(enemyCreature[0]);
       setCombatAlert("The battle has begun!");
       setBattleStatus(true);
       setBattleUndecided(true);

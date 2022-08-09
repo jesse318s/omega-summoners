@@ -9,7 +9,7 @@ import Options from "../components/options";
 import Player from "../components/player";
 import MultiPlayerMenu from "../components/multiPlayerMenu";
 import MultiPlayerCreature from "../components/multiPlayerCreature";
-import BossEnemyCreature from "../components/bossEnemyCreature";
+import MultiPlayerEnemyCreature from "../components/multiPlayerEnemyCreature";
 import creatures from "../constants/creatures";
 import relics from "../constants/relics";
 import { bossEnemyCreatureStage1 } from "../constants/enemyCreatures";
@@ -44,7 +44,6 @@ function Lobby1() {
   const [enemyCreature, setEnemyCreature] = useState({});
   const [playerAttackStatus, setPlayerAttackStatus] = useState(false);
   const [enemyAttackStatus, setEnemyAttackStatus] = useState(false);
-  const [specialStatus, setSpecialStatus] = useState(false);
   const [playerCreatureHP, setPlayerCreatureHP] = useState(0);
   const [playerCreatureMP, setPlayerCreatureMP] = useState(0);
   const [combatAlert, setCombatAlert] = useState("");
@@ -55,7 +54,7 @@ function Lobby1() {
   // relic state
   const [relicsData] = useState(relics);
   const [playerRelics, setPlayerRelics] = useState([{}]);
-  const [chosenRelic, setChosenRelic] = useState({});
+  const [chosenRelic, setChosenRelic] = useState(undefined);
   // alchemy state
   const [summonHPBonus, setSummonHPBonus] = useState(0);
   const [summonMPBonus, setSummonMPBonus] = useState(0);
@@ -116,36 +115,36 @@ function Lobby1() {
   useEffect(() => {
     // if there is a player
     if (player) {
-      try {
-        // checks player level for stage requirements
-        const checkLevelPlayer = () => {
-          try {
-            if (Math.floor(Math.sqrt(player.experience) * 0.25) < 8) {
-              alert("You must be level 8 to battle this boss.");
-              navigate(-1);
-            }
-          } catch (error) {
-            console.log(error);
+      // checks player level for stage requirements
+      const checkLevelPlayer = () => {
+        try {
+          if (Math.floor(Math.sqrt(player.experience) * 0.25) < 8) {
+            alert("You must be level 8 to battle this boss.");
+            navigate(-1);
           }
-        };
-        // loads player creature data and sets player creature state
-        const loadDataPlayerCreature = () => {
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      // loads player creature data and sets player creature state
+      const loadDataPlayerCreature = () => {
+        try {
           const playerCreatureData = creatureData.filter(
             (creature) => creature.id === player.creatureId
           );
-          setPlayerCreature(playerCreatureData);
+          setPlayerCreature(playerCreatureData[0]);
           setCreatureStatsStatus(player.displayCreatureStats);
-        };
-        checkLevelPlayer();
-        loadDataPlayerCreature();
-      } catch (error) {
-        console.log(error);
-      }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      checkLevelPlayer();
+      loadDataPlayerCreature();
       // if there are player relics
       if (player.relics) {
-        try {
-          // loads player relics data
-          const loadDataPlayerRelics = () => {
+        // loads player relics data
+        const loadDataPlayerRelics = () => {
+          try {
             const playerRelicsData = relicsData.filter((relic) =>
               player.relics.includes(relic.id)
             );
@@ -153,12 +152,12 @@ function Lobby1() {
             const chosenRelicData = playerRelicsData.filter(
               (relic) => relic.id === player.chosenRelic
             );
-            setChosenRelic(chosenRelicData);
-          };
-          loadDataPlayerRelics();
-        } catch (error) {
-          console.log(error);
-        }
+            setChosenRelic(chosenRelicData[0]);
+          } catch (error) {
+            console.log(error);
+          }
+        };
+        loadDataPlayerRelics();
       }
     }
   }, [player, relicsData, creatureData, navigate]);
@@ -187,7 +186,7 @@ function Lobby1() {
   const loadAsyncDataLobby = async () => {
     try {
       // checks for connection and generates new connection if needed
-      const genDataConnection = async () => {
+      const genAsyncDataConnection = async () => {
         try {
           const newConnection = {
             userId: Userfront.user.userId,
@@ -207,7 +206,7 @@ function Lobby1() {
           console.log(error);
         }
       };
-      genDataConnection();
+      genAsyncDataConnection();
       loadAsyncDataConnection();
       const { data } = await getLobby(lobby1);
       setLobby(data);
@@ -216,8 +215,8 @@ function Lobby1() {
     }
   };
 
-  // renders if a relic is bestowed
-  if (chosenRelic[0]) {
+  // renders if a player creature and relic is bestowed
+  if (playerCreature && chosenRelic) {
     return (
       <>
         <header>
@@ -297,8 +296,6 @@ function Lobby1() {
                 playerAttackStatus={playerAttackStatus}
                 setPlayerAttackStatus={setPlayerAttackStatus}
                 chosenRelic={chosenRelic}
-                specialStatus={specialStatus}
-                setSpecialStatus={setSpecialStatus}
                 battleStatus={battleStatus}
                 setBattleStatus={setBattleStatus}
                 player={player}
@@ -328,7 +325,7 @@ function Lobby1() {
                 setSummonMPBonus={setSummonMPBonus}
               />
 
-              <BossEnemyCreature
+              <MultiPlayerEnemyCreature
                 battleStatus={battleStatus}
                 enemyCreature={enemyCreature}
                 playerAttackStatus={playerAttackStatus}

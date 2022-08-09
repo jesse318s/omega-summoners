@@ -37,6 +37,283 @@ body {
   font-size: 40px;
 }
 
+.color_black {
+  color: black;
+}
+
 .color_white {
   color: white;
+}
+
+.background_white {
+  background-color: white;
+}
+
+/* game styles */
+.game_nav {
+  padding-top: 10px;
+  height: 67.5px;
+  background-image: radial-gradient(circle, #222222, black);
+}
+
+.game_nav_brand {
+  margin: 0 20px 0 20px;
+  float: left;
+}
+
+.button_logout {
+  float: left;
+  background-color: orange;
+  border: 1px solid orangered;
+  border-radius: 16px;
+  color: black;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 24px;
+  padding: 8px;
+  transition: all 0.2s;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.button_logout:active,
+.button_logout:hover {
+  outline: 0;
+}
+
+.button_logout:hover {
+  background-color: orangered;
+  border-color: black;
+}
+
+.button_options {
+  float: right;
+  margin-right: 20px;
+}
+
+/* game UI and player */
+.game_section {
+  background-image: url("assets/img_background/backgroundHome.webp");
+  background-size: cover;
+  min-height: 1200px;
+  height: 100vh;
+  width: 100vw;
+  padding-top: 5px;
+}
+
+.avatar_option:hover {
+  cursor: pointer;
+  filter: brightness(0.8);
+}
+
+.game_button {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid white;
+  border-radius: 16px;
+  color: black;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 28px;
+  padding: 10px 22px;
+  transition: all 0.2s;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.game_button:active,
+.game_button:hover {
+  outline: 0;
+}
+
+.game_button:hover {
+  background-color: white;
+  border-color: black;
+}
+
+.game_button_small {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid white;
+  border-radius: 16px;
+  color: black;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 24px;
+  padding: 8px;
+  transition: all 0.2s;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.game_button_small:active,
+.game_button_small:hover {
+  outline: 0;
+}
+
+.game_button_small:hover {
+  background-color: white;
+  border-color: black;
+}
+
+.progress_bar_container {
+  width: 150px;
+  margin: 0 auto;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.player_avatar {
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.progress_bar {
+  padding-top: 10px;
+  background-color: green;
+  border-radius: 5px 0 0 5px;
+}
+
+.relic_option {
+  margin: 0 auto;
+  padding: 5px;
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 250px;
+}
+
+.relic_option_img {
+  margin: 5px;
+  border: 1px solid black;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.relic_option_img:hover {
+  filter: brightness(0.8);
+}
+
+.relic_info {
+  cursor: pointer;
+  position: relative;
+  right: 55px;
+  bottom: 15px;
+  color: white;
+}
+
+.relic_info:hover {
+  color: blue;
+}
+
+.relic_effect1 {
+  filter: drop-shadow(0 0 10px lightblue);
+}
+
+.relic_effect2 {
+  filter: drop-shadow(0 0 15px gold);
+}
+
+.relic_effect3 {
+  filter: drop-shadow(0 0 15px purple);
+}
+
+.summon_option {
+  margin: 0 auto;
+  padding: 5px;
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 250px;
+}
+
+.summon_option_img {
+  margin: 5px;
+  border: 1px solid black;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.summon_option_img:hover {
+  filter: brightness(0.8);
+}
+
+.summon_info {
+  cursor: pointer;
+  position: relative;
+  right: 100px;
+  bottom: 38px;
+  color: white;
+}
+
+.summon_info:hover {
+  color: blue;
+}
+
+.stage_options {
+  margin: 0 auto;
+  padding: 5px;
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 250px;
+}
+
+.combat_alert {
+  margin: 0 auto;
+  border: 1px solid orange;
+  border-radius: 5px;
+  line-height: 39px;
+  height: 39px;
+  max-width: 250px;
+  width: 100%;
+}
+
+.creature_panel {
+  padding: 5px;
+  border: 1px solid black;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.attack_button {
+  margin: 0px 5px 5px 0px;
+}
+
+.special_button {
+  margin: 0px 0px 5px 5px;
+  border-color: yellow;
+  font-size: 14px;
+  line-height: 18px;
+  padding: 4px 22px;
+}
+
+.special_button:hover {
+  border-color: gold;
+}
+
+/* creatures */
+.player_creature {
+  float: left;
+  margin-left: 10px;
+  padding: 5px;
+  color: white;
+}
+
+.enemy_creature {
+  float: right;
+  margin-right: 10px;
+  padding: 5px;
+  color: white;
+}
+
+.enemy_creature_img {
+  transform: scaleX(-1);
+}
+
+/* media query */
+@media screen and (min-width: 2000px) {
+  .player_creature {
+    margin-left: 450px;
+  }
+
+  .enemy_creature {
+    margin-right: 450px;
+  }
 }

@@ -1,16 +1,16 @@
 import React from "react";
 
-function EnemyCreature({
+function MultiPlayerEnemyCreature({
   battleStatus,
   enemyCreature,
   playerAttackStatus,
   enemyAttackStatus,
   critText,
   combatText,
-  enemyCreatureHP,
   spawnAnimation,
+  lobby,
 }) {
-  // renders enemy creature with stats panel
+  // renders boss enemy creature with stats panel for multiplayer
   return (
     <>
       {battleStatus ? (
@@ -31,24 +31,24 @@ function EnemyCreature({
               className="enemy_creature_img"
               src={enemyCreature.imgPath.slice(0, -4) + "_attack.png"}
               alt={enemyCreature.name}
-              width="128px"
-              height="128px"
+              width="256px"
+              height="256px"
             />
           ) : playerAttackStatus ? (
             <img
               className="enemy_creature_img"
               src={enemyCreature.imgPath.slice(0, -4) + "_hurt.png"}
               alt={enemyCreature.name}
-              width="128px"
-              height="128px"
+              width="256px"
+              height="256px"
             />
           ) : (
             <img
               className="enemy_creature_img"
               src={enemyCreature.imgPath}
               alt={enemyCreature.name}
-              width="128px"
-              height="128px"
+              width="256px"
+              height="256px"
             />
           )}
 
@@ -58,12 +58,12 @@ function EnemyCreature({
               <div
                 className="progress_bar"
                 style={{
-                  width: (enemyCreatureHP / enemyCreature.hp) * 100 + "%",
+                  width: (lobby.enemyHP / enemyCreature.hp) * 100 + "%",
                 }}
               />
             </div>
             <h5>
-              HP: {enemyCreatureHP} / {enemyCreature.hp}
+              HP: {lobby.enemyHP} / {enemyCreature.hp}
             </h5>
           </div>
         </div>
@@ -72,4 +72,4 @@ function EnemyCreature({
   );
 }
 
-export default React.memo(EnemyCreature);
+export default React.memo(MultiPlayerEnemyCreature);

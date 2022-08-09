@@ -395,6 +395,7 @@ function PlayerCreature({
       const newGreenMushrooms = greenMushroomsPlayer[0];
       const newRedMushrooms = redMushroomsPlayer[0];
       const newBlueMushrooms = blueMushroomsPlayer[0];
+
       if (Math.random() <= 0.15) {
         await Userfront.user.update({
           data: {
@@ -782,6 +783,8 @@ function PlayerCreature({
             ) : null}
 
             {/* displays player creature controls based on battle status and selected special, and player creature stats based on user preference */}
+
+            {/* toggle special button */}
             {!battleStatus ? (
               <button
                 className="game_button_small margin_small"
@@ -793,6 +796,8 @@ function PlayerCreature({
                 Special: {player.preferredSpecial}{" "}
               </button>
             ) : null}
+
+            {/* panel controls */}
             <div className="creature_panel">
               {battleStatus ? (
                 <div className="inline_flex">
@@ -839,10 +844,10 @@ function PlayerCreature({
                 </div>
               ) : null}
 
+              {/* panel content */}
               <h4>
                 {player.name}'s {playerCreature.name}
               </h4>
-
               {battleStatus ? (
                 <div className="progress_bar_container">
                   <div
@@ -859,7 +864,6 @@ function PlayerCreature({
                   />
                 </div>
               ) : null}
-
               {!battleStatus ? (
                 <div className="inline_flex">
                   <h5>
@@ -884,6 +888,7 @@ function PlayerCreature({
                 </div>
               )}
 
+              {/* panel stats */}
               {creatureStatsStatus ? (
                 <div>
                   <h5>

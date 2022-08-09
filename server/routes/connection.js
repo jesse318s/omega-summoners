@@ -12,6 +12,7 @@ router.post("/", async (req, res) => {
     });
     const documentCount = await Connection.count({});
     let check = false;
+
     for await (const doc of Connection.find()) {
       if (doc.userId === req.body.userId) {
         check = true;
@@ -35,6 +36,7 @@ router.get("/", async (req, res) => {
     const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, {
       algorithms: ["RS256"],
     });
+    
     if (decoded) {
       let count = 0;
       for await (const doc of Connection.find()) {

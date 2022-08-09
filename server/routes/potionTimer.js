@@ -18,6 +18,7 @@ router.post("/", async (req, res) => {
         userkey: Math.random().toString(36).substring(7),
       },
     };
+
     function getUserkey() {
       return axios
         .get(
@@ -72,6 +73,7 @@ router.get("/", async (req, res) => {
     const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, {
       algorithms: ["RS256"],
     });
+    
     if (decoded) {
       let count = 0;
       for await (const doc of PotionTimer.find()) {

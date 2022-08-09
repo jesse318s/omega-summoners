@@ -312,6 +312,7 @@ function Menu({
               >
                 Relics
               </button>
+
               <button
                 className="game_button margin_small"
                 onClick={() => {
@@ -440,6 +441,7 @@ function Menu({
             >
               Summons
             </button>
+
             <button
               className="game_button margin_small"
               onClick={() => {

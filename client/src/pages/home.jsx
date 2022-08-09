@@ -204,8 +204,9 @@ function Home() {
           <div className="star"></div>
           <div className="star"></div>
         </div>
+
         {/* title and home */}
-        <section className="home_section">
+        <section className="home_title_section">
           <h1 className="mx-2 home_title blink">Welcome to Omega Summoners!</h1>
         </section>
 

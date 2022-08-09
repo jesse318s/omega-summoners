@@ -75,7 +75,7 @@ function Options({
     <>
       {optionsStatus ? (
         <div className="color_white">
-          {/* displays gameplay option menu */}
+          {/* gameplay option menu */}
           <h3>Game Options</h3>
           <button
             className="game_button margin_small"
@@ -87,7 +87,7 @@ function Options({
             {player.displayCreatureStats ? " ON" : " OFF"}
           </button>
 
-          {/* displays player profile option menu */}
+          {/* player profile option menu */}
           <h3>Player Options</h3>
           <button
             className="game_button margin_small"
@@ -99,6 +99,7 @@ function Options({
             {" "}
             Change Avatar
           </button>
+
           <button
             className="game_button margin_small"
             onClick={() => {

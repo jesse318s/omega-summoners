@@ -732,6 +732,8 @@ function MultiPlayerCreature({
             ) : null}
 
             {/* displays player creature controls based on battle status and selected special, and player creature stats based on user preference */}
+
+            {/* toggle special button */}
             {!battleStatus ? (
               <button
                 className="game_button_small margin_small"
@@ -743,6 +745,8 @@ function MultiPlayerCreature({
                 Special: {player.preferredSpecial}{" "}
               </button>
             ) : null}
+
+            {/* panel controls */}
             <div className="creature_panel">
               {battleStatus ? (
                 <div className="inline_flex">
@@ -789,10 +793,10 @@ function MultiPlayerCreature({
                 </div>
               ) : null}
 
+              {/* panel content */}
               <h4>
                 {player.name}'s {playerCreature.name}
               </h4>
-
               {battleStatus ? (
                 <div className="progress_bar_container">
                   <div
@@ -809,7 +813,6 @@ function MultiPlayerCreature({
                   />
                 </div>
               ) : null}
-
               {!battleStatus ? (
                 <div className="inline_flex">
                   <h5>
@@ -834,6 +837,7 @@ function MultiPlayerCreature({
                 </div>
               )}
 
+              {/* panel stats */}
               {creatureStatsStatus ? (
                 <div>
                   <h5>

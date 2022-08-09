@@ -265,6 +265,7 @@ function MultiPlayerMenu({
                 >
                   Relics
                 </button>
+
                 <button
                   className="game_button margin_small"
                   onClick={() => {
@@ -393,6 +394,7 @@ function MultiPlayerMenu({
               >
                 Summons
               </button>
+
               <button
                 className="game_button margin_small"
                 onClick={() => {

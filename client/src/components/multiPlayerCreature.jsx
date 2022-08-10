@@ -265,6 +265,9 @@ function MultiPlayerCreature({
         attackEnemyOrHeal(moveName, moveType);
         return;
       }
+      // updates lobby for player
+      loadAsyncDataLobby();
+      loadAsyncDataPlayer();
       // check for player creature mp regen
       if (moveName === playerCreature.attackName) {
         regenMP();
@@ -606,8 +609,6 @@ function MultiPlayerCreature({
         setLobbyTimer(true);
         setTimeout(() => {
           setLobbyTimer(false);
-          loadAsyncDataLobby();
-          loadAsyncDataPlayer();
         }, 1100);
         await loadAsyncDataLobby();
         checkPotionTimer();

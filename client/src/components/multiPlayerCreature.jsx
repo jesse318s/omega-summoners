@@ -411,13 +411,11 @@ function MultiPlayerCreature({
       experience: player.experience + enemyCreature.reward * 2,
       drachmas: player.drachmas + enemyCreature.reward,
     });
-    setTimeout(() => {
-      // ends fight
-      setIsFighting(false);
-      setBattleStatus(false);
-      setEnemyCreature({});
-      loadAsyncDataPlayer();
-    }, 1000);
+    setIsFighting(false);
+    await loadAsyncDataLobby();
+    await loadAsyncDataLobby();
+    await loadAsyncDataPlayer();
+    setBattleStatus(false);
   };
 
   // completes player lifesteal check and heal

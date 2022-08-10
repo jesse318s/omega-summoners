@@ -31,7 +31,7 @@ const relics = [
     mpMod: 0,
     mpRegenMod: 0,
     specialMod: 0,
-    price: 500,
+    price: 150,
   },
   {
     id: 3,
@@ -48,7 +48,7 @@ const relics = [
     mpMod: 0,
     mpRegenMod: 25,
     specialMod: 0,
-    price: 500,
+    price: 300,
   },
 ];
 

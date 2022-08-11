@@ -246,13 +246,13 @@ function PlayerCreature({
       if (enemyCreature.attackType === "Magic") {
         playerCreatureDefense = 0;
       }
-      // checks enemy creature speeed vs player creature speed and sets chance
+      // checks enemy creature speed vs player creature speed and sets chance
       if (enemyCreature.speed < playerCreatureSpeed) {
         chanceEnemy = Math.random() >= 0.5;
       } else {
         chanceEnemy = Math.random() >= 0.8;
       }
-      // series of checks for enemy counter attack based on chance/speed, and player creature mp regen
+      // series of checks for enemy counter attack based on chance/speed, and for player creature mp regen
       if (!chanceEnemy && chancePlayer) {
         setTimeout(() => {
           setCombatAlert("Enemy was too slow!");
@@ -270,29 +270,27 @@ function PlayerCreature({
       }
       if (chanceEnemy && chancePlayer) {
         setTimeout(() => {
-          if (playerCreatureHP > 0) {
-            setCombatAlert("The battle continues...");
-          }
+          setCombatAlert("Both abilities succeded.");
         }, 600);
       }
-      // checks for player speed failure
+      // checks for player chance/speed failure
       if (chanceEnemy && !chancePlayer) {
         setTimeout(() => {
           setCombatAlert("Your summon was too slow!");
         }, 600);
       }
       if (battleStatus && chanceEnemy) {
-        setTimeout(() => {
-          viewEnemyAttackAnimation();
-          viewEnemyAttackCT(criticalMultiplier, playerCreatureDefense);
-        }, 600);
-        // checks enemy critical hit
+        // checks for enemy critical hit
         if (Math.random() <= enemyCreatureCritical) {
           criticalMultiplier = 1.5;
         }
         if (enemyCreature.attackType === "Poison" && criticalMultiplier === 1) {
           criticalMultiplier = 1.5;
         }
+        setTimeout(() => {
+          viewEnemyAttackAnimation();
+          viewEnemyAttackCT(criticalMultiplier, playerCreatureDefense);
+        }, 600);
         // checks for player death, and damages player otherwise
         if (
           ref.current -

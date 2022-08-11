@@ -18,6 +18,7 @@ router.post("/", async (req, res) => {
         userkey: Math.random().toString(36).substring(7),
       },
     };
+
     function getUserkey() {
       return axios
         .get(
@@ -74,6 +75,7 @@ router.get("/", async (req, res) => {
     const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, {
       algorithms: ["RS256"],
     });
+    
     if (decoded) {
       const items = await Item.find({ userId: decoded.userId });
       res.send(items);

@@ -10,7 +10,7 @@ function MultiPlayerEnemyCreature({
   spawnAnimation,
   lobby,
 }) {
-  // renders boss enemy creature with stats panel for multiplayer
+  // renders spawn portal, enemy combat text, and boss enemy creature with stats panel for multiplayer
   return (
     <>
       {battleStatus ? (
@@ -19,13 +19,14 @@ function MultiPlayerEnemyCreature({
             <div className={spawnAnimation} />
           </div>
 
+          {/* displays enemy combat text */}
           {playerAttackStatus ? (
             <div className="special_effect_container">
-              <div className={spawnAnimation} />
               <div className={critText}>{combatText}</div>
             </div>
           ) : null}
 
+          {/* displays enemy based on attack state */}
           {enemyAttackStatus ? (
             <img
               className="enemy_creature_img"

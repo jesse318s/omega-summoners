@@ -62,6 +62,7 @@ router.get("/", async (req, res) => {
       algorithms: ["RS256"],
     });
     const user = await User.findOne({ userfrontId: decoded.userId });
+    
     res.send(user);
   } catch (error) {
     res.send(error);

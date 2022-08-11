@@ -212,6 +212,28 @@ function MultiPlayerCreature({
     }
   };
 
+  // regens player creature mp
+  const regenMP = async () => {
+    if (
+      playerCreatureMP !==
+        playerCreature.mp + chosenRelic.mpMod + summonMPBonus &&
+      playerCreatureMP + playerCreature.mpRegen + chosenRelic.mpRegenMod <=
+        playerCreature.mp + chosenRelic.mpMod + summonMPBonus
+    ) {
+      setPlayerCreatureMP(
+        playerCreatureMP + playerCreature.mpRegen + chosenRelic.mpRegenMod
+      );
+    }
+    if (
+      playerCreatureMP + playerCreature.mpRegen + chosenRelic.mpRegenMod >
+      playerCreature.mp + chosenRelic.mpMod + summonMPBonus
+    ) {
+      setPlayerCreatureMP(
+        playerCreature.mp + chosenRelic.mpMod + summonMPBonus
+      );
+    }
+  };
+
   // initiates chance of enemy counter attack
   const callEnemyCounterAttack = async (chancePlayer, moveName, moveType) => {
     try {
@@ -225,44 +247,54 @@ function MultiPlayerCreature({
       if (enemyCreature.attackType === "Magic") {
         playerCreatureDefense = 0;
       }
-      // checks enemy creature speeed vs player creature speed and sets chance
+      // checks enemy creature speed vs player creature speed and sets chance
       if (enemyCreature.speed < playerCreatureSpeed) {
         chanceEnemy = Math.random() >= 0.5;
       } else {
         chanceEnemy = Math.random() >= 0.8;
       }
-      // series of checks for enemy counter attack based on chance
+      // series of checks for enemy counter attack based on chance/speed, and for player creature mp regen
       if (!chanceEnemy && chancePlayer) {
         setTimeout(() => {
           setCombatAlert("Enemy was too slow!");
         }, 500);
       }
       if (!chanceEnemy && !chancePlayer) {
+        // ends fight
+        setIsFighting(false);
         attackEnemyOrHeal(moveName, moveType);
+        return;
+      }
+      // updates lobby for player
+      loadAsyncDataLobby();
+      loadAsyncDataPlayer();
+      // check for player creature mp regen
+      if (moveName === playerCreature.attackName) {
+        regenMP();
       }
       if (chanceEnemy && chancePlayer) {
         setTimeout(() => {
-          setCombatAlert("The battle continues...");
+          setCombatAlert("Both abilities succeeded.");
         }, 600);
       }
-      // checks for player chance failure
+      // checks for player chance/speed failure
       if (chanceEnemy && !chancePlayer) {
         setTimeout(() => {
           setCombatAlert("Your summon was too slow!");
-        }, 500);
+        }, 600);
       }
       if (battleStatus && chanceEnemy) {
-        setTimeout(() => {
-          viewEnemyAttackAnimation();
-          viewEnemyAttackCT(criticalMultiplier, playerCreatureDefense);
-        }, 600);
-        // checks enemy critical hit
+        // checks for enemy critical hit
         if (Math.random() <= enemyCreatureCritical) {
           criticalMultiplier = 1.5;
         }
         if (enemyCreature.attackType === "Poison" && criticalMultiplier === 1) {
           criticalMultiplier = 1.5;
         }
+        setTimeout(() => {
+          viewEnemyAttackAnimation();
+          viewEnemyAttackCT(criticalMultiplier, playerCreatureDefense);
+        }, 600);
         // checks for player death, and damages player otherwise
         if (
           ref.current -
@@ -279,7 +311,7 @@ function MultiPlayerCreature({
             setIsFighting(false);
             setBattleStatus(false);
             setEnemyCreature({});
-          }, 600);
+          }, 1100);
         } else {
           setPlayerCreatureHP(
             ref.current -
@@ -317,28 +349,6 @@ function MultiPlayerCreature({
     }
   };
 
-  // regens player creature mp
-  const regenMP = async () => {
-    if (
-      playerCreatureMP !==
-        playerCreature.mp + chosenRelic.mpMod + summonMPBonus &&
-      playerCreatureMP + playerCreature.mpRegen + chosenRelic.mpRegenMod <=
-        playerCreature.mp + chosenRelic.mpMod + summonMPBonus
-    ) {
-      setPlayerCreatureMP(
-        playerCreatureMP + playerCreature.mpRegen + chosenRelic.mpRegenMod
-      );
-    }
-    if (
-      playerCreatureMP + playerCreature.mpRegen + chosenRelic.mpRegenMod >
-      playerCreature.mp + chosenRelic.mpMod + summonMPBonus
-    ) {
-      setPlayerCreatureMP(
-        playerCreature.mp + chosenRelic.mpMod + summonMPBonus
-      );
-    }
-  };
-
   // damages enemy
   const damageEnemy = async (
     chancePlayer,
@@ -369,7 +379,6 @@ function MultiPlayerCreature({
     }
     ref.current = playerCreatureHP;
     callEnemyCounterAttack(chancePlayer, moveName, moveType);
-    regenMP();
   };
 
   // kills enemy
@@ -402,13 +411,11 @@ function MultiPlayerCreature({
       experience: player.experience + enemyCreature.reward * 2,
       drachmas: player.drachmas + enemyCreature.reward,
     });
-    setTimeout(() => {
-      // ends fight
-      setIsFighting(false);
-      setBattleStatus(false);
-      setEnemyCreature({});
-      loadAsyncDataPlayer();
-    }, 1000);
+    setIsFighting(false);
+    await loadAsyncDataLobby();
+    await loadAsyncDataLobby();
+    await loadAsyncDataPlayer();
+    setBattleStatus(false);
   };
 
   // completes player lifesteal check and heal
@@ -521,13 +528,11 @@ function MultiPlayerCreature({
           experience: player.experience + enemyCreature.reward * 2,
           drachmas: player.drachmas + enemyCreature.reward,
         });
-        setTimeout(() => {
-          // ends fight
-          setIsFighting(false);
-          setBattleStatus(false);
-          setEnemyCreature({});
-          loadAsyncDataPlayer();
-        }, 1000);
+        setIsFighting(false);
+        await loadAsyncDataLobby();
+        await loadAsyncDataLobby();
+        await loadAsyncDataPlayer();
+        setBattleStatus(false);
       } else {
         // damages enemy
         if (chancePlayer) {
@@ -600,8 +605,6 @@ function MultiPlayerCreature({
         setLobbyTimer(true);
         setTimeout(() => {
           setLobbyTimer(false);
-          loadAsyncDataLobby();
-          loadAsyncDataPlayer();
         }, 1100);
         await loadAsyncDataLobby();
         checkPotionTimer();
@@ -726,6 +729,8 @@ function MultiPlayerCreature({
             ) : null}
 
             {/* displays player creature controls based on battle status and selected special, and player creature stats based on user preference */}
+
+            {/* toggle special button */}
             {!battleStatus ? (
               <button
                 className="game_button_small margin_small"
@@ -737,6 +742,8 @@ function MultiPlayerCreature({
                 Special: {player.preferredSpecial}{" "}
               </button>
             ) : null}
+
+            {/* panel controls */}
             <div className="creature_panel">
               {battleStatus ? (
                 <div className="inline_flex">
@@ -783,10 +790,10 @@ function MultiPlayerCreature({
                 </div>
               ) : null}
 
+              {/* panel content */}
               <h4>
                 {player.name}'s {playerCreature.name}
               </h4>
-
               {battleStatus ? (
                 <div className="progress_bar_container">
                   <div
@@ -803,7 +810,6 @@ function MultiPlayerCreature({
                   />
                 </div>
               ) : null}
-
               {!battleStatus ? (
                 <div className="inline_flex">
                   <h5>
@@ -828,6 +834,7 @@ function MultiPlayerCreature({
                 </div>
               )}
 
+              {/* panel stats */}
               {creatureStatsStatus ? (
                 <div>
                   <h5>

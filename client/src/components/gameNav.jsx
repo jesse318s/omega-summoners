@@ -16,6 +16,7 @@ function GameNav({
         <button className="button_logout" onClick={() => Userfront.logout()}>
           Logout
         </button>
+
         <button
           className="game_button_small button_options"
           onClick={() => {

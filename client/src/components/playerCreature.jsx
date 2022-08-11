@@ -270,7 +270,7 @@ function PlayerCreature({
       }
       if (chanceEnemy && chancePlayer) {
         setTimeout(() => {
-          setCombatAlert("Both abilities succeded.");
+          setCombatAlert("Both abilities succeeded.");
         }, 600);
       }
       // checks for player chance/speed failure

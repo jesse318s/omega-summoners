@@ -93,7 +93,7 @@ body {
 
 /* game UI and player */
 .game_section {
-  background-image: url("assets/img_background/backgroundHome.webp");
+  background-image: url("assets/img_background/background0.webp");
   background-size: cover;
   min-height: 1200px;
   height: 100vh;

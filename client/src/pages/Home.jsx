@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./home.scss";
+import "./Home.scss";
 import Userfront from "@userfront/core";
 
 // initialize Userfront

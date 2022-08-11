@@ -5,10 +5,10 @@ import "mdb-ui-kit";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Route, Routes, BrowserRouter } from "react-router-dom";
-import Home from "./pages/home";
-import Reset from "./pages/reset";
-import Stage1 from "./pages/stage1";
-import Lobby1 from "./pages/lobby1";
+import Home from "./pages/Home";
+import Reset from "./pages/Reset";
+import Stage1 from "./pages/Stage1";
+import Lobby1 from "./pages/Lobby1";
 
 ReactDOM.render(
   <BrowserRouter>

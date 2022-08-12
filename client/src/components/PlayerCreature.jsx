@@ -596,7 +596,6 @@ function PlayerCreature({
           // ends fight
           setIsFighting(false);
           dispatch(disableBattleStatus());
-          setEnemyCreature({});
           loadAsyncDataPlayer();
         }, 1000);
       } else {

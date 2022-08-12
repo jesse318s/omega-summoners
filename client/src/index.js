@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import "./index.css";
 import "mdb-ui-kit";
 import App from "./App";
@@ -12,7 +12,10 @@ import Lobby1 from "./pages/Lobby1";
 import index from "./store/index";
 import { Provider } from "react-redux";
 
-ReactDOM.render(
+const container = document.getElementById("root");
+const root = createRoot(container);
+
+root.render(
   // redux provider wrapper
   <Provider store={index}>
     {/* wrapper for routes that render components */}
@@ -25,8 +28,7 @@ ReactDOM.render(
         <Route path="lobby1" element={<Lobby1 />} />
       </Routes>
     </BrowserRouter>
-  </Provider>,
-  document.getElementById("root")
+  </Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -1,7 +1,7 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
 function MultiPlayerEnemyCreature({
-  battleStatus,
   enemyCreature,
   playerAttackStatus,
   enemyAttackStatus,
@@ -10,6 +10,9 @@ function MultiPlayerEnemyCreature({
   spawnAnimation,
   lobby,
 }) {
+  // battle status combat state from redux store
+  const battleStatus = useSelector((state) => state.status);
+
   // renders spawn portal, enemy combat text, and boss enemy creature with stats panel for multiplayer
   return (
     <>

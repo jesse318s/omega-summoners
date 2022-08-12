@@ -3,6 +3,8 @@ import { updateUser } from "../services/userServices";
 import { getPotionTimer } from "../services/potionTimerServices";
 import { potionsList } from "../constants/items";
 import { getItems, addItem } from "../services/itemServices";
+import { useSelector, useDispatch } from "react-redux";
+import { disableBattleStatus } from "../store/actions/battleStatus.actions";
 
 function PlayerCreature({
   summonsStatus,
@@ -16,8 +18,6 @@ function PlayerCreature({
   playerAttackStatus,
   setPlayerAttackStatus,
   chosenRelic,
-  battleStatus,
-  setBattleStatus,
   player,
   creatureStatsStatus,
   playerCreatureHP,
@@ -42,6 +42,12 @@ function PlayerCreature({
   summonMPBonus,
   setSummonMPBonus,
 }) {
+  // dispatch hook for redux
+  const dispatch = useDispatch();
+
+  // battle status combat state from redux store
+  const battleStatus = useSelector((state) => state.status);
+
   // reference hook
   const ref = useRef(null);
 
@@ -305,7 +311,7 @@ function PlayerCreature({
           setTimeout(() => {
             // ends fight
             setIsFighting(false);
-            setBattleStatus(false);
+            dispatch(disableBattleStatus());
             setEnemyCreature({});
             setEnemyCreatureHP(0);
           }, 600);
@@ -474,7 +480,7 @@ function PlayerCreature({
     setTimeout(() => {
       // ends fight
       setIsFighting(false);
-      setBattleStatus(false);
+      dispatch(disableBattleStatus());
       setEnemyCreature({});
       loadAsyncDataPlayer();
     }, 1000);
@@ -590,7 +596,7 @@ function PlayerCreature({
         setTimeout(() => {
           // ends fight
           setIsFighting(false);
-          setBattleStatus(false);
+          dispatch(disableBattleStatus());
           setEnemyCreature({});
           loadAsyncDataPlayer();
         }, 1000);

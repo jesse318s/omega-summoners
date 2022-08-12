@@ -3,6 +3,8 @@ import { updateUser } from "../services/userServices";
 import { updateLobby } from "../services/lobbyServices";
 import { getPotionTimer } from "../services/potionTimerServices";
 import { potionsList } from "../constants/items";
+import { useSelector, useDispatch } from "react-redux";
+import { disableBattleStatus } from "../store/actions/battleStatus.actions";
 
 function MultiPlayerCreature({
   summonsStatus,
@@ -16,8 +18,6 @@ function MultiPlayerCreature({
   playerAttackStatus,
   setPlayerAttackStatus,
   chosenRelic,
-  battleStatus,
-  setBattleStatus,
   player,
   creatureStatsStatus,
   playerCreatureHP,
@@ -43,6 +43,12 @@ function MultiPlayerCreature({
   summonMPBonus,
   setSummonMPBonus,
 }) {
+  // dispatch hook for redux
+  const dispatch = useDispatch();
+
+  // battle status combat state from redux store
+  const battleStatus = useSelector((state) => state.status);
+
   // reference hook
   const ref = useRef(null);
 
@@ -309,7 +315,7 @@ function MultiPlayerCreature({
           setTimeout(() => {
             // ends fight
             setIsFighting(false);
-            setBattleStatus(false);
+            dispatch(disableBattleStatus());
             setEnemyCreature({});
           }, 1100);
         } else {
@@ -415,7 +421,7 @@ function MultiPlayerCreature({
     await loadAsyncDataLobby();
     await loadAsyncDataLobby();
     await loadAsyncDataPlayer();
-    setBattleStatus(false);
+    dispatch(disableBattleStatus());
   };
 
   // completes player lifesteal check and heal
@@ -532,7 +538,7 @@ function MultiPlayerCreature({
         await loadAsyncDataLobby();
         await loadAsyncDataLobby();
         await loadAsyncDataPlayer();
-        setBattleStatus(false);
+        dispatch(disableBattleStatus());
       } else {
         // damages enemy
         if (chancePlayer) {

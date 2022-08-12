@@ -4,11 +4,11 @@ import { getPotionTimer } from "../services/potionTimerServices";
 import { useState } from "react";
 import { potionsList } from "../constants/items";
 import recipeList from "../constants/recipes";
+import { useSelector, useDispatch } from "react-redux";
+import { enableBattleStatus } from "../store/actions/battleStatus.actions";
 
 function Menu({
   Userfront,
-  battleStatus,
-  setBattleStatus,
   player,
   relicsData,
   relicsStatus,
@@ -45,6 +45,12 @@ function Menu({
   createPotion,
   consumePotion,
 }) {
+  // dispatch hook for redux
+  const dispatch = useDispatch();
+
+  // battle status combat state from redux store
+  const battleStatus = useSelector((state) => state.status);
+
   // numbered index state (summons, and recipes pagination)
   const [index1, setIndex1] = useState(0);
   const [index2, setIndex2] = useState(5);
@@ -286,7 +292,7 @@ function Menu({
       setEnemyCreature(enemyCreature[0]);
       setEnemyCreatureHP(enemyCreature[0].hp);
       setCombatAlert("The battle has begun!");
-      setBattleStatus(true);
+      dispatch(enableBattleStatus());
       setBattleUndecided(true);
       await loadAsyncDataPlayer();
     } catch (error) {

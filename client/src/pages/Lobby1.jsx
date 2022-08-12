@@ -40,7 +40,6 @@ function Lobby1() {
   const [enemyCreatureData] = useState(bossEnemyCreatureStage1);
   const [playerCreature, setPlayerCreature] = useState({});
   const [creatureStatsStatus, setCreatureStatsStatus] = useState(false);
-  const [battleStatus, setBattleStatus] = useState(false);
   const [enemyCreature, setEnemyCreature] = useState({});
   const [playerAttackStatus, setPlayerAttackStatus] = useState(false);
   const [enemyAttackStatus, setEnemyAttackStatus] = useState(false);
@@ -249,8 +248,6 @@ function Lobby1() {
             <>
               <MultiPlayerMenu
                 Userfront={Userfront}
-                battleStatus={battleStatus}
-                setBattleStatus={setBattleStatus}
                 player={player}
                 setPlayer={setPlayer}
                 relicsData={relicsData}
@@ -296,8 +293,6 @@ function Lobby1() {
                 playerAttackStatus={playerAttackStatus}
                 setPlayerAttackStatus={setPlayerAttackStatus}
                 chosenRelic={chosenRelic}
-                battleStatus={battleStatus}
-                setBattleStatus={setBattleStatus}
                 player={player}
                 creatureStatsStatus={creatureStatsStatus}
                 playerCreatureHP={playerCreatureHP}
@@ -326,7 +321,6 @@ function Lobby1() {
               />
 
               <MultiPlayerEnemyCreature
-                battleStatus={battleStatus}
                 enemyCreature={enemyCreature}
                 playerAttackStatus={playerAttackStatus}
                 enemyAttackStatus={enemyAttackStatus}

@@ -1,11 +1,12 @@
 import { ENABLE, DISABLE } from "../actions/battleStatus.actions";
 
-const BattleStatusReducer = (state = { status: false }, action) => {
+// contains the battleStatus state
+const BattleStatusReducer = (state = { battleStatus: false }, action) => {
   switch (action.type) {
     case ENABLE:
-      return { status: true };
+      return { battleStatus: true };
     case DISABLE:
-      return { status: false };
+      return { battleStatus: false };
     default:
       return state;
   }

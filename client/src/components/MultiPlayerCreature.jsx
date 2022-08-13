@@ -47,7 +47,7 @@ function MultiPlayerCreature({
   const dispatch = useDispatch();
 
   // battle status combat state from redux store
-  const battleStatus = useSelector((state) => state.status);
+  const battleStatus = useSelector((state) => state.battleStatus);
 
   // reference hook
   const ref = useRef(null);

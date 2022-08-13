@@ -11,7 +11,7 @@ function MultiPlayerEnemyCreature({
   lobby,
 }) {
   // battle status combat state from redux store
-  const battleStatus = useSelector((state) => state.status);
+  const battleStatus = useSelector((state) => state.battleStatus);
 
   // renders spawn portal, enemy combat text, and boss enemy creature with stats panel for multiplayer
   return (

@@ -9,15 +9,16 @@ import Home from "./pages/Home";
 import Reset from "./pages/Reset";
 import Stage1 from "./pages/Stage1";
 import Lobby1 from "./pages/Lobby1";
-import index from "./store/index";
+import store from "./store/index";
 import { Provider } from "react-redux";
 
+// variables for root to render elements
 const container = document.getElementById("root");
 const root = createRoot(container);
 
 root.render(
   // redux provider wrapper
-  <Provider store={index}>
+  <Provider store={store}>
     {/* wrapper for routes that render components */}
     <BrowserRouter>
       <Routes>

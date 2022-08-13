@@ -45,7 +45,7 @@ function MultiPlayerMenu({
   const dispatch = useDispatch();
 
   // battle status combat state from redux store
-  const battleStatus = useSelector((state) => state.status);
+  const battleStatus = useSelector((state) => state.battleStatus);
 
   // numbered index state (summons pagination)
   const [index1, setIndex1] = useState(0);

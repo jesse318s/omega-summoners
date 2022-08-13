@@ -11,7 +11,7 @@ function EnemyCreature({
   spawnAnimation,
 }) {
   // battle status combat state from redux store
-  const battleStatus = useSelector((state) => state.status);
+  const battleStatus = useSelector((state) => state.battleStatus);
 
   // renders spawn portal, enemy combat text, and enemy creature with stats panel
   return (

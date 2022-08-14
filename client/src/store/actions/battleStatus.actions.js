@@ -1,7 +1,7 @@
 // sets battleStatus to true
-export const ENABLE = "ENABLE";
-export const enableBattleStatus = () => ({ type: ENABLE });
+export const ENABLEBATTLESTATUS = "ENABLEBATTLESTATUS";
+export const enableBattleStatus = () => ({ type: ENABLEBATTLESTATUS });
 
 // sets battleStatus to false
-export const DISABLE = "DISABLE";
-export const disableBattleStatus = () => ({ type: DISABLE });
+export const DISABLEBATTLESTATUS = "DISABLEBATTLESTATUS";
+export const disableBattleStatus = () => ({ type: DISABLEBATTLESTATUS });

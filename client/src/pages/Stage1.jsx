@@ -21,12 +21,29 @@ import {
   addPotionTimer,
 } from "../services/potionTimerServices";
 import { enemyCreaturesStage1 } from "../constants/enemyCreatures";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  enablePotionCooldown,
+  disablePotionCooldown,
+  setSummonHPBonusAmount,
+  setSummonMPBonusAmount,
+  setIngredientsValue,
+  setPotionsValue,
+} from "../store/actions/alchemy.actions";
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
 
 // main app component
 function Stage1() {
+  // dispatch hook for redux
+  const dispatch = useDispatch();
+
+  // alchemy state from redux store
+  const summonHPBonus = useSelector((state) => state.alchemy.summonHPBonus);
+  const summonMPBonus = useSelector((state) => state.alchemy.summonMPBonus);
+  const potionCooldown = useSelector((state) => state.alchemy.potionCooldown);
+
   // navigation hook
   const navigate = useNavigate();
 
@@ -61,13 +78,6 @@ function Stage1() {
   const [relicsData] = useState(relics);
   const [playerRelics, setPlayerRelics] = useState([{}]);
   const [chosenRelic, setChosenRelic] = useState(undefined);
-  // alchemy state
-  const [potions, setPotions] = useState([{}]);
-  const [ingredients, setIngredients] = useState([{}]);
-  const [playerItems, setPlayerItems] = useState([{}]);
-  const [summonHPBonus, setSummonHPBonus] = useState(0);
-  const [summonMPBonus, setSummonMPBonus] = useState(0);
-  const [potionCooldown, setPotionCooldown] = useState(false);
 
   useEffect(() => {
     // checks for userfront authentication and redirects visitor if not authenticated
@@ -171,8 +181,8 @@ function Stage1() {
   // loads alchemy data
   const loadDataAlchemy = async () => {
     try {
-      setPotions([]);
-      setIngredients([]);
+      dispatch(setPotionsValue([]));
+      dispatch(setIngredientsValue([]));
       const { data } = await getItems();
       const playerPotionsData = data.filter(
         (item) => item.type === "Potion" && item.userId === player.userfrontId
@@ -185,7 +195,7 @@ function Stage1() {
           (item) => item.itemId === playerPotions[i].id
         ).itemQuantity;
       }
-      setPotions(playerPotions);
+      dispatch(setPotionsValue(playerPotions));
       const playerIngredientsData = data.filter(
         (item) =>
           item.type === "Ingredient" && item.userId === player.userfrontId
@@ -198,7 +208,7 @@ function Stage1() {
           (item) => item.itemId === playerIngredients[i].id
         ).itemQuantity;
       }
-      setIngredients(playerIngredients);
+      dispatch(setIngredientsValue(playerIngredients));
     } catch (error) {
       console.log(error);
     }
@@ -208,7 +218,7 @@ function Stage1() {
   const createPotion = async (potionId) => {
     try {
       if (!potionCooldown) {
-        setPotionCooldown(true);
+        dispatch(enablePotionCooldown());
         const { data } = await getItems();
         const playerPotionData = data.filter(
           (item) => item.type === "Potion" && item.itemId === potionId
@@ -275,17 +285,17 @@ function Stage1() {
             await addItem(newPotionData);
             await loadDataAlchemy();
             setTimeout(() => {
-              setPotionCooldown(false);
+              dispatch(disablePotionCooldown());
             }, 1000);
           } else {
             setTimeout(() => {
-              setPotionCooldown(false);
+              dispatch(disablePotionCooldown());
             }, 1000);
           }
         } else {
           alert("You don't have enough ingredients for this potion.");
           setTimeout(() => {
-            setPotionCooldown(false);
+            dispatch(disablePotionCooldown());
           }, 1000);
         }
       }
@@ -300,7 +310,7 @@ function Stage1() {
       if (!potionCooldown) {
         await getPotionTimer();
         const timerData = await getPotionTimer();
-        setPotionCooldown(true);
+        dispatch(enablePotionCooldown());
         const { data } = await getItems();
         const playerPotionData = data.filter(
           (item) => item.type === "Potion" && item.itemId === potionId
@@ -315,7 +325,7 @@ function Stage1() {
             "You already have an active potion. Please wait for it to expire."
           );
           setTimeout(() => {
-            setPotionCooldown(false);
+            dispatch(disablePotionCooldown());
           }, 1000);
           return;
         }
@@ -353,8 +363,8 @@ function Stage1() {
               );
               const playerMPBonus = playerPotion.mpMod;
               const playerHPBonus = playerPotion.hpMod;
-              setSummonMPBonus(playerMPBonus);
-              setSummonHPBonus(playerHPBonus);
+              dispatch(setSummonMPBonusAmount(playerMPBonus));
+              dispatch(setSummonHPBonusAmount(playerHPBonus));
             }
 
             setPlayerCreatureMP(
@@ -364,17 +374,17 @@ function Stage1() {
               playerCreature.hp + chosenRelic.hpMod + summonHPBonus
             );
             setTimeout(() => {
-              setPotionCooldown(false);
+              dispatch(disablePotionCooldown());
             }, 1000);
           } else {
             setTimeout(() => {
-              setPotionCooldown(false);
+              dispatch(disablePotionCooldown());
             }, 1000);
           }
         } else {
           alert("You don't have enough potions.");
           setTimeout(() => {
-            setPotionCooldown(false);
+            dispatch(disablePotionCooldown());
           }, 1000);
         }
       }
@@ -444,14 +454,6 @@ function Stage1() {
                 setSpawnAnimation={setSpawnAnimation}
                 alchemyStatus={alchemyStatus}
                 setAlchemyStatus={setAlchemyStatus}
-                potions={potions}
-                setPotions={setPotions}
-                ingredients={ingredients}
-                setIngredients={setIngredients}
-                summonHPBonus={summonHPBonus}
-                setSummonHPBonus={setSummonHPBonus}
-                summonMPBonus={summonMPBonus}
-                setSummonMPBonus={setSummonMPBonus}
                 loadDataAlchemy={loadDataAlchemy}
                 createPotion={createPotion}
                 consumePotion={consumePotion}
@@ -488,12 +490,6 @@ function Stage1() {
                 templeStatus={templeStatus}
                 stagesStatus={stagesStatus}
                 alchemyStatus={alchemyStatus}
-                playerItems={playerItems}
-                setPlayerItems={setPlayerItems}
-                summonHPBonus={summonHPBonus}
-                setSummonHPBonus={setSummonHPBonus}
-                summonMPBonus={summonMPBonus}
-                setSummonMPBonus={setSummonMPBonus}
               />
 
               <EnemyCreature

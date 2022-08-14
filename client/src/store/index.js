@@ -1,4 +1,10 @@
-import { createStore } from "redux";
+import { createStore, combineReducers } from "redux";
 import BattleStatusReducer from "./reducers/battleStatus.reducer";
+import AlchemyReducer from "./reducers/alchemy.reducer";
 
-export default createStore(BattleStatusReducer);
+const rootReducer = combineReducers({
+  battleStatus: BattleStatusReducer,
+  alchemy: AlchemyReducer,
+});
+
+export default createStore(rootReducer);

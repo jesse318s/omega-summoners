@@ -6,6 +6,10 @@ import { potionsList } from "../constants/items";
 import recipeList from "../constants/recipes";
 import { useSelector, useDispatch } from "react-redux";
 import { enableBattleStatus } from "../store/actions/battleStatus.actions";
+import {
+  setSummonHPBonusAmount,
+  setSummonMPBonusAmount,
+} from "../store/actions/alchemy.actions";
 
 function Menu({
   Userfront,
@@ -35,12 +39,6 @@ function Menu({
   setSpawnAnimation,
   alchemyStatus,
   setAlchemyStatus,
-  potions,
-  ingredients,
-  summonHPBonus,
-  setSummonHPBonus,
-  summonMPBonus,
-  setSummonMPBonus,
   loadDataAlchemy,
   createPotion,
   consumePotion,
@@ -49,7 +47,13 @@ function Menu({
   const dispatch = useDispatch();
 
   // battle status combat state from redux store
-  const battleStatus = useSelector((state) => state.battleStatus);
+  const battleStatus = useSelector((state) => state.battleStatus.battleStatus);
+
+  // alchemy state from redux store
+  const summonHPBonus = useSelector((state) => state.alchemy.summonHPBonus);
+  const summonMPBonus = useSelector((state) => state.alchemy.summonMPBonus);
+  const ingredients = useSelector((state) => state.alchemy.ingredients);
+  const potions = useSelector((state) => state.alchemy.potions);
 
   // numbered index state (summons, and recipes pagination)
   const [index1, setIndex1] = useState(0);
@@ -271,12 +275,12 @@ function Menu({
         );
         const playerMPBonus = playerPotion.mpMod;
         const playerHPBonus = playerPotion.hpMod;
-        setSummonMPBonus(playerMPBonus);
-        setSummonHPBonus(playerHPBonus);
+        dispatch(setSummonMPBonusAmount(playerMPBonus));
+        dispatch(setSummonHPBonusAmount(playerHPBonus));
       }
       if (potionTimer.data.length === 0) {
-        setSummonMPBonus(0);
-        setSummonHPBonus(0);
+        dispatch(setSummonMPBonusAmount(0));
+        dispatch(setSummonHPBonusAmount(0));
       }
 
       setPlayerCreatureMP(

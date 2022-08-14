@@ -54,9 +54,6 @@ function Lobby1() {
   const [relicsData] = useState(relics);
   const [playerRelics, setPlayerRelics] = useState([{}]);
   const [chosenRelic, setChosenRelic] = useState(undefined);
-  // alchemy state
-  const [summonHPBonus, setSummonHPBonus] = useState(0);
-  const [summonMPBonus, setSummonMPBonus] = useState(0);
   // lobby state
   const [lobby, setLobby] = useState({});
   const [lobbyTimer, setLobbyTimer] = useState(false);
@@ -276,10 +273,6 @@ function Lobby1() {
                 loadAsyncDataConnection={() => loadAsyncDataConnection()}
                 connections={connections}
                 setConnections={setConnections}
-                summonHPBonus={summonHPBonus}
-                setSummonHPBonus={setSummonHPBonus}
-                summonMPBonus={summonMPBonus}
-                setSummonMPBonus={setSummonMPBonus}
               />
 
               <MultiPlayerCreature
@@ -314,10 +307,6 @@ function Lobby1() {
                 relicsStatus={relicsStatus}
                 templeStatus={templeStatus}
                 stagesStatus={stagesStatus}
-                summonHPBonus={summonHPBonus}
-                setSummonHPBonus={setSummonHPBonus}
-                summonMPBonus={summonMPBonus}
-                setSummonMPBonus={setSummonMPBonus}
               />
 
               <MultiPlayerEnemyCreature

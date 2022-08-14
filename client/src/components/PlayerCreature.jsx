@@ -5,6 +5,10 @@ import { potionsList } from "../constants/items";
 import { getItems, addItem } from "../services/itemServices";
 import { useSelector, useDispatch } from "react-redux";
 import { disableBattleStatus } from "../store/actions/battleStatus.actions";
+import {
+  setSummonHPBonusAmount,
+  setSummonMPBonusAmount,
+} from "../store/actions/alchemy.actions";
 
 function PlayerCreature({
   summonsStatus,
@@ -37,16 +41,16 @@ function PlayerCreature({
   templeStatus,
   stagesStatus,
   alchemyStatus,
-  summonHPBonus,
-  setSummonHPBonus,
-  summonMPBonus,
-  setSummonMPBonus,
 }) {
   // dispatch hook for redux
   const dispatch = useDispatch();
 
   // battle status combat state from redux store
-  const battleStatus = useSelector((state) => state.battleStatus);
+  const battleStatus = useSelector((state) => state.battleStatus.battleStatus);
+
+  // alchemy state from redux store
+  const summonHPBonus = useSelector((state) => state.alchemy.summonHPBonus);
+  const summonMPBonus = useSelector((state) => state.alchemy.summonMPBonus);
 
   // reference hook
   const ref = useRef(null);
@@ -343,12 +347,12 @@ function PlayerCreature({
       );
       const playerMPBonus = playerPotion.mpMod;
       const playerHPBonus = playerPotion.hpMod;
-      setSummonMPBonus(playerMPBonus);
-      setSummonHPBonus(playerHPBonus);
+      dispatch(setSummonMPBonusAmount(playerMPBonus));
+      dispatch(setSummonHPBonusAmount(playerHPBonus));
     }
     if (potionTimer.data.length === 0) {
-      setSummonMPBonus(0);
-      setSummonHPBonus(0);
+      dispatch(setSummonMPBonusAmount(0));
+      dispatch(setSummonHPBonusAmount(0));
     }
   };
 
@@ -393,60 +397,57 @@ function PlayerCreature({
     const blueMushroomsPlayer = playerItems.filter(
       (item) => item.itemId === 3 && item.type === "Ingredient"
     );
-
     // drops ingredients on chance
-    if (playerItems !== undefined) {
-      const newGreenMushrooms = greenMushroomsPlayer[0];
-      const newRedMushrooms = redMushroomsPlayer[0];
-      const newBlueMushrooms = blueMushroomsPlayer[0];
+    const newGreenMushrooms = greenMushroomsPlayer[0];
+    const newRedMushrooms = redMushroomsPlayer[0];
+    const newBlueMushrooms = blueMushroomsPlayer[0];
 
-      if (Math.random() <= 0.15) {
+    if (Math.random() <= 0.15) {
+      await Userfront.user.update({
+        data: {
+          userkey: Userfront.user.data.userkey,
+        },
+      });
+      await addItem({
+        itemId: 1,
+        type: "Ingredient",
+        itemQuantity:
+          newGreenMushrooms === undefined
+            ? 1
+            : newGreenMushrooms.itemQuantity + 1,
+        userId: Userfront.user.userId,
+      });
+    } else if (Math.random() <= 0.1) {
+      if (Math.random() <= 0.5) {
         await Userfront.user.update({
           data: {
             userkey: Userfront.user.data.userkey,
           },
         });
         await addItem({
-          itemId: 1,
+          itemId: 2,
           type: "Ingredient",
           itemQuantity:
-            newGreenMushrooms === undefined
+            newRedMushrooms === undefined
               ? 1
-              : newGreenMushrooms.itemQuantity + 1,
+              : newRedMushrooms.itemQuantity + 1,
           userId: Userfront.user.userId,
         });
-      } else if (Math.random() <= 0.1) {
-        if (Math.random() <= 0.5) {
-          await Userfront.user.update({
-            data: {
-              userkey: Userfront.user.data.userkey,
-            },
-          });
-          await addItem({
-            itemId: 2,
-            type: "Ingredient",
-            itemQuantity:
-              newRedMushrooms === undefined
-                ? 1
-                : newRedMushrooms.itemQuantity + 1,
-            userId: Userfront.user.userId,
-          });
-        } else {
-          await Userfront.user.update({
-            data: {
-              userkey: Userfront.user.data.userkey,
-            },
-          });
-          await addItem({
-            itemId: 3,
-            type: "Ingredient",
-            itemQuantity:
-              newBlueMushrooms === undefined
-                ? 1
-                : newBlueMushrooms.itemQuantity + 1,
-            userId: Userfront.user.userId,
-          });
-        }
+      } else {
+        await Userfront.user.update({
+          data: {
+            userkey: Userfront.user.data.userkey,
+          },
+        });
+        await addItem({
+          itemId: 3,
+          type: "Ingredient",
+          itemQuantity:
+            newBlueMushrooms === undefined
+              ? 1
+              : newBlueMushrooms.itemQuantity + 1,
+          userId: Userfront.user.userId,
+        });
       }
     }
   };

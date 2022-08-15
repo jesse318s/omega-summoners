@@ -110,16 +110,22 @@ function MultiPlayerMenu({
   // updates player chosen relic in database
   const selectRelic = async (relicId) => {
     try {
-      await Userfront.user.update({
-        data: {
-          userkey: Userfront.user.data.userkey,
-        },
-      });
-      await updateUser(player._id, {
-        userfrontId: Userfront.user.userId,
-        chosenRelic: relicId,
-      });
-      await loadAsyncDataPlayer();
+      if (
+        window.confirm(
+          "Are you sure you want to select this relic? You can change relics as many times as you wish."
+        )
+      ) {
+        await Userfront.user.update({
+          data: {
+            userkey: Userfront.user.data.userkey,
+          },
+        });
+        await updateUser(player._id, {
+          userfrontId: Userfront.user.userId,
+          chosenRelic: relicId,
+        });
+        await loadAsyncDataPlayer();
+      }
     } catch (error) {
       console.log(error);
     }

@@ -213,8 +213,6 @@ function App() {
   // loads alchemy data
   const loadDataAlchemy = async () => {
     try {
-      dispatch(setPotionsValue([]));
-      dispatch(setIngredientsValue([]));
       const { data } = await getItems();
       const playerPotionsData = data.filter(
         (item) => item.type === "Potion" && item.userId === player.userfrontId
@@ -222,6 +220,7 @@ function App() {
       const playerPotions = potionsList.filter((potion) =>
         playerPotionsData.some((item) => item.itemId === potion.id)
       );
+      
       for (let i = 0; i < playerPotions.length; i++) {
         playerPotions[i].itemQuantity = playerPotionsData.find(
           (item) => item.itemId === playerPotions[i].id

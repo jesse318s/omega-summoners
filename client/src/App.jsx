@@ -26,6 +26,10 @@ import {
   setIngredientsValue,
   setPotionsValue,
 } from "./store/actions/alchemy.actions";
+import {
+  setPlayerRelicsValue,
+  setChosenRelicValue,
+} from "./store/actions/relics.actions";
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
@@ -35,6 +39,8 @@ function App() {
   // dispatch hook for redux
   const dispatch = useDispatch();
 
+  // relics state from redux store
+  const chosenRelic = useSelector((state) => state.relics.chosenRelic);
   // alchemy state from redux store
   const summonHPBonus = useSelector((state) => state.alchemy.summonHPBonus);
   const summonMPBonus = useSelector((state) => state.alchemy.summonMPBonus);
@@ -70,10 +76,8 @@ function App() {
   const [combatText, setCombatText] = useState("");
   const [critText, setCritText] = useState("combat_text");
   const [spawnAnimation, setSpawnAnimation] = useState("");
-  // relic state
+  // relics state
   const [relicsData] = useState(relics);
-  const [playerRelics, setPlayerRelics] = useState([{}]);
-  const [chosenRelic, setChosenRelic] = useState(undefined);
 
   useEffect(() => {
     // checks for userfront authentication and redirects visitor if not authenticated
@@ -186,11 +190,11 @@ function App() {
             const playerRelicsData = relicsData.filter((relic) =>
               player.relics.includes(relic.id)
             );
-            setPlayerRelics(playerRelicsData);
+            dispatch(setPlayerRelicsValue(playerRelicsData));
             const chosenRelicData = playerRelicsData.filter(
               (relic) => relic.id === player.chosenRelic
             );
-            setChosenRelic(chosenRelicData[0]);
+            dispatch(setChosenRelicValue(chosenRelicData[0]));
           } catch (error) {
             console.log(error);
           }
@@ -198,7 +202,7 @@ function App() {
         loadDataPlayerRelics();
       }
     }
-  }, [player, relicsData, creatureData]);
+  }, [player, relicsData, creatureData, dispatch]);
 
   // retrieves user data and updates player state
   const loadAsyncDataPlayer = async () => {
@@ -220,7 +224,7 @@ function App() {
       const playerPotions = potionsList.filter((potion) =>
         playerPotionsData.some((item) => item.itemId === potion.id)
       );
-      
+
       for (let i = 0; i < playerPotions.length; i++) {
         playerPotions[i].itemQuantity = playerPotionsData.find(
           (item) => item.itemId === playerPotions[i].id
@@ -425,7 +429,7 @@ function App() {
   };
 
   // renders if a player creature and relic is bestowed
-  if (playerCreature && chosenRelic) {
+  if (playerCreature && player.chosenRelic) {
     return (
       <>
         <header>
@@ -460,10 +464,8 @@ function App() {
                 Userfront={Userfront}
                 player={player}
                 setPlayer={setPlayer}
-                relicsData={relicsData}
                 relicsStatus={relicsStatus}
                 setRelicsStatus={setRelicsStatus}
-                playerRelics={playerRelics}
                 templeStatus={templeStatus}
                 setTempleStatus={setTempleStatus}
                 creatureData={creatureData}
@@ -477,7 +479,6 @@ function App() {
                 setPlayerCreatureHP={setPlayerCreatureHP}
                 setPlayerCreatureMP={setPlayerCreatureMP}
                 playerCreature={playerCreature}
-                chosenRelic={chosenRelic}
                 setEnemyCreature={setEnemyCreature}
                 setEnemyCreatureHP={setEnemyCreatureHP}
                 setCombatAlert={setCombatAlert}
@@ -500,7 +501,6 @@ function App() {
                 combatText={combatText}
                 playerAttackStatus={playerAttackStatus}
                 setPlayerAttackStatus={setPlayerAttackStatus}
-                chosenRelic={chosenRelic}
                 player={player}
                 creatureStatsStatus={creatureStatsStatus}
                 playerCreatureHP={playerCreatureHP}

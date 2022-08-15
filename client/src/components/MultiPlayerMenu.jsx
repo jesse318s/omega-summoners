@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { updateUser } from "../services/userServices";
 import { useState } from "react";
 import { getPotionTimer } from "../services/potionTimerServices";
+import relics from "../constants/relics";
 import { potionsList } from "../constants/items";
 import { getConnections } from "../services/connectionServices";
 import { useSelector, useDispatch } from "react-redux";
@@ -14,10 +15,8 @@ import {
 function MultiPlayerMenu({
   Userfront,
   player,
-  relicsData,
   relicsStatus,
   setRelicsStatus,
-  playerRelics,
   templeStatus,
   setTempleStatus,
   creatureData,
@@ -31,7 +30,6 @@ function MultiPlayerMenu({
   setPlayerCreatureHP,
   setPlayerCreatureMP,
   playerCreature,
-  chosenRelic,
   setEnemyCreature,
   setCombatAlert,
   setBattleUndecided,
@@ -46,6 +44,9 @@ function MultiPlayerMenu({
 
   // battle status combat state from redux store
   const battleStatus = useSelector((state) => state.battleStatus.battleStatus);
+  // relics state from redux store
+  const playerRelics = useSelector((state) => state.relics.playerRelics);
+  const chosenRelic = useSelector((state) => state.relics.chosenRelic);
   // alchemy state from redux store
   const summonHPBonus = useSelector((state) => state.alchemy.summonHPBonus);
   const summonMPBonus = useSelector((state) => state.alchemy.summonMPBonus);
@@ -58,6 +59,8 @@ function MultiPlayerMenu({
   const [indexB, setIndexB] = useState(7);
   const [indexC, setIndexC] = useState(0);
   const [indexD, setIndexD] = useState(7);
+  // relic state
+  const [relicsData] = useState(relics);
 
   // paginates creatures for summons menu
   const paginateCreatures = async (index1, direction) => {

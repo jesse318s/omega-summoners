@@ -21,7 +21,6 @@ function PlayerCreature({
   setCombatText,
   playerAttackStatus,
   setPlayerAttackStatus,
-  chosenRelic,
   player,
   creatureStatsStatus,
   playerCreatureHP,
@@ -47,6 +46,8 @@ function PlayerCreature({
 
   // battle status combat state from redux store
   const battleStatus = useSelector((state) => state.battleStatus.battleStatus);
+  // relics state from redux store
+  const chosenRelic = useSelector((state) => state.relics.chosenRelic);
   // alchemy state from redux store
   const summonHPBonus = useSelector((state) => state.alchemy.summonHPBonus);
   const summonMPBonus = useSelector((state) => state.alchemy.summonMPBonus);

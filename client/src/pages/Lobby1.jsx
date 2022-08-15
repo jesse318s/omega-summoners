@@ -16,12 +16,20 @@ import { bossEnemyCreatureStage1 } from "../constants/enemyCreatures";
 import { lobby1 } from "../constants/lobbies";
 import { getLobby } from "../services/lobbyServices";
 import { getConnections, addConnection } from "../services/connectionServices";
+import { useDispatch } from "react-redux";
+import {
+  setPlayerRelicsValue,
+  setChosenRelicValue,
+} from "../store/actions/relics.actions";
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
 
 // main app component
 function Lobby1() {
+  // dispatch hook for redux
+  const dispatch = useDispatch();
+
   // navigation hook
   const navigate = useNavigate();
 
@@ -50,10 +58,8 @@ function Lobby1() {
   const [combatText, setCombatText] = useState("");
   const [critText, setCritText] = useState("combat_text");
   const [spawnAnimation, setSpawnAnimation] = useState("");
-  // relic state
+  // relics state
   const [relicsData] = useState(relics);
-  const [playerRelics, setPlayerRelics] = useState([{}]);
-  const [chosenRelic, setChosenRelic] = useState(undefined);
   // lobby state
   const [lobby, setLobby] = useState({});
   const [lobbyTimer, setLobbyTimer] = useState(false);
@@ -144,11 +150,11 @@ function Lobby1() {
             const playerRelicsData = relicsData.filter((relic) =>
               player.relics.includes(relic.id)
             );
-            setPlayerRelics(playerRelicsData);
+            dispatch(setPlayerRelicsValue(playerRelicsData));
             const chosenRelicData = playerRelicsData.filter(
               (relic) => relic.id === player.chosenRelic
             );
-            setChosenRelic(chosenRelicData[0]);
+            dispatch(setChosenRelicValue(chosenRelicData[0]));
           } catch (error) {
             console.log(error);
           }
@@ -156,7 +162,7 @@ function Lobby1() {
         loadDataPlayerRelics();
       }
     }
-  }, [player, relicsData, creatureData, navigate]);
+  }, [player, relicsData, creatureData, navigate, dispatch]);
 
   // retrieves user data and updates player state
   const loadAsyncDataPlayer = async () => {
@@ -212,7 +218,7 @@ function Lobby1() {
   };
 
   // renders if a player creature and relic is bestowed
-  if (playerCreature && chosenRelic) {
+  if (playerCreature && player.chosenRelic) {
     return (
       <>
         <header>
@@ -247,10 +253,8 @@ function Lobby1() {
                 Userfront={Userfront}
                 player={player}
                 setPlayer={setPlayer}
-                relicsData={relicsData}
                 relicsStatus={relicsStatus}
                 setRelicsStatus={setRelicsStatus}
-                playerRelics={playerRelics}
                 templeStatus={templeStatus}
                 setTempleStatus={setTempleStatus}
                 creatureData={creatureData}
@@ -264,7 +268,6 @@ function Lobby1() {
                 setPlayerCreatureHP={setPlayerCreatureHP}
                 setPlayerCreatureMP={setPlayerCreatureMP}
                 playerCreature={playerCreature}
-                chosenRelic={chosenRelic}
                 setEnemyCreature={setEnemyCreature}
                 setCombatAlert={setCombatAlert}
                 setBattleUndecided={setBattleUndecided}
@@ -285,7 +288,6 @@ function Lobby1() {
                 combatText={combatText}
                 playerAttackStatus={playerAttackStatus}
                 setPlayerAttackStatus={setPlayerAttackStatus}
-                chosenRelic={chosenRelic}
                 player={player}
                 creatureStatsStatus={creatureStatsStatus}
                 playerCreatureHP={playerCreatureHP}

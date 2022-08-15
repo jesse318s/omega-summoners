@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { updateUser } from "../services/userServices";
 import { getPotionTimer } from "../services/potionTimerServices";
 import { useState } from "react";
+import relics from "../constants/relics";
 import { potionsList } from "../constants/items";
 import recipeList from "../constants/recipes";
 import { useSelector, useDispatch } from "react-redux";
@@ -14,10 +15,8 @@ import {
 function Menu({
   Userfront,
   player,
-  relicsData,
   relicsStatus,
   setRelicsStatus,
-  playerRelics,
   templeStatus,
   setTempleStatus,
   creatureData,
@@ -31,7 +30,6 @@ function Menu({
   setPlayerCreatureHP,
   setPlayerCreatureMP,
   playerCreature,
-  chosenRelic,
   setEnemyCreature,
   setEnemyCreatureHP,
   setCombatAlert,
@@ -48,6 +46,9 @@ function Menu({
 
   // battle status combat state from redux store
   const battleStatus = useSelector((state) => state.battleStatus.battleStatus);
+  // relics state from redux store
+  const playerRelics = useSelector((state) => state.relics.playerRelics);
+  const chosenRelic = useSelector((state) => state.relics.chosenRelic);
   // alchemy state from redux store
   const summonHPBonus = useSelector((state) => state.alchemy.summonHPBonus);
   const summonMPBonus = useSelector((state) => state.alchemy.summonMPBonus);
@@ -68,6 +69,8 @@ function Menu({
   const [indexF, setIndexF] = useState(7);
   const [indexG, setIndexG] = useState(0);
   const [indexH, setIndexH] = useState(7);
+  // relic state
+  const [relicsData] = useState(relics);
   // alchemy menu state
   const [potionsStatus, setPotionsStatus] = useState(false);
   const [ingredientsStatus, setIngredientsStatus] = useState(false);

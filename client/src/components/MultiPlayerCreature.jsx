@@ -395,6 +395,32 @@ function MultiPlayerCreature({
     callEnemyCounterAttack(chancePlayer, moveName, moveType);
   };
 
+  // drops multiplayer rewards for player
+  const dropMPRewards = async () => {
+    dispatch(enableLobbyTimer());
+    setTimeout(() => {
+      setIsFighting(false);
+      dispatch(disableBattleStatus());
+    }, 1100);
+    setTimeout(() => {
+      Userfront.user.update({
+        data: {
+          userkey: Userfront.user.data.userkey,
+        },
+      });
+      setTimeout(() => {
+        updateUser(player._id, {
+          userfrontId: Userfront.user.userId,
+          experience: player.experience + enemyCreature.reward * 2,
+          drachmas: player.drachmas + enemyCreature.reward,
+        }).then(() => {
+          loadAsyncDataPlayer();
+          dispatch(disableLobbyTimer());
+        });
+      }, 2000);
+    }, 2000);
+  };
+
   // kills enemy
   const killEnemy = async (
     playerCreatureAttack,
@@ -417,28 +443,7 @@ function MultiPlayerCreature({
     setCombatAlert("Victory!");
     await loadAsyncDataLobby();
     await loadAsyncDataLobby();
-    await loadAsyncDataPlayer();
-    setTimeout(() => {
-      setIsFighting(false);
-      dispatch(disableBattleStatus());
-    }, 1100);
-    dispatch(enableLobbyTimer());
-    setTimeout(() => {
-      Userfront.user.update({
-        data: {
-          userkey: Userfront.user.data.userkey,
-        },
-      });
-      setTimeout(() => {
-        updateUser(player._id, {
-          userfrontId: Userfront.user.userId,
-          experience: player.experience + enemyCreature.reward * 2,
-          drachmas: player.drachmas + enemyCreature.reward,
-        });
-        loadAsyncDataPlayer();
-        dispatch(disableLobbyTimer());
-      }, 2000);
-    }, 2000);
+    dropMPRewards();
   };
 
   // completes player lifesteal check and heal
@@ -543,28 +548,7 @@ function MultiPlayerCreature({
         setCombatAlert("Victory!");
         await loadAsyncDataLobby();
         await loadAsyncDataLobby();
-        await loadAsyncDataPlayer();
-        setTimeout(() => {
-          setIsFighting(false);
-          dispatch(disableBattleStatus());
-        }, 1100);
-        dispatch(enableLobbyTimer());
-        setTimeout(() => {
-          Userfront.user.update({
-            data: {
-              userkey: Userfront.user.data.userkey,
-            },
-          });
-          setTimeout(() => {
-            updateUser(player._id, {
-              userfrontId: Userfront.user.userId,
-              experience: player.experience + enemyCreature.reward * 2,
-              drachmas: player.drachmas + enemyCreature.reward,
-            });
-            loadAsyncDataPlayer();
-            dispatch(disableLobbyTimer());
-          }, 2000);
-        }, 2000);
+        dropMPRewards();
       } else {
         // damages enemy
         if (chancePlayer) {

@@ -92,15 +92,6 @@ function Lobby1() {
         console.log(error);
       }
     };
-    // retrieves user data and updates player state
-    const loadAsyncDataPlayer = async () => {
-      try {
-        const { data } = await getUser();
-        setPlayer(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
     // retreives lobby data and updates lobby state
     const loadAsyncDataLobby = async () => {
       try {
@@ -110,9 +101,18 @@ function Lobby1() {
         console.log(error);
       }
     };
+    // retrieves user data and updates player state
+    const loadAsyncDataPlayer = async () => {
+      try {
+        const { data } = await getUser();
+        setPlayer(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     checkDataPlayer();
-    loadAsyncDataPlayer();
     loadAsyncDataLobby();
+    loadAsyncDataPlayer();
   }, []);
 
   useEffect(() => {
@@ -288,7 +288,6 @@ function Lobby1() {
                 setCombatAlert={setCombatAlert}
                 setBattleUndecided={setBattleUndecided}
                 setSpawnAnimation={setSpawnAnimation}
-                loadAsyncDataLobby={() => loadAsyncDataLobby()}
                 loadAsyncDataConnections={() => loadAsyncDataConnections()}
                 connections={connections}
               />

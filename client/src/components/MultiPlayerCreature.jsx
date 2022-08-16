@@ -276,8 +276,8 @@ function MultiPlayerCreature({
         return;
       }
       // updates lobby for player
-      loadAsyncDataLobby();
-      loadAsyncDataPlayer();
+      await loadAsyncDataLobby();
+      await loadAsyncDataPlayer();
       // check for player creature mp regen
       if (moveName === playerCreature.attackName) {
         regenMP();

@@ -48,6 +48,8 @@ function MultiPlayerMenu({
   // alchemy state from redux store
   const summonHPBonus = useSelector((state) => state.alchemy.summonHPBonus);
   const summonMPBonus = useSelector((state) => state.alchemy.summonMPBonus);
+  // lobby timer state from redux store
+  const lobbyTimer = useSelector((state) => state.lobbyTimer.lobbyTimer);
 
   // numbered index state (summons pagination)
   const [index1, setIndex1] = useState(0);
@@ -577,7 +579,7 @@ function MultiPlayerMenu({
           ) : null}
 
           {/* if there is no battle, displays a button to start a battle at the current stage */}
-          {!battleStatus ? (
+          {!battleStatus && !lobbyTimer ? (
             <>
               <button
                 className="game_button margin_small"
@@ -587,6 +589,17 @@ function MultiPlayerMenu({
                   setRelicsStatus(false);
                   setSummonsStatus(false);
                   setStagesStatus(false);
+                }}
+              >
+                Battle
+              </button>{" "}
+            </>
+          ) : !battleStatus ? (
+            <>
+              <button
+                className="game_button margin_small"
+                onClick={() => {
+                  alert("Reward is pending.");
                 }}
               >
                 Battle

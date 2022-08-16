@@ -415,24 +415,27 @@ function MultiPlayerCreature({
     });
     await updateLobby(lobby._id, { enemyHP: 0 });
     setCombatAlert("Victory!");
+    setIsFighting(false);
+    await loadAsyncDataLobby();
+    await loadAsyncDataLobby();
+    await loadAsyncDataPlayer();
+    dispatch(enableLobbyTimer());
     setTimeout(() => {
       Userfront.user.update({
         data: {
           userkey: Userfront.user.data.userkey,
         },
       });
-      updateUser(player._id, {
-        userfrontId: Userfront.user.userId,
-        experience: player.experience + enemyCreature.reward * 2,
-        drachmas: player.drachmas + enemyCreature.reward,
-      }).then(() => {
+      setTimeout(() => {
+        updateUser(player._id, {
+          userfrontId: Userfront.user.userId,
+          experience: player.experience + enemyCreature.reward * 2,
+          drachmas: player.drachmas + enemyCreature.reward,
+        });
         loadAsyncDataPlayer();
-      });
-    }, 1100);
-    setIsFighting(false);
-    await loadAsyncDataLobby();
-    await loadAsyncDataLobby();
-    await loadAsyncDataPlayer();
+        dispatch(disableLobbyTimer());
+      }, 2000);
+    }, 2000);
     dispatch(disableBattleStatus());
   };
 
@@ -536,24 +539,27 @@ function MultiPlayerCreature({
         });
         await updateLobby(lobby._id, { enemyHP: 0 });
         setCombatAlert("Victory!");
+        setIsFighting(false);
+        await loadAsyncDataLobby();
+        await loadAsyncDataLobby();
+        await loadAsyncDataPlayer();
+        dispatch(enableLobbyTimer());
         setTimeout(() => {
           Userfront.user.update({
             data: {
               userkey: Userfront.user.data.userkey,
             },
           });
-          updateUser(player._id, {
-            userfrontId: Userfront.user.userId,
-            experience: player.experience + enemyCreature.reward * 2,
-            drachmas: player.drachmas + enemyCreature.reward,
-          }).then(() => {
+          setTimeout(() => {
+            updateUser(player._id, {
+              userfrontId: Userfront.user.userId,
+              experience: player.experience + enemyCreature.reward * 2,
+              drachmas: player.drachmas + enemyCreature.reward,
+            });
             loadAsyncDataPlayer();
-          });
-        }, 1100);
-        setIsFighting(false);
-        await loadAsyncDataLobby();
-        await loadAsyncDataLobby();
-        await loadAsyncDataPlayer();
+            dispatch(disableLobbyTimer());
+          }, 2000);
+        }, 2000);
         dispatch(disableBattleStatus());
       } else {
         // damages enemy
@@ -624,10 +630,6 @@ function MultiPlayerCreature({
 
         // begins fight
         setIsFighting(true);
-        dispatch(enableLobbyTimer());
-        setTimeout(() => {
-          dispatch(disableLobbyTimer());
-        }, 1100);
         await loadAsyncDataLobby();
         checkPotionTimer();
         await loadAsyncDataPlayer();

@@ -411,16 +411,20 @@ function MultiPlayerCreature({
     });
     await updateLobby(lobby._id, { enemyHP: 0 });
     setCombatAlert("Victory!");
-    await Userfront.user.update({
-      data: {
-        userkey: Userfront.user.data.userkey,
-      },
-    });
-    await updateUser(player._id, {
-      userfrontId: Userfront.user.userId,
-      experience: player.experience + enemyCreature.reward * 2,
-      drachmas: player.drachmas + enemyCreature.reward,
-    });
+    setTimeout(() => {
+      Userfront.user.update({
+        data: {
+          userkey: Userfront.user.data.userkey,
+        },
+      });
+      updateUser(player._id, {
+        userfrontId: Userfront.user.userId,
+        experience: player.experience + enemyCreature.reward * 2,
+        drachmas: player.drachmas + enemyCreature.reward,
+      }).then(() => {
+        loadAsyncDataPlayer();
+      });
+    }, 1100);
     setIsFighting(false);
     await loadAsyncDataLobby();
     await loadAsyncDataLobby();
@@ -528,16 +532,20 @@ function MultiPlayerCreature({
         });
         await updateLobby(lobby._id, { enemyHP: 0 });
         setCombatAlert("Victory!");
-        await Userfront.user.update({
-          data: {
-            userkey: Userfront.user.data.userkey,
-          },
-        });
-        await updateUser(player._id, {
-          userfrontId: Userfront.user.userId,
-          experience: player.experience + enemyCreature.reward * 2,
-          drachmas: player.drachmas + enemyCreature.reward,
-        });
+        setTimeout(() => {
+          Userfront.user.update({
+            data: {
+              userkey: Userfront.user.data.userkey,
+            },
+          });
+          updateUser(player._id, {
+            userfrontId: Userfront.user.userId,
+            experience: player.experience + enemyCreature.reward * 2,
+            drachmas: player.drachmas + enemyCreature.reward,
+          }).then(() => {
+            loadAsyncDataPlayer();
+          });
+        }, 1100);
         setIsFighting(false);
         await loadAsyncDataLobby();
         await loadAsyncDataLobby();

@@ -415,10 +415,13 @@ function MultiPlayerCreature({
     });
     await updateLobby(lobby._id, { enemyHP: 0 });
     setCombatAlert("Victory!");
-    setIsFighting(false);
     await loadAsyncDataLobby();
     await loadAsyncDataLobby();
     await loadAsyncDataPlayer();
+    setTimeout(() => {
+      setIsFighting(false);
+      dispatch(disableBattleStatus());
+    }, 1100);
     dispatch(enableLobbyTimer());
     setTimeout(() => {
       Userfront.user.update({
@@ -436,7 +439,6 @@ function MultiPlayerCreature({
         dispatch(disableLobbyTimer());
       }, 2000);
     }, 2000);
-    dispatch(disableBattleStatus());
   };
 
   // completes player lifesteal check and heal
@@ -539,10 +541,13 @@ function MultiPlayerCreature({
         });
         await updateLobby(lobby._id, { enemyHP: 0 });
         setCombatAlert("Victory!");
-        setIsFighting(false);
         await loadAsyncDataLobby();
         await loadAsyncDataLobby();
         await loadAsyncDataPlayer();
+        setTimeout(() => {
+          setIsFighting(false);
+          dispatch(disableBattleStatus());
+        }, 1100);
         dispatch(enableLobbyTimer());
         setTimeout(() => {
           Userfront.user.update({
@@ -560,7 +565,6 @@ function MultiPlayerCreature({
             dispatch(disableLobbyTimer());
           }, 2000);
         }, 2000);
-        dispatch(disableBattleStatus());
       } else {
         // damages enemy
         if (chancePlayer) {

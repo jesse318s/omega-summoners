@@ -318,7 +318,7 @@ function PlayerCreature({
             dispatch(disableBattleStatus());
             setEnemyCreature({});
             setEnemyCreatureHP(0);
-          }, 600);
+          }, 1100);
         } else {
           setPlayerCreatureHP(
             ref.current -

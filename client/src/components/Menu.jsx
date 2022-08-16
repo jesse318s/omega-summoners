@@ -69,7 +69,7 @@ function Menu({
   const [indexF, setIndexF] = useState(7);
   const [indexG, setIndexG] = useState(0);
   const [indexH, setIndexH] = useState(7);
-  // relic state
+  // relics state
   const [relicsData] = useState(relics);
   // alchemy menu state
   const [potionsStatus, setPotionsStatus] = useState(false);

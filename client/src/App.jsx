@@ -30,6 +30,7 @@ import {
   setPlayerRelicsValue,
   setChosenRelicValue,
 } from "./store/actions/relics.actions";
+import { disableBattleStatus } from "./store/actions/battleStatus.actions";
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
@@ -187,6 +188,9 @@ function App() {
         // loads player relics data
         const loadDataPlayerRelics = () => {
           try {
+            if (combatAlert === "") {
+              dispatch(disableBattleStatus());
+            }
             const playerRelicsData = relicsData.filter((relic) =>
               player.relics.includes(relic.id)
             );
@@ -202,7 +206,7 @@ function App() {
         loadDataPlayerRelics();
       }
     }
-  }, [player, relicsData, creatureData, dispatch]);
+  }, [player, relicsData, creatureData, combatAlert, dispatch]);
 
   // retrieves user data and updates player state
   const loadAsyncDataPlayer = async () => {

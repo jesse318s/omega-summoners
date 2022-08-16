@@ -34,6 +34,7 @@ import {
   setPlayerRelicsValue,
   setChosenRelicValue,
 } from "../store/actions/relics.actions";
+import { disableBattleStatus } from "../store/actions/battleStatus.actions";
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
@@ -137,7 +138,7 @@ function Stage1() {
         }
       };
       // loads player creature data and sets player creature state
-      const loadDataPlayerCreature = () => {
+      const loadAsyncDataPlayerCreature = async () => {
         try {
           const playerCreatureData = creatureData.filter(
             (creature) => creature.id === player.creatureId
@@ -149,12 +150,15 @@ function Stage1() {
         }
       };
       checkLevelPlayer();
-      loadDataPlayerCreature();
+      loadAsyncDataPlayerCreature();
       // if there are player relics
       if (player.relics) {
         // loads player relics data
         const loadDataPlayerRelics = () => {
           try {
+            if (combatAlert === "") {
+              dispatch(disableBattleStatus());
+            }
             const playerRelicsData = relicsData.filter((relic) =>
               player.relics.includes(relic.id)
             );
@@ -170,7 +174,7 @@ function Stage1() {
         loadDataPlayerRelics();
       }
     }
-  }, [player, relicsData, creatureData, navigate, dispatch]);
+  }, [player, relicsData, creatureData, combatAlert, navigate, dispatch]);
 
   // retrieves user data and updates player state
   const loadAsyncDataPlayer = async () => {

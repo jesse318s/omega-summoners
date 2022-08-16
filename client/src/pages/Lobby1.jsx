@@ -21,6 +21,7 @@ import {
   setPlayerRelicsValue,
   setChosenRelicValue,
 } from "../store/actions/relics.actions";
+import { disableBattleStatus } from "../store/actions/battleStatus.actions";
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
@@ -129,7 +130,7 @@ function Lobby1() {
         }
       };
       // loads player creature data and sets player creature state
-      const loadDataPlayerCreature = () => {
+      const loadAsyncDataPlayerCreature = async () => {
         try {
           const playerCreatureData = creatureData.filter(
             (creature) => creature.id === player.creatureId
@@ -141,12 +142,15 @@ function Lobby1() {
         }
       };
       checkLevelPlayer();
-      loadDataPlayerCreature();
+      loadAsyncDataPlayerCreature();
       // if there are player relics
       if (player.relics) {
         // loads player relics data
         const loadDataPlayerRelics = () => {
           try {
+            if (combatAlert === "") {
+              dispatch(disableBattleStatus());
+            }
             const playerRelicsData = relicsData.filter((relic) =>
               player.relics.includes(relic.id)
             );
@@ -162,7 +166,7 @@ function Lobby1() {
         loadDataPlayerRelics();
       }
     }
-  }, [player, relicsData, creatureData, navigate, dispatch]);
+  }, [player, relicsData, creatureData, combatAlert, navigate, dispatch]);
 
   // retrieves user data and updates player state
   const loadAsyncDataPlayer = async () => {
@@ -175,7 +179,7 @@ function Lobby1() {
   };
 
   // retrieves connection data and updates connections
-  const loadAsyncDataConnection = async () => {
+  const loadAsyncDataConnections = async () => {
     try {
       const { data } = await getConnections();
       setConnections(data);
@@ -187,20 +191,32 @@ function Lobby1() {
   // retreives lobby data and updates lobby state, also generates new connection if needed and updates connections
   const loadAsyncDataLobby = async () => {
     try {
-      // checks for connection and generates new connection if needed
+      // checks connections and generates new connection if needed
       const genAsyncDataConnection = async () => {
         try {
-          const newConnection = {
-            userId: Userfront.user.userId,
-            name: player.name,
-          };
-          await addConnection(newConnection);
+          if (connections.length <= 2) {
+            const newConnection = {
+              userId: Userfront.user.userId,
+              name: player.name,
+            };
+            await addConnection(newConnection);
+          } else if (
+            connections.filter(
+              (connection) => connection.userId === Userfront.user.userId
+            ).length === 0
+          ) {
+            alert(
+              "There cannot be more than 3 summoners in this battle. Please try again later."
+            );
+            window.location.reload(false);
+            return;
+          }
         } catch (error) {
           console.log(error);
         }
       };
       // retrieves connection data and updates connections
-      const loadAsyncDataConnection = async () => {
+      const loadAsyncDataConnections = async () => {
         try {
           const { data } = await getConnections();
           setConnections(data);
@@ -209,7 +225,7 @@ function Lobby1() {
         }
       };
       genAsyncDataConnection();
-      loadAsyncDataConnection();
+      loadAsyncDataConnections();
       const { data } = await getLobby(lobby1);
       setLobby(data);
     } catch (error) {
@@ -273,9 +289,8 @@ function Lobby1() {
                 setBattleUndecided={setBattleUndecided}
                 setSpawnAnimation={setSpawnAnimation}
                 loadAsyncDataLobby={() => loadAsyncDataLobby()}
-                loadAsyncDataConnection={() => loadAsyncDataConnection()}
+                loadAsyncDataConnections={() => loadAsyncDataConnections()}
                 connections={connections}
-                setConnections={setConnections}
               />
 
               <MultiPlayerCreature

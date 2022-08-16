@@ -35,9 +35,8 @@ function MultiPlayerMenu({
   setBattleUndecided,
   setSpawnAnimation,
   loadAsyncDataLobby,
-  loadAsyncDataConnection,
+  loadAsyncDataConnections,
   connections,
-  setConnections,
 }) {
   // dispatch hook for redux
   const dispatch = useDispatch();
@@ -59,7 +58,7 @@ function MultiPlayerMenu({
   const [indexB, setIndexB] = useState(7);
   const [indexC, setIndexC] = useState(0);
   const [indexD, setIndexD] = useState(7);
-  // relic state
+  // relics state
   const [relicsData] = useState(relics);
 
   // paginates creatures for summons menu
@@ -210,23 +209,10 @@ function MultiPlayerMenu({
   // loads battle data
   const loadDataBattle = async () => {
     try {
-      // get and check connections
+      // refresh and set connections
       await getConnections();
-      const { data } = await getConnections();
-      setConnections(data);
-      await loadAsyncDataPlayer();
-      if (
-        connections.length > 2 &&
-        connections.filter(
-          (connection) => connection.userId === Userfront.user.userId
-        ).length < 1
-      ) {
-        alert(
-          "There cannot be more than 3 summoners in this battle. Please try again later."
-        );
-        return;
-      }
-
+      await loadAsyncDataConnections();
+      await loadAsyncDataLobby();
       // checks potion timer
       const potionTimer = await getPotionTimer();
       if (potionTimer.data.length > 0) {
@@ -257,7 +243,6 @@ function MultiPlayerMenu({
       setCombatAlert("The battle has begun!");
       dispatch(enableBattleStatus());
       setBattleUndecided(true);
-      await loadAsyncDataLobby();
       await loadAsyncDataPlayer();
     } catch (error) {
       console.log(error);
@@ -604,7 +589,6 @@ function MultiPlayerMenu({
                   setRelicsStatus(false);
                   setSummonsStatus(false);
                   setStagesStatus(false);
-                  loadAsyncDataConnection();
                 }}
               >
                 Battle

@@ -63,7 +63,6 @@ function Lobby1() {
   const [relicsData] = useState(relics);
   // lobby state
   const [lobby, setLobby] = useState({});
-  const [lobbyTimer, setLobbyTimer] = useState(false);
   const [connections, setConnections] = useState([{}]);
 
   useEffect(() => {
@@ -318,8 +317,6 @@ function Lobby1() {
                 setCombatAlert={setCombatAlert}
                 lobby={lobby}
                 loadAsyncDataLobby={() => loadAsyncDataLobby()}
-                lobbyTimer={lobbyTimer}
-                setLobbyTimer={setLobbyTimer}
                 relicsStatus={relicsStatus}
                 templeStatus={templeStatus}
                 stagesStatus={stagesStatus}

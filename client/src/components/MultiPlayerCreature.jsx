@@ -9,6 +9,10 @@ import {
   setSummonHPBonusAmount,
   setSummonMPBonusAmount,
 } from "../store/actions/alchemy.actions";
+import {
+  enableLobbyTimer,
+  disableLobbyTimer,
+} from "../store/actions/lobbyTimer.actions";
 
 function MultiPlayerCreature({
   summonsStatus,
@@ -36,8 +40,6 @@ function MultiPlayerCreature({
   setCombatAlert,
   lobby,
   loadAsyncDataLobby,
-  lobbyTimer,
-  setLobbyTimer,
   relicsStatus,
   templeStatus,
   stagesStatus,
@@ -52,6 +54,8 @@ function MultiPlayerCreature({
   // alchemy state from redux store
   const summonHPBonus = useSelector((state) => state.alchemy.summonHPBonus);
   const summonMPBonus = useSelector((state) => state.alchemy.summonMPBonus);
+  // lobby timer state from redux store
+  const lobbyTimer = useSelector((state) => state.lobbyTimer.lobbyTimer);
 
   // reference hook
   const ref = useRef(null);
@@ -620,9 +624,9 @@ function MultiPlayerCreature({
 
         // begins fight
         setIsFighting(true);
-        setLobbyTimer(true);
+        dispatch(enableLobbyTimer());
         setTimeout(() => {
-          setLobbyTimer(false);
+          dispatch(disableLobbyTimer());
         }, 1100);
         await loadAsyncDataLobby();
         checkPotionTimer();

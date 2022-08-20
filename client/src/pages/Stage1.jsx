@@ -22,6 +22,7 @@ import {
 } from "../services/potionTimerServices";
 import { enemyCreaturesStage1 } from "../constants/enemyCreatures";
 import { useSelector, useDispatch } from "react-redux";
+import { setPlayerCreatureValue } from "../store/actions/summon.actions";
 import {
   enablePotionCooldown,
   disablePotionCooldown,
@@ -44,6 +45,8 @@ function Stage1() {
   // dispatch hook for redux
   const dispatch = useDispatch();
 
+  // player creature state from redux store
+  const playerCreature = useSelector((state) => state.summon.playerCreature);
   // relics state from redux store
   const chosenRelic = useSelector((state) => state.relics.chosenRelic);
   // alchemy state from redux store
@@ -68,7 +71,6 @@ function Stage1() {
   // creature and combat state
   const [creatureData] = useState(creatures);
   const [enemyCreatureData] = useState(enemyCreaturesStage1);
-  const [playerCreature, setPlayerCreature] = useState({});
   const [creatureStatsStatus, setCreatureStatsStatus] = useState(false);
   const [enemyCreature, setEnemyCreature] = useState({});
   const [playerAttackStatus, setPlayerAttackStatus] = useState(false);
@@ -80,6 +82,8 @@ function Stage1() {
   const [battleUndecided, setBattleUndecided] = useState(false);
   const [combatText, setCombatText] = useState("");
   const [critText, setCritText] = useState("combat_text");
+  const [enemyCombatText, setEnemyCombatText] = useState("");
+  const [enemyCritText, setEnemyCritText] = useState("combat_text");
   const [spawnAnimation, setSpawnAnimation] = useState("");
   // relics state
   const [relicsData] = useState(relics);
@@ -143,7 +147,7 @@ function Stage1() {
           const playerCreatureData = creatureData.filter(
             (creature) => creature.id === player.creatureId
           );
-          setPlayerCreature(playerCreatureData[0]);
+          dispatch(setPlayerCreatureValue(playerCreatureData[0]));
           setCreatureStatsStatus(player.displayCreatureStats);
         } catch (error) {
           console.log(error);
@@ -450,7 +454,6 @@ function Stage1() {
                 loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
                 setPlayerCreatureHP={setPlayerCreatureHP}
                 setPlayerCreatureMP={setPlayerCreatureMP}
-                playerCreature={playerCreature}
                 setEnemyCreature={setEnemyCreature}
                 setEnemyCreatureHP={setEnemyCreatureHP}
                 setCombatAlert={setCombatAlert}
@@ -465,12 +468,15 @@ function Stage1() {
 
               <PlayerCreature
                 summonsStatus={summonsStatus}
-                playerCreature={playerCreature}
                 enemyAttackStatus={enemyAttackStatus}
                 setEnemyAttackStatus={setEnemyAttackStatus}
+                setCombatText={setCombatText}
+                enemyCombatText={enemyCombatText}
+                setEnemyCombatText={setEnemyCombatText}
                 critText={critText}
                 setCritText={setCritText}
-                combatText={combatText}
+                enemyCritText={enemyCritText}
+                setEnemyCritText={setEnemyCritText}
                 playerAttackStatus={playerAttackStatus}
                 setPlayerAttackStatus={setPlayerAttackStatus}
                 player={player}
@@ -479,7 +485,6 @@ function Stage1() {
                 setPlayerCreatureHP={setPlayerCreatureHP}
                 playerCreatureMP={playerCreatureMP}
                 setPlayerCreatureMP={setPlayerCreatureMP}
-                setCombatText={setCombatText}
                 enemyCreature={enemyCreature}
                 setEnemyCreature={setEnemyCreature}
                 battleUndecided={battleUndecided}

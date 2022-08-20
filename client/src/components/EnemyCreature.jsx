@@ -22,12 +22,10 @@ function EnemyCreature({
             <div className={spawnAnimation} />
           </div>
 
-          {/* displays enemy combat text */}
-          {playerAttackStatus ? (
-            <div className="special_effect_container">
-              <div className={critText}>{combatText}</div>
-            </div>
-          ) : null}
+          {/* displays player combat text */}
+          <div className="special_effect_container">
+            <div className={critText}>{combatText}</div>
+          </div>
 
           {/* displays enemy based on attack state */}
           {enemyAttackStatus ? (

@@ -16,13 +16,14 @@ import {
 
 function MultiPlayerCreature({
   summonsStatus,
-  playerCreature,
   enemyAttackStatus,
   setEnemyAttackStatus,
-  critText,
-  setCritText,
-  combatText,
   setCombatText,
+  enemyCombatText,
+  setEnemyCombatText,
+  setCritText,
+  enemyCritText,
+  setEnemyCritText,
   playerAttackStatus,
   setPlayerAttackStatus,
   player,
@@ -47,6 +48,8 @@ function MultiPlayerCreature({
   // dispatch hook for redux
   const dispatch = useDispatch();
 
+  // player creature state from redux store
+  const playerCreature = useSelector((state) => state.summon.playerCreature);
   // battle status combat state from redux store
   const battleStatus = useSelector((state) => state.battleStatus.battleStatus);
   // relics state from redux store
@@ -172,14 +175,14 @@ function MultiPlayerCreature({
   ) => {
     try {
       if (battleStatus) {
-        setCritText("heal_combat_text");
+        setEnemyCritText("heal_combat_text");
         if (criticalMultiplier > 1) {
-          setCritText("heal_crit_text");
+          setEnemyCritText("heal_crit_text");
         }
-        setCombatText(playerCreatureSpecial * criticalMultiplier);
+        setEnemyCombatText(playerCreatureSpecial * criticalMultiplier);
         setTimeout(() => {
-          setCombatText("");
-          setCritText("combat_text");
+          setEnemyCombatText("");
+          setEnemyCritText("combat_text");
         }, 500);
       }
     } catch (error) {
@@ -209,16 +212,16 @@ function MultiPlayerCreature({
     try {
       if (battleStatus) {
         if (criticalMultiplier > 1) {
-          setCritText("crit_text");
+          setEnemyCritText("crit_text");
         }
-        setCombatText(
+        setEnemyCombatText(
           (enemyCreature.attack -
             enemyCreature.attack * playerCreatureDefense) *
             criticalMultiplier
         );
         setTimeout(() => {
-          setCombatText("");
-          setCritText("combat_text");
+          setEnemyCombatText("");
+          setEnemyCritText("combat_text");
         }, 500);
       }
     } catch (error) {
@@ -693,14 +696,10 @@ function MultiPlayerCreature({
         <>
           {/* displays the player creature with combat text, special visual effect, and creature control/stat panel */}
           <div className="player_creature">
-            {/* displays combat text */}
-            {enemyAttackStatus ||
-            critText === "heal_crit_text" ||
-            critText === "heal_combat_text" ? (
-              <div className="special_effect_container">
-                <div className={critText}>{combatText}</div>
-              </div>
-            ) : null}
+            {/* displays enemy combat text */}
+            <div className="special_effect_container">
+              <div className={enemyCritText}>{enemyCombatText}</div>
+            </div>
 
             {/* displays creature based on attack state */}
             {playerAttackStatus ? (

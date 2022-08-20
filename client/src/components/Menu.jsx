@@ -29,7 +29,6 @@ function Menu({
   loadAsyncDataPlayer,
   setPlayerCreatureHP,
   setPlayerCreatureMP,
-  playerCreature,
   setEnemyCreature,
   setEnemyCreatureHP,
   setCombatAlert,
@@ -44,6 +43,8 @@ function Menu({
   // dispatch hook for redux
   const dispatch = useDispatch();
 
+  // player creature state from redux store
+  const playerCreature = useSelector((state) => state.summon.playerCreature);
   // battle status combat state from redux store
   const battleStatus = useSelector((state) => state.battleStatus.battleStatus);
   // relics state from redux store

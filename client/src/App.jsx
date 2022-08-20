@@ -18,6 +18,7 @@ import { getItems, addItem } from "./services/itemServices";
 import { getPotionTimer, addPotionTimer } from "./services/potionTimerServices";
 import { enemyCreaturesHome } from "./constants/enemyCreatures";
 import { useSelector, useDispatch } from "react-redux";
+import { setPlayerCreatureValue } from "./store/actions/summon.actions";
 import {
   enablePotionCooldown,
   disablePotionCooldown,
@@ -40,6 +41,8 @@ function App() {
   // dispatch hook for redux
   const dispatch = useDispatch();
 
+  // player creature state from redux store
+  const playerCreature = useSelector((state) => state.summon.playerCreature);
   // relics state from redux store
   const chosenRelic = useSelector((state) => state.relics.chosenRelic);
   // alchemy state from redux store
@@ -64,7 +67,6 @@ function App() {
   // creature and combat state
   const [creatureData] = useState(creatures);
   const [enemyCreatureData] = useState(enemyCreaturesHome);
-  const [playerCreature, setPlayerCreature] = useState({});
   const [creatureStatsStatus, setCreatureStatsStatus] = useState(false);
   const [enemyCreature, setEnemyCreature] = useState({});
   const [playerAttackStatus, setPlayerAttackStatus] = useState(false);
@@ -76,6 +78,8 @@ function App() {
   const [battleUndecided, setBattleUndecided] = useState(false);
   const [combatText, setCombatText] = useState("");
   const [critText, setCritText] = useState("combat_text");
+  const [enemyCombatText, setEnemyCombatText] = useState("");
+  const [enemyCritText, setEnemyCritText] = useState("combat_text");
   const [spawnAnimation, setSpawnAnimation] = useState("");
   // relics state
   const [relicsData] = useState(relics);
@@ -175,7 +179,7 @@ function App() {
           const playerCreatureData = creatureData.filter(
             (creature) => creature.id === player.creatureId
           );
-          setPlayerCreature(playerCreatureData[0]);
+          dispatch(setPlayerCreatureValue(playerCreatureData[0]));
           setCreatureStatsStatus(player.displayCreatureStats);
         } catch (error) {
           console.log(error);
@@ -497,12 +501,15 @@ function App() {
 
               <PlayerCreature
                 summonsStatus={summonsStatus}
-                playerCreature={playerCreature}
                 enemyAttackStatus={enemyAttackStatus}
                 setEnemyAttackStatus={setEnemyAttackStatus}
+                setCombatText={setCombatText}
+                enemyCombatText={enemyCombatText}
+                setEnemyCombatText={setEnemyCombatText}
                 critText={critText}
                 setCritText={setCritText}
-                combatText={combatText}
+                enemyCritText={enemyCritText}
+                setEnemyCritText={setEnemyCritText}
                 playerAttackStatus={playerAttackStatus}
                 setPlayerAttackStatus={setPlayerAttackStatus}
                 player={player}
@@ -511,7 +518,6 @@ function App() {
                 setPlayerCreatureHP={setPlayerCreatureHP}
                 playerCreatureMP={playerCreatureMP}
                 setPlayerCreatureMP={setPlayerCreatureMP}
-                setCombatText={setCombatText}
                 enemyCreature={enemyCreature}
                 setEnemyCreature={setEnemyCreatureHP}
                 battleUndecided={battleUndecided}

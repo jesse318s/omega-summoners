@@ -41,9 +41,7 @@ function MultiPlayerCreature({
   setCombatAlert,
   lobby,
   loadAsyncDataLobby,
-  relicsStatus,
-  templeStatus,
-  stagesStatus,
+  gameMenuStatus,
 }) {
   // dispatch hook for redux
   const dispatch = useDispatch();
@@ -692,7 +690,7 @@ function MultiPlayerCreature({
 
   return (
     <>
-      {!summonsStatus && !relicsStatus && !templeStatus && !stagesStatus ? (
+      {Object.values(gameMenuStatus).every((value) => value === false) ? (
         <>
           {/* displays the player creature with combat text, special visual effect, and creature control/stat panel */}
           <div className="player_creature">

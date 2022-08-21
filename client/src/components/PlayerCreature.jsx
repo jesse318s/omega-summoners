@@ -37,10 +37,7 @@ function PlayerCreature({
   Userfront,
   loadAsyncDataPlayer,
   setCombatAlert,
-  relicsStatus,
-  templeStatus,
-  stagesStatus,
-  alchemyStatus,
+  gameMenuStatus,
 }) {
   // dispatch hook for redux
   const dispatch = useDispatch();
@@ -733,11 +730,7 @@ function PlayerCreature({
 
   return (
     <>
-      {!summonsStatus &&
-      !relicsStatus &&
-      !templeStatus &&
-      !stagesStatus &&
-      !alchemyStatus ? (
+      {Object.values(gameMenuStatus).every((value) => value === false) ? (
         <>
           {/* displays the player creature with combat text, special visual effect, and creature control/stat panel */}
           <div className="player_creature">

@@ -59,11 +59,13 @@ function App() {
   const [avatarOptionStatus, setAvatarOptionStatus] = useState(false);
   const [nameOptionStatus, setNameOptionStatus] = useState(false);
   // game menu state
-  const [relicsStatus, setRelicsStatus] = useState(false);
-  const [templeStatus, setTempleStatus] = useState(false);
-  const [summonsStatus, setSummonsStatus] = useState(false);
-  const [stagesStatus, setStagesStatus] = useState(false);
-  const [alchemyStatus, setAlchemyStatus] = useState(false);
+  const [gameMenuStatus, setGameMenuStatus] = useState({
+    relicsStatus: false,
+    templeStatus: false,
+    summonsStatus: false,
+    stagesStatus: false,
+    alchemyStatus: false,
+  });
   // creature and combat state
   const [creatureData] = useState(creatures);
   const [enemyCreatureData] = useState(enemyCreaturesHome);
@@ -471,17 +473,9 @@ function App() {
               <Menu
                 Userfront={Userfront}
                 player={player}
-                setPlayer={setPlayer}
-                relicsStatus={relicsStatus}
-                setRelicsStatus={setRelicsStatus}
-                templeStatus={templeStatus}
-                setTempleStatus={setTempleStatus}
-                creatureData={creatureData}
+                gameMenuStatus={gameMenuStatus}
+                setGameMenuStatus={setGameMenuStatus}
                 enemyCreatureData={enemyCreatureData}
-                summonsStatus={summonsStatus}
-                setSummonsStatus={setSummonsStatus}
-                stagesStatus={stagesStatus}
-                setStagesStatus={setStagesStatus}
                 combatAlert={combatAlert}
                 loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
                 setPlayerCreatureHP={setPlayerCreatureHP}
@@ -492,15 +486,12 @@ function App() {
                 setCombatAlert={setCombatAlert}
                 setBattleUndecided={setBattleUndecided}
                 setSpawnAnimation={setSpawnAnimation}
-                alchemyStatus={alchemyStatus}
-                setAlchemyStatus={setAlchemyStatus}
                 loadDataAlchemy={loadDataAlchemy}
                 createPotion={createPotion}
                 consumePotion={consumePotion}
               />
 
               <PlayerCreature
-                summonsStatus={summonsStatus}
                 enemyAttackStatus={enemyAttackStatus}
                 setEnemyAttackStatus={setEnemyAttackStatus}
                 setCombatText={setCombatText}
@@ -527,10 +518,7 @@ function App() {
                 Userfront={Userfront}
                 loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
                 setCombatAlert={setCombatAlert}
-                relicsStatus={relicsStatus}
-                templeStatus={templeStatus}
-                stagesStatus={stagesStatus}
-                alchemyStatus={alchemyStatus}
+                gameMenuStatus={gameMenuStatus}
               />
 
               <EnemyCreature

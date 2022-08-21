@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { updateUser } from "../services/userServices";
 import { getPotionTimer } from "../services/potionTimerServices";
 import { useState } from "react";
+import creatures from "../constants/creatures";
 import relics from "../constants/relics";
 import { potionsList } from "../constants/items";
 import recipeList from "../constants/recipes";
@@ -15,16 +16,9 @@ import {
 function Menu({
   Userfront,
   player,
-  relicsStatus,
-  setRelicsStatus,
-  templeStatus,
-  setTempleStatus,
-  creatureData,
+  gameMenuStatus,
+  setGameMenuStatus,
   enemyCreatureData,
-  summonsStatus,
-  setSummonsStatus,
-  stagesStatus,
-  setStagesStatus,
   combatAlert,
   loadAsyncDataPlayer,
   setPlayerCreatureHP,
@@ -34,8 +28,6 @@ function Menu({
   setCombatAlert,
   setBattleUndecided,
   setSpawnAnimation,
-  alchemyStatus,
-  setAlchemyStatus,
   loadDataAlchemy,
   createPotion,
   consumePotion,
@@ -56,6 +48,8 @@ function Menu({
   const ingredients = useSelector((state) => state.alchemy.ingredients);
   const potions = useSelector((state) => state.alchemy.potions);
 
+  // creature state
+  const [creatureData] = useState(creatures);
   // numbered index state (summons, and recipes pagination)
   const [index1, setIndex1] = useState(0);
   const [index2, setIndex2] = useState(5);
@@ -311,16 +305,19 @@ function Menu({
     <>
       <div className="color_white">
         {/* if there is no battle, displays buttons for selecting temple or relics from menu to display */}
-        {!battleStatus && !alchemyStatus ? (
+        {!battleStatus && !gameMenuStatus.alchemyStatus ? (
           <div>
             <div className="inline_flex">
               <button
                 className="game_button margin_small"
                 onClick={() => {
-                  setRelicsStatus(!relicsStatus);
-                  setTempleStatus(false);
-                  setSummonsStatus(false);
-                  setStagesStatus(false);
+                  setGameMenuStatus({
+                    relicsStatus: !gameMenuStatus.relicsStatus,
+                    summonsStatus: false,
+                    templeStatus: false,
+                    stagesStatus: false,
+                    alchemyStatus: false,
+                  });
                 }}
               >
                 Relics
@@ -329,10 +326,13 @@ function Menu({
               <button
                 className="game_button margin_small"
                 onClick={() => {
-                  setTempleStatus(!templeStatus);
-                  setRelicsStatus(false);
-                  setSummonsStatus(false);
-                  setStagesStatus(false);
+                  setGameMenuStatus({
+                    templeStatus: !gameMenuStatus.templeStatus,
+                    summonsStatus: false,
+                    relicsStatus: false,
+                    stagesStatus: false,
+                    alchemyStatus: false,
+                  });
                 }}
               >
                 Temple
@@ -349,7 +349,7 @@ function Menu({
         ) : null}
 
         {/* displays player relics if relics button is clicked */}
-        {relicsStatus ? (
+        {gameMenuStatus.relicsStatus ? (
           <div>
             <h4>Player Relics</h4>
             <button
@@ -395,7 +395,7 @@ function Menu({
         ) : null}
 
         {/* displays temple relics if temple button is clicked */}
-        {templeStatus ? (
+        {gameMenuStatus.templeStatus ? (
           <div>
             <h4>Temple Relics</h4>
             <button
@@ -441,15 +441,18 @@ function Menu({
         ) : null}
 
         {/* if there is no battle, displays buttons for selecting summons or stages from menu to display */}
-        {!battleStatus && !alchemyStatus ? (
+        {!battleStatus && !gameMenuStatus.alchemyStatus ? (
           <>
             <button
               className="game_button margin_small"
               onClick={() => {
-                setSummonsStatus(!summonsStatus);
-                setTempleStatus(false);
-                setRelicsStatus(false);
-                setStagesStatus(false);
+                setGameMenuStatus({
+                  summonsStatus: !gameMenuStatus.summonsStatus,
+                  templeStatus: false,
+                  relicsStatus: false,
+                  stagesStatus: false,
+                  alchemyStatus: false,
+                });
               }}
             >
               Summons
@@ -458,10 +461,13 @@ function Menu({
             <button
               className="game_button margin_small"
               onClick={() => {
-                setStagesStatus(!stagesStatus);
-                setSummonsStatus(false);
-                setTempleStatus(false);
-                setRelicsStatus(false);
+                setGameMenuStatus({
+                  stagesStatus: !gameMenuStatus.stagesStatus,
+                  summonsStatus: false,
+                  templeStatus: false,
+                  relicsStatus: false,
+                  alchemyStatus: false,
+                });
               }}
             >
               Stages
@@ -471,7 +477,7 @@ function Menu({
         ) : null}
 
         {/* displays player summons if summons button is clicked */}
-        {summonsStatus ? (
+        {gameMenuStatus.summonsStatus ? (
           <div>
             <h4>Available Summons</h4>
             <button
@@ -583,7 +589,7 @@ function Menu({
         ) : null}
 
         {/* displays stages if stages button is clicked */}
-        {stagesStatus ? (
+        {gameMenuStatus.stagesStatus ? (
           <>
             <h4>Battle Stages</h4>
             <div className="stage_options">
@@ -620,17 +626,19 @@ function Menu({
         ) : null}
 
         {/* if there is no battle, displays button for selecting alchemy from menu to display */}
-        {!battleStatus && !alchemyStatus ? (
+        {!battleStatus && !gameMenuStatus.alchemyStatus ? (
           <>
             <button
               className="game_button margin_small"
               onClick={() => {
                 loadDataAlchemy();
-                setTempleStatus(false);
-                setRelicsStatus(false);
-                setSummonsStatus(false);
-                setStagesStatus(false);
-                setAlchemyStatus(true);
+                setGameMenuStatus({
+                  templeStatus: false,
+                  relicsStatus: false,
+                  summonsStatus: false,
+                  stagesStatus: false,
+                  alchemyStatus: true,
+                });
               }}
             >
               Alchemy
@@ -639,16 +647,19 @@ function Menu({
         ) : null}
 
         {/* if there is no battle, displays a button to start a battle at the current stage */}
-        {!battleStatus && !alchemyStatus ? (
+        {!battleStatus && !gameMenuStatus.alchemyStatus ? (
           <>
             <button
               className="game_button margin_small"
               onClick={() => {
                 loadDataBattle();
-                setTempleStatus(false);
-                setRelicsStatus(false);
-                setSummonsStatus(false);
-                setStagesStatus(false);
+                setGameMenuStatus({
+                  templeStatus: false,
+                  relicsStatus: false,
+                  summonsStatus: false,
+                  stagesStatus: false,
+                  alchemyStatus: false,
+                });
               }}
             >
               Battle
@@ -657,12 +668,18 @@ function Menu({
         ) : null}
 
         {/* displays new alchemy menu if alchemy button is clicked */}
-        {alchemyStatus ? (
+        {gameMenuStatus.alchemyStatus ? (
           <div>
             <button
               className="game_button margin_small"
               onClick={() => {
-                setAlchemyStatus(false);
+                setGameMenuStatus({
+                  templeStatus: false,
+                  relicsStatus: false,
+                  summonsStatus: false,
+                  stagesStatus: false,
+                  alchemyStatus: false,
+                });
                 setRecipesStatus(false);
                 setIngredientsStatus(false);
                 setPotionsStatus(false);

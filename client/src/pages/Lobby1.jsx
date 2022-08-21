@@ -44,10 +44,12 @@ function Lobby1() {
   const [avatarOptionStatus, setAvatarOptionStatus] = useState(false);
   const [nameOptionStatus, setNameOptionStatus] = useState(false);
   // game menu state
-  const [relicsStatus, setRelicsStatus] = useState(false);
-  const [templeStatus, setTempleStatus] = useState(false);
-  const [summonsStatus, setSummonsStatus] = useState(false);
-  const [stagesStatus, setStagesStatus] = useState(false);
+  const [gameMenuStatus, setGameMenuStatus] = useState({
+    relicsStatus: false,
+    templeStatus: false,
+    summonsStatus: false,
+    stagesStatus: false,
+  });
   // creature and combat state
   const [creatureData] = useState(creatures);
   const [enemyCreatureData] = useState(bossEnemyCreatureStage1);
@@ -272,17 +274,9 @@ function Lobby1() {
               <MultiPlayerMenu
                 Userfront={Userfront}
                 player={player}
-                setPlayer={setPlayer}
-                relicsStatus={relicsStatus}
-                setRelicsStatus={setRelicsStatus}
-                templeStatus={templeStatus}
-                setTempleStatus={setTempleStatus}
-                creatureData={creatureData}
+                gameMenuStatus={gameMenuStatus}
+                setGameMenuStatus={setGameMenuStatus}
                 enemyCreatureData={enemyCreatureData}
-                summonsStatus={summonsStatus}
-                setSummonsStatus={setSummonsStatus}
-                stagesStatus={stagesStatus}
-                setStagesStatus={setStagesStatus}
                 combatAlert={combatAlert}
                 loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
                 setPlayerCreatureHP={setPlayerCreatureHP}
@@ -296,7 +290,6 @@ function Lobby1() {
               />
 
               <MultiPlayerCreature
-                summonsStatus={summonsStatus}
                 enemyAttackStatus={enemyAttackStatus}
                 setEnemyAttackStatus={setEnemyAttackStatus}
                 setCombatText={setCombatText}
@@ -323,9 +316,7 @@ function Lobby1() {
                 setCombatAlert={setCombatAlert}
                 lobby={lobby}
                 loadAsyncDataLobby={() => loadAsyncDataLobby()}
-                relicsStatus={relicsStatus}
-                templeStatus={templeStatus}
-                stagesStatus={stagesStatus}
+                gameMenuStatus={gameMenuStatus}
               />
 
               <MultiPlayerEnemyCreature

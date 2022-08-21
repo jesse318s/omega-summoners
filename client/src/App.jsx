@@ -7,6 +7,7 @@ import GameNav from "./components/GameNav";
 import Options from "./components/Options";
 import Player from "./components/Player";
 import Menu from "./components/Menu";
+import AlchemyMenu from "./components/AlchemyMenu";
 import PlayerCreature from "./components/PlayerCreature";
 import EnemyCreature from "./components/EnemyCreature";
 import creatures from "./constants/creatures";
@@ -467,7 +468,7 @@ function App() {
 
           <Player player={player} />
 
-          {/* menu and creatures wrapped in options status check */}
+          {/* menus and creatures wrapped in options status check */}
           {!optionsStatus ? (
             <>
               <Menu
@@ -487,6 +488,11 @@ function App() {
                 setBattleUndecided={setBattleUndecided}
                 setSpawnAnimation={setSpawnAnimation}
                 loadDataAlchemy={loadDataAlchemy}
+              />
+
+              <AlchemyMenu
+                gameMenuStatus={gameMenuStatus}
+                setGameMenuStatus={setGameMenuStatus}
                 createPotion={createPotion}
                 consumePotion={consumePotion}
               />

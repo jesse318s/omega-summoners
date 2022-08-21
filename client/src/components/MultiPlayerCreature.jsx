@@ -15,7 +15,6 @@ import {
 } from "../store/actions/lobbyTimer.actions";
 
 function MultiPlayerCreature({
-  summonsStatus,
   enemyAttackStatus,
   setEnemyAttackStatus,
   setCombatText,

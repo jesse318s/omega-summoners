@@ -48,6 +48,8 @@ function MultiPlayerMenu({
 
   // creature state
   const [creatureData] = useState(creatures);
+  // relics state
+  const [relicsData] = useState(relics);
   // numbered index state (summons pagination)
   const [index1, setIndex1] = useState(0);
   const [index2, setIndex2] = useState(5);
@@ -56,8 +58,6 @@ function MultiPlayerMenu({
   const [indexB, setIndexB] = useState(7);
   const [indexC, setIndexC] = useState(0);
   const [indexD, setIndexD] = useState(7);
-  // relics state
-  const [relicsData] = useState(relics);
 
   // paginates creatures for summons menu
   const paginateCreatures = async (index1, direction) => {

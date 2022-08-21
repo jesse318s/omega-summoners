@@ -11,7 +11,6 @@ import {
 } from "../store/actions/alchemy.actions";
 
 function PlayerCreature({
-  summonsStatus,
   enemyAttackStatus,
   setEnemyAttackStatus,
   setCombatText,

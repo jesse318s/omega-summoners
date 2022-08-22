@@ -321,7 +321,6 @@ function App() {
                 setCombatText={setCombatText}
                 enemyCombatText={enemyCombatText}
                 setEnemyCombatText={setEnemyCombatText}
-                critText={critText}
                 setCritText={setCritText}
                 enemyCritText={enemyCritText}
                 setEnemyCritText={setEnemyCritText}

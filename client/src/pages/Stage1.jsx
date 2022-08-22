@@ -285,7 +285,6 @@ function Stage1() {
                 setCombatText={setCombatText}
                 enemyCombatText={enemyCombatText}
                 setEnemyCombatText={setEnemyCombatText}
-                critText={critText}
                 setCritText={setCritText}
                 enemyCritText={enemyCritText}
                 setEnemyCritText={setEnemyCritText}

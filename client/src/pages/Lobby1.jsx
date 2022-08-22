@@ -301,7 +301,6 @@ function Lobby1() {
                 setCombatText={setCombatText}
                 enemyCombatText={enemyCombatText}
                 setEnemyCombatText={setEnemyCombatText}
-                critText={critText}
                 setCritText={setCritText}
                 enemyCritText={enemyCritText}
                 setEnemyCritText={setEnemyCritText}

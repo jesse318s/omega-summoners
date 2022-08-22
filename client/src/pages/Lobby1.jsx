@@ -23,6 +23,10 @@ import {
   setChosenRelicValue,
 } from "../store/actions/relics.actions";
 import { disableBattleStatus } from "../store/actions/battleStatus.actions";
+import {
+  enableCreatureStatsStatus,
+  disableCreatureStatsStatus,
+} from "../store/actions/creatureStatsStatus.actions";
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
@@ -53,7 +57,6 @@ function Lobby1() {
   // creature and combat state
   const [creatureData] = useState(creatures);
   const [enemyCreatureData] = useState(bossEnemyCreatureStage1);
-  const [creatureStatsStatus, setCreatureStatsStatus] = useState(false);
   const [enemyCreature, setEnemyCreature] = useState({});
   const [playerAttackStatus, setPlayerAttackStatus] = useState(false);
   const [enemyAttackStatus, setEnemyAttackStatus] = useState(false);
@@ -142,7 +145,11 @@ function Lobby1() {
             (creature) => creature.id === player.creatureId
           );
           dispatch(setPlayerCreatureValue(playerCreatureData[0]));
-          setCreatureStatsStatus(player.displayCreatureStats);
+          if (player.displayCreatureStats === true) {
+            dispatch(enableCreatureStatsStatus());
+          } else {
+            dispatch(disableCreatureStatsStatus());
+          }
         } catch (error) {
           console.log(error);
         }
@@ -262,7 +269,6 @@ function Lobby1() {
             setNameOptionStatus={setNameOptionStatus}
             avatarOptionStatus={avatarOptionStatus}
             setAvatarOptionStatus={setAvatarOptionStatus}
-            creatureStatsStatus={creatureStatsStatus}
             loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
           />
 
@@ -302,7 +308,6 @@ function Lobby1() {
                 playerAttackStatus={playerAttackStatus}
                 setPlayerAttackStatus={setPlayerAttackStatus}
                 player={player}
-                creatureStatsStatus={creatureStatsStatus}
                 playerCreatureHP={playerCreatureHP}
                 setPlayerCreatureHP={setPlayerCreatureHP}
                 playerCreatureMP={playerCreatureMP}

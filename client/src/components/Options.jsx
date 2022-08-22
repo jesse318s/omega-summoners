@@ -1,4 +1,5 @@
 import { updateUser } from "../services/userServices";
+import { useSelector } from "react-redux";
 
 function Options({
   Userfront,
@@ -8,9 +9,13 @@ function Options({
   setNameOptionStatus,
   avatarOptionStatus,
   setAvatarOptionStatus,
-  creatureStatsStatus,
   loadAsyncDataPlayer,
 }) {
+  // display creature stats status state from redux store
+  const creatureStatsStatus = useSelector(
+    (state) => state.creatureStatsStatus.creatureStatsStatus
+  );
+
   // toggles display creature stats in database
   const toggleDisplayCreatureStats = async () => {
     try {

@@ -27,6 +27,10 @@ import {
   setChosenRelicValue,
 } from "./store/actions/relics.actions";
 import { disableBattleStatus } from "./store/actions/battleStatus.actions";
+import {
+  enableCreatureStatsStatus,
+  disableCreatureStatsStatus,
+} from "./store/actions/creatureStatsStatus.actions";
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
@@ -58,7 +62,6 @@ function App() {
   // creature and combat state
   const [creatureData] = useState(creatures);
   const [enemyCreatureData] = useState(enemyCreaturesHome);
-  const [creatureStatsStatus, setCreatureStatsStatus] = useState(false);
   const [enemyCreature, setEnemyCreature] = useState({});
   const [playerAttackStatus, setPlayerAttackStatus] = useState(false);
   const [enemyAttackStatus, setEnemyAttackStatus] = useState(false);
@@ -171,7 +174,11 @@ function App() {
             (creature) => creature.id === player.creatureId
           );
           dispatch(setPlayerCreatureValue(playerCreatureData[0]));
-          setCreatureStatsStatus(player.displayCreatureStats);
+          if (player.displayCreatureStats === true) {
+            dispatch(enableCreatureStatsStatus());
+          } else {
+            dispatch(disableCreatureStatsStatus());
+          }
         } catch (error) {
           console.log(error);
         }
@@ -271,7 +278,6 @@ function App() {
             setNameOptionStatus={setNameOptionStatus}
             avatarOptionStatus={avatarOptionStatus}
             setAvatarOptionStatus={setAvatarOptionStatus}
-            creatureStatsStatus={creatureStatsStatus}
             loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
           />
 
@@ -322,7 +328,6 @@ function App() {
                 playerAttackStatus={playerAttackStatus}
                 setPlayerAttackStatus={setPlayerAttackStatus}
                 player={player}
-                creatureStatsStatus={creatureStatsStatus}
                 playerCreatureHP={playerCreatureHP}
                 setPlayerCreatureHP={setPlayerCreatureHP}
                 playerCreatureMP={playerCreatureMP}

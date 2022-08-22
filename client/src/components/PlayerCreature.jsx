@@ -22,7 +22,6 @@ function PlayerCreature({
   playerAttackStatus,
   setPlayerAttackStatus,
   player,
-  creatureStatsStatus,
   playerCreatureHP,
   setPlayerCreatureHP,
   playerCreatureMP,
@@ -43,6 +42,10 @@ function PlayerCreature({
 
   // player creature state from redux store
   const playerCreature = useSelector((state) => state.summon.playerCreature);
+  // display creature stats status state from redux store
+  const creatureStatsStatus = useSelector(
+    (state) => state.creatureStatsStatus.creatureStatsStatus
+  );
   // battle status combat state from redux store
   const battleStatus = useSelector((state) => state.battleStatus.battleStatus);
   // relics state from redux store

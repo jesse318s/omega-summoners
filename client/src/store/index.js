@@ -4,6 +4,7 @@ import AlchemyReducer from "./reducers/alchemy.reducer";
 import RelicsReducer from "./reducers/relics.reducer";
 import LobbyTimerReducer from "./reducers/lobbyTimer.reducer";
 import SummonReducer from "./reducers/summon.reducer";
+import CreatureStatsStatusReducer from "./reducers/creatureStatsStatus.reducer";
 
 const rootReducer = combineReducers({
   battleStatus: BattleStatusReducer,
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   relics: RelicsReducer,
   lobbyTimer: LobbyTimerReducer,
   summon: SummonReducer,
+  creatureStatsStatus: CreatureStatsStatusReducer,
 });
 
 export default createStore(rootReducer);

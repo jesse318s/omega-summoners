@@ -29,6 +29,7 @@ function MultiPlayerMenu({
   setSpawnAnimation,
   loadAsyncDataConnections,
   connections,
+  loadAsyncDataLobby,
 }) {
   // dispatch hook for redux
   const dispatch = useDispatch();
@@ -210,6 +211,7 @@ function MultiPlayerMenu({
       // refresh and set connections
       await getConnections();
       await loadAsyncDataConnections();
+      await loadAsyncDataLobby();
       // checks potion timer
       const potionTimer = await getPotionTimer();
       if (potionTimer.data.length > 0) {

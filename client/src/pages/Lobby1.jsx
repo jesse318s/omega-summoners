@@ -293,6 +293,7 @@ function Lobby1() {
                 setSpawnAnimation={setSpawnAnimation}
                 loadAsyncDataConnections={() => loadAsyncDataConnections()}
                 connections={connections}
+                loadAsyncDataLobby={loadAsyncDataLobby}
               />
 
               <MultiPlayerCreature

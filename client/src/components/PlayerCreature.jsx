@@ -663,7 +663,6 @@ function PlayerCreature({
         setIsFighting(true);
         checkPotionTimer();
         await loadAsyncDataPlayer();
-        // assigns preferred player special and cost
         if (player.preferredSpecial === 2) {
           playerCreatureSpecial =
             playerCreature.special2 + chosenRelic.specialMod;

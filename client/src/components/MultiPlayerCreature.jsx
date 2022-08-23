@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { updateUser } from "../services/userServices";
-import { updateLobby } from "../services/lobbyServices";
+import { getLobby, updateLobby } from "../services/lobbyServices";
 import { getPotionTimer } from "../services/potionTimerServices";
 import { potionsList } from "../constants/items";
 import { useSelector, useDispatch } from "react-redux";
@@ -655,8 +655,8 @@ function MultiPlayerCreature({
         !playerAttackStatus &&
         !enemyAttackStatus &&
         battleUndecided &&
-        !lobbyTimer &&
-        !isFighting
+        !isFighting &&
+        !lobbyTimer
       ) {
         const playerCreatureAttack =
           playerCreature.attack + chosenRelic.attackMod;
@@ -677,12 +677,11 @@ function MultiPlayerCreature({
         await loadAsyncDataLobby();
         checkPotionTimer();
         await loadAsyncDataPlayer();
-        // checks for previous victory
-        if (lobby.victors.includes(Userfront.user.userId)) {
+        const newLobby = await getLobby(lobby._id);
+        if (newLobby.data.victors.includes(Userfront.user.userId)) {
           grantVictory();
           return;
         }
-        // assigns preferred player special and cost
         if (player.preferredSpecial === 2) {
           playerCreatureSpecial =
             playerCreature.special2 + chosenRelic.specialMod;

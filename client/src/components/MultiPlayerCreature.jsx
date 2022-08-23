@@ -37,6 +37,7 @@ function MultiPlayerCreature({
   Userfront,
   loadAsyncDataPlayer,
   setCombatAlert,
+  connections,
   lobby,
   loadAsyncDataLobby,
   gameMenuStatus,
@@ -442,7 +443,24 @@ function MultiPlayerCreature({
         userkey: Userfront.user.data.userkey,
       },
     });
-    await updateLobby(lobby._id, { enemyHP: 0 });
+    const otherConnections = connections.filter(
+      (connection) => connection.userId !== Userfront.user.userId
+    );
+    if (otherConnections.length === 1) {
+      await updateLobby(lobby._id, {
+        enemyHP: 0,
+        victors: [otherConnections[0].userId],
+      });
+    } else if (otherConnections.length === 2) {
+      await updateLobby(lobby._id, {
+        enemyHP: 0,
+        victors: [otherConnections[0].userId, otherConnections[1].userId],
+      });
+    } else {
+      await updateLobby(lobby._id, {
+        enemyHP: 0,
+      });
+    }
     setCombatAlert("Victory!");
     await loadAsyncDataLobby();
     await loadAsyncDataLobby();
@@ -547,7 +565,24 @@ function MultiPlayerCreature({
             userkey: Userfront.user.data.userkey,
           },
         });
-        await updateLobby(lobby._id, { enemyHP: 0 });
+        const otherConnections = connections.filter(
+          (connection) => connection.userId !== Userfront.user.userId
+        );
+        if (otherConnections.length === 1) {
+          await updateLobby(lobby._id, {
+            enemyHP: 0,
+            victors: [otherConnections[0].userId],
+          });
+        } else if (otherConnections.length === 2) {
+          await updateLobby(lobby._id, {
+            enemyHP: 0,
+            victors: [otherConnections[0].userId, otherConnections[1].userId],
+          });
+        } else {
+          await updateLobby(lobby._id, {
+            enemyHP: 0,
+          });
+        }
         setCombatAlert("Victory!");
         await loadAsyncDataLobby();
         await loadAsyncDataLobby();
@@ -594,6 +629,24 @@ function MultiPlayerCreature({
     }
   };
 
+  // grants previous victory
+  const grantVictory = async () => {
+    setBattleUndecided(false);
+    await Userfront.user.update({
+      data: {
+        userkey: Userfront.user.data.userkey,
+      },
+    });
+    const newVictors = lobby.victors.filter(
+      (victor) => victor !== Userfront.user.userId
+    );
+    await updateLobby(lobby._id, {
+      victors: [newVictors[0]],
+    });
+    setCombatAlert("Victory!");
+    dropMPRewards();
+  };
+
   // initiates chance to attack enemy creature or heal player creature
   const attackEnemyOrHeal = async (moveName, moveType) => {
     try {
@@ -624,6 +677,11 @@ function MultiPlayerCreature({
         await loadAsyncDataLobby();
         checkPotionTimer();
         await loadAsyncDataPlayer();
+        // checks for previous victory
+        if (lobby.victors.includes(Userfront.user.userId)) {
+          grantVictory();
+          return;
+        }
         // assigns preferred player special and cost
         if (player.preferredSpecial === 2) {
           playerCreatureSpecial =

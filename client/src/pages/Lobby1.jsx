@@ -319,6 +319,7 @@ function Lobby1() {
                 Userfront={Userfront}
                 loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
                 setCombatAlert={setCombatAlert}
+                connections={connections}
                 lobby={lobby}
                 loadAsyncDataLobby={() => loadAsyncDataLobby()}
                 gameMenuStatus={gameMenuStatus}

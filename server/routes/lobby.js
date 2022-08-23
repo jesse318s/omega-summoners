@@ -11,7 +11,7 @@ router.get("/:id", async (req, res) => {
     const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, {
       algorithms: ["RS256"],
     });
-    
+
     if (decoded) {
       const lobby = await Lobby.findOne({ _id: req.params.id });
       if (lobby.enemyHP <= 0) {
@@ -63,28 +63,40 @@ router.put("/:id", async (req, res) => {
     const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, {
       algorithms: ["RS256"],
     });
-    const lobby = await Lobby.findOne({ _id: req.params.id });
-    if (lobby.enemyHP <= 0) {
-      await Lobby.findOneAndUpdate(
-        {
-          _id: req.params.id,
-        },
-        {
-          enemyHP: lobby.maxHP,
-        }
-      );
-      res.send(lobby);
-    } else if (
+    if (
       decoded &&
       req.body.enemyHP < lobbyCheck.enemyHP &&
       req.headers.userkey === userkey.data.userkey
     ) {
+      if (req.body.victors !== undefined) {
+        const lobby = await Lobby.findOneAndUpdate(
+          {
+            _id: req.params.id,
+          },
+          {
+            enemyHP: req.body.enemyHP,
+            victors: req.body.victors,
+          }
+        );
+        res.send(lobby);
+      } else {
+        const lobby = await Lobby.findOneAndUpdate(
+          {
+            _id: req.params.id,
+          },
+          {
+            enemyHP: req.body.enemyHP,
+          }
+        );
+        res.send(lobby);
+      }
+    } else if (req.body.victors !== undefined) {
       const lobby = await Lobby.findOneAndUpdate(
         {
           _id: req.params.id,
         },
         {
-          enemyHP: req.body.enemyHP,
+          victors: req.body.victors,
         }
       );
       res.send(lobby);

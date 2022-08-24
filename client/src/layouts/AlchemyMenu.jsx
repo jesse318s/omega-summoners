@@ -188,7 +188,7 @@ function AlchemyMenu({
     try {
       if (!potionCooldown) {
         await getPotionTimer();
-        const timerData = await getPotionTimer();
+        const timerCheck = await getPotionTimer();
         dispatch(enablePotionCooldown());
         const { data } = await getItems();
         const playerPotionData = data.filter(
@@ -199,7 +199,7 @@ function AlchemyMenu({
           (item) => item.itemId === potionId
         );
         // prevent over use
-        if (timerData.data.length !== 0) {
+        if (timerCheck.data.length !== 0) {
           alert(
             "You already have an active potion. Please wait for it to expire."
           );

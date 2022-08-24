@@ -308,7 +308,7 @@ body {
 }
 
 /* media query */
-@media screen and (min-width: 2000px) {
+@media screen and (min-width: 1800px) {
   .player_creature {
     margin-left: 450px;
   }

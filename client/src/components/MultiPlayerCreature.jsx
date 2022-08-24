@@ -374,7 +374,8 @@ function MultiPlayerCreature({
     criticalMultiplier,
     enemyDefense,
     moveName,
-    moveType
+    moveType,
+    newLobby
   ) => {
     if (chancePlayer) {
       displayPlayerAttackAnimation();
@@ -390,7 +391,7 @@ function MultiPlayerCreature({
       });
       await updateLobby(lobby._id, {
         enemyHP:
-          lobby.enemyHP -
+          newLobby.data.enemyHP -
           (playerCreatureAttack - playerCreatureAttack * enemyDefense) *
             criticalMultiplier,
       });
@@ -536,7 +537,8 @@ function MultiPlayerCreature({
     criticalMultiplier,
     enemyDefense,
     moveName,
-    moveType
+    moveType,
+    newLobby
   ) => {
     // deducts MP
     setPlayerCreatureMP(playerCreatureMP - playerCreatureSpecialCost);
@@ -547,7 +549,7 @@ function MultiPlayerCreature({
     ) {
       // checks for enemy death
       if (
-        lobby.enemyHP -
+        newLobby.data.enemyHP -
           (playerCreatureSpecial - playerCreatureSpecial * enemyDefense) *
             criticalMultiplier <=
         0
@@ -604,7 +606,7 @@ function MultiPlayerCreature({
           });
           await updateLobby(lobby._id, {
             enemyHP:
-              lobby.enemyHP -
+              newLobby.data.enemyHP -
               (playerCreatureSpecial - playerCreatureSpecial * enemyDefense) *
                 criticalMultiplier,
           });
@@ -630,14 +632,14 @@ function MultiPlayerCreature({
   };
 
   // grants previous victory
-  const grantVictory = async () => {
+  const grantVictory = async (newLobby) => {
     setBattleUndecided(false);
     await Userfront.user.update({
       data: {
         userkey: Userfront.user.data.userkey,
       },
     });
-    const newVictors = lobby.victors.filter(
+    const newVictors = newLobby.data.victors.filter(
       (victor) => victor !== Userfront.user.userId
     );
     await updateLobby(lobby._id, {
@@ -679,7 +681,7 @@ function MultiPlayerCreature({
         await loadAsyncDataPlayer();
         const newLobby = await getLobby(lobby._id);
         if (newLobby.data.victors.includes(Userfront.user.userId)) {
-          grantVictory();
+          grantVictory(newLobby);
           return;
         }
         if (player.preferredSpecial === 2) {
@@ -707,7 +709,7 @@ function MultiPlayerCreature({
         if (moveName === playerCreature.attackName) {
           // checks for enemy death
           if (
-            lobby.enemyHP -
+            newLobby.data.enemyHP -
               (playerCreatureAttack - playerCreatureAttack * enemyDefense) *
                 criticalMultiplier <=
             0
@@ -720,7 +722,8 @@ function MultiPlayerCreature({
               criticalMultiplier,
               enemyDefense,
               moveName,
-              moveType
+              moveType,
+              newLobby
             );
           }
         } else {
@@ -733,7 +736,8 @@ function MultiPlayerCreature({
               criticalMultiplier,
               enemyDefense,
               moveName,
-              moveType
+              moveType,
+              newLobby
             );
           } else {
             setCombatAlert("Not enough MP!");

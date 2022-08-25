@@ -90,7 +90,11 @@ router.put("/:id", async (req, res) => {
         );
         res.send(lobby);
       }
-    } else if (req.body.victors !== undefined) {
+    } else if (
+      req.body.victors !== undefined &&
+      decoded &&
+      req.headers.userkey === userkey.data.userkey
+    ) {
       const lobby = await Lobby.findOneAndUpdate(
         {
           _id: req.params.id,

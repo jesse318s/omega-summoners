@@ -61,6 +61,8 @@ function PlayerCreature({
   const [isFighting, setIsFighting] = useState(false);
   // player creature special status state
   const [specialStatus, setSpecialStatus] = useState(false);
+  // counter for recursive player creature ability called within enemy counter attack
+  const [attackCounter, setAttackCounter] = useState(0);
 
   // toggles special choice
   const toggleSpecial = async () => {
@@ -255,6 +257,11 @@ function PlayerCreature({
       let criticalMultiplier = 1;
       let chanceEnemy = false;
 
+      if (attackCounter > 1) {
+        setAttackCounter(0);
+        chancePlayer = true;
+        chanceEnemy = true;
+      }
       if (enemyCreature.attackType === "Magic") {
         playerCreatureDefense = 0;
       }
@@ -266,6 +273,7 @@ function PlayerCreature({
       }
       // series of checks for enemy counter attack based on chance/speed, and for player creature mp regen
       if (!chanceEnemy && chancePlayer) {
+        setAttackCounter(0);
         setTimeout(() => {
           setCombatAlert("Enemy was too slow!");
         }, 500);
@@ -273,6 +281,7 @@ function PlayerCreature({
       if (!chanceEnemy && !chancePlayer) {
         // ends fight
         setIsFighting(false);
+        setAttackCounter(attackCounter + 1);
         attackEnemyOrHeal(moveName, moveType);
         return;
       }
@@ -281,12 +290,14 @@ function PlayerCreature({
         regenMP();
       }
       if (chanceEnemy && chancePlayer) {
+        setAttackCounter(0);
         setTimeout(() => {
           setCombatAlert("Both abilities succeeded.");
         }, 600);
       }
       // checks for player chance/speed failure
       if (chanceEnemy && !chancePlayer) {
+        setAttackCounter(0);
         setTimeout(() => {
           setCombatAlert("Your summon was too slow!");
         }, 600);
@@ -460,6 +471,7 @@ function PlayerCreature({
     criticalMultiplier,
     enemyDefense
   ) => {
+    setAttackCounter(0);
     setBattleUndecided(false);
     displayPlayerAttackAnimation();
     displayPlayerAttackCT(
@@ -496,7 +508,7 @@ function PlayerCreature({
     moveName,
     moveType
   ) => {
-    if (moveType === "Lifesteal") {
+    if (moveType === "Lifesteal" && chancePlayer) {
       if (
         playerCreatureHP + playerCreatureSpecial * criticalMultiplier * 0.2 >
         playerCreature.hp + chosenRelic.hpMod + summonHPBonus
@@ -574,6 +586,7 @@ function PlayerCreature({
           0 &&
         chancePlayer
       ) {
+        setAttackCounter(0);
         setBattleUndecided(false);
         displayPlayerAttackAnimation();
         displayPlayerSpecialAnimation();

@@ -204,6 +204,15 @@ function Lobby1() {
   // retreives lobby data and updates lobby state, also generates new connection if needed and updates connections
   const loadAsyncDataLobby = async () => {
     try {
+      // retrieves connection data and updates connections
+      const loadAsyncDataConnections = async () => {
+        try {
+          const { data } = await getConnections();
+          setConnections(data);
+        } catch (error) {
+          console.log(error);
+        }
+      };
       // checks connections and generates new connection if needed
       const genAsyncDataConnection = async () => {
         try {
@@ -228,17 +237,8 @@ function Lobby1() {
           console.log(error);
         }
       };
-      // retrieves connection data and updates connections
-      const loadAsyncDataConnections = async () => {
-        try {
-          const { data } = await getConnections();
-          setConnections(data);
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      genAsyncDataConnection();
       loadAsyncDataConnections();
+      genAsyncDataConnection();
       const { data } = await getLobby(lobby1);
       setLobby(data);
     } catch (error) {

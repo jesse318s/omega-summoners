@@ -216,7 +216,7 @@ function Lobby1() {
       // checks connections and generates new connection if needed
       const genAsyncDataConnection = async () => {
         try {
-          if (connections.length <= 2) {
+          if (connections.length < 3) {
             const newConnection = {
               userId: Userfront.user.userId,
               name: player.name,

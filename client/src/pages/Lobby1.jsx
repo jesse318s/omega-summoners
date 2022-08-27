@@ -101,11 +101,20 @@ function Lobby1() {
         console.log(error);
       }
     };
-    // retreives lobby data and updates lobby state
+    // retrieves lobby data and updates lobby state
     const loadAsyncDataLobby = async () => {
       try {
         const { data } = await getLobby(lobby1);
         setLobby(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    // retrieves connection data and updates connections
+    const loadAsyncDataConnections = async () => {
+      try {
+        const { data } = await getConnections();
+        setConnections(data);
       } catch (error) {
         console.log(error);
       }
@@ -121,6 +130,7 @@ function Lobby1() {
     };
     checkDataPlayer();
     loadAsyncDataLobby();
+    loadAsyncDataConnections();
     loadAsyncDataPlayer();
   }, []);
 
@@ -201,7 +211,7 @@ function Lobby1() {
     }
   };
 
-  // retreives lobby data and updates lobby state, also generates new connection if needed and updates connections
+  // retrieves lobby data and updates lobby state, also generates new connection if needed and updates connections
   const loadAsyncDataLobby = async () => {
     try {
       // retrieves connection data and updates connections
@@ -231,13 +241,12 @@ function Lobby1() {
               "There cannot be more than 3 summoners in this battle. Please try again later."
             );
             window.location.reload(false);
-            return;
           }
         } catch (error) {
           console.log(error);
         }
       };
-      loadAsyncDataConnections();
+      await loadAsyncDataConnections();
       genAsyncDataConnection();
       const { data } = await getLobby(lobby1);
       setLobby(data);

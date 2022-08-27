@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { updateUser } from "../services/userServices";
 import { getLobby, updateLobby } from "../services/lobbyServices";
 import { getPotionTimer } from "../services/potionTimerServices";
+import { getConnections } from "../services/connectionServices";
 import { potionsList } from "../constants/items";
 import { useSelector, useDispatch } from "react-redux";
 import { disableBattleStatus } from "../store/actions/battleStatus.actions";
@@ -58,8 +59,6 @@ function MultiPlayerCreature({
   // alchemy state from redux store
   const summonHPBonus = useSelector((state) => state.alchemy.summonHPBonus);
   const summonMPBonus = useSelector((state) => state.alchemy.summonMPBonus);
-  // lobby timer state from redux store
-  const lobbyTimer = useSelector((state) => state.lobbyTimer.lobbyTimer);
 
   // reference hook
   const ref = useRef(null);
@@ -68,7 +67,7 @@ function MultiPlayerCreature({
   const [isFighting, setIsFighting] = useState(false);
   // player creature special status state
   const [specialStatus, setSpecialStatus] = useState(false);
-  // counter for recursive player creature ability called within enemy counter attack
+  // counter state for recursive player creature ability called within enemy counter attack
   const [attackCounter, setAttackCounter] = useState(0);
 
   // toggles special choice
@@ -662,16 +661,35 @@ function MultiPlayerCreature({
     dropMPRewards();
   };
 
+  const checkVictoryAndConnection = (newLobby, newConnections) => {
+    if (newLobby.data.victors.includes(Userfront.user.userId)) {
+      alert("Ally victory!");
+      grantVictory(newLobby);
+      return true;
+    }
+    if (
+      newConnections.data.filter(
+        (newConnection) => newConnection.userId === Userfront.user.userId
+      ).length === 0
+    ) {
+      alert("Kicked for inactivity. Please try again later.");
+      setBattleUndecided(false);
+      setIsFighting(false);
+      dispatch(disableBattleStatus());
+      return true;
+    }
+    return false;
+  };
+
   // initiates chance to attack enemy creature or heal player creature
   const attackEnemyOrHeal = async (moveName, moveType) => {
     try {
-      // if the player and enemy aren't attacking, the battle is undecided, and the lobby timer is not running
+      // if the player and enemy aren't attacking, the battle is undecided
       if (
         !playerAttackStatus &&
         !enemyAttackStatus &&
         battleUndecided &&
-        !isFighting &&
-        !lobbyTimer
+        !isFighting
       ) {
         const playerCreatureAttack =
           playerCreature.attack + chosenRelic.attackMod;
@@ -693,8 +711,8 @@ function MultiPlayerCreature({
         checkPotionTimer();
         await loadAsyncDataPlayer();
         const newLobby = await getLobby(lobby._id);
-        if (newLobby.data.victors.includes(Userfront.user.userId)) {
-          grantVictory(newLobby);
+        const newConnections = await getConnections();
+        if (checkVictoryAndConnection(newLobby, newConnections)) {
           return;
         }
         if (player.preferredSpecial === 2) {

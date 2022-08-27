@@ -101,20 +101,21 @@ function Lobby1() {
         console.log(error);
       }
     };
-    // retrieves lobby data and updates lobby state
+    // retrieves lobby data and updates lobby state, also updates connections
     const loadAsyncDataLobby = async () => {
+      // retrieves connection data and updates connections
+      const loadAsyncDataConnections = async () => {
+        try {
+          const { data } = await getConnections();
+          setConnections(data);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      loadAsyncDataConnections();
       try {
         const { data } = await getLobby(lobby1);
         setLobby(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    // retrieves connection data and updates connections
-    const loadAsyncDataConnections = async () => {
-      try {
-        const { data } = await getConnections();
-        setConnections(data);
       } catch (error) {
         console.log(error);
       }
@@ -130,7 +131,6 @@ function Lobby1() {
     };
     checkDataPlayer();
     loadAsyncDataLobby();
-    loadAsyncDataConnections();
     loadAsyncDataPlayer();
   }, []);
 
@@ -201,7 +201,7 @@ function Lobby1() {
     }
   };
 
-  // retrieves lobby data and updates lobby state, also generates new connection if needed and updates connections
+  // retrieves lobby data and updates lobby state, also updates connections, and generates new connection if needed
   const loadAsyncDataLobby = async () => {
     try {
       // retrieves connection data and updates connections

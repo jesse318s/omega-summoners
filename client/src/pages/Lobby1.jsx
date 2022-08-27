@@ -201,16 +201,6 @@ function Lobby1() {
     }
   };
 
-  // retrieves connection data and updates connections
-  const loadAsyncDataConnections = async () => {
-    try {
-      const { data } = await getConnections();
-      setConnections(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   // retrieves lobby data and updates lobby state, also generates new connection if needed and updates connections
   const loadAsyncDataLobby = async () => {
     try {
@@ -300,7 +290,6 @@ function Lobby1() {
                 setCombatAlert={setCombatAlert}
                 setBattleUndecided={setBattleUndecided}
                 setSpawnAnimation={setSpawnAnimation}
-                loadAsyncDataConnections={() => loadAsyncDataConnections()}
                 connections={connections}
                 loadAsyncDataLobby={loadAsyncDataLobby}
               />

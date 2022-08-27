@@ -27,7 +27,6 @@ function MultiPlayerMenu({
   setCombatAlert,
   setBattleUndecided,
   setSpawnAnimation,
-  loadAsyncDataConnections,
   connections,
   loadAsyncDataLobby,
 }) {
@@ -208,9 +207,8 @@ function MultiPlayerMenu({
   // loads battle data
   const loadDataBattle = async () => {
     try {
-      // refresh and set connections
+      // refresh and set connections and load lobby data
       await getConnections();
-      await loadAsyncDataConnections();
       await loadAsyncDataLobby();
       // checks potion timer
       const potionTimer = await getPotionTimer();

@@ -238,6 +238,7 @@ function MultiPlayerMenu({
       ];
       setEnemyCreature(enemyCreature[0]);
       setCombatAlert("The battle has begun!");
+      await loadAsyncDataLobby();
       dispatch(enableBattleStatus());
       setBattleUndecided(true);
       await loadAsyncDataPlayer();

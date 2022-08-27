@@ -661,6 +661,7 @@ function MultiPlayerCreature({
     dropMPRewards();
   };
 
+  // checks for previous ally victory and verifies player connection is active
   const checkVictoryAndConnection = (newLobby, newConnections) => {
     if (newLobby.data.victors.includes(Userfront.user.userId)) {
       alert("Ally victory!");

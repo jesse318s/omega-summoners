@@ -571,7 +571,6 @@ function PlayerCreature({
     moveName,
     moveType
   ) => {
-    // deducts MP
     setPlayerCreatureMP(playerCreatureMP - playerCreatureSpecialCost);
     if (
       moveType === "Poison" ||
@@ -615,7 +614,6 @@ function PlayerCreature({
           loadAsyncDataPlayer();
         }, 1000);
       } else {
-        // damages enemy
         if (chancePlayer) {
           displayPlayerAttackAnimation();
           displayPlayerSpecialCT(

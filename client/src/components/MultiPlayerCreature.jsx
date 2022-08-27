@@ -413,6 +413,7 @@ function MultiPlayerCreature({
   // drops multiplayer rewards for player
   const dropMPRewards = async () => {
     dispatch(enableLobbyTimer());
+    // ends fight
     setTimeout(() => {
       setIsFighting(false);
       dispatch(disableBattleStatus());
@@ -551,7 +552,6 @@ function MultiPlayerCreature({
     moveType,
     newLobby
   ) => {
-    // deducts MP
     setPlayerCreatureMP(playerCreatureMP - playerCreatureSpecialCost);
     if (
       moveType === "Poison" ||
@@ -602,7 +602,6 @@ function MultiPlayerCreature({
         await loadAsyncDataLobby();
         dropMPRewards();
       } else {
-        // damages enemy
         if (chancePlayer) {
           displayPlayerAttackAnimation();
           displayPlayerSpecialCT(

@@ -607,7 +607,9 @@ function MultiPlayerMenu({
               <button
                 className="game_button margin_small"
                 onClick={() => {
-                  alert("Reward is pending.");
+                  alert(
+                    "Multiplayer cooldown is active. Please try again in a few seconds."
+                  );
                 }}
               >
                 Battle

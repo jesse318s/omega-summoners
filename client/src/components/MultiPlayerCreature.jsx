@@ -672,10 +672,14 @@ function MultiPlayerCreature({
         (newConnection) => newConnection.userId === Userfront.user.userId
       ).length === 0
     ) {
-      alert("Kicked for inactivity. Please try again later.");
+      alert("Your connection expired in a full battle.");
+      dispatch(enableLobbyTimer());
       setBattleUndecided(false);
       setIsFighting(false);
       dispatch(disableBattleStatus());
+      setTimeout(() => {
+        dispatch(disableLobbyTimer());
+      }, 3000);
       return true;
     }
     return false;

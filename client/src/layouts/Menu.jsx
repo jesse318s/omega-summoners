@@ -354,7 +354,9 @@ function Menu({
               <div className="relic_option" key={relic.id}>
                 <button
                   className="game_button_small"
-                  onClick={() => buyRelic(relic.id, relic.price)}
+                  onClick={() => {
+                    buyRelic(relic.id, relic.price);
+                  }}
                 >
                   Buy
                 </button>
@@ -436,7 +438,9 @@ function Menu({
               <div className="summon_option" key={creature.id}>
                 <button
                   className="game_button_small"
-                  onClick={() => swapCreature(creature.id, creature.price)}
+                  onClick={() => {
+                    swapCreature(creature.id, creature.price);
+                  }}
                 >
                   Swap
                 </button>

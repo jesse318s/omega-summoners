@@ -1,4 +1,4 @@
-import { createStore, combineReducers } from "redux";
+import { combineReducers, createStore } from "redux";
 import AlchemyReducer from "./reducers/alchemy.reducer";
 import BattleStatusReducer from "./reducers/battleStatus.reducer";
 import CreatureStatsStatusReducer from "./reducers/creatureStatsStatus.reducer";

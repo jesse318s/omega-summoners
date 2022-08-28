@@ -2,45 +2,54 @@ import { Link } from "react-router-dom";
 import { updateUser } from "../services/userServices";
 import { useState } from "react";
 import { getPotionTimer } from "../services/potionTimerServices";
+import creatures from "../constants/creatures";
+import relics from "../constants/relics";
 import { potionsList } from "../constants/items";
 import { getConnections } from "../services/connectionServices";
+import { useSelector, useDispatch } from "react-redux";
+import { enableBattleStatus } from "../store/actions/battleStatus.actions";
+import {
+  setSummonHPBonusAmount,
+  setSummonMPBonusAmount,
+} from "../store/actions/alchemy.actions";
 
 function MultiPlayerMenu({
   Userfront,
-  battleStatus,
-  setBattleStatus,
   player,
-  relicsData,
-  relicsStatus,
-  setRelicsStatus,
-  playerRelics,
-  templeStatus,
-  setTempleStatus,
-  creatureData,
+  gameMenuStatus,
+  setGameMenuStatus,
   enemyCreatureData,
-  summonsStatus,
-  setSummonsStatus,
-  stagesStatus,
-  setStagesStatus,
   combatAlert,
   loadAsyncDataPlayer,
   setPlayerCreatureHP,
   setPlayerCreatureMP,
-  playerCreature,
-  chosenRelic,
   setEnemyCreature,
   setCombatAlert,
   setBattleUndecided,
   setSpawnAnimation,
-  loadAsyncDataLobby,
-  loadAsyncDataConnection,
   connections,
-  setConnections,
-  summonHPBonus,
-  setSummonHPBonus,
-  summonMPBonus,
-  setSummonMPBonus,
+  loadAsyncDataLobby,
 }) {
+  // dispatch hook for redux
+  const dispatch = useDispatch();
+
+  // player creature state from redux store
+  const playerCreature = useSelector((state) => state.summon.playerCreature);
+  // battle status combat state from redux store
+  const battleStatus = useSelector((state) => state.battleStatus.battleStatus);
+  // relics state from redux store
+  const playerRelics = useSelector((state) => state.relics.playerRelics);
+  const chosenRelic = useSelector((state) => state.relics.chosenRelic);
+  // alchemy state from redux store
+  const summonHPBonus = useSelector((state) => state.alchemy.summonHPBonus);
+  const summonMPBonus = useSelector((state) => state.alchemy.summonMPBonus);
+  // lobby timer state from redux store
+  const lobbyTimer = useSelector((state) => state.lobbyTimer.lobbyTimer);
+
+  // creature state
+  const [creatureData] = useState(creatures);
+  // relics state
+  const [relicsData] = useState(relics);
   // numbered index state (summons pagination)
   const [index1, setIndex1] = useState(0);
   const [index2, setIndex2] = useState(5);
@@ -98,16 +107,22 @@ function MultiPlayerMenu({
   // updates player chosen relic in database
   const selectRelic = async (relicId) => {
     try {
-      await Userfront.user.update({
-        data: {
-          userkey: Userfront.user.data.userkey,
-        },
-      });
-      await updateUser(player._id, {
-        userfrontId: Userfront.user.userId,
-        chosenRelic: relicId,
-      });
-      await loadAsyncDataPlayer();
+      if (
+        window.confirm(
+          "Are you sure you want to select this relic? You can change relics as many times as you wish."
+        )
+      ) {
+        await Userfront.user.update({
+          data: {
+            userkey: Userfront.user.data.userkey,
+          },
+        });
+        await updateUser(player._id, {
+          userfrontId: Userfront.user.userId,
+          chosenRelic: relicId,
+        });
+        await loadAsyncDataPlayer();
+      }
     } catch (error) {
       console.log(error);
     }
@@ -192,23 +207,9 @@ function MultiPlayerMenu({
   // loads battle data
   const loadDataBattle = async () => {
     try {
-      // get and check connections
+      // refresh and set connections and load lobby data
       await getConnections();
-      const { data } = await getConnections();
-      setConnections(data);
-      await loadAsyncDataPlayer();
-      if (
-        connections.length > 2 &&
-        connections.filter(
-          (connection) => connection.userId === Userfront.user.userId
-        ).length < 1
-      ) {
-        alert(
-          "There cannot be more than 3 summoners in this battle. Please try again later."
-        );
-        return;
-      }
-
+      await loadAsyncDataLobby();
       // checks potion timer
       const potionTimer = await getPotionTimer();
       if (potionTimer.data.length > 0) {
@@ -217,12 +218,12 @@ function MultiPlayerMenu({
         );
         const playerMPBonus = playerPotion.mpMod;
         const playerHPBonus = playerPotion.hpMod;
-        setSummonMPBonus(playerMPBonus);
-        setSummonHPBonus(playerHPBonus);
+        dispatch(setSummonMPBonusAmount(playerMPBonus));
+        dispatch(setSummonHPBonusAmount(playerHPBonus));
       }
       if (potionTimer.data.length === 0) {
-        setSummonMPBonus(0);
-        setSummonHPBonus(0);
+        dispatch(setSummonMPBonusAmount(0));
+        dispatch(setSummonHPBonusAmount(0));
       }
 
       setPlayerCreatureMP(
@@ -237,9 +238,9 @@ function MultiPlayerMenu({
       ];
       setEnemyCreature(enemyCreature[0]);
       setCombatAlert("The battle has begun!");
-      setBattleStatus(true);
-      setBattleUndecided(true);
       await loadAsyncDataLobby();
+      dispatch(enableBattleStatus());
+      setBattleUndecided(true);
       await loadAsyncDataPlayer();
     } catch (error) {
       console.log(error);
@@ -257,10 +258,12 @@ function MultiPlayerMenu({
                 <button
                   className="game_button margin_small"
                   onClick={() => {
-                    setRelicsStatus(!relicsStatus);
-                    setTempleStatus(false);
-                    setSummonsStatus(false);
-                    setStagesStatus(false);
+                    setGameMenuStatus({
+                      relicsStatus: !gameMenuStatus.relicsStatus,
+                      summonsStatus: false,
+                      templeStatus: false,
+                      stagesStatus: false,
+                    });
                   }}
                 >
                   Relics
@@ -269,10 +272,12 @@ function MultiPlayerMenu({
                 <button
                   className="game_button margin_small"
                   onClick={() => {
-                    setTempleStatus(!templeStatus);
-                    setRelicsStatus(false);
-                    setSummonsStatus(false);
-                    setStagesStatus(false);
+                    setGameMenuStatus({
+                      templeStatus: !gameMenuStatus.templeStatus,
+                      summonsStatus: false,
+                      relicsStatus: false,
+                      stagesStatus: false,
+                    });
                   }}
                 >
                   Temple
@@ -289,7 +294,7 @@ function MultiPlayerMenu({
           ) : null}
 
           {/* displays player relics if relics button is clicked */}
-          {relicsStatus ? (
+          {gameMenuStatus.relicsStatus ? (
             <div>
               <h4>Player Relics</h4>
               <button
@@ -335,7 +340,7 @@ function MultiPlayerMenu({
           ) : null}
 
           {/* displays temple relics if temple button is clicked */}
-          {templeStatus ? (
+          {gameMenuStatus.templeStatus ? (
             <div>
               <h4>Temple Relics</h4>
               <button
@@ -386,10 +391,12 @@ function MultiPlayerMenu({
               <button
                 className="game_button margin_small"
                 onClick={() => {
-                  setSummonsStatus(!summonsStatus);
-                  setTempleStatus(false);
-                  setRelicsStatus(false);
-                  setStagesStatus(false);
+                  setGameMenuStatus({
+                    summonsStatus: !gameMenuStatus.summonsStatus,
+                    templeStatus: false,
+                    relicsStatus: false,
+                    stagesStatus: false,
+                  });
                 }}
               >
                 Summons
@@ -398,10 +405,12 @@ function MultiPlayerMenu({
               <button
                 className="game_button margin_small"
                 onClick={() => {
-                  setStagesStatus(!stagesStatus);
-                  setSummonsStatus(false);
-                  setTempleStatus(false);
-                  setRelicsStatus(false);
+                  setGameMenuStatus({
+                    stagesStatus: !gameMenuStatus.stagesStatus,
+                    summonsStatus: false,
+                    templeStatus: false,
+                    relicsStatus: false,
+                  });
                 }}
               >
                 Stages
@@ -411,7 +420,7 @@ function MultiPlayerMenu({
           ) : null}
 
           {/* displays player summons if summons button is clicked */}
-          {summonsStatus ? (
+          {gameMenuStatus.summonsStatus ? (
             <div>
               <h4>Available Summons</h4>
               <button
@@ -523,7 +532,7 @@ function MultiPlayerMenu({
           ) : null}
 
           {/* displays stages if stages button is clicked */}
-          {stagesStatus ? (
+          {gameMenuStatus.stagesStatus ? (
             <>
               <h4>Battle Stages</h4>
               <div className="stage_options">
@@ -576,17 +585,31 @@ function MultiPlayerMenu({
           ) : null}
 
           {/* if there is no battle, displays a button to start a battle at the current stage */}
-          {!battleStatus ? (
+          {!battleStatus && !lobbyTimer ? (
             <>
               <button
                 className="game_button margin_small"
                 onClick={() => {
                   loadDataBattle();
-                  setTempleStatus(false);
-                  setRelicsStatus(false);
-                  setSummonsStatus(false);
-                  setStagesStatus(false);
-                  loadAsyncDataConnection();
+                  setGameMenuStatus({
+                    templeStatus: false,
+                    relicsStatus: false,
+                    summonsStatus: false,
+                    stagesStatus: false,
+                  });
+                }}
+              >
+                Battle
+              </button>{" "}
+            </>
+          ) : !battleStatus ? (
+            <>
+              <button
+                className="game_button margin_small"
+                onClick={() => {
+                  alert(
+                    "Multiplayer cooldown is active. Please try again in a few seconds."
+                  );
                 }}
               >
                 Battle
@@ -595,7 +618,7 @@ function MultiPlayerMenu({
           ) : null}
 
           {/* displays allies that are online and fighting */}
-          {!relicsStatus && !templeStatus && !summonsStatus && !stagesStatus ? (
+          {Object.values(gameMenuStatus).every((value) => value === false) ? (
             <>
               <h4 className="margin_small">Allies online:</h4>
               {connections.length > 1 ? (

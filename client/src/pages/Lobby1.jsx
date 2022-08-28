@@ -4,10 +4,10 @@ import "./Lobby1.css";
 import Userfront from "@userfront/core";
 import { useNavigate } from "react-router-dom";
 import { getUser } from "../services/userServices";
-import GameNav from "../components/GameNav";
-import Options from "../components/Options";
+import GameNav from "../layouts/GameNav";
+import Options from "../layouts/Options";
 import Player from "../components/Player";
-import MultiPlayerMenu from "../components/MultiPlayerMenu";
+import MultiPlayerMenu from "../layouts/MultiPlayerMenu";
 import MultiPlayerCreature from "../components/MultiPlayerCreature";
 import MultiPlayerEnemyCreature from "../components/MultiPlayerEnemyCreature";
 import creatures from "../constants/creatures";
@@ -16,12 +16,29 @@ import { bossEnemyCreatureStage1 } from "../constants/enemyCreatures";
 import { lobby1 } from "../constants/lobbies";
 import { getLobby } from "../services/lobbyServices";
 import { getConnections, addConnection } from "../services/connectionServices";
+import { useSelector, useDispatch } from "react-redux";
+import { setPlayerCreatureValue } from "../store/actions/summon.actions";
+import {
+  setPlayerRelicsValue,
+  setChosenRelicValue,
+} from "../store/actions/relics.actions";
+import { disableBattleStatus } from "../store/actions/battleStatus.actions";
+import {
+  enableCreatureStatsStatus,
+  disableCreatureStatsStatus,
+} from "../store/actions/creatureStatsStatus.actions";
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
 
 // main app component
 function Lobby1() {
+  // dispatch hook for redux
+  const dispatch = useDispatch();
+
+  // player creature state from redux store
+  const playerCreature = useSelector((state) => state.summon.playerCreature);
+
   // navigation hook
   const navigate = useNavigate();
 
@@ -31,16 +48,15 @@ function Lobby1() {
   const [avatarOptionStatus, setAvatarOptionStatus] = useState(false);
   const [nameOptionStatus, setNameOptionStatus] = useState(false);
   // game menu state
-  const [relicsStatus, setRelicsStatus] = useState(false);
-  const [templeStatus, setTempleStatus] = useState(false);
-  const [summonsStatus, setSummonsStatus] = useState(false);
-  const [stagesStatus, setStagesStatus] = useState(false);
+  const [gameMenuStatus, setGameMenuStatus] = useState({
+    relicsStatus: false,
+    templeStatus: false,
+    summonsStatus: false,
+    stagesStatus: false,
+  });
   // creature and combat state
   const [creatureData] = useState(creatures);
   const [enemyCreatureData] = useState(bossEnemyCreatureStage1);
-  const [playerCreature, setPlayerCreature] = useState({});
-  const [creatureStatsStatus, setCreatureStatsStatus] = useState(false);
-  const [battleStatus, setBattleStatus] = useState(false);
   const [enemyCreature, setEnemyCreature] = useState({});
   const [playerAttackStatus, setPlayerAttackStatus] = useState(false);
   const [enemyAttackStatus, setEnemyAttackStatus] = useState(false);
@@ -50,17 +66,13 @@ function Lobby1() {
   const [battleUndecided, setBattleUndecided] = useState(false);
   const [combatText, setCombatText] = useState("");
   const [critText, setCritText] = useState("combat_text");
+  const [enemyCombatText, setEnemyCombatText] = useState("");
+  const [enemyCritText, setEnemyCritText] = useState("combat_text");
   const [spawnAnimation, setSpawnAnimation] = useState("");
-  // relic state
+  // relics state
   const [relicsData] = useState(relics);
-  const [playerRelics, setPlayerRelics] = useState([{}]);
-  const [chosenRelic, setChosenRelic] = useState(undefined);
-  // alchemy state
-  const [summonHPBonus, setSummonHPBonus] = useState(0);
-  const [summonMPBonus, setSummonMPBonus] = useState(0);
   // lobby state
   const [lobby, setLobby] = useState({});
-  const [lobbyTimer, setLobbyTimer] = useState(false);
   const [connections, setConnections] = useState([{}]);
 
   useEffect(() => {
@@ -89,6 +101,25 @@ function Lobby1() {
         console.log(error);
       }
     };
+    // retrieves lobby data and updates lobby state, also updates connections
+    const loadAsyncDataLobby = async () => {
+      // retrieves connection data and updates connections
+      const loadAsyncDataConnections = async () => {
+        try {
+          const { data } = await getConnections();
+          setConnections(data);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      loadAsyncDataConnections();
+      try {
+        const { data } = await getLobby(lobby1);
+        setLobby(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     // retrieves user data and updates player state
     const loadAsyncDataPlayer = async () => {
       try {
@@ -98,18 +129,9 @@ function Lobby1() {
         console.log(error);
       }
     };
-    // retreives lobby data and updates lobby state
-    const loadAsyncDataLobby = async () => {
-      try {
-        const { data } = await getLobby(lobby1);
-        setLobby(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
     checkDataPlayer();
-    loadAsyncDataPlayer();
     loadAsyncDataLobby();
+    loadAsyncDataPlayer();
   }, []);
 
   useEffect(() => {
@@ -127,32 +149,39 @@ function Lobby1() {
         }
       };
       // loads player creature data and sets player creature state
-      const loadDataPlayerCreature = () => {
+      const loadAsyncDataPlayerCreature = async () => {
         try {
           const playerCreatureData = creatureData.filter(
             (creature) => creature.id === player.creatureId
           );
-          setPlayerCreature(playerCreatureData[0]);
-          setCreatureStatsStatus(player.displayCreatureStats);
+          dispatch(setPlayerCreatureValue(playerCreatureData[0]));
+          if (player.displayCreatureStats === true) {
+            dispatch(enableCreatureStatsStatus());
+          } else {
+            dispatch(disableCreatureStatsStatus());
+          }
         } catch (error) {
           console.log(error);
         }
       };
       checkLevelPlayer();
-      loadDataPlayerCreature();
+      loadAsyncDataPlayerCreature();
       // if there are player relics
       if (player.relics) {
         // loads player relics data
         const loadDataPlayerRelics = () => {
           try {
+            if (combatAlert === "") {
+              dispatch(disableBattleStatus());
+            }
             const playerRelicsData = relicsData.filter((relic) =>
               player.relics.includes(relic.id)
             );
-            setPlayerRelics(playerRelicsData);
+            dispatch(setPlayerRelicsValue(playerRelicsData));
             const chosenRelicData = playerRelicsData.filter(
               (relic) => relic.id === player.chosenRelic
             );
-            setChosenRelic(chosenRelicData[0]);
+            dispatch(setChosenRelicValue(chosenRelicData[0]));
           } catch (error) {
             console.log(error);
           }
@@ -160,7 +189,7 @@ function Lobby1() {
         loadDataPlayerRelics();
       }
     }
-  }, [player, relicsData, creatureData, navigate]);
+  }, [player, relicsData, creatureData, combatAlert, navigate, dispatch]);
 
   // retrieves user data and updates player state
   const loadAsyncDataPlayer = async () => {
@@ -172,33 +201,11 @@ function Lobby1() {
     }
   };
 
-  // retrieves connection data and updates connections
-  const loadAsyncDataConnection = async () => {
-    try {
-      const { data } = await getConnections();
-      setConnections(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // retreives lobby data and updates lobby state, also generates new connection if needed and updates connections
+  // retrieves lobby data and updates lobby state, also updates connections, and generates new connection if needed
   const loadAsyncDataLobby = async () => {
     try {
-      // checks for connection and generates new connection if needed
-      const genAsyncDataConnection = async () => {
-        try {
-          const newConnection = {
-            userId: Userfront.user.userId,
-            name: player.name,
-          };
-          await addConnection(newConnection);
-        } catch (error) {
-          console.log(error);
-        }
-      };
       // retrieves connection data and updates connections
-      const loadAsyncDataConnection = async () => {
+      const loadAsyncDataConnections = async () => {
         try {
           const { data } = await getConnections();
           setConnections(data);
@@ -206,8 +213,31 @@ function Lobby1() {
           console.log(error);
         }
       };
+      // checks connections and generates new connection if needed
+      const genAsyncDataConnection = async () => {
+        try {
+          if (connections.length < 3) {
+            const newConnection = {
+              userId: Userfront.user.userId,
+              name: player.name,
+            };
+            await addConnection(newConnection);
+          } else if (
+            connections.filter(
+              (connection) => connection.userId === Userfront.user.userId
+            ).length === 0
+          ) {
+            alert(
+              "There cannot be more than 3 summoners in this battle. Please try again later."
+            );
+            window.location.reload(false);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      await loadAsyncDataConnections();
       genAsyncDataConnection();
-      loadAsyncDataConnection();
       const { data } = await getLobby(lobby1);
       setLobby(data);
     } catch (error) {
@@ -216,7 +246,7 @@ function Lobby1() {
   };
 
   // renders if a player creature and relic is bestowed
-  if (playerCreature && chosenRelic) {
+  if (playerCreature && player.chosenRelic) {
     return (
       <>
         <header>
@@ -238,7 +268,6 @@ function Lobby1() {
             setNameOptionStatus={setNameOptionStatus}
             avatarOptionStatus={avatarOptionStatus}
             setAvatarOptionStatus={setAvatarOptionStatus}
-            creatureStatsStatus={creatureStatsStatus}
             loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
           />
 
@@ -249,62 +278,38 @@ function Lobby1() {
             <>
               <MultiPlayerMenu
                 Userfront={Userfront}
-                battleStatus={battleStatus}
-                setBattleStatus={setBattleStatus}
                 player={player}
-                setPlayer={setPlayer}
-                relicsData={relicsData}
-                relicsStatus={relicsStatus}
-                setRelicsStatus={setRelicsStatus}
-                playerRelics={playerRelics}
-                templeStatus={templeStatus}
-                setTempleStatus={setTempleStatus}
-                creatureData={creatureData}
+                gameMenuStatus={gameMenuStatus}
+                setGameMenuStatus={setGameMenuStatus}
                 enemyCreatureData={enemyCreatureData}
-                summonsStatus={summonsStatus}
-                setSummonsStatus={setSummonsStatus}
-                stagesStatus={stagesStatus}
-                setStagesStatus={setStagesStatus}
                 combatAlert={combatAlert}
                 loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
                 setPlayerCreatureHP={setPlayerCreatureHP}
                 setPlayerCreatureMP={setPlayerCreatureMP}
-                playerCreature={playerCreature}
-                chosenRelic={chosenRelic}
                 setEnemyCreature={setEnemyCreature}
                 setCombatAlert={setCombatAlert}
                 setBattleUndecided={setBattleUndecided}
                 setSpawnAnimation={setSpawnAnimation}
-                loadAsyncDataLobby={() => loadAsyncDataLobby()}
-                loadAsyncDataConnection={() => loadAsyncDataConnection()}
                 connections={connections}
-                setConnections={setConnections}
-                summonHPBonus={summonHPBonus}
-                setSummonHPBonus={setSummonHPBonus}
-                summonMPBonus={summonMPBonus}
-                setSummonMPBonus={setSummonMPBonus}
+                loadAsyncDataLobby={loadAsyncDataLobby}
               />
 
               <MultiPlayerCreature
-                summonsStatus={summonsStatus}
-                playerCreature={playerCreature}
                 enemyAttackStatus={enemyAttackStatus}
                 setEnemyAttackStatus={setEnemyAttackStatus}
-                critText={critText}
+                setCombatText={setCombatText}
+                enemyCombatText={enemyCombatText}
+                setEnemyCombatText={setEnemyCombatText}
                 setCritText={setCritText}
-                combatText={combatText}
+                enemyCritText={enemyCritText}
+                setEnemyCritText={setEnemyCritText}
                 playerAttackStatus={playerAttackStatus}
                 setPlayerAttackStatus={setPlayerAttackStatus}
-                chosenRelic={chosenRelic}
-                battleStatus={battleStatus}
-                setBattleStatus={setBattleStatus}
                 player={player}
-                creatureStatsStatus={creatureStatsStatus}
                 playerCreatureHP={playerCreatureHP}
                 setPlayerCreatureHP={setPlayerCreatureHP}
                 playerCreatureMP={playerCreatureMP}
                 setPlayerCreatureMP={setPlayerCreatureMP}
-                setCombatText={setCombatText}
                 enemyCreature={enemyCreature}
                 setEnemyCreature={setEnemyCreature}
                 battleUndecided={battleUndecided}
@@ -312,21 +317,13 @@ function Lobby1() {
                 Userfront={Userfront}
                 loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
                 setCombatAlert={setCombatAlert}
+                connections={connections}
                 lobby={lobby}
                 loadAsyncDataLobby={() => loadAsyncDataLobby()}
-                lobbyTimer={lobbyTimer}
-                setLobbyTimer={setLobbyTimer}
-                relicsStatus={relicsStatus}
-                templeStatus={templeStatus}
-                stagesStatus={stagesStatus}
-                summonHPBonus={summonHPBonus}
-                setSummonHPBonus={setSummonHPBonus}
-                summonMPBonus={summonMPBonus}
-                setSummonMPBonus={setSummonMPBonus}
+                gameMenuStatus={gameMenuStatus}
               />
 
               <MultiPlayerEnemyCreature
-                battleStatus={battleStatus}
                 enemyCreature={enemyCreature}
                 playerAttackStatus={playerAttackStatus}
                 enemyAttackStatus={enemyAttackStatus}

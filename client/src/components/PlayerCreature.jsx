@@ -3,23 +3,25 @@ import { updateUser } from "../services/userServices";
 import { getPotionTimer } from "../services/potionTimerServices";
 import { potionsList } from "../constants/items";
 import { getItems, addItem } from "../services/itemServices";
+import { useSelector, useDispatch } from "react-redux";
+import { disableBattleStatus } from "../store/actions/battleStatus.actions";
+import {
+  setSummonHPBonusAmount,
+  setSummonMPBonusAmount,
+} from "../store/actions/alchemy.actions";
 
 function PlayerCreature({
-  summonsStatus,
-  playerCreature,
   enemyAttackStatus,
   setEnemyAttackStatus,
-  critText,
-  setCritText,
-  combatText,
   setCombatText,
+  enemyCombatText,
+  setEnemyCombatText,
+  setCritText,
+  enemyCritText,
+  setEnemyCritText,
   playerAttackStatus,
   setPlayerAttackStatus,
-  chosenRelic,
-  battleStatus,
-  setBattleStatus,
   player,
-  creatureStatsStatus,
   playerCreatureHP,
   setPlayerCreatureHP,
   playerCreatureMP,
@@ -33,15 +35,25 @@ function PlayerCreature({
   Userfront,
   loadAsyncDataPlayer,
   setCombatAlert,
-  relicsStatus,
-  templeStatus,
-  stagesStatus,
-  alchemyStatus,
-  summonHPBonus,
-  setSummonHPBonus,
-  summonMPBonus,
-  setSummonMPBonus,
+  gameMenuStatus,
 }) {
+  // dispatch hook for redux
+  const dispatch = useDispatch();
+
+  // player creature state from redux store
+  const playerCreature = useSelector((state) => state.summon.playerCreature);
+  // display creature stats status state from redux store
+  const creatureStatsStatus = useSelector(
+    (state) => state.creatureStatsStatus.creatureStatsStatus
+  );
+  // battle status combat state from redux store
+  const battleStatus = useSelector((state) => state.battleStatus.battleStatus);
+  // relics state from redux store
+  const chosenRelic = useSelector((state) => state.relics.chosenRelic);
+  // alchemy state from redux store
+  const summonHPBonus = useSelector((state) => state.alchemy.summonHPBonus);
+  const summonMPBonus = useSelector((state) => state.alchemy.summonMPBonus);
+
   // reference hook
   const ref = useRef(null);
 
@@ -49,6 +61,8 @@ function PlayerCreature({
   const [isFighting, setIsFighting] = useState(false);
   // player creature special status state
   const [specialStatus, setSpecialStatus] = useState(false);
+  // counter for recursive player creature ability called within enemy counter attack
+  const [attackCounter, setAttackCounter] = useState(0);
 
   // toggles special choice
   const toggleSpecial = async () => {
@@ -157,14 +171,14 @@ function PlayerCreature({
   ) => {
     try {
       if (battleStatus) {
-        setCritText("heal_combat_text");
+        setEnemyCritText("heal_combat_text");
         if (criticalMultiplier > 1) {
-          setCritText("heal_crit_text");
+          setEnemyCritText("heal_crit_text");
         }
-        setCombatText(playerCreatureSpecial * criticalMultiplier);
+        setEnemyCombatText(playerCreatureSpecial * criticalMultiplier);
         setTimeout(() => {
-          setCombatText("");
-          setCritText("combat_text");
+          setEnemyCombatText("");
+          setEnemyCritText("combat_text");
         }, 500);
       }
     } catch (error) {
@@ -194,16 +208,16 @@ function PlayerCreature({
     try {
       if (battleStatus) {
         if (criticalMultiplier > 1) {
-          setCritText("crit_text");
+          setEnemyCritText("crit_text");
         }
-        setCombatText(
+        setEnemyCombatText(
           (enemyCreature.attack -
             enemyCreature.attack * playerCreatureDefense) *
             criticalMultiplier
         );
         setTimeout(() => {
-          setCombatText("");
-          setCritText("combat_text");
+          setEnemyCombatText("");
+          setEnemyCritText("combat_text");
         }, 500);
       }
     } catch (error) {
@@ -243,6 +257,11 @@ function PlayerCreature({
       let criticalMultiplier = 1;
       let chanceEnemy = false;
 
+      if (attackCounter > 1) {
+        setAttackCounter(0);
+        chancePlayer = true;
+        chanceEnemy = true;
+      }
       if (enemyCreature.attackType === "Magic") {
         playerCreatureDefense = 0;
       }
@@ -254,6 +273,7 @@ function PlayerCreature({
       }
       // series of checks for enemy counter attack based on chance/speed, and for player creature mp regen
       if (!chanceEnemy && chancePlayer) {
+        setAttackCounter(0);
         setTimeout(() => {
           setCombatAlert("Enemy was too slow!");
         }, 500);
@@ -261,6 +281,7 @@ function PlayerCreature({
       if (!chanceEnemy && !chancePlayer) {
         // ends fight
         setIsFighting(false);
+        setAttackCounter(attackCounter + 1);
         attackEnemyOrHeal(moveName, moveType);
         return;
       }
@@ -269,12 +290,14 @@ function PlayerCreature({
         regenMP();
       }
       if (chanceEnemy && chancePlayer) {
+        setAttackCounter(0);
         setTimeout(() => {
           setCombatAlert("Both abilities succeeded.");
         }, 600);
       }
       // checks for player chance/speed failure
       if (chanceEnemy && !chancePlayer) {
+        setAttackCounter(0);
         setTimeout(() => {
           setCombatAlert("Your summon was too slow!");
         }, 600);
@@ -305,10 +328,10 @@ function PlayerCreature({
           setTimeout(() => {
             // ends fight
             setIsFighting(false);
-            setBattleStatus(false);
+            dispatch(disableBattleStatus());
             setEnemyCreature({});
             setEnemyCreatureHP(0);
-          }, 600);
+          }, 1100);
         } else {
           setPlayerCreatureHP(
             ref.current -
@@ -337,12 +360,12 @@ function PlayerCreature({
       );
       const playerMPBonus = playerPotion.mpMod;
       const playerHPBonus = playerPotion.hpMod;
-      setSummonMPBonus(playerMPBonus);
-      setSummonHPBonus(playerHPBonus);
+      dispatch(setSummonMPBonusAmount(playerMPBonus));
+      dispatch(setSummonHPBonusAmount(playerHPBonus));
     }
     if (potionTimer.data.length === 0) {
-      setSummonMPBonus(0);
-      setSummonHPBonus(0);
+      dispatch(setSummonMPBonusAmount(0));
+      dispatch(setSummonHPBonusAmount(0));
     }
   };
 
@@ -387,60 +410,57 @@ function PlayerCreature({
     const blueMushroomsPlayer = playerItems.filter(
       (item) => item.itemId === 3 && item.type === "Ingredient"
     );
-
     // drops ingredients on chance
-    if (playerItems !== undefined) {
-      const newGreenMushrooms = greenMushroomsPlayer[0];
-      const newRedMushrooms = redMushroomsPlayer[0];
-      const newBlueMushrooms = blueMushroomsPlayer[0];
+    const newGreenMushrooms = greenMushroomsPlayer[0];
+    const newRedMushrooms = redMushroomsPlayer[0];
+    const newBlueMushrooms = blueMushroomsPlayer[0];
 
-      if (Math.random() <= 0.15) {
+    if (Math.random() <= 0.15) {
+      await Userfront.user.update({
+        data: {
+          userkey: Userfront.user.data.userkey,
+        },
+      });
+      await addItem({
+        itemId: 1,
+        type: "Ingredient",
+        itemQuantity:
+          newGreenMushrooms === undefined
+            ? 1
+            : newGreenMushrooms.itemQuantity + 1,
+        userId: Userfront.user.userId,
+      });
+    } else if (Math.random() <= 0.1) {
+      if (Math.random() <= 0.5) {
         await Userfront.user.update({
           data: {
             userkey: Userfront.user.data.userkey,
           },
         });
         await addItem({
-          itemId: 1,
+          itemId: 2,
           type: "Ingredient",
           itemQuantity:
-            newGreenMushrooms === undefined
+            newRedMushrooms === undefined
               ? 1
-              : newGreenMushrooms.itemQuantity + 1,
+              : newRedMushrooms.itemQuantity + 1,
           userId: Userfront.user.userId,
         });
-      } else if (Math.random() <= 0.1) {
-        if (Math.random() <= 0.5) {
-          await Userfront.user.update({
-            data: {
-              userkey: Userfront.user.data.userkey,
-            },
-          });
-          await addItem({
-            itemId: 2,
-            type: "Ingredient",
-            itemQuantity:
-              newRedMushrooms === undefined
-                ? 1
-                : newRedMushrooms.itemQuantity + 1,
-            userId: Userfront.user.userId,
-          });
-        } else {
-          await Userfront.user.update({
-            data: {
-              userkey: Userfront.user.data.userkey,
-            },
-          });
-          await addItem({
-            itemId: 3,
-            type: "Ingredient",
-            itemQuantity:
-              newBlueMushrooms === undefined
-                ? 1
-                : newBlueMushrooms.itemQuantity + 1,
-            userId: Userfront.user.userId,
-          });
-        }
+      } else {
+        await Userfront.user.update({
+          data: {
+            userkey: Userfront.user.data.userkey,
+          },
+        });
+        await addItem({
+          itemId: 3,
+          type: "Ingredient",
+          itemQuantity:
+            newBlueMushrooms === undefined
+              ? 1
+              : newBlueMushrooms.itemQuantity + 1,
+          userId: Userfront.user.userId,
+        });
       }
     }
   };
@@ -451,6 +471,7 @@ function PlayerCreature({
     criticalMultiplier,
     enemyDefense
   ) => {
+    setAttackCounter(0);
     setBattleUndecided(false);
     displayPlayerAttackAnimation();
     displayPlayerAttackCT(
@@ -474,8 +495,7 @@ function PlayerCreature({
     setTimeout(() => {
       // ends fight
       setIsFighting(false);
-      setBattleStatus(false);
-      setEnemyCreature({});
+      dispatch(disableBattleStatus());
       loadAsyncDataPlayer();
     }, 1000);
   };
@@ -488,7 +508,7 @@ function PlayerCreature({
     moveName,
     moveType
   ) => {
-    if (moveType === "Lifesteal") {
+    if (moveType === "Lifesteal" && chancePlayer) {
       if (
         playerCreatureHP + playerCreatureSpecial * criticalMultiplier * 0.2 >
         playerCreature.hp + chosenRelic.hpMod + summonHPBonus
@@ -551,7 +571,6 @@ function PlayerCreature({
     moveName,
     moveType
   ) => {
-    // deducts MP
     setPlayerCreatureMP(playerCreatureMP - playerCreatureSpecialCost);
     if (
       moveType === "Poison" ||
@@ -566,6 +585,7 @@ function PlayerCreature({
           0 &&
         chancePlayer
       ) {
+        setAttackCounter(0);
         setBattleUndecided(false);
         displayPlayerAttackAnimation();
         displayPlayerSpecialAnimation();
@@ -590,12 +610,10 @@ function PlayerCreature({
         setTimeout(() => {
           // ends fight
           setIsFighting(false);
-          setBattleStatus(false);
-          setEnemyCreature({});
+          dispatch(disableBattleStatus());
           loadAsyncDataPlayer();
         }, 1000);
       } else {
-        // damages enemy
         if (chancePlayer) {
           displayPlayerAttackAnimation();
           displayPlayerSpecialCT(
@@ -656,7 +674,6 @@ function PlayerCreature({
         setIsFighting(true);
         checkPotionTimer();
         await loadAsyncDataPlayer();
-        // assigns preferred player special and cost
         if (player.preferredSpecial === 2) {
           playerCreatureSpecial =
             playerCreature.special2 + chosenRelic.specialMod;
@@ -725,22 +742,14 @@ function PlayerCreature({
 
   return (
     <>
-      {!summonsStatus &&
-      !relicsStatus &&
-      !templeStatus &&
-      !stagesStatus &&
-      !alchemyStatus ? (
+      {Object.values(gameMenuStatus).every((value) => value === false) ? (
         <>
           {/* displays the player creature with combat text, special visual effect, and creature control/stat panel */}
           <div className="player_creature">
-            {/* displays combat text */}
-            {enemyAttackStatus ||
-            critText === "heal_crit_text" ||
-            critText === "heal_combat_text" ? (
-              <div className="special_effect_container">
-                <div className={critText}>{combatText}</div>
-              </div>
-            ) : null}
+            {/* displays enemy combat text */}
+            <div className="special_effect_container">
+              <div className={enemyCritText}>{enemyCombatText}</div>
+            </div>
 
             {/* displays creature based on attack state */}
             {playerAttackStatus ? (

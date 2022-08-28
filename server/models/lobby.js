@@ -8,6 +8,9 @@ const lobbySchema = new Schema({
   maxHP: {
     type: Number,
   },
+  victors: {
+    type: Array,
+  },
 });
 
 module.exports = mongoose.model("lobby", lobbySchema);

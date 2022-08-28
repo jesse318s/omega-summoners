@@ -4,14 +4,14 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
 
-// retreives lobby and restores enemy HP if enemy HP is 0
+// retrieves lobby and restores enemy HP if enemy HP is 0
 router.get("/:id", async (req, res) => {
   try {
     const accessToken = req.headers.authorization.replace("Bearer ", "");
     const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, {
       algorithms: ["RS256"],
     });
-    
+
     if (decoded) {
       const lobby = await Lobby.findOne({ _id: req.params.id });
       if (lobby.enemyHP <= 0) {
@@ -63,20 +63,36 @@ router.put("/:id", async (req, res) => {
     const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, {
       algorithms: ["RS256"],
     });
-    const lobby = await Lobby.findOne({ _id: req.params.id });
-    if (lobby.enemyHP <= 0) {
-      await Lobby.findOneAndUpdate(
-        {
-          _id: req.params.id,
-        },
-        {
-          enemyHP: lobby.maxHP,
-        }
-      );
-      res.send(lobby);
-    } else if (
+    if (
       decoded &&
       req.body.enemyHP < lobbyCheck.enemyHP &&
+      req.headers.userkey === userkey.data.userkey
+    ) {
+      if (req.body.victors !== undefined) {
+        const lobby = await Lobby.findOneAndUpdate(
+          {
+            _id: req.params.id,
+          },
+          {
+            enemyHP: req.body.enemyHP,
+            victors: req.body.victors,
+          }
+        );
+        res.send(lobby);
+      } else {
+        const lobby = await Lobby.findOneAndUpdate(
+          {
+            _id: req.params.id,
+          },
+          {
+            enemyHP: req.body.enemyHP,
+          }
+        );
+        res.send(lobby);
+      }
+    } else if (
+      req.body.victors !== undefined &&
+      decoded &&
       req.headers.userkey === userkey.data.userkey
     ) {
       const lobby = await Lobby.findOneAndUpdate(
@@ -84,7 +100,7 @@ router.put("/:id", async (req, res) => {
           _id: req.params.id,
         },
         {
-          enemyHP: req.body.enemyHP,
+          victors: req.body.victors,
         }
       );
       res.send(lobby);

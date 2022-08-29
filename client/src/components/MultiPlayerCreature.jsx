@@ -60,15 +60,15 @@ function MultiPlayerCreature({
   const summonHPBonus = useSelector((state) => state.alchemy.summonHPBonus);
   const summonMPBonus = useSelector((state) => state.alchemy.summonMPBonus);
 
-  // reference hook
+  // reference hook for player creature hp
   const ref = useRef(null);
+  // counter reference hook for recursive player creature ability called within enemy counter attack
+  const counterRef = useRef(0);
 
   // fighting battle state
   const [isFighting, setIsFighting] = useState(false);
   // player creature special status state
   const [specialStatus, setSpecialStatus] = useState(false);
-  // counter state for recursive player creature ability called within enemy counter attack
-  const [attackCounter, setAttackCounter] = useState(0);
 
   // toggles special choice
   const toggleSpecial = async () => {
@@ -263,11 +263,6 @@ function MultiPlayerCreature({
       let criticalMultiplier = 1;
       let chanceEnemy = false;
 
-      if (attackCounter > 1) {
-        setAttackCounter(0);
-        chancePlayer = true;
-        chanceEnemy = true;
-      }
       if (enemyCreature.attackType === "Magic") {
         playerCreatureDefense = 0;
       }
@@ -277,9 +272,14 @@ function MultiPlayerCreature({
       } else {
         chanceEnemy = Math.random() >= 0.8;
       }
+      if (counterRef.current > 1 && !chanceEnemy && !chancePlayer) {
+        counterRef.current = 0;
+        chancePlayer = true;
+        chanceEnemy = true;
+      }
       // series of checks for enemy counter attack based on chance/speed, and for player creature mp regen
       if (!chanceEnemy && chancePlayer) {
-        setAttackCounter(0);
+        counterRef.current = 0;
         setTimeout(() => {
           setCombatAlert("Enemy was too slow!");
         }, 500);
@@ -287,7 +287,7 @@ function MultiPlayerCreature({
       if (!chanceEnemy && !chancePlayer) {
         // ends fight
         setIsFighting(false);
-        setAttackCounter(attackCounter + 1);
+        counterRef.current = counterRef.current + 1;
         attackEnemyOrHeal(moveName, moveType);
         return;
       }
@@ -299,14 +299,14 @@ function MultiPlayerCreature({
         regenMP();
       }
       if (chanceEnemy && chancePlayer) {
-        setAttackCounter(0);
+        counterRef.current = 0;
         setTimeout(() => {
           setCombatAlert("Both abilities succeeded.");
         }, 600);
       }
       // checks for player chance/speed failure
       if (chanceEnemy && !chancePlayer) {
-        setAttackCounter(0);
+        counterRef.current = 0;
         setTimeout(() => {
           setCombatAlert("Your summon was too slow!");
         }, 600);
@@ -443,7 +443,7 @@ function MultiPlayerCreature({
     criticalMultiplier,
     enemyDefense
   ) => {
-    setAttackCounter(0);
+    counterRef.current = 0;
     setBattleUndecided(false);
     displayPlayerAttackAnimation();
     displayPlayerAttackCT(
@@ -565,7 +565,7 @@ function MultiPlayerCreature({
             criticalMultiplier <=
         0
       ) {
-        setAttackCounter(0);
+        counterRef.current = 0;
         setBattleUndecided(false);
         displayPlayerAttackAnimation();
         displayPlayerSpecialAnimation();

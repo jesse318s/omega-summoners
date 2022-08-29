@@ -283,11 +283,11 @@ function Lobby1() {
                 setGameMenuStatus={setGameMenuStatus}
                 enemyCreatureData={enemyCreatureData}
                 combatAlert={combatAlert}
+                setCombatAlert={setCombatAlert}
                 loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
                 setPlayerCreatureHP={setPlayerCreatureHP}
                 setPlayerCreatureMP={setPlayerCreatureMP}
                 setEnemyCreature={setEnemyCreature}
-                setCombatAlert={setCombatAlert}
                 setBattleUndecided={setBattleUndecided}
                 setSpawnAnimation={setSpawnAnimation}
                 connections={connections}

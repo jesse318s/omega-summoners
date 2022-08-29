@@ -258,12 +258,12 @@ function Stage1() {
                 setGameMenuStatus={setGameMenuStatus}
                 enemyCreatureData={enemyCreatureData}
                 combatAlert={combatAlert}
+                setCombatAlert={setCombatAlert}
                 loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
                 setPlayerCreatureHP={setPlayerCreatureHP}
                 setPlayerCreatureMP={setPlayerCreatureMP}
                 setEnemyCreature={setEnemyCreature}
                 setEnemyCreatureHP={setEnemyCreatureHP}
-                setCombatAlert={setCombatAlert}
                 setBattleUndecided={setBattleUndecided}
                 setSpawnAnimation={setSpawnAnimation}
                 loadDataAlchemy={loadDataAlchemy}

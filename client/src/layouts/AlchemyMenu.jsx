@@ -328,17 +328,13 @@ function AlchemyMenu({
               <h4 className="margin_small">Available Recipes</h4>
               <button
                 className="game_button_small margin_small"
-                onClick={() => {
-                  paginateRecipes(index1, "previous");
-                }}
+                onClick={() => paginateRecipes(index1, "previous")}
               >
                 Previous
               </button>
               <button
                 className="game_button_small margin_small"
-                onClick={() => {
-                  paginateRecipes(index1, "next");
-                }}
+                onClick={() => paginateRecipes(index1, "next")}
               >
                 Next
               </button>

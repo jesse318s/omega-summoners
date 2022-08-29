@@ -61,7 +61,7 @@ function PlayerCreature({
   const [isFighting, setIsFighting] = useState(false);
   // player creature special status state
   const [specialStatus, setSpecialStatus] = useState(false);
-  // counter for recursive player creature ability called within enemy counter attack
+  // counter state for recursive player creature ability called within enemy counter attack
   const [attackCounter, setAttackCounter] = useState(0);
 
   // toggles special choice

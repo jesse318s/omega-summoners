@@ -293,13 +293,13 @@ function App() {
                 setGameMenuStatus={setGameMenuStatus}
                 enemyCreatureData={enemyCreatureData}
                 combatAlert={combatAlert}
+                setCombatAlert={setCombatAlert}
                 loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
                 setPlayerCreatureHP={setPlayerCreatureHP}
                 setPlayerCreatureMP={setPlayerCreatureMP}
                 playerCreature={playerCreature}
                 setEnemyCreature={setEnemyCreature}
                 setEnemyCreatureHP={setEnemyCreatureHP}
-                setCombatAlert={setCombatAlert}
                 setBattleUndecided={setBattleUndecided}
                 setSpawnAnimation={setSpawnAnimation}
                 loadDataAlchemy={loadDataAlchemy}

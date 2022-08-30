@@ -8,8 +8,6 @@ This project does not have a mongoDB connection setup.
 
 ## Getting Started
 
-This repository aims to assist you in beginning work on a MERN stack application for deployment with a solid file structure as a foundation.
-
 Since this project will hold both the client application and the server application there will be node modules in two different places. First run `npm install` from the root.
 
 ### `yarn workspace server build`

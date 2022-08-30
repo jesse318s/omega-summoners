@@ -274,7 +274,6 @@ function MultiPlayerCreature({
       }
       if (counterRef.current > 1 && !chanceEnemy && !chancePlayer) {
         counterRef.current = 0;
-        chancePlayer = true;
         chanceEnemy = true;
       }
       // series of checks for enemy counter attack based on chance/speed, and for player creature mp regen

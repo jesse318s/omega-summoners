@@ -1,4 +1,4 @@
-## _**PLEASE READ THIS TO COMPLETION BEFORE ASKING ANY QUESTIONS!**_
+## _**PLEASE READ THIS TO COMPLETION!**_
 
 ### _**IMPORTANT NOTES**_ -
 
@@ -7,8 +7,6 @@ This project does not have a mongoDB connection setup.
 - local development: create a .env file (make sure to name it .env), which exports your MONGO_URL connection. This file will be ignored by git so your db credentials will be kept safe when the app is deployed.
 
 ## Getting Started
-
-This repository aims to assist you in beginning work on a MERN stack application for deployment with a solid file structure as a foundation.
 
 Since this project will hold both the client application and the server application there will be node modules in two different places. First run `npm install` from the root.
 

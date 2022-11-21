@@ -3,6 +3,14 @@ const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
+const crypto = require("crypto");
+
+const options = {
+  headers: {
+    Accept: "*/*",
+    Authorization: `Bearer ${process.env.USERFRONT_KEY}`,
+  },
+};
 
 // retrieves lobby and restores enemy HP if enemy HP is 0
 router.get("/:id", async (req, res) => {
@@ -34,18 +42,6 @@ router.get("/:id", async (req, res) => {
 // updates lobby enemy HP and restores enemy HP if enemy HP is 0
 router.put("/:id", async (req, res) => {
   try {
-    const options = {
-      headers: {
-        Accept: "*/*",
-        Authorization: `Bearer ${process.env.USERFRONT_KEY}`,
-      },
-    };
-    const payload = {
-      data: {
-        userkey: Math.random().toString(36).substring(7),
-      },
-    };
-
     function getUserkey() {
       return axios
         .get(
@@ -63,6 +59,7 @@ router.put("/:id", async (req, res) => {
     const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, {
       algorithms: ["RS256"],
     });
+
     if (
       decoded &&
       req.body.enemyHP < lobbyCheck.enemyHP &&
@@ -107,18 +104,54 @@ router.put("/:id", async (req, res) => {
     } else {
       res.send("Unauthorized");
     }
-    function putUserkey() {
-      return axios
-        .put(
-          "https://api.userfront.com/v0/users/" + req.headers.userid,
-          payload,
-          options
-        )
-        .catch((err) => console.error(err));
-    }
-    await putUserkey();
+    crypto.randomBytes(127, (err, buf) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+
+      const payload = {
+        data: {
+          userkey: Math.random().toString(36).slice(2) + buf.toString("hex"),
+        },
+      };
+
+      function putUserkey() {
+        return axios
+          .put(
+            "https://api.userfront.com/v0/users/" + req.headers.userid,
+            payload,
+            options
+          )
+          .catch((err) => console.error(err));
+      }
+      putUserkey();
+    });
   } catch (error) {
     res.send(error);
+    crypto.randomBytes(127, (err, buf) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+
+      const payload = {
+        data: {
+          userkey: Math.random().toString(36).slice(2) + buf.toString("hex"),
+        },
+      };
+
+      function putUserkey() {
+        return axios
+          .put(
+            "https://api.userfront.com/v0/users/" + req.headers.userid,
+            payload,
+            options
+          )
+          .catch((err) => console.error(err));
+      }
+      putUserkey();
+    });
   }
 });
 

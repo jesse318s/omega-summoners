@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./App.scss";
 import Userfront from "@userfront/core";
 import { useNavigate } from "react-router-dom";
@@ -45,6 +45,8 @@ function App() {
 
   // navigation hook
   const navigate = useNavigate();
+  // reference hook for tracking generated user data
+  const ref = useRef(false);
 
   // player option state
   const [player, setPlayer] = useState({});
@@ -97,7 +99,10 @@ function App() {
     const genAsyncDataPlayer = async () => {
       try {
         // if there is no user key
-        if (Userfront.user.data.userkey === undefined) {
+        if (
+          Userfront.user.data.userkey === undefined &&
+          ref.current === false
+        ) {
           const newUser = {
             userfrontId: Userfront.user.userId,
             name: "New Player",
@@ -110,27 +115,21 @@ function App() {
             displayCreatureStats: false,
             preferredSpecial: 1,
           };
+          ref.current = true;
           await addUser(newUser);
           alert(
             "Welcome to the game! You have been assigned a new account. Please log in again to continue."
           );
           await Userfront.logout();
+        } else {
+          const { data } = await getUser();
+          setPlayer(data);
         }
       } catch (error) {
         console.log(error);
       }
     };
-    // retrieves user data and updates player state
-    const loadAsyncDataPlayer = async () => {
-      try {
-        const { data } = await getUser();
-        setPlayer(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
     genAsyncDataPlayer();
-    loadAsyncDataPlayer();
   }, []);
 
   useEffect(() => {

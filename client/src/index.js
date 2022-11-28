@@ -17,19 +17,21 @@ const container = document.getElementById("root");
 const root = createRoot(container);
 
 root.render(
-  // redux provider wrapper
-  <Provider store={store}>
-    {/* wrapper for routes that render components */}
-    <BrowserRouter>
-      <Routes>
-        <Route path="" element={<Home />} />
-        <Route path="app" element={<App />} />
-        <Route path="reset" element={<Reset />} />
-        <Route path="stage1" element={<Stage1 />} />
-        <Route path="lobby1" element={<Lobby1 />} />
-      </Routes>
-    </BrowserRouter>
-  </Provider>
+  <React.StrictMode>
+    {/* redux provider wrapper */}
+    <Provider store={store}>
+      {/* wrapper for routes that render components */}
+      <BrowserRouter>
+        <Routes>
+          <Route path="" element={<Home />} />
+          <Route path="app" element={<App />} />
+          <Route path="reset" element={<Reset />} />
+          <Route path="stage1" element={<Stage1 />} />
+          <Route path="lobby1" element={<Lobby1 />} />
+        </Routes>
+      </BrowserRouter>
+    </Provider>
+  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

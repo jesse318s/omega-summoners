@@ -3,7 +3,7 @@ export const potionsList = [
     id: 1,
     name: "Potion of Health",
     description:
-      "Adds 50 HP for 10 minutes. (A creature may only have one active potion at a time, and if you refresh or change Stages, you must regenerate your bonus)",
+      "Adds 50 HP for 10 minutes. (A creature may only have one active potion at a time, and if you reload you must regenerate your bonus)",
     imgPath: "img/potion/potion1.png",
     duration: 600000,
     hpMod: 50,
@@ -13,7 +13,7 @@ export const potionsList = [
     id: 2,
     name: "Potion of Mana",
     description:
-      "Adds 50 MP for 10 minutes. (A creature may only have one active potion at a time, and if you refresh or change Stages, you must regenerate your bonus)",
+      "Adds 50 MP for 10 minutes. (A creature may only have one active potion at a time, and if you reload you must regenerate your bonus)",
     imgPath: "img/potion/potion2.png",
     duration: 600000,
     hpMod: 0,

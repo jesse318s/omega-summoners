@@ -2,15 +2,11 @@ const User = require("../models/user");
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-const axios = require("axios");
-const crypto = require("crypto");
-
-const options = {
-  headers: {
-    Accept: "*/*",
-    Authorization: `Bearer ${process.env.USERFRONT_KEY}`,
-  },
-};
+const {
+  verifyUserkey,
+  generateUserkey,
+  generateQuantumUserkey,
+} = require("../libs/userkeyGeneratorAndVerifier.js");
 
 // creates a new user if there isn't one
 router.post("/", async (req, res) => {
@@ -33,57 +29,12 @@ router.post("/", async (req, res) => {
     ) {
       const user = await new User(req.body).save();
       res.send(user);
+      generateUserkey(decoded.userId);
     } else {
       res.send("Unauthorized");
     }
-    crypto.randomBytes(127, (err, buf) => {
-      if (err) {
-        console.log(err);
-        return;
-      }
-
-      const payload = {
-        data: {
-          userkey: Math.random().toString(36).slice(2) + buf.toString("hex"),
-        },
-      };
-
-      function putUserkey() {
-        return axios
-          .put(
-            "https://api.userfront.com/v0/users/" + req.body.userfrontId,
-            payload,
-            options
-          )
-          .catch((err) => console.error(err));
-      }
-      putUserkey();
-    });
   } catch (error) {
     res.send(error);
-    crypto.randomBytes(127, (err, buf) => {
-      if (err) {
-        console.log(err);
-        return;
-      }
-
-      const payload = {
-        data: {
-          userkey: Math.random().toString(36).slice(2) + buf.toString("hex"),
-        },
-      };
-
-      function putUserkey() {
-        return axios
-          .put(
-            "https://api.userfront.com/v0/users/" + req.body.userfrontId,
-            payload,
-            options
-          )
-          .catch((err) => console.error(err));
-      }
-      putUserkey();
-    });
   }
 });
 
@@ -105,24 +56,13 @@ router.get("/", async (req, res) => {
 // updates user data
 router.put("/:id", async (req, res) => {
   try {
-    function getUserkey() {
-      return axios
-        .get(
-          "https://api.userfront.com/v0/users/" + req.body.userfrontId,
-          options
-        )
-        .then((response) => {
-          return response.data;
-        })
-        .catch((err) => console.error(err));
-    }
-    const userkey = await getUserkey();
     const accessToken = req.headers.authorization.replace("Bearer ", "");
     const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, {
       algorithms: ["RS256"],
     });
+    const verifiedUserkey = await verifyUserkey(decoded, req.headers.userkey);
 
-    if (req.headers.userkey === userkey.data.userkey && decoded) {
+    if (verifiedUserkey) {
       const user = await User.findOneAndUpdate(
         {
           _id: req.params.id,
@@ -131,57 +71,19 @@ router.put("/:id", async (req, res) => {
         req.body
       );
       res.send(user);
+      generateUserkey(decoded.userId);
     } else {
       res.send("Unauthorized");
+      generateQuantumUserkey(decoded.userId);
     }
-    crypto.randomBytes(127, (err, buf) => {
-      if (err) {
-        console.log(err);
-        return;
-      }
-
-      const payload = {
-        data: {
-          userkey: Math.random().toString(36).slice(2) + buf.toString("hex"),
-        },
-      };
-
-      function putUserkey() {
-        return axios
-          .put(
-            "https://api.userfront.com/v0/users/" + req.body.userfrontId,
-            payload,
-            options
-          )
-          .catch((err) => console.error(err));
-      }
-      putUserkey();
-    });
   } catch (error) {
-    res.send(error);
-    crypto.randomBytes(127, (err, buf) => {
-      if (err) {
-        console.log(err);
-        return;
-      }
-
-      const payload = {
-        data: {
-          userkey: Math.random().toString(36).slice(2) + buf.toString("hex"),
-        },
-      };
-
-      function putUserkey() {
-        return axios
-          .put(
-            "https://api.userfront.com/v0/users/" + req.body.userfrontId,
-            payload,
-            options
-          )
-          .catch((err) => console.error(err));
-      }
-      putUserkey();
+    const accessToken = req.headers.authorization.replace("Bearer ", "");
+    const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, {
+      algorithms: ["RS256"],
     });
+
+    res.send(error);
+    generateQuantumUserkey(decoded.userId);
   }
 });
 

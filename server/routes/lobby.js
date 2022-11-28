@@ -2,15 +2,11 @@ const Lobby = require("../models/lobby");
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-const axios = require("axios");
-const crypto = require("crypto");
-
-const options = {
-  headers: {
-    Accept: "*/*",
-    Authorization: `Bearer ${process.env.USERFRONT_KEY}`,
-  },
-};
+const {
+  verifyUserkey,
+  generateUserkey,
+  generateQuantumUserkey,
+} = require("../libs/userkeyGeneratorAndVerifier.js");
 
 // retrieves lobby and restores enemy HP if enemy HP is 0
 router.get("/:id", async (req, res) => {
@@ -42,29 +38,14 @@ router.get("/:id", async (req, res) => {
 // updates lobby enemy HP and restores enemy HP if enemy HP is 0
 router.put("/:id", async (req, res) => {
   try {
-    function getUserkey() {
-      return axios
-        .get(
-          "https://api.userfront.com/v0/users/" + req.headers.userid,
-          options
-        )
-        .then((response) => {
-          return response.data;
-        })
-        .catch((err) => console.error(err));
-    }
-    const userkey = await getUserkey();
     const lobbyCheck = await Lobby.findOne({ _id: req.params.id });
     const accessToken = req.headers.authorization.replace("Bearer ", "");
     const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, {
       algorithms: ["RS256"],
     });
+    const verifiedUserkey = await verifyUserkey(decoded, req.headers.userkey);
 
-    if (
-      decoded &&
-      req.body.enemyHP < lobbyCheck.enemyHP &&
-      req.headers.userkey === userkey.data.userkey
-    ) {
+    if (verifiedUserkey && req.body.enemyHP < lobbyCheck.enemyHP) {
       if (req.body.victors !== undefined) {
         const lobby = await Lobby.findOneAndUpdate(
           {
@@ -76,6 +57,7 @@ router.put("/:id", async (req, res) => {
           }
         );
         res.send(lobby);
+        generateUserkey(decoded.userId);
       } else {
         const lobby = await Lobby.findOneAndUpdate(
           {
@@ -86,12 +68,9 @@ router.put("/:id", async (req, res) => {
           }
         );
         res.send(lobby);
+        generateUserkey(decoded.userId);
       }
-    } else if (
-      req.body.victors !== undefined &&
-      decoded &&
-      req.headers.userkey === userkey.data.userkey
-    ) {
+    } else if (req.body.victors !== undefined && verifiedUserkey) {
       const lobby = await Lobby.findOneAndUpdate(
         {
           _id: req.params.id,
@@ -101,57 +80,19 @@ router.put("/:id", async (req, res) => {
         }
       );
       res.send(lobby);
+      generateUserkey(decoded.userId);
     } else {
       res.send("Unauthorized");
+      generateQuantumUserkey(decoded.userId);
     }
-    crypto.randomBytes(127, (err, buf) => {
-      if (err) {
-        console.log(err);
-        return;
-      }
-
-      const payload = {
-        data: {
-          userkey: Math.random().toString(36).slice(2) + buf.toString("hex"),
-        },
-      };
-
-      function putUserkey() {
-        return axios
-          .put(
-            "https://api.userfront.com/v0/users/" + req.headers.userid,
-            payload,
-            options
-          )
-          .catch((err) => console.error(err));
-      }
-      putUserkey();
-    });
   } catch (error) {
-    res.send(error);
-    crypto.randomBytes(127, (err, buf) => {
-      if (err) {
-        console.log(err);
-        return;
-      }
-
-      const payload = {
-        data: {
-          userkey: Math.random().toString(36).slice(2) + buf.toString("hex"),
-        },
-      };
-
-      function putUserkey() {
-        return axios
-          .put(
-            "https://api.userfront.com/v0/users/" + req.headers.userid,
-            payload,
-            options
-          )
-          .catch((err) => console.error(err));
-      }
-      putUserkey();
+    const accessToken = req.headers.authorization.replace("Bearer ", "");
+    const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, {
+      algorithms: ["RS256"],
     });
+
+    res.send(error);
+    generateQuantumUserkey(decoded.userId);
   }
 });
 

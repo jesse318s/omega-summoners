@@ -32,6 +32,8 @@ import {
   enableCreatureStatsStatus,
   disableCreatureStatsStatus,
 } from "../store/actions/creatureStatsStatus.actions";
+import checkAuth from "../utils/checkAuth.js";
+import checkLevelPlayer from "../utils/checkLevelPlayer.js";
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
@@ -80,31 +82,11 @@ function Stage1() {
   const [relicsData] = useState(relics);
 
   useEffect(() => {
-    // checks for userfront authentication and redirects visitor if not authenticated
-    const checkAuth = () => {
-      try {
-        if (!Userfront.accessToken()) {
-          navigate("/");
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    checkAuth();
+    checkAuth(Userfront, navigate);
+    checkLevelPlayer(player, 5, navigate);
   });
 
   useEffect(() => {
-    // checks for userkey and logs user out if none is found
-    const checkDataPlayer = () => {
-      try {
-        // if there is no user key
-        if (Userfront.user.data.userkey === undefined) {
-          Userfront.logout();
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
     // retrieves user data and updates player state
     const loadAsyncDataPlayer = async () => {
       try {
@@ -114,24 +96,12 @@ function Stage1() {
         console.log(error);
       }
     };
-    checkDataPlayer();
     loadAsyncDataPlayer();
   }, []);
 
   useEffect(() => {
     // if there is a player
     if (player) {
-      // checks player level for stage requirements
-      const checkLevelPlayer = () => {
-        try {
-          if (Math.floor(Math.sqrt(player.experience) * 0.25) < 5) {
-            alert("You must be level 5 to battle at this stage.");
-            navigate(-1);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      };
       // loads player creature data and sets player creature state
       const loadAsyncDataPlayerCreature = async () => {
         try {
@@ -148,7 +118,6 @@ function Stage1() {
           console.log(error);
         }
       };
-      checkLevelPlayer();
       loadAsyncDataPlayerCreature();
       // if there are player relics
       if (player.relics) {
@@ -266,7 +235,7 @@ function Stage1() {
                 setEnemyCreatureHP={setEnemyCreatureHP}
                 setBattleUndecided={setBattleUndecided}
                 setSpawnAnimation={setSpawnAnimation}
-                loadDataAlchemy={loadDataAlchemy}
+                loadDataAlchemy={() => loadDataAlchemy()}
               />
 
               <AlchemyMenu

@@ -31,6 +31,7 @@ import {
   enableCreatureStatsStatus,
   disableCreatureStatsStatus,
 } from "./store/actions/creatureStatsStatus.actions";
+import checkAuth from "./utils/checkAuth.js";
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
@@ -81,17 +82,7 @@ function App() {
   const [relicsData] = useState(relics);
 
   useEffect(() => {
-    // checks for userfront authentication and redirects visitor if not authenticated
-    const checkAuth = () => {
-      try {
-        if (!Userfront.accessToken()) {
-          navigate("/");
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    checkAuth();
+    checkAuth(Userfront, navigate);
   });
 
   useEffect(() => {
@@ -138,15 +129,6 @@ function App() {
       // if needed, generates random creature and updates player in database
       const genAsyncPlayerCreature = async () => {
         try {
-          // retrieves user data and updates player state
-          const loadAsyncDataPlayer = async () => {
-            try {
-              const { data } = await getUser();
-              setPlayer(data);
-            } catch (error) {
-              console.log(error);
-            }
-          };
           // if there is no player creature data
           if (player.creatureId === 0) {
             const randomCreature =
@@ -160,7 +142,8 @@ function App() {
               userfrontId: Userfront.user.userId,
               creatureId: randomCreature,
             });
-            await loadAsyncDataPlayer();
+            const { data } = await getUser();
+            setPlayer(data);
           }
         } catch (error) {
           console.log(error);
@@ -301,7 +284,7 @@ function App() {
                 setEnemyCreatureHP={setEnemyCreatureHP}
                 setBattleUndecided={setBattleUndecided}
                 setSpawnAnimation={setSpawnAnimation}
-                loadDataAlchemy={loadDataAlchemy}
+                loadDataAlchemy={() => loadDataAlchemy()}
               />
 
               <AlchemyMenu

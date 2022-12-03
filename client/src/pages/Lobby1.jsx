@@ -27,6 +27,8 @@ import {
   enableCreatureStatsStatus,
   disableCreatureStatsStatus,
 } from "../store/actions/creatureStatsStatus.actions";
+import checkAuth from "../utils/checkAuth.js";
+import checkLevelPlayer from "../utils/checkLevelPlayer.js";
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
@@ -76,33 +78,13 @@ function Lobby1() {
   const [connections, setConnections] = useState([{}]);
 
   useEffect(() => {
-    // checks for userfront authentication and redirects visitor if not authenticated
-    const checkAuth = () => {
-      try {
-        if (!Userfront.accessToken()) {
-          navigate("/");
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    checkAuth();
+    checkAuth(Userfront, navigate);
+    checkLevelPlayer(player, 8, navigate);
   });
 
   useEffect(() => {
-    // checks for userkey and logs user out if none is found
-    const checkDataPlayer = () => {
-      try {
-        // if there is no user key
-        if (Userfront.user.data.userkey === undefined) {
-          Userfront.logout();
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
     // retrieves lobby data and updates lobby state, also updates connections
-    const loadAsyncDataLobby = async () => {
+    const initAsyncDataLobby = async () => {
       // retrieves connection data and updates connections
       const loadAsyncDataConnections = async () => {
         try {
@@ -129,25 +111,13 @@ function Lobby1() {
         console.log(error);
       }
     };
-    checkDataPlayer();
-    loadAsyncDataLobby();
+    initAsyncDataLobby();
     loadAsyncDataPlayer();
   }, []);
 
   useEffect(() => {
     // if there is a player
     if (player) {
-      // checks player level for stage requirements
-      const checkLevelPlayer = () => {
-        try {
-          if (Math.floor(Math.sqrt(player.experience) * 0.25) < 8) {
-            alert("You must be level 8 to battle this boss.");
-            navigate(-1);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      };
       // loads player creature data and sets player creature state
       const loadAsyncDataPlayerCreature = async () => {
         try {
@@ -164,7 +134,6 @@ function Lobby1() {
           console.log(error);
         }
       };
-      checkLevelPlayer();
       loadAsyncDataPlayerCreature();
       // if there are player relics
       if (player.relics) {
@@ -203,41 +172,41 @@ function Lobby1() {
 
   // retrieves lobby data and updates lobby state, also updates connections, and generates new connection if needed
   const loadAsyncDataLobby = async () => {
+    // retrieves connection data and updates connections
+    const loadAsyncDataConnections = async () => {
+      try {
+        const { data } = await getConnections();
+        setConnections(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    // checks connections and generates new connection if needed
+    const genAsyncDataConnection = async () => {
+      try {
+        if (connections.length < 3) {
+          const newConnection = {
+            userId: Userfront.user.userId,
+            name: player.name,
+          };
+          await addConnection(newConnection);
+        } else if (
+          connections.filter(
+            (connection) => connection.userId === Userfront.user.userId
+          ).length === 0
+        ) {
+          alert(
+            "There cannot be more than 3 summoners in this battle. Please try again later."
+          );
+          window.location.reload(false);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    await loadAsyncDataConnections();
+    genAsyncDataConnection();
     try {
-      // retrieves connection data and updates connections
-      const loadAsyncDataConnections = async () => {
-        try {
-          const { data } = await getConnections();
-          setConnections(data);
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      // checks connections and generates new connection if needed
-      const genAsyncDataConnection = async () => {
-        try {
-          if (connections.length < 3) {
-            const newConnection = {
-              userId: Userfront.user.userId,
-              name: player.name,
-            };
-            await addConnection(newConnection);
-          } else if (
-            connections.filter(
-              (connection) => connection.userId === Userfront.user.userId
-            ).length === 0
-          ) {
-            alert(
-              "There cannot be more than 3 summoners in this battle. Please try again later."
-            );
-            window.location.reload(false);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      await loadAsyncDataConnections();
-      genAsyncDataConnection();
       const { data } = await getLobby(lobby1);
       setLobby(data);
     } catch (error) {
@@ -291,7 +260,7 @@ function Lobby1() {
                 setBattleUndecided={setBattleUndecided}
                 setSpawnAnimation={setSpawnAnimation}
                 connections={connections}
-                loadAsyncDataLobby={loadAsyncDataLobby}
+                loadAsyncDataLobby={() => loadAsyncDataLobby()}
               />
 
               <MultiPlayerCreature

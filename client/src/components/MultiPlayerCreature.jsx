@@ -16,16 +16,8 @@ import {
 } from "../store/actions/lobbyTimer.actions";
 
 function MultiPlayerCreature({
-  enemyAttackStatus,
-  setEnemyAttackStatus,
-  setCombatText,
-  enemyCombatText,
-  setEnemyCombatText,
-  setCritText,
-  enemyCritText,
-  setEnemyCritText,
-  playerAttackStatus,
-  setPlayerAttackStatus,
+  combatTextAndStatus,
+  setCombatTextAndStatus,
   player,
   playerCreatureHP,
   setPlayerCreatureHP,
@@ -33,8 +25,6 @@ function MultiPlayerCreature({
   setPlayerCreatureMP,
   enemyCreature,
   setEnemyCreature,
-  battleUndecided,
-  setBattleUndecided,
   Userfront,
   loadAsyncDataPlayer,
   setCombatAlert,
@@ -96,9 +86,19 @@ function MultiPlayerCreature({
   const displayPlayerAttackAnimation = async () => {
     try {
       if (battleStatus) {
-        setPlayerAttackStatus(true);
+        setCombatTextAndStatus((combatTextAndStatus) => {
+          return {
+            ...combatTextAndStatus,
+            playerAttackStatus: true,
+          };
+        });
         setTimeout(() => {
-          setPlayerAttackStatus(false);
+          setCombatTextAndStatus((combatTextAndStatus) => {
+            return {
+              ...combatTextAndStatus,
+              playerAttackStatus: false,
+            };
+          });
         }, 500);
       }
     } catch (error) {
@@ -115,15 +115,34 @@ function MultiPlayerCreature({
     try {
       if (battleStatus) {
         if (criticalMultiplier > 1) {
-          setCritText("crit_text");
+          setCombatTextAndStatus((combatTextAndStatus) => {
+            return {
+              ...combatTextAndStatus,
+              critText: "crit_text",
+            };
+          });
         }
-        setCombatText(
-          (playerCreatureAttack - playerCreatureAttack * enemyDefense) *
-            criticalMultiplier
-        );
+        setCombatTextAndStatus((combatTextAndStatus) => {
+          return {
+            ...combatTextAndStatus,
+            combatText:
+              (playerCreatureAttack - playerCreatureAttack * enemyDefense) *
+              criticalMultiplier,
+          };
+        });
         setTimeout(() => {
-          setCombatText("");
-          setCritText("combat_text");
+          setCombatTextAndStatus((combatTextAndStatus) => {
+            return {
+              ...combatTextAndStatus,
+              combatText: "",
+            };
+          });
+          setCombatTextAndStatus((combatTextAndStatus) => {
+            return {
+              ...combatTextAndStatus,
+              critText: "combat_text",
+            };
+          });
         }, 500);
       }
     } catch (error) {
@@ -154,15 +173,34 @@ function MultiPlayerCreature({
     try {
       if (battleStatus) {
         if (criticalMultiplier > 1) {
-          setCritText("crit_text");
+          setCombatTextAndStatus((combatTextAndStatus) => {
+            return {
+              ...combatTextAndStatus,
+              critText: "crit_text",
+            };
+          });
         }
-        setCombatText(
-          (playerCreatureSpecial - playerCreatureSpecial * enemyDefense) *
-            criticalMultiplier
-        );
+        setCombatTextAndStatus((combatTextAndStatus) => {
+          return {
+            ...combatTextAndStatus,
+            combatText:
+              (playerCreatureSpecial - playerCreatureSpecial * enemyDefense) *
+              criticalMultiplier,
+          };
+        });
         setTimeout(() => {
-          setCombatText("");
-          setCritText("combat_text");
+          setCombatTextAndStatus((combatTextAndStatus) => {
+            return {
+              ...combatTextAndStatus,
+              combatText: "",
+            };
+          });
+          setCombatTextAndStatus((combatTextAndStatus) => {
+            return {
+              ...combatTextAndStatus,
+              critText: "combat_text",
+            };
+          });
         }, 500);
       }
     } catch (error) {
@@ -177,14 +215,39 @@ function MultiPlayerCreature({
   ) => {
     try {
       if (battleStatus) {
-        setEnemyCritText("heal_combat_text");
+        setCombatTextAndStatus((combatTextAndStatus) => {
+          return {
+            ...combatTextAndStatus,
+            enemyCritText: "heal_combat_text",
+          };
+        });
         if (criticalMultiplier > 1) {
-          setEnemyCritText("heal_crit_text");
+          setCombatTextAndStatus((combatTextAndStatus) => {
+            return {
+              ...combatTextAndStatus,
+              enemyCritText: "heal_crit_text",
+            };
+          });
         }
-        setEnemyCombatText(playerCreatureSpecial * criticalMultiplier);
+        setCombatTextAndStatus((combatTextAndStatus) => {
+          return {
+            ...combatTextAndStatus,
+            enemyCombatText: playerCreatureSpecial * criticalMultiplier,
+          };
+        });
         setTimeout(() => {
-          setEnemyCombatText("");
-          setEnemyCritText("combat_text");
+          setCombatTextAndStatus((combatTextAndStatus) => {
+            return {
+              ...combatTextAndStatus,
+              enemyCombatText: "",
+            };
+          });
+          setCombatTextAndStatus((combatTextAndStatus) => {
+            return {
+              ...combatTextAndStatus,
+              enemyCritText: "combat_text",
+            };
+          });
         }, 500);
       }
     } catch (error) {
@@ -196,9 +259,19 @@ function MultiPlayerCreature({
   const viewEnemyAttackAnimation = async () => {
     try {
       if (battleStatus) {
-        setEnemyAttackStatus(true);
+        setCombatTextAndStatus((combatTextAndStatus) => {
+          return {
+            ...combatTextAndStatus,
+            enemyAttackStatus: true,
+          };
+        });
         setTimeout(() => {
-          setEnemyAttackStatus(false);
+          setCombatTextAndStatus((combatTextAndStatus) => {
+            return {
+              ...combatTextAndStatus,
+              enemyAttackStatus: false,
+            };
+          });
         }, 500);
       }
     } catch (error) {
@@ -214,16 +287,35 @@ function MultiPlayerCreature({
     try {
       if (battleStatus) {
         if (criticalMultiplier > 1) {
-          setEnemyCritText("crit_text");
+          setCombatTextAndStatus((combatTextAndStatus) => {
+            return {
+              ...combatTextAndStatus,
+              enemyCritText: "crit_text",
+            };
+          });
         }
-        setEnemyCombatText(
-          (enemyCreature.attack -
-            enemyCreature.attack * playerCreatureDefense) *
-            criticalMultiplier
-        );
+        setCombatTextAndStatus((combatTextAndStatus) => {
+          return {
+            ...combatTextAndStatus,
+            enemyCombatText:
+              (enemyCreature.attack -
+                enemyCreature.attack * playerCreatureDefense) *
+              criticalMultiplier,
+          };
+        });
         setTimeout(() => {
-          setEnemyCombatText("");
-          setEnemyCritText("combat_text");
+          setCombatTextAndStatus((combatTextAndStatus) => {
+            return {
+              ...combatTextAndStatus,
+              enemyCombatText: "",
+            };
+          });
+          setCombatTextAndStatus((combatTextAndStatus) => {
+            return {
+              ...combatTextAndStatus,
+              enemyCritText: "combat_text",
+            };
+          });
         }, 500);
       }
     } catch (error) {
@@ -284,7 +376,6 @@ function MultiPlayerCreature({
         }, 500);
       }
       if (!chanceEnemy && !chancePlayer) {
-        // ends fight
         setIsFighting(false);
         counterRef.current = counterRef.current + 1;
         attackEnemyOrHeal(moveName, moveType);
@@ -293,7 +384,6 @@ function MultiPlayerCreature({
       // updates lobby for player
       await loadAsyncDataLobby();
       await loadAsyncDataPlayer();
-      // check for player creature mp regen
       if (moveName === playerCreature.attackName) {
         regenMP();
       }
@@ -330,11 +420,15 @@ function MultiPlayerCreature({
               criticalMultiplier <=
           0
         ) {
-          setBattleUndecided(false);
+          setCombatTextAndStatus((combatTextAndStatus) => {
+            return {
+              ...combatTextAndStatus,
+              battleUndecided: false,
+            };
+          });
           setPlayerCreatureHP(0);
           setCombatAlert("Defeat!");
           setTimeout(() => {
-            // ends fight
             setIsFighting(false);
             dispatch(disableBattleStatus());
             setEnemyCreature({});
@@ -346,11 +440,9 @@ function MultiPlayerCreature({
                 enemyCreature.attack * playerCreatureDefense) *
                 criticalMultiplier
           );
-          // ends fight
           setIsFighting(false);
         }
       } else {
-        // ends fight
         setIsFighting(false);
       }
     } catch (error) {
@@ -412,7 +504,6 @@ function MultiPlayerCreature({
   // drops multiplayer rewards for player
   const dropMPRewards = async () => {
     dispatch(enableLobbyTimer());
-    // ends fight
     setTimeout(() => {
       setIsFighting(false);
       dispatch(disableBattleStatus());
@@ -443,7 +534,12 @@ function MultiPlayerCreature({
     enemyDefense
   ) => {
     counterRef.current = 0;
-    setBattleUndecided(false);
+    setCombatTextAndStatus((combatTextAndStatus) => {
+      return {
+        ...combatTextAndStatus,
+        battleUndecided: false,
+      };
+    });
     displayPlayerAttackAnimation();
     displayPlayerAttackCT(
       playerCreatureAttack,
@@ -565,7 +661,12 @@ function MultiPlayerCreature({
         0
       ) {
         counterRef.current = 0;
-        setBattleUndecided(false);
+        setCombatTextAndStatus((combatTextAndStatus) => {
+          return {
+            ...combatTextAndStatus,
+            battleUndecided: false,
+          };
+        });
         displayPlayerAttackAnimation();
         displayPlayerSpecialAnimation();
         displayPlayerSpecialCT(
@@ -643,7 +744,12 @@ function MultiPlayerCreature({
 
   // grants previous victory
   const grantVictory = async (newLobby) => {
-    setBattleUndecided(false);
+    setCombatTextAndStatus((combatTextAndStatus) => {
+      return {
+        ...combatTextAndStatus,
+        battleUndecided: false,
+      };
+    });
     await Userfront.user.update({
       data: {
         userkey: Userfront.user.data.userkey,
@@ -673,7 +779,12 @@ function MultiPlayerCreature({
     ) {
       alert("Your connection expired in a full battle.");
       dispatch(enableLobbyTimer());
-      setBattleUndecided(false);
+      setCombatTextAndStatus((combatTextAndStatus) => {
+        return {
+          ...combatTextAndStatus,
+          battleUndecided: false,
+        };
+      });
       setIsFighting(false);
       dispatch(disableBattleStatus());
       setTimeout(() => {
@@ -689,9 +800,9 @@ function MultiPlayerCreature({
     try {
       // if the player and enemy aren't attacking, the battle is undecided
       if (
-        !playerAttackStatus &&
-        !enemyAttackStatus &&
-        battleUndecided &&
+        !combatTextAndStatus.playerAttackStatus &&
+        !combatTextAndStatus.enemyAttackStatus &&
+        combatTextAndStatus.battleUndecided &&
         !isFighting
       ) {
         const playerCreatureAttack =
@@ -761,7 +872,7 @@ function MultiPlayerCreature({
             );
           }
         } else {
-          // checks to see if the player has enough mana to use special attack
+          // checks to see if the player has enough mana to use special
           if (playerCreatureMP >= playerCreatureSpecialCost) {
             performSpecial(
               chancePlayer,
@@ -775,7 +886,6 @@ function MultiPlayerCreature({
             );
           } else {
             setCombatAlert("Not enough MP!");
-            // ends fight
             setIsFighting(false);
           }
         }
@@ -793,11 +903,13 @@ function MultiPlayerCreature({
           <div className="player_creature">
             {/* displays enemy combat text */}
             <div className="special_effect_container">
-              <div className={enemyCritText}>{enemyCombatText}</div>
+              <div className={combatTextAndStatus.enemyCritText}>
+                {combatTextAndStatus.enemyCombatText}
+              </div>
             </div>
 
             {/* displays creature based on attack state */}
-            {playerAttackStatus ? (
+            {combatTextAndStatus.playerAttackStatus ? (
               <img
                 className={chosenRelic.effectClass}
                 src={playerCreature.imgPath.slice(0, -4) + "_attack.png"}
@@ -805,7 +917,7 @@ function MultiPlayerCreature({
                 width="128px"
                 height="128px"
               />
-            ) : enemyAttackStatus ? (
+            ) : combatTextAndStatus.enemyAttackStatus ? (
               <img
                 className={chosenRelic.effectClass}
                 src={playerCreature.imgPath.slice(0, -4) + "_hurt.png"}

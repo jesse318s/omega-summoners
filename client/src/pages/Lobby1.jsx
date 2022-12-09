@@ -60,16 +60,18 @@ function Lobby1() {
   const [creatureData] = useState(creatures);
   const [enemyCreatureData] = useState(bossEnemyCreatureStage1);
   const [enemyCreature, setEnemyCreature] = useState({});
-  const [playerAttackStatus, setPlayerAttackStatus] = useState(false);
-  const [enemyAttackStatus, setEnemyAttackStatus] = useState(false);
+  const [combatTextAndStatus, setCombatTextAndStatus] = useState({
+    playerAttackStatus: false,
+    enemyAttackStatus: false,
+    battleUndecided: false,
+    combatText: "",
+    critText: "combat_text",
+    enemyCombatText: "",
+    enemyCritText: "combat_text",
+  });
   const [playerCreatureHP, setPlayerCreatureHP] = useState(0);
   const [playerCreatureMP, setPlayerCreatureMP] = useState(0);
   const [combatAlert, setCombatAlert] = useState("");
-  const [battleUndecided, setBattleUndecided] = useState(false);
-  const [combatText, setCombatText] = useState("");
-  const [critText, setCritText] = useState("combat_text");
-  const [enemyCombatText, setEnemyCombatText] = useState("");
-  const [enemyCritText, setEnemyCritText] = useState("combat_text");
   const [spawnAnimation, setSpawnAnimation] = useState("");
   // relics state
   const [relicsData] = useState(relics);
@@ -257,23 +259,16 @@ function Lobby1() {
                 setPlayerCreatureHP={setPlayerCreatureHP}
                 setPlayerCreatureMP={setPlayerCreatureMP}
                 setEnemyCreature={setEnemyCreature}
-                setBattleUndecided={setBattleUndecided}
+                combatTextAndStatus={combatTextAndStatus}
+                setCombatTextAndStatus={setCombatTextAndStatus}
                 setSpawnAnimation={setSpawnAnimation}
                 connections={connections}
                 loadAsyncDataLobby={() => loadAsyncDataLobby()}
               />
 
               <MultiPlayerCreature
-                enemyAttackStatus={enemyAttackStatus}
-                setEnemyAttackStatus={setEnemyAttackStatus}
-                setCombatText={setCombatText}
-                enemyCombatText={enemyCombatText}
-                setEnemyCombatText={setEnemyCombatText}
-                setCritText={setCritText}
-                enemyCritText={enemyCritText}
-                setEnemyCritText={setEnemyCritText}
-                playerAttackStatus={playerAttackStatus}
-                setPlayerAttackStatus={setPlayerAttackStatus}
+                combatTextAndStatus={combatTextAndStatus}
+                setCombatTextAndStatus={setCombatTextAndStatus}
                 player={player}
                 playerCreatureHP={playerCreatureHP}
                 setPlayerCreatureHP={setPlayerCreatureHP}
@@ -281,8 +276,6 @@ function Lobby1() {
                 setPlayerCreatureMP={setPlayerCreatureMP}
                 enemyCreature={enemyCreature}
                 setEnemyCreature={setEnemyCreature}
-                battleUndecided={battleUndecided}
-                setBattleUndecided={setBattleUndecided}
                 Userfront={Userfront}
                 loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
                 setCombatAlert={setCombatAlert}
@@ -294,10 +287,7 @@ function Lobby1() {
 
               <MultiPlayerEnemyCreature
                 enemyCreature={enemyCreature}
-                playerAttackStatus={playerAttackStatus}
-                enemyAttackStatus={enemyAttackStatus}
-                critText={critText}
-                combatText={combatText}
+                combatTextAndStatus={combatTextAndStatus}
                 spawnAnimation={spawnAnimation}
                 lobby={lobby}
               />

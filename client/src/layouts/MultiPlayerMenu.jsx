@@ -25,7 +25,7 @@ function MultiPlayerMenu({
   setPlayerCreatureHP,
   setPlayerCreatureMP,
   setEnemyCreature,
-  setBattleUndecided,
+  setCombatTextAndStatus,
   setSpawnAnimation,
   connections,
   loadAsyncDataLobby,
@@ -240,7 +240,12 @@ function MultiPlayerMenu({
       setCombatAlert("The battle has begun!");
       await loadAsyncDataLobby();
       dispatch(enableBattleStatus());
-      setBattleUndecided(true);
+      setCombatTextAndStatus((combatTextAndStatus) => {
+        return {
+          ...combatTextAndStatus,
+          battleUndecided: true,
+        };
+      });
       await loadAsyncDataPlayer();
     } catch (error) {
       console.log(error);

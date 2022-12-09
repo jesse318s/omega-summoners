@@ -25,7 +25,7 @@ function Menu({
   setPlayerCreatureMP,
   setEnemyCreature,
   setEnemyCreatureHP,
-  setBattleUndecided,
+  setCombatTextAndStatus,
   setSpawnAnimation,
   loadDataAlchemy,
 }) {
@@ -234,7 +234,12 @@ function Menu({
       setEnemyCreatureHP(enemyCreature[0].hp);
       setCombatAlert("The battle has begun!");
       dispatch(enableBattleStatus());
-      setBattleUndecided(true);
+      setCombatTextAndStatus((combatTextAndStatus) => {
+        return {
+          ...combatTextAndStatus,
+          battleUndecided: true,
+        };
+      });
       await loadAsyncDataPlayer();
     } catch (error) {
       console.log(error);

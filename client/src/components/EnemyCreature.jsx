@@ -3,10 +3,7 @@ import { useSelector } from "react-redux";
 
 function EnemyCreature({
   enemyCreature,
-  playerAttackStatus,
-  enemyAttackStatus,
-  critText,
-  combatText,
+  combatTextAndStatus,
   enemyCreatureHP,
   spawnAnimation,
 }) {
@@ -24,11 +21,13 @@ function EnemyCreature({
 
           {/* displays player combat text */}
           <div className="special_effect_container">
-            <div className={critText}>{combatText}</div>
+            <div className={combatTextAndStatus.critText}>
+              {combatTextAndStatus.combatText}
+            </div>
           </div>
 
           {/* displays enemy based on attack state */}
-          {enemyAttackStatus ? (
+          {combatTextAndStatus.enemyAttackStatus ? (
             <img
               className="enemy_creature_img"
               src={enemyCreature.imgPath.slice(0, -4) + "_attack.png"}
@@ -36,7 +35,7 @@ function EnemyCreature({
               width="128px"
               height="128px"
             />
-          ) : playerAttackStatus ? (
+          ) : combatTextAndStatus.playerAttackStatus ? (
             <img
               className="enemy_creature_img"
               src={enemyCreature.imgPath.slice(0, -4) + "_hurt.png"}

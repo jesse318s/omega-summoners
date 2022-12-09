@@ -66,17 +66,19 @@ function App() {
   const [creatureData] = useState(creatures);
   const [enemyCreatureData] = useState(enemyCreaturesHome);
   const [enemyCreature, setEnemyCreature] = useState({});
-  const [playerAttackStatus, setPlayerAttackStatus] = useState(false);
-  const [enemyAttackStatus, setEnemyAttackStatus] = useState(false);
+  const [combatTextAndStatus, setCombatTextAndStatus] = useState({
+    playerAttackStatus: false,
+    enemyAttackStatus: false,
+    battleUndecided: false,
+    combatText: "",
+    critText: "combat_text",
+    enemyCombatText: "",
+    enemyCritText: "combat_text",
+  });
   const [playerCreatureHP, setPlayerCreatureHP] = useState(0);
   const [enemyCreatureHP, setEnemyCreatureHP] = useState(0);
   const [playerCreatureMP, setPlayerCreatureMP] = useState(0);
   const [combatAlert, setCombatAlert] = useState("");
-  const [battleUndecided, setBattleUndecided] = useState(false);
-  const [combatText, setCombatText] = useState("");
-  const [critText, setCritText] = useState("combat_text");
-  const [enemyCombatText, setEnemyCombatText] = useState("");
-  const [enemyCritText, setEnemyCritText] = useState("combat_text");
   const [spawnAnimation, setSpawnAnimation] = useState("");
   // relics state
   const [relicsData] = useState(relics);
@@ -282,7 +284,8 @@ function App() {
                 playerCreature={playerCreature}
                 setEnemyCreature={setEnemyCreature}
                 setEnemyCreatureHP={setEnemyCreatureHP}
-                setBattleUndecided={setBattleUndecided}
+                combatTextAndStatus={combatTextAndStatus}
+                setCombatTextAndStatus={setCombatTextAndStatus}
                 setSpawnAnimation={setSpawnAnimation}
                 loadDataAlchemy={() => loadDataAlchemy()}
               />
@@ -298,16 +301,8 @@ function App() {
               />
 
               <PlayerCreature
-                enemyAttackStatus={enemyAttackStatus}
-                setEnemyAttackStatus={setEnemyAttackStatus}
-                setCombatText={setCombatText}
-                enemyCombatText={enemyCombatText}
-                setEnemyCombatText={setEnemyCombatText}
-                setCritText={setCritText}
-                enemyCritText={enemyCritText}
-                setEnemyCritText={setEnemyCritText}
-                playerAttackStatus={playerAttackStatus}
-                setPlayerAttackStatus={setPlayerAttackStatus}
+                combatTextAndStatus={combatTextAndStatus}
+                setCombatTextAndStatus={setCombatTextAndStatus}
                 player={player}
                 playerCreatureHP={playerCreatureHP}
                 setPlayerCreatureHP={setPlayerCreatureHP}
@@ -315,8 +310,6 @@ function App() {
                 setPlayerCreatureMP={setPlayerCreatureMP}
                 enemyCreature={enemyCreature}
                 setEnemyCreature={setEnemyCreatureHP}
-                battleUndecided={battleUndecided}
-                setBattleUndecided={setBattleUndecided}
                 enemyCreatureHP={enemyCreatureHP}
                 setEnemyCreatureHP={setEnemyCreatureHP}
                 Userfront={Userfront}
@@ -327,10 +320,7 @@ function App() {
 
               <EnemyCreature
                 enemyCreature={enemyCreature}
-                playerAttackStatus={playerAttackStatus}
-                enemyAttackStatus={enemyAttackStatus}
-                critText={critText}
-                combatText={combatText}
+                combatTextAndStatus={combatTextAndStatus}
                 enemyCreatureHP={enemyCreatureHP}
                 spawnAnimation={spawnAnimation}
               />

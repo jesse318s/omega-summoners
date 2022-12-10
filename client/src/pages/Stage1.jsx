@@ -6,8 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { getUser } from "../services/userServices";
 import GameNav from "../layouts/GameNav";
 import Options from "../layouts/Options";
-import Player from "../components/Player";
-import Menu from "../layouts/Menu";
+import GameMenu from "../layouts/GameMenu";
 import AlchemyMenu from "../layouts/AlchemyMenu";
 import PlayerCreature from "../components/PlayerCreature";
 import EnemyCreature from "../components/EnemyCreature";
@@ -27,7 +26,6 @@ import {
   setPlayerRelicsValue,
   setChosenRelicValue,
 } from "../store/actions/relics.actions";
-import { disableBattleStatus } from "../store/actions/battleStatus.actions";
 import {
   enableCreatureStatsStatus,
   disableCreatureStatsStatus,
@@ -45,6 +43,8 @@ function Stage1() {
 
   // player creature state from redux store
   const playerCreature = useSelector((state) => state.summon.playerCreature);
+  // battle status combat state from redux store
+  const battleStatus = useSelector((state) => state.battleStatus.battleStatus);
 
   // navigation hook
   const navigate = useNavigate();
@@ -126,9 +126,6 @@ function Stage1() {
         // loads player relics data
         const loadDataPlayerRelics = () => {
           try {
-            if (combatAlert === "") {
-              dispatch(disableBattleStatus());
-            }
             const playerRelicsData = relicsData.filter((relic) =>
               player.relics.includes(relic.id)
             );
@@ -144,7 +141,79 @@ function Stage1() {
         loadDataPlayerRelics();
       }
     }
-  }, [player, relicsData, creatureData, combatAlert, navigate, dispatch]);
+  }, [player, relicsData, creatureData, dispatch]);
+
+  useEffect(() => {
+    // loads alchemy data
+    const loadAsyncDataAlchemy = async () => {
+      try {
+        const { data } = await getItems();
+        const playerPotionsData = data.filter(
+          (item) =>
+            item.type === "Potion" && item.userId === Userfront.user.userId
+        );
+        const playerPotions = potionsList.filter((potion) =>
+          playerPotionsData.some((item) => item.itemId === potion.id)
+        );
+
+        for (let i = 0; i < playerPotions.length; i++) {
+          playerPotions[i].itemQuantity = playerPotionsData.find(
+            (item) => item.itemId === playerPotions[i].id
+          ).itemQuantity;
+        }
+        dispatch(setPotionsValue(playerPotions));
+        const playerIngredientsData = data.filter(
+          (item) =>
+            item.type === "Ingredient" && item.userId === Userfront.user.userId
+        );
+        const playerIngredients = ingredientsList.filter((ingredient) =>
+          playerIngredientsData.some((item) => item.itemId === ingredient.id)
+        );
+        for (let i = 0; i < playerIngredients.length; i++) {
+          playerIngredients[i].itemQuantity = playerIngredientsData.find(
+            (item) => item.itemId === playerIngredients[i].id
+          ).itemQuantity;
+        }
+        dispatch(setIngredientsValue(playerIngredients));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    loadAsyncDataAlchemy();
+  }, [gameMenuStatus.alchemyStatus, dispatch]);
+
+  useEffect(() => {
+    // detects combat changes
+    const checkCombat = () => {
+      try {
+        if (!battleStatus) {
+          setCombatAlert("");
+          const enemyCreature = [
+            enemyCreatureData[
+              Math.floor(Math.random() * enemyCreatureData.length)
+            ],
+          ];
+          setEnemyCreature(enemyCreature[0]);
+          setEnemyCreatureHP(enemyCreature[0].hp);
+        }
+        if (combatAlert === "" && battleStatus) {
+          setSpawnAnimation("spawn_effect");
+          setTimeout(() => {
+            setSpawnAnimation("");
+          }, 200);
+          setCombatTextAndStatus((combatTextAndStatus) => {
+            return {
+              ...combatTextAndStatus,
+              battleUndecided: true,
+            };
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    checkCombat();
+  }, [enemyCreatureData, combatAlert, battleStatus]);
 
   // retrieves user data and updates player state
   const loadAsyncDataPlayer = async () => {
@@ -157,7 +226,7 @@ function Stage1() {
   };
 
   // loads alchemy data
-  const loadDataAlchemy = async () => {
+  const loadAsyncDataAlchemy = async () => {
     try {
       const { data } = await getItems();
       const playerPotionsData = data.filter(
@@ -197,7 +266,6 @@ function Stage1() {
       <>
         <header>
           <GameNav
-            Userfront={Userfront}
             optionsStatus={optionsStatus}
             setOptionsStatus={setOptionsStatus}
             setNameOptionStatus={setNameOptionStatus}
@@ -207,7 +275,6 @@ function Stage1() {
 
         <main className="stage1_game_section">
           <Options
-            Userfront={Userfront}
             player={player}
             optionsStatus={optionsStatus}
             nameOptionStatus={nameOptionStatus}
@@ -217,39 +284,71 @@ function Stage1() {
             loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
           />
 
-          <Player player={player} />
+          {/* player with player details panel */}
+          <div className="color_white">
+            <img
+              src={player.avatarPath}
+              alt={player.name}
+              className="player_avatar"
+              width="96"
+              height="96"
+            />
+            <h4>{player.name}</h4>
+            <h5>
+              Lvl. {Math.floor(Math.sqrt(player.experience) * 0.25)} |{" "}
+              {player.experience
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
+              XP
+              <div className="progress_bar_container">
+                <div
+                  className="progress_bar"
+                  style={{
+                    width:
+                      (
+                        Math.sqrt(player.experience) * 0.25 -
+                        Math.floor(Math.sqrt(player.experience) * 0.25)
+                      )
+                        .toFixed(2)
+                        .replace("0.", "") + "%",
+                  }}
+                />
+              </div>
+            </h5>
+            <h5>
+              Drachmas:{" "}
+              {player.drachmas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
+              {"\u25C9"}
+            </h5>
+          </div>
 
           {/* menus and creatures wrapped in options status check */}
           {!optionsStatus ? (
             <>
-              <Menu
-                Userfront={Userfront}
+              <GameMenu
                 player={player}
                 gameMenuStatus={gameMenuStatus}
                 setGameMenuStatus={setGameMenuStatus}
-                enemyCreatureData={enemyCreatureData}
-                combatAlert={combatAlert}
-                setCombatAlert={setCombatAlert}
                 loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
                 setPlayerCreatureHP={setPlayerCreatureHP}
                 setPlayerCreatureMP={setPlayerCreatureMP}
-                setEnemyCreature={setEnemyCreature}
-                setEnemyCreatureHP={setEnemyCreatureHP}
-                combatTextAndStatus={combatTextAndStatus}
-                setCombatTextAndStatus={setCombatTextAndStatus}
-                setSpawnAnimation={setSpawnAnimation}
-                loadDataAlchemy={() => loadDataAlchemy()}
               />
 
               <AlchemyMenu
-                Userfront={Userfront}
                 gameMenuStatus={gameMenuStatus}
                 setGameMenuStatus={setGameMenuStatus}
-                loadDataAlchemy={() => loadDataAlchemy()}
+                loadAsyncDataAlchemy={() => loadAsyncDataAlchemy()}
                 playerCreature={playerCreature}
                 setPlayerCreatureHP={setPlayerCreatureHP}
                 setPlayerCreatureMP={setPlayerCreatureMP}
               />
+
+              {/* displays the combat alert if there is combat */}
+              {battleStatus ? (
+                <div>
+                  <p className="combat_alert">{combatAlert}</p>
+                </div>
+              ) : null}
 
               <PlayerCreature
                 combatTextAndStatus={combatTextAndStatus}
@@ -263,7 +362,6 @@ function Stage1() {
                 setEnemyCreature={setEnemyCreature}
                 enemyCreatureHP={enemyCreatureHP}
                 setEnemyCreatureHP={setEnemyCreatureHP}
-                Userfront={Userfront}
                 loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
                 setCombatAlert={setCombatAlert}
                 gameMenuStatus={gameMenuStatus}

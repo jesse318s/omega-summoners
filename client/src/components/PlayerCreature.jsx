@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import Userfront from "@userfront/core";
 import { updateUser } from "../services/userServices";
 import { getPotionTimer } from "../services/potionTimerServices";
 import { potionsList } from "../constants/items";
@@ -9,6 +10,8 @@ import {
   setSummonHPBonusAmount,
   setSummonMPBonusAmount,
 } from "../store/actions/alchemy.actions";
+
+Userfront.init("rbvqd5nd");
 
 function PlayerCreature({
   combatTextAndStatus,
@@ -22,7 +25,6 @@ function PlayerCreature({
   setEnemyCreature,
   enemyCreatureHP,
   setEnemyCreatureHP,
-  Userfront,
   loadAsyncDataPlayer,
   setCombatAlert,
   gameMenuStatus,

@@ -6,8 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { getUser } from "../services/userServices";
 import GameNav from "../layouts/GameNav";
 import Options from "../layouts/Options";
-import Player from "../components/Player";
-import MultiPlayerMenu from "../layouts/MultiPlayerMenu";
+import MultiPlayerGameMenu from "../layouts/MultiPlayerGameMenu";
 import MultiPlayerCreature from "../components/MultiPlayerCreature";
 import MultiPlayerEnemyCreature from "../components/MultiPlayerEnemyCreature";
 import creatures from "../constants/creatures";
@@ -22,7 +21,6 @@ import {
   setPlayerRelicsValue,
   setChosenRelicValue,
 } from "../store/actions/relics.actions";
-import { disableBattleStatus } from "../store/actions/battleStatus.actions";
 import {
   enableCreatureStatsStatus,
   disableCreatureStatsStatus,
@@ -40,6 +38,8 @@ function Lobby1() {
 
   // player creature state from redux store
   const playerCreature = useSelector((state) => state.summon.playerCreature);
+  // battle status combat state from redux store
+  const battleStatus = useSelector((state) => state.battleStatus.battleStatus);
 
   // navigation hook
   const navigate = useNavigate();
@@ -142,9 +142,6 @@ function Lobby1() {
         // loads player relics data
         const loadDataPlayerRelics = () => {
           try {
-            if (combatAlert === "") {
-              dispatch(disableBattleStatus());
-            }
             const playerRelicsData = relicsData.filter((relic) =>
               player.relics.includes(relic.id)
             );
@@ -160,7 +157,39 @@ function Lobby1() {
         loadDataPlayerRelics();
       }
     }
-  }, [player, relicsData, creatureData, combatAlert, navigate, dispatch]);
+  }, [player, relicsData, creatureData, dispatch]);
+
+  useEffect(() => {
+    // detects combat changes
+    const checkCombat = () => {
+      try {
+        if (!battleStatus) {
+          setCombatAlert("");
+          const enemyCreature = [
+            enemyCreatureData[
+              Math.floor(Math.random() * enemyCreatureData.length)
+            ],
+          ];
+          setEnemyCreature(enemyCreature[0]);
+        }
+        if (combatAlert === "" && battleStatus) {
+          setSpawnAnimation("spawn_effect");
+          setTimeout(() => {
+            setSpawnAnimation("");
+          }, 200);
+          setCombatTextAndStatus((combatTextAndStatus) => {
+            return {
+              ...combatTextAndStatus,
+              battleUndecided: true,
+            };
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    checkCombat();
+  }, [enemyCreatureData, combatAlert, battleStatus]);
 
   // retrieves user data and updates player state
   const loadAsyncDataPlayer = async () => {
@@ -222,7 +251,6 @@ function Lobby1() {
       <>
         <header>
           <GameNav
-            Userfront={Userfront}
             optionsStatus={optionsStatus}
             setOptionsStatus={setOptionsStatus}
             setNameOptionStatus={setNameOptionStatus}
@@ -232,7 +260,6 @@ function Lobby1() {
 
         <main className="lobby1_game_section">
           <Options
-            Userfront={Userfront}
             player={player}
             optionsStatus={optionsStatus}
             nameOptionStatus={nameOptionStatus}
@@ -242,29 +269,64 @@ function Lobby1() {
             loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
           />
 
-          <Player player={player} />
+          {/* player with player details panel */}
+          <div className="color_white">
+            <img
+              src={player.avatarPath}
+              alt={player.name}
+              className="player_avatar"
+              width="96"
+              height="96"
+            />
+            <h4>{player.name}</h4>
+            <h5>
+              Lvl. {Math.floor(Math.sqrt(player.experience) * 0.25)} |{" "}
+              {player.experience
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
+              XP
+              <div className="progress_bar_container">
+                <div
+                  className="progress_bar"
+                  style={{
+                    width:
+                      (
+                        Math.sqrt(player.experience) * 0.25 -
+                        Math.floor(Math.sqrt(player.experience) * 0.25)
+                      )
+                        .toFixed(2)
+                        .replace("0.", "") + "%",
+                  }}
+                />
+              </div>
+            </h5>
+            <h5>
+              Drachmas:{" "}
+              {player.drachmas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
+              {"\u25C9"}
+            </h5>
+          </div>
 
           {/* menu and creatures wrapped in options status check */}
           {!optionsStatus ? (
             <>
-              <MultiPlayerMenu
-                Userfront={Userfront}
+              <MultiPlayerGameMenu
                 player={player}
                 gameMenuStatus={gameMenuStatus}
                 setGameMenuStatus={setGameMenuStatus}
-                enemyCreatureData={enemyCreatureData}
-                combatAlert={combatAlert}
-                setCombatAlert={setCombatAlert}
                 loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
                 setPlayerCreatureHP={setPlayerCreatureHP}
                 setPlayerCreatureMP={setPlayerCreatureMP}
-                setEnemyCreature={setEnemyCreature}
-                combatTextAndStatus={combatTextAndStatus}
-                setCombatTextAndStatus={setCombatTextAndStatus}
-                setSpawnAnimation={setSpawnAnimation}
                 connections={connections}
                 loadAsyncDataLobby={() => loadAsyncDataLobby()}
               />
+
+              {/* displays the combat alert if there is combat */}
+              {battleStatus ? (
+                <div>
+                  <p className="combat_alert">{combatAlert}</p>
+                </div>
+              ) : null}
 
               <MultiPlayerCreature
                 combatTextAndStatus={combatTextAndStatus}
@@ -276,7 +338,6 @@ function Lobby1() {
                 setPlayerCreatureMP={setPlayerCreatureMP}
                 enemyCreature={enemyCreature}
                 setEnemyCreature={setEnemyCreature}
-                Userfront={Userfront}
                 loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
                 setCombatAlert={setCombatAlert}
                 connections={connections}

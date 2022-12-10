@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import Userfront from "@userfront/core";
 import { updateUser } from "../services/userServices";
 import { useState } from "react";
 import { getPotionTimer } from "../services/potionTimerServices";
@@ -13,20 +14,15 @@ import {
   setSummonMPBonusAmount,
 } from "../store/actions/alchemy.actions";
 
-function MultiPlayerMenu({
-  Userfront,
+Userfront.init("rbvqd5nd");
+
+function MultiPlayerGameMenu({
   player,
   gameMenuStatus,
   setGameMenuStatus,
-  enemyCreatureData,
-  combatAlert,
-  setCombatAlert,
   loadAsyncDataPlayer,
   setPlayerCreatureHP,
   setPlayerCreatureMP,
-  setEnemyCreature,
-  setCombatTextAndStatus,
-  setSpawnAnimation,
   connections,
   loadAsyncDataLobby,
 }) {
@@ -192,20 +188,8 @@ function MultiPlayerMenu({
     }
   };
 
-  // displays enemy spawn animation
-  const displaySpawnAnimation = async () => {
-    try {
-      setSpawnAnimation("spawn_effect");
-      setTimeout(() => {
-        setSpawnAnimation("");
-      }, 200);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // loads battle data
-  const loadDataBattle = async () => {
+  // begins a battle
+  const beginBattle = async () => {
     try {
       // refresh and set connections and load lobby data
       await getConnections();
@@ -232,20 +216,8 @@ function MultiPlayerMenu({
       setPlayerCreatureHP(
         playerCreature.hp + chosenRelic.hpMod + summonHPBonus
       );
-      displaySpawnAnimation();
-      const enemyCreature = [
-        enemyCreatureData[Math.floor(Math.random() * enemyCreatureData.length)],
-      ];
-      setEnemyCreature(enemyCreature[0]);
-      setCombatAlert("The battle has begun!");
       await loadAsyncDataLobby();
       dispatch(enableBattleStatus());
-      setCombatTextAndStatus((combatTextAndStatus) => {
-        return {
-          ...combatTextAndStatus,
-          battleUndecided: true,
-        };
-      });
       await loadAsyncDataPlayer();
     } catch (error) {
       console.log(error);
@@ -288,13 +260,6 @@ function MultiPlayerMenu({
                   Temple
                 </button>
               </div>
-            </div>
-          ) : null}
-
-          {/* displays the combat alert if there is a battle */}
-          {battleStatus ? (
-            <div>
-              <p className="combat_alert">{combatAlert}</p>
             </div>
           ) : null}
 
@@ -599,7 +564,7 @@ function MultiPlayerMenu({
               <button
                 className="game_button margin_small"
                 onClick={() => {
-                  loadDataBattle();
+                  beginBattle();
                   setGameMenuStatus({
                     templeStatus: false,
                     relicsStatus: false,
@@ -649,4 +614,4 @@ function MultiPlayerMenu({
   } else return <></>;
 }
 
-export default MultiPlayerMenu;
+export default MultiPlayerGameMenu;

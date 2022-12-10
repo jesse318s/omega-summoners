@@ -1,5 +1,8 @@
+import Userfront from "@userfront/core";
+
+Userfront.init("rbvqd5nd");
+
 function GameNav({
-  Userfront,
   optionsStatus,
   setOptionsStatus,
   setAvatarOptionStatus,

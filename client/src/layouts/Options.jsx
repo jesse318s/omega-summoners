@@ -1,8 +1,10 @@
+import Userfront from "@userfront/core";
 import { updateUser } from "../services/userServices";
 import { useSelector } from "react-redux";
 
+Userfront.init("rbvqd5nd");
+
 function Options({
-  Userfront,
   player,
   optionsStatus,
   nameOptionStatus,

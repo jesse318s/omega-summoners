@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Userfront from "@userfront/core";
 import recipeList from "../constants/recipes";
 import { potionsList } from "../constants/items";
 import { getItems, addItem } from "../services/itemServices";
@@ -14,11 +15,12 @@ import {
   setSummonMPBonusAmount,
 } from "../store/actions/alchemy.actions";
 
+Userfront.init("rbvqd5nd");
+
 function AlchemyMenu({
-  Userfront,
   gameMenuStatus,
   setGameMenuStatus,
-  loadDataAlchemy,
+  loadAsyncDataAlchemy,
   playerCreature,
   setPlayerCreatureHP,
   setPlayerCreatureMP,
@@ -147,14 +149,14 @@ function AlchemyMenu({
               },
             });
             await addItem(currentIngredient1);
-            await loadDataAlchemy();
+            await loadAsyncDataAlchemy();
             await Userfront.user.update({
               data: {
                 userkey: Userfront.user.data.userkey,
               },
             });
             await addItem(currentIngredient2);
-            await loadDataAlchemy();
+            await loadAsyncDataAlchemy();
             // add the potion to the player's inventory
             await Userfront.user.update({
               data: {
@@ -162,7 +164,7 @@ function AlchemyMenu({
               },
             });
             await addItem(newPotionData);
-            await loadDataAlchemy();
+            await loadAsyncDataAlchemy();
             setTimeout(() => {
               dispatch(disablePotionCooldown());
             }, 1000);
@@ -222,7 +224,7 @@ function AlchemyMenu({
               },
             });
             await addItem(currentPotionData[0]);
-            await loadDataAlchemy();
+            await loadAsyncDataAlchemy();
             await Userfront.user.update({
               data: {
                 userkey: Userfront.user.data.userkey,
@@ -233,7 +235,7 @@ function AlchemyMenu({
               potionId: potion.id,
               potionDuration: potion.duration,
             });
-            await loadDataAlchemy();
+            await loadAsyncDataAlchemy();
             // checks potion timer
             const potionTimer = await getPotionTimer();
             if (potionTimer.data.length > 0) {

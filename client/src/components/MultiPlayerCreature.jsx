@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import Userfront from "@userfront/core";
 import { updateUser } from "../services/userServices";
 import { getLobby, updateLobby } from "../services/lobbyServices";
 import { getPotionTimer } from "../services/potionTimerServices";
@@ -15,6 +16,8 @@ import {
   disableLobbyTimer,
 } from "../store/actions/lobbyTimer.actions";
 
+Userfront.init("rbvqd5nd");
+
 function MultiPlayerCreature({
   combatTextAndStatus,
   setCombatTextAndStatus,
@@ -25,7 +28,6 @@ function MultiPlayerCreature({
   setPlayerCreatureMP,
   enemyCreature,
   setEnemyCreature,
-  Userfront,
   loadAsyncDataPlayer,
   setCombatAlert,
   connections,

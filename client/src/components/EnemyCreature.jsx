@@ -54,6 +54,7 @@ function EnemyCreature({
             />
           )}
 
+          {/* creature panel */}
           <div className="creature_panel">
             <h4>Enemy {enemyCreature.name}</h4>
             <div className="progress_bar_container">

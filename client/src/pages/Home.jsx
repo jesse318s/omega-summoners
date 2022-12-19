@@ -428,7 +428,7 @@ function Home() {
 
         {/* footer */}
         <footer>
-          <p>&copy; 2021 Jesse All Rights Reserved.</p>
+          <p>&copy; 2022 Jesse All Rights Reserved.</p>
         </footer>
       </main>
     </>

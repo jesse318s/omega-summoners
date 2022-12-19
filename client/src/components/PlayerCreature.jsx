@@ -867,25 +867,20 @@ function PlayerCreature({
           </div>
         ) : null}
 
-        {/* displays player creature controls based on battle status and selected special, and player creature info based on user preference */}
-
-        {/* toggle special button */}
-        {!battleStatus ? (
-          <button
-            className="game_button_small margin_small"
-            onClick={() => {
-              toggleSpecial();
-            }}
-          >
-            {" "}
-            Special: {player.preferredSpecial}{" "}
-          </button>
-        ) : null}
-
         {/* creature panel */}
-
         <div className="creature_panel">
           {/* panel controls */}
+          {!battleStatus ? (
+            <button
+              className="game_button_small"
+              onClick={() => {
+                toggleSpecial();
+              }}
+            >
+              {" "}
+              Special: {player.preferredSpecial}{" "}
+            </button>
+          ) : null}
           {battleStatus ? (
             <div className="inline_flex">
               <button

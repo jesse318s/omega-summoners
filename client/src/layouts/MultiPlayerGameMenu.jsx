@@ -511,7 +511,7 @@ function MultiPlayerGameMenu({
                 <br />
                 <Link to="/lobby1">
                   <button className="game_button_small margin_small">
-                    Lvl. 8 | Stage I<br /> (Multiplayer)
+                    Lvl. 8 | Lobby I<br /> (Multiplayer)
                   </button>
                   {window.location.pathname === "/lobby1" ? (
                     <span className="color_white">X</span>

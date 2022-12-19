@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const {
   verifyUserkey,
   generateUserkey,
-  generateQuantumUserkey,
+  generateFortifiedUserkey,
 } = require("../libs/userkeyGeneratorAndVerifier.js");
 
 // retrieves lobby and restores enemy HP if enemy HP is 0
@@ -83,7 +83,7 @@ router.put("/:id", async (req, res) => {
       generateUserkey(decoded.userId);
     } else {
       res.send("Unauthorized");
-      generateQuantumUserkey(decoded.userId);
+      generateFortifiedUserkey(decoded.userId);
     }
   } catch (error) {
     const accessToken = req.headers.authorization.replace("Bearer ", "");
@@ -92,7 +92,7 @@ router.put("/:id", async (req, res) => {
     });
 
     res.send(error);
-    generateQuantumUserkey(decoded.userId);
+    generateForitfiedUserkey(decoded.userId);
   }
 });
 

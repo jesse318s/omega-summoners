@@ -2,11 +2,12 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 function EnemyCreature({
-  enemyCreature,
   combatTextAndStatus,
   enemyCreatureHP,
   spawnAnimation,
 }) {
+  // enemy creature state from redux store
+  const enemyCreature = useSelector((state) => state.enemy.enemyCreature);
   // battle status combat state from redux store
   const battleStatus = useSelector((state) => state.battleStatus.battleStatus);
 

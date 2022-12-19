@@ -18,6 +18,7 @@ import { getItems } from "../services/itemServices";
 import { enemyCreaturesStage1 } from "../constants/enemyCreatures";
 import { useSelector, useDispatch } from "react-redux";
 import { setPlayerCreatureValue } from "../store/actions/summon.actions";
+import { setEnemyCreatureValue } from "../store/actions/enemy.actions";
 import {
   setIngredientsValue,
   setPotionsValue,
@@ -43,6 +44,8 @@ function Stage1() {
 
   // player creature state from redux store
   const playerCreature = useSelector((state) => state.summon.playerCreature);
+  // enemy creature state from redux store
+  const enemyCreature = useSelector((state) => state.enemy.enemyCreature);
   // battle status combat state from redux store
   const battleStatus = useSelector((state) => state.battleStatus.battleStatus);
 
@@ -65,7 +68,6 @@ function Stage1() {
   // creature and combat state
   const [creatureData] = useState(creatures);
   const [enemyCreatureData] = useState(enemyCreaturesStage1);
-  const [enemyCreature, setEnemyCreature] = useState({});
   const [combatTextAndStatus, setCombatTextAndStatus] = useState({
     playerAttackStatus: false,
     enemyAttackStatus: false,
@@ -188,13 +190,17 @@ function Stage1() {
       try {
         if (!battleStatus) {
           setCombatAlert("");
-          const enemyCreature = [
+          const enemyCreatureNew = [
             enemyCreatureData[
               Math.floor(Math.random() * enemyCreatureData.length)
             ],
           ];
-          setEnemyCreature(enemyCreature[0]);
-          setEnemyCreatureHP(enemyCreature[0].hp);
+          if (enemyCreatureNew !== enemyCreature) {
+            dispatch(setEnemyCreatureValue(enemyCreatureNew[0]));
+            setEnemyCreatureHP(enemyCreatureNew[0].hp);
+          } else {
+            setEnemyCreatureHP(enemyCreature[0].hp);
+          }
         }
         if (combatAlert === "" && battleStatus) {
           setSpawnAnimation("spawn_effect");
@@ -213,48 +219,13 @@ function Stage1() {
       }
     };
     checkCombat();
-  }, [enemyCreatureData, combatAlert, battleStatus]);
+  }, [enemyCreature, enemyCreatureData, combatAlert, battleStatus, dispatch]);
 
   // retrieves user data and updates player state
   const loadAsyncDataPlayer = async () => {
     try {
       const { data } = await getUser();
       setPlayer(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // loads alchemy data
-  const loadAsyncDataAlchemy = async () => {
-    try {
-      const { data } = await getItems();
-      const playerPotionsData = data.filter(
-        (item) => item.type === "Potion" && item.userId === player.userfrontId
-      );
-      const playerPotions = potionsList.filter((potion) =>
-        playerPotionsData.some((item) => item.itemId === potion.id)
-      );
-
-      for (let i = 0; i < playerPotions.length; i++) {
-        playerPotions[i].itemQuantity = playerPotionsData.find(
-          (item) => item.itemId === playerPotions[i].id
-        ).itemQuantity;
-      }
-      dispatch(setPotionsValue(playerPotions));
-      const playerIngredientsData = data.filter(
-        (item) =>
-          item.type === "Ingredient" && item.userId === player.userfrontId
-      );
-      const playerIngredients = ingredientsList.filter((ingredient) =>
-        playerIngredientsData.some((item) => item.itemId === ingredient.id)
-      );
-      for (let i = 0; i < playerIngredients.length; i++) {
-        playerIngredients[i].itemQuantity = playerIngredientsData.find(
-          (item) => item.itemId === playerIngredients[i].id
-        ).itemQuantity;
-      }
-      dispatch(setIngredientsValue(playerIngredients));
     } catch (error) {
       console.log(error);
     }
@@ -335,9 +306,9 @@ function Stage1() {
               />
 
               <AlchemyMenu
+                player={player}
                 gameMenuStatus={gameMenuStatus}
                 setGameMenuStatus={setGameMenuStatus}
-                loadAsyncDataAlchemy={() => loadAsyncDataAlchemy()}
                 playerCreature={playerCreature}
                 setPlayerCreatureHP={setPlayerCreatureHP}
                 setPlayerCreatureMP={setPlayerCreatureMP}
@@ -350,25 +321,26 @@ function Stage1() {
                 </div>
               ) : null}
 
-              <PlayerCreature
-                combatTextAndStatus={combatTextAndStatus}
-                setCombatTextAndStatus={setCombatTextAndStatus}
-                player={player}
-                playerCreatureHP={playerCreatureHP}
-                setPlayerCreatureHP={setPlayerCreatureHP}
-                playerCreatureMP={playerCreatureMP}
-                setPlayerCreatureMP={setPlayerCreatureMP}
-                enemyCreature={enemyCreature}
-                setEnemyCreature={setEnemyCreature}
-                enemyCreatureHP={enemyCreatureHP}
-                setEnemyCreatureHP={setEnemyCreatureHP}
-                loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
-                setCombatAlert={setCombatAlert}
-                gameMenuStatus={gameMenuStatus}
-              />
+              {/* displays player creature if game menu isn't being used */}
+              {Object.values(gameMenuStatus).every(
+                (value) => value === false
+              ) ? (
+                <PlayerCreature
+                  combatTextAndStatus={combatTextAndStatus}
+                  setCombatTextAndStatus={setCombatTextAndStatus}
+                  player={player}
+                  playerCreatureHP={playerCreatureHP}
+                  setPlayerCreatureHP={setPlayerCreatureHP}
+                  playerCreatureMP={playerCreatureMP}
+                  setPlayerCreatureMP={setPlayerCreatureMP}
+                  enemyCreatureHP={enemyCreatureHP}
+                  setEnemyCreatureHP={setEnemyCreatureHP}
+                  loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
+                  setCombatAlert={setCombatAlert}
+                />
+              ) : null}
 
               <EnemyCreature
-                enemyCreature={enemyCreature}
                 combatTextAndStatus={combatTextAndStatus}
                 enemyCreatureHP={enemyCreatureHP}
                 spawnAnimation={spawnAnimation}

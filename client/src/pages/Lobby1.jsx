@@ -17,6 +17,7 @@ import { getLobby } from "../services/lobbyServices";
 import { getConnections, addConnection } from "../services/connectionServices";
 import { useSelector, useDispatch } from "react-redux";
 import { setPlayerCreatureValue } from "../store/actions/summon.actions";
+import { setEnemyCreatureValue } from "../store/actions/enemy.actions";
 import {
   setPlayerRelicsValue,
   setChosenRelicValue,
@@ -38,6 +39,8 @@ function Lobby1() {
 
   // player creature state from redux store
   const playerCreature = useSelector((state) => state.summon.playerCreature);
+  // enemy creature state from redux store
+  const enemyCreature = useSelector((state) => state.enemy.enemyCreature);
   // battle status combat state from redux store
   const battleStatus = useSelector((state) => state.battleStatus.battleStatus);
 
@@ -59,7 +62,6 @@ function Lobby1() {
   // creature and combat state
   const [creatureData] = useState(creatures);
   const [enemyCreatureData] = useState(bossEnemyCreatureStage1);
-  const [enemyCreature, setEnemyCreature] = useState({});
   const [combatTextAndStatus, setCombatTextAndStatus] = useState({
     playerAttackStatus: false,
     enemyAttackStatus: false,
@@ -165,12 +167,10 @@ function Lobby1() {
       try {
         if (!battleStatus) {
           setCombatAlert("");
-          const enemyCreature = [
-            enemyCreatureData[
-              Math.floor(Math.random() * enemyCreatureData.length)
-            ],
-          ];
-          setEnemyCreature(enemyCreature[0]);
+          const enemyCreatureNew = enemyCreatureData[0];
+          if (enemyCreatureNew !== enemyCreature) {
+            dispatch(setEnemyCreatureValue(enemyCreatureNew));
+          }
         }
         if (combatAlert === "" && battleStatus) {
           setSpawnAnimation("spawn_effect");
@@ -189,7 +189,7 @@ function Lobby1() {
       }
     };
     checkCombat();
-  }, [enemyCreatureData, combatAlert, battleStatus]);
+  }, [enemyCreature, enemyCreatureData, combatAlert, battleStatus, dispatch]);
 
   // retrieves user data and updates player state
   const loadAsyncDataPlayer = async () => {
@@ -307,7 +307,7 @@ function Lobby1() {
             </h5>
           </div>
 
-          {/* menu and creatures wrapped in options status check */}
+          {/* game menu and creatures wrapped in options status check */}
           {!optionsStatus ? (
             <>
               <MultiPlayerGameMenu
@@ -328,26 +328,27 @@ function Lobby1() {
                 </div>
               ) : null}
 
-              <MultiPlayerCreature
-                combatTextAndStatus={combatTextAndStatus}
-                setCombatTextAndStatus={setCombatTextAndStatus}
-                player={player}
-                playerCreatureHP={playerCreatureHP}
-                setPlayerCreatureHP={setPlayerCreatureHP}
-                playerCreatureMP={playerCreatureMP}
-                setPlayerCreatureMP={setPlayerCreatureMP}
-                enemyCreature={enemyCreature}
-                setEnemyCreature={setEnemyCreature}
-                loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
-                setCombatAlert={setCombatAlert}
-                connections={connections}
-                lobby={lobby}
-                loadAsyncDataLobby={() => loadAsyncDataLobby()}
-                gameMenuStatus={gameMenuStatus}
-              />
+              {/* displays player creature if game menu isn't being used */}
+              {Object.values(gameMenuStatus).every(
+                (value) => value === false
+              ) ? (
+                <MultiPlayerCreature
+                  combatTextAndStatus={combatTextAndStatus}
+                  setCombatTextAndStatus={setCombatTextAndStatus}
+                  player={player}
+                  playerCreatureHP={playerCreatureHP}
+                  setPlayerCreatureHP={setPlayerCreatureHP}
+                  playerCreatureMP={playerCreatureMP}
+                  setPlayerCreatureMP={setPlayerCreatureMP}
+                  loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
+                  setCombatAlert={setCombatAlert}
+                  connections={connections}
+                  lobby={lobby}
+                  loadAsyncDataLobby={() => loadAsyncDataLobby()}
+                />
+              ) : null}
 
               <MultiPlayerEnemyCreature
-                enemyCreature={enemyCreature}
                 combatTextAndStatus={combatTextAndStatus}
                 spawnAnimation={spawnAnimation}
                 lobby={lobby}

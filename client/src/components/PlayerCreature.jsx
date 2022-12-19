@@ -1,15 +1,10 @@
 import { useRef, useState } from "react";
 import Userfront from "@userfront/core";
 import { updateUser } from "../services/userServices";
-import { getPotionTimer } from "../services/potionTimerServices";
-import { potionsList } from "../constants/items";
 import { getItems, addItem } from "../services/itemServices";
 import { useSelector, useDispatch } from "react-redux";
 import { disableBattleStatus } from "../store/actions/battleStatus.actions";
-import {
-  setSummonHPBonusAmount,
-  setSummonMPBonusAmount,
-} from "../store/actions/alchemy.actions";
+import checkPotionTimer from "../utils/checkPotionTimer";
 
 Userfront.init("rbvqd5nd");
 
@@ -21,19 +16,18 @@ function PlayerCreature({
   setPlayerCreatureHP,
   playerCreatureMP,
   setPlayerCreatureMP,
-  enemyCreature,
-  setEnemyCreature,
   enemyCreatureHP,
   setEnemyCreatureHP,
   loadAsyncDataPlayer,
   setCombatAlert,
-  gameMenuStatus,
 }) {
   // dispatch hook for redux
   const dispatch = useDispatch();
 
   // player creature state from redux store
   const playerCreature = useSelector((state) => state.summon.playerCreature);
+  // enemy creature state from redux store
+  const enemyCreature = useSelector((state) => state.enemy.enemyCreature);
   // display creature stats status state from redux store
   const creatureStatsStatus = useSelector(
     (state) => state.creatureStatsStatus.creatureStatsStatus
@@ -342,7 +336,11 @@ function PlayerCreature({
   };
 
   // initiates chance of enemy counter attack
-  const callEnemyCounterAttack = async (chancePlayer, moveName, moveType) => {
+  const receiveEnemyCounterAttack = async (
+    chancePlayer,
+    moveName,
+    moveType
+  ) => {
     try {
       const playerCreatureSpeed = playerCreature.speed + chosenRelic.speedMod;
       let playerCreatureDefense =
@@ -424,8 +422,6 @@ function PlayerCreature({
           setTimeout(() => {
             setIsFighting(false);
             dispatch(disableBattleStatus());
-            setEnemyCreature({});
-            setEnemyCreatureHP(0);
           }, 1100);
         } else {
           setPlayerCreatureHP(
@@ -441,24 +437,6 @@ function PlayerCreature({
       }
     } catch (error) {
       console.log(error);
-    }
-  };
-
-  // checks potion timer
-  const checkPotionTimer = async () => {
-    const potionTimer = await getPotionTimer();
-    if (potionTimer.data.length > 0) {
-      const playerPotion = potionsList.find(
-        (potion) => potion.id === potionTimer.data[0].potionId
-      );
-      const playerMPBonus = playerPotion.mpMod;
-      const playerHPBonus = playerPotion.hpMod;
-      dispatch(setSummonMPBonusAmount(playerMPBonus));
-      dispatch(setSummonHPBonusAmount(playerHPBonus));
-    }
-    if (potionTimer.data.length === 0) {
-      dispatch(setSummonMPBonusAmount(0));
-      dispatch(setSummonHPBonusAmount(0));
     }
   };
 
@@ -485,7 +463,7 @@ function PlayerCreature({
       );
     }
     ref.current = playerCreatureHP;
-    callEnemyCounterAttack(chancePlayer, moveName, moveType);
+    receiveEnemyCounterAttack(chancePlayer, moveName, moveType);
   };
 
   // chance to drop ingredients for player
@@ -622,7 +600,7 @@ function PlayerCreature({
           playerCreatureHP + playerCreatureSpecial * criticalMultiplier * 0.2;
       }
     }
-    callEnemyCounterAttack(chancePlayer, moveName, moveType);
+    receiveEnemyCounterAttack(chancePlayer, moveName, moveType);
   };
 
   // heals player creature
@@ -651,10 +629,10 @@ function PlayerCreature({
         ref.current =
           playerCreatureHP + playerCreatureSpecial * criticalMultiplier;
       }
-      callEnemyCounterAttack(chancePlayer, moveName, moveType);
+      receiveEnemyCounterAttack(chancePlayer, moveName, moveType);
     } else {
       ref.current = playerCreatureHP;
-      callEnemyCounterAttack(chancePlayer, moveName, moveType);
+      receiveEnemyCounterAttack(chancePlayer, moveName, moveType);
     }
   };
 
@@ -773,7 +751,7 @@ function PlayerCreature({
 
         // begins fight
         setIsFighting(true);
-        checkPotionTimer();
+        checkPotionTimer(dispatch);
         await loadAsyncDataPlayer();
         if (player.preferredSpecial === 2) {
           playerCreatureSpecial =
@@ -842,197 +820,191 @@ function PlayerCreature({
 
   return (
     <>
-      {Object.values(gameMenuStatus).every((value) => value === false) ? (
-        <>
-          {/* displays the player creature with combat text, special visual effect, and creature control/stat panel */}
-          <div className="player_creature">
-            {/* displays enemy combat text */}
-            <div className="special_effect_container">
-              <div className={combatTextAndStatus.enemyCritText}>
-                {combatTextAndStatus.enemyCombatText}
-              </div>
-            </div>
+      {/* displays the player creature with combat text, special visual effect, and creature control/info panel */}
+      <div className="player_creature">
+        {/* displays enemy combat text */}
+        <div className="special_effect_container">
+          <div className={combatTextAndStatus.enemyCritText}>
+            {combatTextAndStatus.enemyCombatText}
+          </div>
+        </div>
 
-            {/* displays creature based on attack state */}
-            {combatTextAndStatus.playerAttackStatus ? (
-              <img
-                className={chosenRelic.effectClass}
-                src={playerCreature.imgPath.slice(0, -4) + "_attack.png"}
-                alt={playerCreature.name}
-                width="128px"
-                height="128px"
-              />
-            ) : combatTextAndStatus.enemyAttackStatus ? (
-              <img
-                className={chosenRelic.effectClass}
-                src={playerCreature.imgPath.slice(0, -4) + "_hurt.png"}
-                alt={playerCreature.name}
-                width="128px"
-                height="128px"
-              />
+        {/* displays creature based on attack state */}
+        {combatTextAndStatus.playerAttackStatus ? (
+          <img
+            className={chosenRelic.effectClass}
+            src={playerCreature.imgPath.slice(0, -4) + "_attack.png"}
+            alt={playerCreature.name}
+            width="128px"
+            height="128px"
+          />
+        ) : combatTextAndStatus.enemyAttackStatus ? (
+          <img
+            className={chosenRelic.effectClass}
+            src={playerCreature.imgPath.slice(0, -4) + "_hurt.png"}
+            alt={playerCreature.name}
+            width="128px"
+            height="128px"
+          />
+        ) : (
+          <img
+            className={chosenRelic.effectClass}
+            src={playerCreature.imgPath}
+            alt={playerCreature.name}
+            width="128px"
+            height="128px"
+          />
+        )}
+
+        {/* displays the player creature special when special is used */}
+        {specialStatus ? (
+          <div className="special_effect_container">
+            {player.preferredSpecial === 1 ? (
+              <div className={playerCreature.specialEffect} />
             ) : (
-              <img
-                className={chosenRelic.effectClass}
-                src={playerCreature.imgPath}
-                alt={playerCreature.name}
-                width="128px"
-                height="128px"
-              />
-            )}
+              <div className={playerCreature.specialEffect2} />
+            )}{" "}
+          </div>
+        ) : null}
 
-            {/* displays the player creature special when special is used */}
-            {specialStatus ? (
-              <div className="special_effect_container">
-                {player.preferredSpecial === 1 ? (
-                  <div className={playerCreature.specialEffect} />
-                ) : (
-                  <div className={playerCreature.specialEffect2} />
-                )}{" "}
-              </div>
-            ) : null}
+        {/* displays player creature controls based on battle status and selected special, and player creature info based on user preference */}
 
-            {/* displays player creature controls based on battle status and selected special, and player creature stats based on user preference */}
+        {/* toggle special button */}
+        {!battleStatus ? (
+          <button
+            className="game_button_small margin_small"
+            onClick={() => {
+              toggleSpecial();
+            }}
+          >
+            {" "}
+            Special: {player.preferredSpecial}{" "}
+          </button>
+        ) : null}
 
-            {/* toggle special button */}
-            {!battleStatus ? (
+        {/* creature panel */}
+
+        <div className="creature_panel">
+          {/* panel controls */}
+          {battleStatus ? (
+            <div className="inline_flex">
               <button
-                className="game_button_small margin_small"
+                className="game_button attack_button"
                 onClick={() => {
-                  toggleSpecial();
+                  attackEnemyOrHeal(
+                    playerCreature.attackName,
+                    playerCreature.attackType
+                  );
                 }}
               >
-                {" "}
-                Special: {player.preferredSpecial}{" "}
+                {playerCreature.attackName}
               </button>
-            ) : null}
-
-            {/* panel controls */}
-            <div className="creature_panel">
-              {battleStatus ? (
-                <div className="inline_flex">
-                  <button
-                    className="game_button attack_button"
-                    onClick={() => {
-                      attackEnemyOrHeal(
-                        playerCreature.attackName,
-                        playerCreature.attackType
-                      );
-                    }}
-                  >
-                    {playerCreature.attackName}
-                  </button>
-                  {player.preferredSpecial === 1 ? (
-                    <button
-                      className="game_button special_button"
-                      onClick={() => {
-                        attackEnemyOrHeal(
-                          playerCreature.specialName,
-                          playerCreature.specialType
-                        );
-                      }}
-                    >
-                      {playerCreature.specialName}
-                      <br />
-                      Cost: {playerCreature.specialCost} MP
-                    </button>
-                  ) : (
-                    <button
-                      className="game_button special_button"
-                      onClick={() => {
-                        attackEnemyOrHeal(
-                          playerCreature.specialName2,
-                          playerCreature.specialType2
-                        );
-                      }}
-                    >
-                      {playerCreature.specialName2}
-                      <br />
-                      Cost: {playerCreature.specialCost2} MP
-                    </button>
-                  )}
-                </div>
-              ) : null}
-
-              {/* panel content */}
-              <h4>
-                {player.name}'s {playerCreature.name}
-              </h4>
-              {battleStatus ? (
-                <div className="progress_bar_container">
-                  <div
-                    className="progress_bar"
-                    style={{
-                      width:
-                        (playerCreatureHP /
-                          (playerCreature.hp +
-                            chosenRelic.hpMod +
-                            summonHPBonus)) *
-                          100 +
-                        "%",
-                    }}
-                  />
-                </div>
-              ) : null}
-              {!battleStatus ? (
-                <div className="inline_flex">
-                  <h5>
-                    HP: {playerCreature.hp + chosenRelic.hpMod + summonHPBonus}
-                  </h5>
-                  &nbsp;|&nbsp;
-                  <h5>
-                    MP: {playerCreature.mp + chosenRelic.mpMod + summonMPBonus}
-                  </h5>
-                </div>
+              {player.preferredSpecial === 1 ? (
+                <button
+                  className="game_button special_button"
+                  onClick={() => {
+                    attackEnemyOrHeal(
+                      playerCreature.specialName,
+                      playerCreature.specialType
+                    );
+                  }}
+                >
+                  {playerCreature.specialName}
+                  <br />
+                  Cost: {playerCreature.specialCost} MP
+                </button>
               ) : (
-                <div className="inline_flex">
-                  <h5>
-                    HP: {playerCreatureHP} /{" "}
-                    {playerCreature.hp + chosenRelic.hpMod + summonHPBonus}
-                  </h5>
-                  &nbsp;|&nbsp;
-                  <h5>
-                    MP: {playerCreatureMP} /{" "}
-                    {playerCreature.mp + chosenRelic.mpMod + summonMPBonus}
-                  </h5>
-                </div>
+                <button
+                  className="game_button special_button"
+                  onClick={() => {
+                    attackEnemyOrHeal(
+                      playerCreature.specialName2,
+                      playerCreature.specialType2
+                    );
+                  }}
+                >
+                  {playerCreature.specialName2}
+                  <br />
+                  Cost: {playerCreature.specialCost2} MP
+                </button>
               )}
-
-              {/* panel stats */}
-              {creatureStatsStatus ? (
-                <div>
-                  <h5>
-                    Attack: {playerCreature.attack + chosenRelic.attackMod} |
-                    Type: {playerCreature.attackType}
-                  </h5>
-                  {player.preferredSpecial === 1 ? (
-                    <h5>
-                      Special: {playerCreature.special + chosenRelic.specialMod}{" "}
-                      | Type: {playerCreature.specialType} |{" "}
-                      {playerCreature.specialCost}{" "}
-                    </h5>
-                  ) : (
-                    <h5>
-                      Special:{" "}
-                      {playerCreature.special2 + chosenRelic.specialMod} | Type:{" "}
-                      {playerCreature.specialType2} |{" "}
-                      {playerCreature.specialCost2}{" "}
-                    </h5>
-                  )}
-                  <h5>
-                    MP Regen: {playerCreature.mpRegen + chosenRelic.mpRegenMod}{" "}
-                    | Speed: {playerCreature.speed + chosenRelic.speedMod}
-                  </h5>
-                  <h5>
-                    Critical:{" "}
-                    {playerCreature.critical + chosenRelic.criticalMod}% |
-                    Defense: {playerCreature.defense + chosenRelic.defenseMod}%
-                  </h5>
-                </div>
-              ) : null}
             </div>
-          </div>
-        </>
-      ) : null}
+          ) : null}
+
+          {/* panel name and resources */}
+          <h4>
+            {player.name}'s {playerCreature.name}
+          </h4>
+          {battleStatus ? (
+            <div className="progress_bar_container">
+              <div
+                className="progress_bar"
+                style={{
+                  width:
+                    (playerCreatureHP /
+                      (playerCreature.hp + chosenRelic.hpMod + summonHPBonus)) *
+                      100 +
+                    "%",
+                }}
+              />
+            </div>
+          ) : null}
+          {!battleStatus ? (
+            <div className="inline_flex">
+              <h5>
+                HP: {playerCreature.hp + chosenRelic.hpMod + summonHPBonus}
+              </h5>
+              &nbsp;|&nbsp;
+              <h5>
+                MP: {playerCreature.mp + chosenRelic.mpMod + summonMPBonus}
+              </h5>
+            </div>
+          ) : (
+            <div className="inline_flex">
+              <h5>
+                HP: {playerCreatureHP} /{" "}
+                {playerCreature.hp + chosenRelic.hpMod + summonHPBonus}
+              </h5>
+              &nbsp;|&nbsp;
+              <h5>
+                MP: {playerCreatureMP} /{" "}
+                {playerCreature.mp + chosenRelic.mpMod + summonMPBonus}
+              </h5>
+            </div>
+          )}
+
+          {/* panel stats */}
+          {creatureStatsStatus ? (
+            <div>
+              <h5>
+                Attack: {playerCreature.attack + chosenRelic.attackMod} | Type:{" "}
+                {playerCreature.attackType}
+              </h5>
+              {player.preferredSpecial === 1 ? (
+                <h5>
+                  Special: {playerCreature.special + chosenRelic.specialMod} |
+                  Type: {playerCreature.specialType} |{" "}
+                  {playerCreature.specialCost}{" "}
+                </h5>
+              ) : (
+                <h5>
+                  Special: {playerCreature.special2 + chosenRelic.specialMod} |
+                  Type: {playerCreature.specialType2} |{" "}
+                  {playerCreature.specialCost2}{" "}
+                </h5>
+              )}
+              <h5>
+                MP Regen: {playerCreature.mpRegen + chosenRelic.mpRegenMod} |
+                Speed: {playerCreature.speed + chosenRelic.speedMod}
+              </h5>
+              <h5>
+                Critical: {playerCreature.critical + chosenRelic.criticalMod}% |
+                Defense: {playerCreature.defense + chosenRelic.defenseMod}%
+              </h5>
+            </div>
+          ) : null}
+        </div>
+      </div>
     </>
   );
 }

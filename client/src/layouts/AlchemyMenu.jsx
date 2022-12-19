@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Userfront from "@userfront/core";
 import recipeList from "../constants/recipes";
+import { ingredientsList } from "../constants/items";
 import { potionsList } from "../constants/items";
 import { getItems, addItem } from "../services/itemServices";
 import {
@@ -9,18 +10,21 @@ import {
 } from "../services/potionTimerServices";
 import { useSelector, useDispatch } from "react-redux";
 import {
+  setIngredientsValue,
+  setPotionsValue,
+} from "../store/actions/alchemy.actions";
+import {
   enablePotionCooldown,
   disablePotionCooldown,
-  setSummonHPBonusAmount,
-  setSummonMPBonusAmount,
 } from "../store/actions/alchemy.actions";
+import checkPotionTimer from "../utils/checkPotionTimer";
 
 Userfront.init("rbvqd5nd");
 
 function AlchemyMenu({
+  player,
   gameMenuStatus,
   setGameMenuStatus,
-  loadAsyncDataAlchemy,
   playerCreature,
   setPlayerCreatureHP,
   setPlayerCreatureMP,
@@ -90,6 +94,41 @@ function AlchemyMenu({
         setIndexC(indexC - 7);
         setIndexD(indexD - 7);
       }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // loads alchemy data
+  const loadAsyncDataAlchemy = async () => {
+    try {
+      const { data } = await getItems();
+      const playerPotionsData = data.filter(
+        (item) => item.type === "Potion" && item.userId === player.userfrontId
+      );
+      const playerPotions = potionsList.filter((potion) =>
+        playerPotionsData.some((item) => item.itemId === potion.id)
+      );
+
+      for (let i = 0; i < playerPotions.length; i++) {
+        playerPotions[i].itemQuantity = playerPotionsData.find(
+          (item) => item.itemId === playerPotions[i].id
+        ).itemQuantity;
+      }
+      dispatch(setPotionsValue(playerPotions));
+      const playerIngredientsData = data.filter(
+        (item) =>
+          item.type === "Ingredient" && item.userId === player.userfrontId
+      );
+      const playerIngredients = ingredientsList.filter((ingredient) =>
+        playerIngredientsData.some((item) => item.itemId === ingredient.id)
+      );
+      for (let i = 0; i < playerIngredients.length; i++) {
+        playerIngredients[i].itemQuantity = playerIngredientsData.find(
+          (item) => item.itemId === playerIngredients[i].id
+        ).itemQuantity;
+      }
+      dispatch(setIngredientsValue(playerIngredients));
     } catch (error) {
       console.log(error);
     }
@@ -236,18 +275,7 @@ function AlchemyMenu({
               potionDuration: potion.duration,
             });
             await loadAsyncDataAlchemy();
-            // checks potion timer
-            const potionTimer = await getPotionTimer();
-            if (potionTimer.data.length > 0) {
-              const playerPotion = potionsList.find(
-                (potion) => potion.id === potionTimer.data[0].potionId
-              );
-              const playerMPBonus = playerPotion.mpMod;
-              const playerHPBonus = playerPotion.hpMod;
-              dispatch(setSummonMPBonusAmount(playerMPBonus));
-              dispatch(setSummonHPBonusAmount(playerHPBonus));
-            }
-
+            await checkPotionTimer(dispatch);
             setPlayerCreatureMP(
               playerCreature.mp + chosenRelic.mpMod + summonMPBonus
             );

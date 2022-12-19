@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const {
   verifyUserkey,
   generateUserkey,
-  generateQuantumUserkey,
+  generateFortifiedUserkey,
 } = require("../libs/userkeyGeneratorAndVerifier.js");
 
 // creates a new user potion timer if there isn't one
@@ -29,7 +29,7 @@ router.post("/", async (req, res) => {
       generateUserkey(decoded.userId);
     } else {
       res.send("Unauthorized");
-      generateQuantumUserkey(decoded.userId);
+      generateFortifiedUserkey(decoded.userId);
     }
   } catch (error) {
     const accessToken = req.headers.authorization.replace("Bearer ", "");
@@ -38,7 +38,7 @@ router.post("/", async (req, res) => {
     });
 
     res.send(error);
-    generateQuantumUserkey(decoded.userId);
+    generateFortifiedUserkey(decoded.userId);
   }
 });
 

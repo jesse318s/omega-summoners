@@ -26,7 +26,7 @@ export const ingredientsList = [
     id: 1,
     name: "Green Mushroom",
     description:
-      "Used in 'Potion of Health', and 'Potion of Mana'. (15% chance to drop from non-boss enemies)",
+      "Used in 'Potion of Health' and 'Potion of Mana'. (15% chance to drop from non-boss enemies)",
     imgPath: "img/ingredient/ingredient1.png",
   },
   {

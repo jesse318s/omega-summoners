@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const {
   verifyUserkey,
   generateUserkey,
-  generateQuantumUserkey,
+  generateFortifiedUserkey,
 } = require("../libs/userkeyGeneratorAndVerifier.js");
 
 // create a new user item record and deletes old item record
@@ -32,7 +32,7 @@ router.post("/", async (req, res) => {
       generateUserkey(decoded.userId);
     } else {
       res.send("Unauthorized");
-      generateQuantumUserkey(decoded.userId);
+      generateFortifiedUserkey(decoded.userId);
     }
   } catch (error) {
     const accessToken = req.headers.authorization.replace("Bearer ", "");
@@ -41,7 +41,7 @@ router.post("/", async (req, res) => {
     });
 
     res.send(error);
-    generateQuantumUserkey(decoded.userId);
+    generateFortifiedUserkey(decoded.userId);
   }
 });
 

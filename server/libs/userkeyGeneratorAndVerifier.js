@@ -1,6 +1,6 @@
 const axios = require("axios");
 const crypto = require("crypto");
-const qrand = require("qrand");
+const { v4: uuidv4 } = require("uuid");
 
 const options = {
   headers: {
@@ -33,25 +33,19 @@ module.exports = {
     });
   },
 
-  // generates new userkey with quantum generated values included
-  generateQuantumUserkey(userId) {
+  // generates new userkey with additional secure values included
+  generateFortifiedUserkey(userId) {
     crypto.randomBytes(127, (err, buf) => {
       if (err) {
         console.log(err);
         return;
       }
-      qrand.getRandomHexOctets(16, function (err, octets) {
-        if (err) {
-          console.log(err);
-          return;
-        }
-        const payload = {
-          data: {
-            userkey: octets.join("") + buf.toString("hex"),
-          },
-        };
-        module.exports.putUserkey(userId, payload);
-      });
+      const payload = {
+        data: {
+          userkey: uuidv4() + buf.toString("hex"),
+        },
+      };
+      module.exports.putUserkey(userId, payload);
     });
   },
 

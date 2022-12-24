@@ -97,11 +97,6 @@ function PlayerCreature({
             return {
               ...combatTextAndCombatStatus,
               combatText: "",
-            };
-          });
-          setCombatTextAndCombatStatus((combatTextAndCombatStatus) => {
-            return {
-              ...combatTextAndCombatStatus,
               critText: "combat_text",
             };
           });
@@ -155,11 +150,6 @@ function PlayerCreature({
             return {
               ...combatTextAndCombatStatus,
               combatText: "",
-            };
-          });
-          setCombatTextAndCombatStatus((combatTextAndCombatStatus) => {
-            return {
-              ...combatTextAndCombatStatus,
               critText: "combat_text",
             };
           });
@@ -202,11 +192,6 @@ function PlayerCreature({
             return {
               ...combatTextAndCombatStatus,
               enemyCombatText: "",
-            };
-          });
-          setCombatTextAndCombatStatus((combatTextAndCombatStatus) => {
-            return {
-              ...combatTextAndCombatStatus,
               enemyCritText: "combat_text",
             };
           });
@@ -270,11 +255,6 @@ function PlayerCreature({
             return {
               ...combatTextAndCombatStatus,
               enemyCombatText: "",
-            };
-          });
-          setCombatTextAndCombatStatus((combatTextAndCombatStatus) => {
-            return {
-              ...combatTextAndCombatStatus,
               enemyCritText: "combat_text",
             };
           });
@@ -318,6 +298,46 @@ function PlayerCreature({
           };
         });
       }
+    }
+  };
+
+  // checks for player death, and damages player otherwise
+  const dieOrTakeDamage = async (playerCreatureDefense, criticalMultiplier) => {
+    if (
+      ref.current -
+        (enemyCreature.attack - enemyCreature.attack * playerCreatureDefense) *
+          criticalMultiplier <=
+      0
+    ) {
+      setCombatTextAndCombatStatus((combatTextAndCombatStatus) => {
+        return {
+          ...combatTextAndCombatStatus,
+          battleUndecided: false,
+          combatAlert: "Defeat!",
+        };
+      });
+      setPlayerCreatureResources((playerCreatureResources) => {
+        return {
+          ...playerCreatureResources,
+          playerCreatureHP: 0,
+        };
+      });
+      setTimeout(() => {
+        setIsFighting(false);
+        dispatch(disableBattleStatus());
+      }, 1100);
+    } else {
+      setPlayerCreatureResources((playerCreatureResources) => {
+        return {
+          ...playerCreatureResources,
+          playerCreatureHP:
+            ref.current -
+            (enemyCreature.attack -
+              enemyCreature.attack * playerCreatureDefense) *
+              criticalMultiplier,
+        };
+      });
+      setIsFighting(false);
     }
   };
 
@@ -404,49 +424,7 @@ function PlayerCreature({
           viewEnemyAttackAnimation();
           viewEnemyAttackCT(criticalMultiplier, playerCreatureDefense);
         }, 600);
-        // checks for player death, and damages player otherwise
-        if (
-          ref.current -
-            (enemyCreature.attack -
-              enemyCreature.attack * playerCreatureDefense) *
-              criticalMultiplier <=
-          0
-        ) {
-          setCombatTextAndCombatStatus((combatTextAndCombatStatus) => {
-            return {
-              ...combatTextAndCombatStatus,
-              battleUndecided: false,
-            };
-          });
-          setPlayerCreatureResources((playerCreatureResources) => {
-            return {
-              ...playerCreatureResources,
-              playerCreatureHP: 0,
-            };
-          });
-          setCombatTextAndCombatStatus((combatTextAndCombatStatus) => {
-            return {
-              ...combatTextAndCombatStatus,
-              combatAlert: "Defeat!",
-            };
-          });
-          setTimeout(() => {
-            setIsFighting(false);
-            dispatch(disableBattleStatus());
-          }, 1100);
-        } else {
-          setPlayerCreatureResources((playerCreatureResources) => {
-            return {
-              ...playerCreatureResources,
-              playerCreatureHP:
-                ref.current -
-                (enemyCreature.attack -
-                  enemyCreature.attack * playerCreatureDefense) *
-                  criticalMultiplier,
-            };
-          });
-          setIsFighting(false);
-        }
+        dieOrTakeDamage(playerCreatureDefense, criticalMultiplier);
       } else {
         setIsFighting(false);
       }

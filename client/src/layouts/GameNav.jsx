@@ -2,12 +2,7 @@ import Userfront from "@userfront/core";
 
 Userfront.init("rbvqd5nd");
 
-function GameNav({
-  optionsStatus,
-  setOptionsStatus,
-  setAvatarOptionStatus,
-  setNameOptionStatus,
-}) {
+function GameNav({ optionsMenuStatus, setOptionsMenuStatus }) {
   // renders nav for game
   return (
     <>
@@ -23,9 +18,11 @@ function GameNav({
         <button
           className="game_button_small button_options"
           onClick={() => {
-            setOptionsStatus(!optionsStatus);
-            setAvatarOptionStatus(false);
-            setNameOptionStatus(false);
+            setOptionsMenuStatus({
+              optionsStatus: !optionsMenuStatus.optionsStatus,
+              avatarOptionStatus: false,
+              nameOptionStatus: false,
+            });
           }}
         >
           Options

@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 function MultiPlayerEnemyCreature({
-  combatTextAndStatus,
+  combatTextAndCombatStatus,
   spawnAnimation,
   lobby,
 }) {
@@ -22,13 +22,13 @@ function MultiPlayerEnemyCreature({
 
           {/* displays player combat text */}
           <div className="special_effect_container">
-            <div className={combatTextAndStatus.critText}>
-              {combatTextAndStatus.combatText}
+            <div className={combatTextAndCombatStatus.critText}>
+              {combatTextAndCombatStatus.combatText}
             </div>
           </div>
 
           {/* displays enemy based on attack state */}
-          {combatTextAndStatus.enemyAttackStatus ? (
+          {combatTextAndCombatStatus.enemyAttackStatus ? (
             <img
               className="enemy_creature_img"
               src={enemyCreature.imgPath.slice(0, -4) + "_attack.png"}
@@ -36,7 +36,7 @@ function MultiPlayerEnemyCreature({
               width="256px"
               height="256px"
             />
-          ) : combatTextAndStatus.playerAttackStatus ? (
+          ) : combatTextAndCombatStatus.playerAttackStatus ? (
             <img
               className="enemy_creature_img"
               src={enemyCreature.imgPath.slice(0, -4) + "_hurt.png"}

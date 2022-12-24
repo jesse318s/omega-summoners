@@ -26,8 +26,7 @@ function AlchemyMenu({
   gameMenuStatus,
   setGameMenuStatus,
   playerCreature,
-  setPlayerCreatureHP,
-  setPlayerCreatureMP,
+  setPlayerCreatureResources,
 }) {
   // dispatch hook for redux
   const dispatch = useDispatch();
@@ -276,12 +275,20 @@ function AlchemyMenu({
             });
             await loadAsyncDataAlchemy();
             await checkPotionTimer(dispatch);
-            setPlayerCreatureMP(
-              playerCreature.mp + chosenRelic.mpMod + summonMPBonus
-            );
-            setPlayerCreatureHP(
-              playerCreature.hp + chosenRelic.hpMod + summonHPBonus
-            );
+            setPlayerCreatureResources((playerCreatureResources) => {
+              return {
+                ...playerCreatureResources,
+                playerCreatureMP:
+                  playerCreature.mp + chosenRelic.mpMod + summonMPBonus,
+              };
+            });
+            setPlayerCreatureResources((playerCreatureResources) => {
+              return {
+                ...playerCreatureResources,
+                playerCreatureHP:
+                  playerCreature.hp + chosenRelic.hpMod + summonHPBonus,
+              };
+            });
             setTimeout(() => {
               dispatch(disablePotionCooldown());
             }, 1000);

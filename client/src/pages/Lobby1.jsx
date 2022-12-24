@@ -49,9 +49,11 @@ function Lobby1() {
 
   // player option state
   const [player, setPlayer] = useState({});
-  const [optionsStatus, setOptionsStatus] = useState(false);
-  const [avatarOptionStatus, setAvatarOptionStatus] = useState(false);
-  const [nameOptionStatus, setNameOptionStatus] = useState(false);
+  const [optionsMenuStatus, setOptionsMenuStatus] = useState({
+    optionsStatus: false,
+    avatarOptionStatus: false,
+    nameOptionStatus: false,
+  });
   // game menu state
   const [gameMenuStatus, setGameMenuStatus] = useState({
     relicsStatus: false,
@@ -62,18 +64,20 @@ function Lobby1() {
   // creature and combat state
   const [creatureData] = useState(creatures);
   const [enemyCreatureData] = useState(bossEnemyCreatureStage1);
-  const [combatTextAndStatus, setCombatTextAndStatus] = useState({
+  const [combatTextAndCombatStatus, setCombatTextAndCombatStatus] = useState({
     playerAttackStatus: false,
     enemyAttackStatus: false,
     battleUndecided: false,
+    combatAlert: "",
     combatText: "",
     critText: "combat_text",
     enemyCombatText: "",
     enemyCritText: "combat_text",
   });
-  const [playerCreatureHP, setPlayerCreatureHP] = useState(0);
-  const [playerCreatureMP, setPlayerCreatureMP] = useState(0);
-  const [combatAlert, setCombatAlert] = useState("");
+  const [playerCreatureResources, setPlayerCreatureResources] = useState({
+    playerCreatureHP: 0,
+    playerCreatureMP: 0,
+  });
   const [spawnAnimation, setSpawnAnimation] = useState("");
   // relics state
   const [relicsData] = useState(relics);
@@ -166,20 +170,25 @@ function Lobby1() {
     const checkCombat = () => {
       try {
         if (!battleStatus) {
-          setCombatAlert("");
+          setCombatTextAndCombatStatus((combatTextAndCombatStatus) => {
+            return {
+              ...combatTextAndCombatStatus,
+              combatAlert: "",
+            };
+          });
           const enemyCreatureNew = enemyCreatureData[0];
           if (enemyCreatureNew !== enemyCreature) {
             dispatch(setEnemyCreatureValue(enemyCreatureNew));
           }
         }
-        if (combatAlert === "" && battleStatus) {
+        if (combatTextAndCombatStatus.combatAlert === "" && battleStatus) {
           setSpawnAnimation("spawn_effect");
           setTimeout(() => {
             setSpawnAnimation("");
           }, 200);
-          setCombatTextAndStatus((combatTextAndStatus) => {
+          setCombatTextAndCombatStatus((combatTextAndCombatStatus) => {
             return {
-              ...combatTextAndStatus,
+              ...combatTextAndCombatStatus,
               battleUndecided: true,
             };
           });
@@ -189,7 +198,13 @@ function Lobby1() {
       }
     };
     checkCombat();
-  }, [enemyCreature, enemyCreatureData, combatAlert, battleStatus, dispatch]);
+  }, [
+    enemyCreature,
+    enemyCreatureData,
+    combatTextAndCombatStatus.combatAlert,
+    battleStatus,
+    dispatch,
+  ]);
 
   // retrieves user data and updates player state
   const loadAsyncDataPlayer = async () => {
@@ -251,21 +266,16 @@ function Lobby1() {
       <>
         <header>
           <GameNav
-            optionsStatus={optionsStatus}
-            setOptionsStatus={setOptionsStatus}
-            setNameOptionStatus={setNameOptionStatus}
-            setAvatarOptionStatus={setAvatarOptionStatus}
+            optionsMenuStatus={optionsMenuStatus}
+            setOptionsMenuStatus={setOptionsMenuStatus}
           />
         </header>
 
         <main className="lobby1_game_section">
           <Options
             player={player}
-            optionsStatus={optionsStatus}
-            nameOptionStatus={nameOptionStatus}
-            setNameOptionStatus={setNameOptionStatus}
-            avatarOptionStatus={avatarOptionStatus}
-            setAvatarOptionStatus={setAvatarOptionStatus}
+            optionsMenuStatus={optionsMenuStatus}
+            setOptionsMenuStatus={setOptionsMenuStatus}
             loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
           />
 
@@ -308,48 +318,67 @@ function Lobby1() {
           </div>
 
           {/* game menu and creatures wrapped in options status check */}
-          {!optionsStatus ? (
+          {Object.values(optionsMenuStatus).every(
+            (value) => value === false
+          ) ? (
             <>
               <MultiPlayerGameMenu
                 player={player}
                 gameMenuStatus={gameMenuStatus}
                 setGameMenuStatus={setGameMenuStatus}
                 loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
-                setPlayerCreatureHP={setPlayerCreatureHP}
-                setPlayerCreatureMP={setPlayerCreatureMP}
+                setPlayerCreatureResources={setPlayerCreatureResources}
                 connections={connections}
                 loadAsyncDataLobby={() => loadAsyncDataLobby()}
               />
 
-              {/* displays the combat alert if there is combat */}
-              {battleStatus ? (
-                <div>
-                  <p className="combat_alert">{combatAlert}</p>
-                </div>
-              ) : null}
-
-              {/* displays player creature if game menu isn't being used */}
+              {/* if game menu isn't being used */}
               {Object.values(gameMenuStatus).every(
                 (value) => value === false
               ) ? (
-                <MultiPlayerCreature
-                  combatTextAndStatus={combatTextAndStatus}
-                  setCombatTextAndStatus={setCombatTextAndStatus}
-                  player={player}
-                  playerCreatureHP={playerCreatureHP}
-                  setPlayerCreatureHP={setPlayerCreatureHP}
-                  playerCreatureMP={playerCreatureMP}
-                  setPlayerCreatureMP={setPlayerCreatureMP}
-                  loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
-                  setCombatAlert={setCombatAlert}
-                  connections={connections}
-                  lobby={lobby}
-                  loadAsyncDataLobby={() => loadAsyncDataLobby()}
-                />
+                <>
+                  {/* displays allies that are online and fighting */}
+                  <h4 className="margin_small color_white">Allies online:</h4>
+                  {connections.length > 0 &&
+                  connections[0].userId &&
+                  connections.length < 4 ? (
+                    <>
+                      {connections.map((ally) => (
+                        <div className="color_white" key={ally.userId}>
+                          {ally.userId !== player.userfrontId
+                            ? ally.name
+                            : null}
+                        </div>
+                      ))}
+                    </>
+                  ) : null}
+
+                  {/* displays the combat alert if there is combat */}
+                  {battleStatus ? (
+                    <div>
+                      <p className="combat_alert">
+                        {combatTextAndCombatStatus.combatAlert}
+                      </p>
+                    </div>
+                  ) : null}
+
+                  {/* displays player creature */}
+                  <MultiPlayerCreature
+                    combatTextAndCombatStatus={combatTextAndCombatStatus}
+                    setCombatTextAndCombatStatus={setCombatTextAndCombatStatus}
+                    player={player}
+                    playerCreatureResources={playerCreatureResources}
+                    setPlayerCreatureResources={setPlayerCreatureResources}
+                    loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
+                    connections={connections}
+                    lobby={lobby}
+                    loadAsyncDataLobby={() => loadAsyncDataLobby()}
+                  />
+                </>
               ) : null}
 
               <MultiPlayerEnemyCreature
-                combatTextAndStatus={combatTextAndStatus}
+                combatTextAndCombatStatus={combatTextAndCombatStatus}
                 spawnAnimation={spawnAnimation}
                 lobby={lobby}
               />
@@ -358,7 +387,7 @@ function Lobby1() {
         </main>
       </>
     );
-  } else return <></>;
+  } else return null;
 }
 
 export default Lobby1;

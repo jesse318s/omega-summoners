@@ -54,9 +54,11 @@ function App() {
 
   // player option state
   const [player, setPlayer] = useState({});
-  const [optionsStatus, setOptionsStatus] = useState(false);
-  const [avatarOptionStatus, setAvatarOptionStatus] = useState(false);
-  const [nameOptionStatus, setNameOptionStatus] = useState(false);
+  const [optionsMenuStatus, setOptionsMenuStatus] = useState({
+    optionsStatus: false,
+    avatarOptionStatus: false,
+    nameOptionStatus: false,
+  });
   // game menu state
   const [gameMenuStatus, setGameMenuStatus] = useState({
     relicsStatus: false,
@@ -68,19 +70,21 @@ function App() {
   // creature and combat state
   const [creatureData] = useState(creatures);
   const [enemyCreatureData] = useState(enemyCreaturesHome);
-  const [combatTextAndStatus, setCombatTextAndStatus] = useState({
+  const [combatTextAndCombatStatus, setCombatTextAndCombatStatus] = useState({
     playerAttackStatus: false,
     enemyAttackStatus: false,
     battleUndecided: false,
+    combatAlert: "",
     combatText: "",
     critText: "combat_text",
     enemyCombatText: "",
     enemyCritText: "combat_text",
   });
-  const [playerCreatureHP, setPlayerCreatureHP] = useState(0);
+  const [playerCreatureResources, setPlayerCreatureResources] = useState({
+    playerCreatureHP: 0,
+    playerCreatureMP: 0,
+  });
   const [enemyCreatureHP, setEnemyCreatureHP] = useState(0);
-  const [playerCreatureMP, setPlayerCreatureMP] = useState(0);
-  const [combatAlert, setCombatAlert] = useState("");
   const [spawnAnimation, setSpawnAnimation] = useState("");
   // relics state
   const [relicsData] = useState(relics);
@@ -237,7 +241,12 @@ function App() {
     const checkCombat = () => {
       try {
         if (!battleStatus) {
-          setCombatAlert("");
+          setCombatTextAndCombatStatus((combatTextAndCombatStatus) => {
+            return {
+              ...combatTextAndCombatStatus,
+              combatAlert: "",
+            };
+          });
           const enemyCreatureNew = [
             enemyCreatureData[
               Math.floor(Math.random() * enemyCreatureData.length)
@@ -250,14 +259,14 @@ function App() {
             setEnemyCreatureHP(enemyCreature[0].hp);
           }
         }
-        if (combatAlert === "" && battleStatus) {
+        if (combatTextAndCombatStatus.combatAlert === "" && battleStatus) {
           setSpawnAnimation("spawn_effect");
           setTimeout(() => {
             setSpawnAnimation("");
           }, 200);
-          setCombatTextAndStatus((combatTextAndStatus) => {
+          setCombatTextAndCombatStatus((combatTextAndCombatStatus) => {
             return {
-              ...combatTextAndStatus,
+              ...combatTextAndCombatStatus,
               battleUndecided: true,
             };
           });
@@ -267,7 +276,13 @@ function App() {
       }
     };
     checkCombat();
-  }, [enemyCreature, enemyCreatureData, combatAlert, battleStatus, dispatch]);
+  }, [
+    enemyCreature,
+    enemyCreatureData,
+    combatTextAndCombatStatus.combatAlert,
+    battleStatus,
+    dispatch,
+  ]);
 
   // retrieves user data and updates player state
   const loadAsyncDataPlayer = async () => {
@@ -285,21 +300,16 @@ function App() {
       <>
         <header>
           <GameNav
-            optionsStatus={optionsStatus}
-            setOptionsStatus={setOptionsStatus}
-            setNameOptionStatus={setNameOptionStatus}
-            setAvatarOptionStatus={setAvatarOptionStatus}
+            optionsMenuStatus={optionsMenuStatus}
+            setOptionsMenuStatus={setOptionsMenuStatus}
           />
         </header>
 
         <main className="game_section">
           <Options
             player={player}
-            optionsStatus={optionsStatus}
-            nameOptionStatus={nameOptionStatus}
-            setNameOptionStatus={setNameOptionStatus}
-            avatarOptionStatus={avatarOptionStatus}
-            setAvatarOptionStatus={setAvatarOptionStatus}
+            optionsMenuStatus={optionsMenuStatus}
+            setOptionsMenuStatus={setOptionsMenuStatus}
             loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
           />
 
@@ -342,15 +352,16 @@ function App() {
           </div>
 
           {/* menus and creatures wrapped in options status check */}
-          {!optionsStatus ? (
+          {Object.values(optionsMenuStatus).every(
+            (value) => value === false
+          ) ? (
             <>
               <GameMenu
                 player={player}
                 gameMenuStatus={gameMenuStatus}
                 setGameMenuStatus={setGameMenuStatus}
                 loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
-                setPlayerCreatureHP={setPlayerCreatureHP}
-                setPlayerCreatureMP={setPlayerCreatureMP}
+                setPlayerCreatureResources={setPlayerCreatureResources}
               />
 
               <AlchemyMenu
@@ -358,14 +369,15 @@ function App() {
                 gameMenuStatus={gameMenuStatus}
                 setGameMenuStatus={setGameMenuStatus}
                 playerCreature={playerCreature}
-                setPlayerCreatureHP={setPlayerCreatureHP}
-                setPlayerCreatureMP={setPlayerCreatureMP}
+                setPlayerCreatureResources={setPlayerCreatureResources}
               />
 
               {/* displays the combat alert if there is combat */}
               {battleStatus ? (
                 <div>
-                  <p className="combat_alert">{combatAlert}</p>
+                  <p className="combat_alert">
+                    {combatTextAndCombatStatus.combatAlert}
+                  </p>
                 </div>
               ) : null}
 
@@ -374,22 +386,19 @@ function App() {
                 (value) => value === false
               ) ? (
                 <PlayerCreature
-                  combatTextAndStatus={combatTextAndStatus}
-                  setCombatTextAndStatus={setCombatTextAndStatus}
+                  combatTextAndCombatStatus={combatTextAndCombatStatus}
+                  setCombatTextAndCombatStatus={setCombatTextAndCombatStatus}
                   player={player}
-                  playerCreatureHP={playerCreatureHP}
-                  setPlayerCreatureHP={setPlayerCreatureHP}
-                  playerCreatureMP={playerCreatureMP}
-                  setPlayerCreatureMP={setPlayerCreatureMP}
+                  playerCreatureResources={playerCreatureResources}
+                  setPlayerCreatureResources={setPlayerCreatureResources}
                   enemyCreatureHP={enemyCreatureHP}
                   setEnemyCreatureHP={setEnemyCreatureHP}
                   loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
-                  setCombatAlert={setCombatAlert}
                 />
               ) : null}
 
               <EnemyCreature
-                combatTextAndStatus={combatTextAndStatus}
+                combatTextAndCombatStatus={combatTextAndCombatStatus}
                 enemyCreatureHP={enemyCreatureHP}
                 spawnAnimation={spawnAnimation}
               />
@@ -398,7 +407,7 @@ function App() {
         </main>
       </>
     );
-  } else return <></>;
+  } else return null;
 }
 
 export default App;

@@ -8,7 +8,7 @@ const {
   generateFortifiedUserkey,
 } = require("../libs/userkeyGeneratorAndVerifier.js");
 
-// retrieves lobby and restores enemy HP if enemy HP is 0
+// retrieves lobby and restores enemy HP if enemy is dead
 router.get("/:id", async (req, res) => {
   try {
     const accessToken = req.headers.authorization.replace("Bearer ", "");
@@ -27,15 +27,18 @@ router.get("/:id", async (req, res) => {
             enemyHP: lobby.maxHP,
           }
         );
+        const restoredLobby = await Lobby.findOne({ _id: req.params.id });
+        res.send(restoredLobby);
+      } else {
+        res.send(lobby);
       }
-      res.send(lobby);
     }
   } catch (error) {
     res.send(error);
   }
 });
 
-// updates lobby enemy HP and restores enemy HP if enemy HP is 0
+// updates lobby enemy HP/victors
 router.put("/:id", async (req, res) => {
   try {
     const lobbyCheck = await Lobby.findOne({ _id: req.params.id });
@@ -57,7 +60,6 @@ router.put("/:id", async (req, res) => {
           }
         );
         res.send(lobby);
-        generateUserkey(decoded.userId);
       } else {
         const lobby = await Lobby.findOneAndUpdate(
           {
@@ -68,8 +70,8 @@ router.put("/:id", async (req, res) => {
           }
         );
         res.send(lobby);
-        generateUserkey(decoded.userId);
       }
+      generateUserkey(decoded.userId);
     } else if (req.body.victors !== undefined && verifiedUserkey) {
       const lobby = await Lobby.findOneAndUpdate(
         {
@@ -92,7 +94,7 @@ router.put("/:id", async (req, res) => {
     });
 
     res.send(error);
-    generateForitfiedUserkey(decoded.userId);
+    generateFortifiedUserkey(decoded.userId);
   }
 });
 

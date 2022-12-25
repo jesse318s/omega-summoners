@@ -550,7 +550,6 @@ function MultiPlayerCreature({
       };
     });
     await loadAsyncDataLobby();
-    await loadAsyncDataLobby();
     dropMPRewards();
   };
 
@@ -708,7 +707,6 @@ function MultiPlayerCreature({
             combatAlert: "Victory!",
           };
         });
-        await loadAsyncDataLobby();
         await loadAsyncDataLobby();
         dropMPRewards();
       } else {

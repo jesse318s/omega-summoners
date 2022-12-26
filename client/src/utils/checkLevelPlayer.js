@@ -2,8 +2,10 @@
 const checkLevelPlayer = (player, levelReq, navigate) => {
   try {
     if (Math.floor(Math.sqrt(player.experience) * 0.25) < levelReq) {
-      alert("You must be level " + levelReq + " to battle at this stage.");
-      navigate(-1);
+      if (window.location.href.slice(-4) !== "/app") {
+        alert("You must be level " + levelReq + " to battle at this stage.");
+      }
+      navigate("/app");
     }
   } catch (error) {
     console.log(error);

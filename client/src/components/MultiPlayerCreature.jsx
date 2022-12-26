@@ -790,7 +790,7 @@ function MultiPlayerCreature({
         (newConnection) => newConnection.userId === Userfront.user.userId
       ).length === 0
     ) {
-      alert("Your connection expired in a full battle.");
+      alert("Your connection expired.");
       dispatch(enableLobbyTimer());
       setCombatTextAndCombatStatus((combatTextAndCombatStatus) => {
         return {

@@ -928,31 +928,41 @@ function MultiPlayerCreature({
         </div>
 
         {/* displays creature based on attack state */}
-        {combatTextAndCombatStatus.playerAttackStatus ? (
-          <img
-            className={chosenRelic.effectClass}
-            src={playerCreature.imgPath.slice(0, -4) + "_attack.png"}
-            alt={playerCreature.name}
-            width="128px"
-            height="128px"
-          />
-        ) : combatTextAndCombatStatus.enemyAttackStatus ? (
-          <img
-            className={chosenRelic.effectClass}
-            src={playerCreature.imgPath.slice(0, -4) + "_hurt.png"}
-            alt={playerCreature.name}
-            width="128px"
-            height="128px"
-          />
-        ) : (
-          <img
-            className={chosenRelic.effectClass}
-            src={playerCreature.imgPath}
-            alt={playerCreature.name}
-            width="128px"
-            height="128px"
-          />
-        )}
+        <img
+          className={
+            combatTextAndCombatStatus.playerAttackStatus ||
+            combatTextAndCombatStatus.enemyAttackStatus
+              ? "creature_hidden"
+              : chosenRelic.effectClass
+          }
+          src={playerCreature.imgPath}
+          alt={playerCreature.name}
+          width="128px"
+          height="128px"
+        />
+        <img
+          className={
+            combatTextAndCombatStatus.playerAttackStatus
+              ? chosenRelic.effectClass
+              : "creature_hidden"
+          }
+          src={playerCreature.imgPath.slice(0, -4) + "_attack.png"}
+          alt={playerCreature.name}
+          width="128px"
+          height="128px"
+        />
+        <img
+          className={
+            combatTextAndCombatStatus.enemyAttackStatus &&
+            !combatTextAndCombatStatus.playerAttackStatus
+              ? chosenRelic.effectClass
+              : "creature_hidden"
+          }
+          src={playerCreature.imgPath.slice(0, -4) + "_hurt.png"}
+          alt={playerCreature.name}
+          width="128px"
+          height="128px"
+        />
 
         {/* displays the player creature special when special is used */}
         {specialStatus ? (

@@ -28,31 +28,41 @@ function EnemyCreature({
           </div>
 
           {/* displays enemy based on attack state */}
-          {combatTextAndCombatStatus.enemyAttackStatus ? (
-            <img
-              className="enemy_creature_img"
-              src={enemyCreature.imgPath.slice(0, -4) + "_attack.png"}
-              alt={enemyCreature.name}
-              width="128px"
-              height="128px"
-            />
-          ) : combatTextAndCombatStatus.playerAttackStatus ? (
-            <img
-              className="enemy_creature_img"
-              src={enemyCreature.imgPath.slice(0, -4) + "_hurt.png"}
-              alt={enemyCreature.name}
-              width="128px"
-              height="128px"
-            />
-          ) : (
-            <img
-              className="enemy_creature_img"
-              src={enemyCreature.imgPath}
-              alt={enemyCreature.name}
-              width="128px"
-              height="128px"
-            />
-          )}
+          <img
+            className={
+              combatTextAndCombatStatus.playerAttackStatus ||
+              combatTextAndCombatStatus.enemyAttackStatus
+                ? "creature_hidden"
+                : "enemy_creature_img"
+            }
+            src={enemyCreature.imgPath}
+            alt={enemyCreature.name}
+            width="128px"
+            height="128px"
+          />
+          <img
+            className={
+              combatTextAndCombatStatus.enemyAttackStatus
+                ? "enemy_creature_img"
+                : "creature_hidden"
+            }
+            src={enemyCreature.imgPath.slice(0, -4) + "_attack.png"}
+            alt={enemyCreature.name}
+            width="128px"
+            height="128px"
+          />
+          <img
+            className={
+              combatTextAndCombatStatus.playerAttackStatus &&
+              !combatTextAndCombatStatus.enemyAttackStatus
+                ? "enemy_creature_img"
+                : "creature_hidden"
+            }
+            src={enemyCreature.imgPath.slice(0, -4) + "_hurt.png"}
+            alt={enemyCreature.name}
+            width="128px"
+            height="128px"
+          />
 
           {/* creature panel */}
           <div className="creature_panel">

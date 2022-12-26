@@ -298,6 +298,10 @@ body {
 }
 
 /* creatures */
+.creature_hidden {
+  display: none;
+}
+
 .player_creature {
   float: left;
   margin-left: 10px;

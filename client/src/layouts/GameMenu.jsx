@@ -560,7 +560,7 @@ function GameMenu({
               }}
             >
               Battle
-            </button>{" "}
+            </button>
           </>
         ) : null}
       </div>

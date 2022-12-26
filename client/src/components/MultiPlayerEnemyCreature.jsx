@@ -76,7 +76,7 @@ function MultiPlayerEnemyCreature({
               />
             </div>
             <h5>
-              HP: {lobby.enemyHP} / {enemyCreature.hp}
+              HP: {lobby.enemyHP}/{enemyCreature.hp}
             </h5>
           </div>
         </div>

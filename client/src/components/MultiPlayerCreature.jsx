@@ -554,7 +554,7 @@ function MultiPlayerCreature({
   };
 
   // completes player lifesteal check and heal
-  const completeLifesteal = async (
+  const checkLifesteal = async (
     playerCreatureSpecial,
     criticalMultiplier,
     chancePlayer,
@@ -652,11 +652,7 @@ function MultiPlayerCreature({
       playerCreatureMP:
         playerCreatureResources.playerCreatureMP - playerCreatureSpecialCost,
     });
-    if (
-      moveType === "Poison" ||
-      moveType === "Magic" ||
-      moveType === "Lifesteal"
-    ) {
+    if (moveType !== "Heal") {
       // checks for enemy death
       if (
         newLobby.data.enemyHP -
@@ -731,7 +727,7 @@ function MultiPlayerCreature({
           });
         }
         ref.current = playerCreatureResources.playerCreatureHP;
-        completeLifesteal(
+        checkLifesteal(
           playerCreatureSpecial,
           criticalMultiplier,
           chancePlayer,
@@ -967,11 +963,13 @@ function MultiPlayerCreature({
         {/* displays the player creature special when special is used */}
         {specialStatus ? (
           <div className="special_effect_container">
-            {player.preferredSpecial === 1 ? (
-              <div className={playerCreature.specialEffect} />
-            ) : (
-              <div className={playerCreature.specialEffect2} />
-            )}{" "}
+            <div
+              className={
+                player.preferredSpecial === 1
+                  ? playerCreature.specialEffect
+                  : playerCreature.specialEffect2
+              }
+            />
           </div>
         ) : null}
 
@@ -985,17 +983,18 @@ function MultiPlayerCreature({
               playerCreature.attackType
             )
           }
-          performSpecial1={() =>
-            attackEnemyOrHeal(
-              playerCreature.specialName,
-              playerCreature.specialType
-            )
-          }
-          performSpecial2={() =>
-            attackEnemyOrHeal(
-              playerCreature.specialName2,
-              playerCreature.specialType2
-            )
+          performSpecial={
+            player.preferredSpecial === 1
+              ? () =>
+                  attackEnemyOrHeal(
+                    playerCreature.specialName,
+                    playerCreature.specialType
+                  )
+              : () =>
+                  attackEnemyOrHeal(
+                    playerCreature.specialName2,
+                    playerCreature.specialType2
+                  )
           }
           loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
         />

@@ -8,8 +8,7 @@ function CommonPlayerCreaturePanel({
   player,
   playerCreatureResources,
   attackEnemy,
-  performSpecial1,
-  performSpecial2,
+  performSpecial,
   loadAsyncDataPlayer,
 }) {
   // display creature stats status state from redux store
@@ -74,29 +73,22 @@ function CommonPlayerCreaturePanel({
             >
               {playerCreature.attackName}
             </button>
-            {player.preferredSpecial === 1 ? (
-              <button
-                className="game_button special_button"
-                onClick={() => {
-                  performSpecial1();
-                }}
-              >
-                {playerCreature.specialName}
-                <br />
-                Cost: {playerCreature.specialCost} MP
-              </button>
-            ) : (
-              <button
-                className="game_button special_button"
-                onClick={() => {
-                  performSpecial2();
-                }}
-              >
-                {playerCreature.specialName2}
-                <br />
-                Cost: {playerCreature.specialCost2} MP
-              </button>
-            )}
+            <button
+              className="game_button special_button"
+              onClick={() => {
+                performSpecial();
+              }}
+            >
+              {player.preferredSpecial === 1
+                ? playerCreature.specialName
+                : playerCreature.specialName2}
+              <br />
+              Cost:{" "}
+              {player.preferredSpecial === 1
+                ? playerCreature.specialCost
+                : playerCreature.specialCost2}{" "}
+              MP
+            </button>
           </div>
         ) : null}
 
@@ -118,25 +110,23 @@ function CommonPlayerCreaturePanel({
             />
           </div>
         ) : null}
-        {!battleStatus ? (
-          <div className="inline_flex">
-            <h5>HP: {playerCreature.hp + chosenRelic.hpMod + summonHPBonus}</h5>
-            &nbsp;|&nbsp;
-            <h5>MP: {playerCreature.mp + chosenRelic.mpMod + summonMPBonus}</h5>
-          </div>
-        ) : (
-          <div className="inline_flex">
-            <h5>
-              HP: {playerCreatureResources.playerCreatureHP} /{" "}
-              {playerCreature.hp + chosenRelic.hpMod + summonHPBonus}
-            </h5>
-            &nbsp;|&nbsp;
-            <h5>
-              MP: {playerCreatureResources.playerCreatureMP} /{" "}
-              {playerCreature.mp + chosenRelic.mpMod + summonMPBonus}
-            </h5>
-          </div>
-        )}
+        <div className="inline_flex">
+          <h5>
+            HP:{" "}
+            {battleStatus
+              ? playerCreatureResources.playerCreatureHP + "/"
+              : null}
+            {playerCreature.hp + chosenRelic.hpMod + summonHPBonus}
+          </h5>
+          &nbsp;|&nbsp;
+          <h5>
+            MP:{" "}
+            {battleStatus
+              ? playerCreatureResources.playerCreatureMP + "/"
+              : null}
+            {playerCreature.mp + chosenRelic.mpMod + summonMPBonus}
+          </h5>
+        </div>
 
         {/* panel stats */}
         {creatureStatsStatus ? (
@@ -145,19 +135,16 @@ function CommonPlayerCreaturePanel({
               Attack: {playerCreature.attack + chosenRelic.attackMod} | Type:{" "}
               {playerCreature.attackType}
             </h5>
-            {player.preferredSpecial === 1 ? (
-              <h5>
-                Special: {playerCreature.special + chosenRelic.specialMod} |
-                Type: {playerCreature.specialType} |{" "}
-                {playerCreature.specialCost}{" "}
-              </h5>
-            ) : (
-              <h5>
-                Special: {playerCreature.special2 + chosenRelic.specialMod} |
-                Type: {playerCreature.specialType2} |{" "}
-                {playerCreature.specialCost2}{" "}
-              </h5>
-            )}
+            <h5>
+              Special:{" "}
+              {player.preferredSpecial === 1
+                ? playerCreature.special + chosenRelic.specialMod
+                : playerCreature.special2 + chosenRelic.specialMod}{" "}
+              | Type:{" "}
+              {player.preferredSpecial === 1
+                ? playerCreature.specialType
+                : playerCreature.specialType2}
+            </h5>
             <h5>
               MP Regen: {playerCreature.mpRegen + chosenRelic.mpRegenMod} |
               Speed: {playerCreature.speed + chosenRelic.speedMod}
@@ -168,7 +155,7 @@ function CommonPlayerCreaturePanel({
             </h5>
           </div>
         ) : null}
-      </div>{" "}
+      </div>
     </>
   );
 }

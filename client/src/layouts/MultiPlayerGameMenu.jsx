@@ -538,40 +538,35 @@ function MultiPlayerGameMenu({
               }}
             >
               Alchemy
-            </button>{" "}
+            </button>
           </>
         ) : null}
 
         {/* if there is no battle, displays a button to start a battle at the current stage */}
-        {!battleStatus && !lobbyTimer ? (
+        {!battleStatus ? (
           <>
             <button
               className="game_button margin_small"
-              onClick={() => {
-                beginBattle();
-                setGameMenuStatus({
-                  templeStatus: false,
-                  relicsStatus: false,
-                  summonsStatus: false,
-                  stagesStatus: false,
-                });
-              }}
+              onClick={
+                lobbyTimer
+                  ? () => {
+                      alert(
+                        "Multiplayer cooldown is active. Please try again in a few seconds."
+                      );
+                    }
+                  : () => {
+                      beginBattle();
+                      setGameMenuStatus({
+                        templeStatus: false,
+                        relicsStatus: false,
+                        summonsStatus: false,
+                        stagesStatus: false,
+                      });
+                    }
+              }
             >
               Battle
-            </button>{" "}
-          </>
-        ) : !battleStatus ? (
-          <>
-            <button
-              className="game_button margin_small"
-              onClick={() => {
-                alert(
-                  "Multiplayer cooldown is active. Please try again in a few seconds."
-                );
-              }}
-            >
-              Battle
-            </button>{" "}
+            </button>
           </>
         ) : null}
       </div>

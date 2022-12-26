@@ -76,7 +76,7 @@ function EnemyCreature({
               />
             </div>
             <h5>
-              HP: {enemyCreatureHP} / {enemyCreature.hp}
+              HP: {enemyCreatureHP}/{enemyCreature.hp}
             </h5>
           </div>
         </div>

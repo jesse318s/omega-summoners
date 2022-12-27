@@ -121,7 +121,6 @@ function MultiPlayerGameMenu({
   // updates player relics in database
   const buyRelic = async (relicId, relicPrice) => {
     try {
-      // if the player can afford the relic and doesn't own it
       if (player.drachmas >= relicPrice && !player.relics.includes(relicId)) {
         if (
           window.confirm(
@@ -148,10 +147,38 @@ function MultiPlayerGameMenu({
     }
   };
 
+  // sells a player relic and updates their relics in database
+  const sellRelic = async (relicId, relicPrice) => {
+    try {
+      if (
+        window.confirm(
+          `Are you sure you want to sell this relic? You will gain ${relicPrice} drachmas.`
+        )
+      ) {
+        const oldRelicIndex = player.relics.indexOf(relicId);
+        let newRelics = player.relics;
+
+        newRelics.splice(oldRelicIndex, 1);
+        await Userfront.user.update({
+          data: {
+            userkey: Userfront.user.data.userkey,
+          },
+        });
+        await updateUser(player._id, {
+          userfrontId: Userfront.user.userId,
+          drachmas: player.drachmas + relicPrice,
+          relics: newRelics,
+        });
+        await loadAsyncDataPlayer();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   // swaps player creature in database
   const swapCreature = async (creatureId, creaturePrice) => {
     try {
-      // if the player can afford the creature and isn't already using it
       if (
         player.experience >= creaturePrice &&
         player.creatureId !== creatureId
@@ -185,7 +212,6 @@ function MultiPlayerGameMenu({
   // begins a battle
   const beginBattle = async () => {
     try {
-      // refresh and set connections and load lobby data
       await getConnections();
       await loadAsyncDataLobby();
       await checkPotionTimer(dispatch);
@@ -313,14 +339,25 @@ function MultiPlayerGameMenu({
             </button>
             {relicsData.slice(indexC, indexD).map((relic) => (
               <div className="relic_option" key={relic.id}>
-                <button
-                  className="game_button_small"
-                  onClick={() => {
-                    buyRelic(relic.id, relic.price);
-                  }}
-                >
-                  Buy
-                </button>
+                {player.relics.includes(relic.id) ? (
+                  <button
+                    className="game_button_small"
+                    onClick={() => {
+                      sellRelic(relic.id, relic.price);
+                    }}
+                  >
+                    Sell
+                  </button>
+                ) : (
+                  <button
+                    className="game_button_small"
+                    onClick={() => {
+                      buyRelic(relic.id, relic.price);
+                    }}
+                  >
+                    Buy
+                  </button>
+                )}
                 <img
                   onClick={() => alert(relic.description)}
                   className="relic_option_img"

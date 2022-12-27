@@ -11,11 +11,12 @@ function EnemyCreature({
   // battle status combat state from redux store
   const battleStatus = useSelector((state) => state.battleStatus.battleStatus);
 
-  // renders spawn portal, enemy combat text, and enemy creature with stats panel
   return (
     <>
+      {/* if there is a battle, displays enemy creature with spawn animation and creature info panel */}
       {battleStatus ? (
         <div className="enemy_creature">
+          {/* displays spawn animation */}
           <div className="special_effect_container">
             <div className={spawnAnimation} />
           </div>

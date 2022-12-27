@@ -11,11 +11,12 @@ function MultiPlayerEnemyCreature({
   // battle status combat state from redux store
   const battleStatus = useSelector((state) => state.battleStatus.battleStatus);
 
-  // renders spawn portal, enemy combat text, and boss enemy creature with stats panel for multiplayer
   return (
     <>
+      {/* if there is a battle, displays enemy creature with spawn animation and creature info panel */}
       {battleStatus ? (
         <div className="enemy_creature">
+          {/* displays spawn animation */}
           <div className="special_effect_container">
             <div className={spawnAnimation} />
           </div>

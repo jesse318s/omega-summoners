@@ -912,7 +912,6 @@ function PlayerCreature({
           </div>
         ) : null}
 
-        {/* creature control/info panel */}
         <CommonPlayerCreaturePanel
           player={player}
           playerCreatureResources={playerCreatureResources}

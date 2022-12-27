@@ -23,6 +23,7 @@ root.render(
     <Provider store={store}>
       {/* wrapper for routes that render components */}
       <BrowserRouter>
+        {/* suspense for loading */}
         <Suspense fallback={<div className={"loading"}>Loading</div>}>
           <Routes>
             <Route path="" element={<Home />} />

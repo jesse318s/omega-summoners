@@ -97,7 +97,6 @@ function App() {
     // checks for userkey and generates new player if needed
     const genAsyncDataPlayer = async () => {
       try {
-        // if there is no user key
         if (
           Userfront.user.data.userkey === undefined &&
           ref.current === false
@@ -134,13 +133,12 @@ function App() {
   useEffect(() => {
     // if there is a player
     if (player) {
-      // if needed, generates random creature and updates player in database
+      // if needed, generates random creature from first 4 and updates player in database
       const genAsyncPlayerCreature = async () => {
         try {
-          // if there is no player creature data
           if (player.creatureId === 0) {
             const randomCreature =
-              creatureData[Math.floor(Math.random() * creatureData.length)].id;
+              creatureData[Math.floor(Math.random() * 4)].id;
             Userfront.user.update({
               data: {
                 userkey: Userfront.user.data.userkey,

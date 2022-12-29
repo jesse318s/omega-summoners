@@ -10,7 +10,6 @@ router.post("/", async (req, res) => {
     const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, {
       algorithms: ["RS256"],
     });
-    const documentCount = await Connection.count({});
     let check = false;
 
     for await (const doc of Connection.find()) {
@@ -18,7 +17,11 @@ router.post("/", async (req, res) => {
         check = true;
       }
     }
-    if (!check && decoded.userId === req.body.userId && documentCount < 3) {
+    if (
+      !check &&
+      decoded.userId === req.body.userId &&
+      (await Connection.countDocuments({})) < 3
+    ) {
       const connection = await new Connection(req.body).save();
       res.send(connection);
     } else {
@@ -36,7 +39,7 @@ router.get("/", async (req, res) => {
     const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, {
       algorithms: ["RS256"],
     });
-    
+
     if (decoded) {
       let count = 0;
       for await (const doc of Connection.find()) {

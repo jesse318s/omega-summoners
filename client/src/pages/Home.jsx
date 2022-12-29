@@ -420,9 +420,6 @@ function Home() {
             must fight the evil that escapes from the depths of the Underworld.
             The gameplay is simple, and the player can battle enemies, or
             perform a variety of tasks to gain power and riches.
-            <br />
-            Omega Summoners is not recommended for children under the age of 13,
-            or those with photosensitive epilepsy.
           </p>
         </section>
 

@@ -19,7 +19,7 @@ router.get("/:id", async (req, res) => {
     if (decoded) {
       const lobby = await Lobby.findOne({ _id: req.params.id });
       if (lobby.enemyHP <= 0) {
-        await Lobby.findOneAndUpdate(
+        const restoredLobby = await Lobby.findOneAndUpdate(
           {
             _id: req.params.id,
           },
@@ -27,7 +27,6 @@ router.get("/:id", async (req, res) => {
             enemyHP: lobby.maxHP,
           }
         );
-        const restoredLobby = await Lobby.findOne({ _id: req.params.id });
         res.send(restoredLobby);
       } else {
         res.send(lobby);
@@ -48,6 +47,32 @@ router.put("/:id", async (req, res) => {
     });
     const verifiedUserkey = await verifyUserkey(decoded, req.headers.userkey);
 
+    if (verifiedUserkey && lobbyCheck.enemyHP <= 0) {
+      let restoredLobby = await Lobby.findOneAndUpdate(
+        {
+          _id: req.params.id,
+        },
+        {
+          enemyHP: lobbyCheck.maxHP,
+        }
+      );
+      if (restoredLobby.victors.includes(decoded.userId)) {
+        const newVictors = lobbyCheck.victors.filter(
+          (victor) => victor !== decoded.userId
+        );
+        restoredLobby = await Lobby.findOneAndUpdate(
+          {
+            _id: req.params.id,
+          },
+          {
+            victors: [newVictors[0]],
+          }
+        );
+      }
+      res.send(restoredLobby);
+      generateUserkey(decoded.userId);
+      return;
+    }
     if (verifiedUserkey && req.body.enemyHP < lobbyCheck.enemyHP) {
       if (req.body.victors !== undefined) {
         const lobby = await Lobby.findOneAndUpdate(
@@ -72,7 +97,7 @@ router.put("/:id", async (req, res) => {
         res.send(lobby);
       }
       generateUserkey(decoded.userId);
-    } else if (req.body.victors !== undefined && verifiedUserkey) {
+    } else if (verifiedUserkey && req.body.victors !== undefined) {
       const lobby = await Lobby.findOneAndUpdate(
         {
           _id: req.params.id,

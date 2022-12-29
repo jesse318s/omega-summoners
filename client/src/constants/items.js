@@ -26,21 +26,21 @@ export const ingredientsList = [
     id: 1,
     name: "Green Mushroom",
     description:
-      "Used in 'Potion of Health' and 'Potion of Mana'. (15% chance to drop from non-boss enemies)",
+      "Used in 'Potion of Health' and 'Potion of Mana'. (Chance to drop from non-boss enemies)",
     imgPath: "img/ingredient/ingredient1.png",
   },
   {
     id: 2,
     name: "Red Mushroom",
     description:
-      "Used in 'Potion of Health'. (10% chance to drop from non-boss enemies)",
+      "Used in 'Potion of Health'. (Small chance to drop from non-boss enemies)",
     imgPath: "img/ingredient/ingredient2.png",
   },
   {
     id: 3,
     name: "Blue Mushroom",
     description:
-      "Used in 'Potion of Mana'. (10% chance to drop from non-boss enemies)",
+      "Used in 'Potion of Mana'. (Small chance to drop from non-boss enemies)",
     imgPath: "img/ingredient/ingredient3.png",
   },
 ];

@@ -488,17 +488,15 @@ function MultiPlayerCreature({
           userkey: Userfront.user.data.userkey,
         },
       });
-      setTimeout(() => {
-        updateUser(player._id, {
-          userfrontId: Userfront.user.userId,
-          experience: player.experience + enemyCreature.reward * 2,
-          drachmas: player.drachmas + enemyCreature.reward,
-        }).then(() => {
-          loadAsyncDataPlayer();
-          dispatch(disableLobbyTimer());
-        });
-      }, 2000);
-    }, 2000);
+      updateUser(player._id, {
+        userfrontId: Userfront.user.userId,
+        experience: player.experience + enemyCreature.reward * 2,
+        drachmas: player.drachmas + enemyCreature.reward,
+      }).then(() => {
+        loadAsyncDataPlayer();
+        dispatch(disableLobbyTimer());
+      });
+    }, 4000);
   };
 
   // kills enemy
@@ -520,14 +518,14 @@ function MultiPlayerCreature({
       criticalMultiplier,
       enemyDefense
     );
+    const otherConnections = connections.filter(
+      (connection) => connection.userId !== Userfront.user.userId
+    );
     await Userfront.user.update({
       data: {
         userkey: Userfront.user.data.userkey,
       },
     });
-    const otherConnections = connections.filter(
-      (connection) => connection.userId !== Userfront.user.userId
-    );
     if (otherConnections.length === 1) {
       await updateLobby(lobby._id, {
         enemyHP: 0,
@@ -653,7 +651,6 @@ function MultiPlayerCreature({
         playerCreatureResources.playerCreatureMP - playerCreatureSpecialCost,
     });
     if (moveType !== "Heal") {
-      // checks for enemy death
       if (
         newLobby.data.enemyHP -
           (playerCreatureSpecial - playerCreatureSpecial * enemyDefense) *
@@ -674,14 +671,14 @@ function MultiPlayerCreature({
           criticalMultiplier,
           enemyDefense
         );
+        const otherConnections = connections.filter(
+          (connection) => connection.userId !== Userfront.user.userId
+        );
         await Userfront.user.update({
           data: {
             userkey: Userfront.user.data.userkey,
           },
         });
-        const otherConnections = connections.filter(
-          (connection) => connection.userId !== Userfront.user.userId
-        );
         if (otherConnections.length === 1) {
           await updateLobby(lobby._id, {
             enemyHP: 0,
@@ -754,14 +751,14 @@ function MultiPlayerCreature({
         battleUndecided: false,
       };
     });
+    const newVictors = newLobby.data.victors.filter(
+      (victor) => victor !== Userfront.user.userId
+    );
     await Userfront.user.update({
       data: {
         userkey: Userfront.user.data.userkey,
       },
     });
-    const newVictors = newLobby.data.victors.filter(
-      (victor) => victor !== Userfront.user.userId
-    );
     await updateLobby(lobby._id, {
       victors: [newVictors[0]],
     });

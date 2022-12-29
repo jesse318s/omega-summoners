@@ -15,10 +15,10 @@ router.post("/", async (req, res) => {
     const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, {
       algorithms: ["RS256"],
     });
-    const user = await User.findOne({ userfrontId: decoded.userId });
+    const userCheck = await User.findOne({ userfrontId: decoded.userId });
 
     if (
-      !user &&
+      !userCheck &&
       decoded.userId === req.body.userfrontId &&
       req.body.avatarPath === "img/avatar/placeholder_avatar.png" &&
       req.body.experience === 0 &&

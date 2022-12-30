@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 
-// create a new user connection for lobby if there isn't one
+// create a new user connection for lobby if there isn't one, and deletes old connections
 router.post("/", async (req, res) => {
   try {
     const accessToken = req.headers.authorization.replace("Bearer ", "");
@@ -12,6 +12,11 @@ router.post("/", async (req, res) => {
     });
     let check = false;
 
+    for await (const doc of Connection.find()) {
+      if (doc.createdAt < Date.now() - 100000) {
+        await doc.remove();
+      }
+    }
     for await (const doc of Connection.find()) {
       if (doc.userId === req.body.userId) {
         check = true;
@@ -32,7 +37,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// retrieves lobby user connections and deletes old or extra connections
+// retrieves lobby user connections, and deletes old or extra connections
 router.get("/", async (req, res) => {
   try {
     const accessToken = req.headers.authorization.replace("Bearer ", "");
@@ -40,6 +45,11 @@ router.get("/", async (req, res) => {
       algorithms: ["RS256"],
     });
 
+    for await (const doc of Connection.find()) {
+      if (doc.createdAt < Date.now() - 100000) {
+        await doc.remove();
+      }
+    }
     if (decoded) {
       let count = 0;
       for await (const doc of Connection.find()) {
@@ -52,11 +62,6 @@ router.get("/", async (req, res) => {
       }
       const connections = await Connection.find();
       res.send(connections);
-    }
-    for await (const doc of Connection.find()) {
-      if (doc.createdAt < Date.now() - 100000) {
-        await doc.remove();
-      }
     }
   } catch (error) {
     res.send(error);

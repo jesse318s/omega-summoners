@@ -393,8 +393,8 @@ function MultiPlayerCreature({
         return;
       }
       // updates lobby for player
-      await loadAsyncDataLobby();
-      await loadAsyncDataPlayer();
+      loadAsyncDataLobby();
+      loadAsyncDataPlayer();
       if (moveName === playerCreature.attackName) {
         regenMP();
       }

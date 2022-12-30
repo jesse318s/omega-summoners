@@ -4,7 +4,6 @@ import { updateUser } from "../services/userServices";
 import { useState } from "react";
 import creatures from "../constants/creatures";
 import relics from "../constants/relics";
-import { getConnections } from "../services/connectionServices";
 import { useSelector, useDispatch } from "react-redux";
 import { enableBattleStatus } from "../store/actions/battleStatus.actions";
 import checkPotionTimer from "../utils/checkPotionTimer";
@@ -17,7 +16,6 @@ function MultiPlayerGameMenu({
   setGameMenuStatus,
   loadAsyncDataPlayer,
   setPlayerCreatureResources,
-  connections,
   loadAsyncDataLobby,
 }) {
   // dispatch hook for redux
@@ -212,8 +210,6 @@ function MultiPlayerGameMenu({
   // begins a battle
   const beginBattle = async () => {
     try {
-      await getConnections();
-      await loadAsyncDataLobby();
       await checkPotionTimer(dispatch);
       setPlayerCreatureResources((playerCreatureResources) => {
         return {

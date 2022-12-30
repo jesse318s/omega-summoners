@@ -250,7 +250,7 @@ function Lobby1() {
         console.log(error);
       }
     };
-    await loadAsyncDataConnections();
+    loadAsyncDataConnections();
     genAsyncDataConnection();
     try {
       const { data } = await getLobby(lobby1);

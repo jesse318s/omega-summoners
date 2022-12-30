@@ -17,7 +17,7 @@ router.post("/", async (req, res) => {
     });
     const verifiedUserkey = await verifyUserkey(decoded, req.headers.userkey);
 
-    if (verifiedUserkey) {
+    if (verifiedUserkey && decoded.userId === req.body.userId) {
       for await (const doc of Item.find()) {
         if (
           doc.userId === req.body.userId &&

@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
         check = true;
       }
     }
-    if (!check && verifiedUserkey) {
+    if (!check && verifiedUserkey && decoded.userId === req.body.userId) {
       const potionTimer = await new PotionTimer(req.body).save();
       res.send(potionTimer);
       generateUserkey(decoded.userId);
@@ -50,6 +50,11 @@ router.get("/", async (req, res) => {
       algorithms: ["RS256"],
     });
 
+    for await (const doc of PotionTimer.find()) {
+      if (doc.createdAt < Date.now() - doc.potionDuration) {
+        await doc.remove();
+      }
+    }
     if (decoded) {
       let count = 0;
       for await (const doc of PotionTimer.find()) {
@@ -60,13 +65,8 @@ router.get("/", async (req, res) => {
           }
         }
       }
-      const potionTimers = await PotionTimer.find();
-      res.send(potionTimers);
-    }
-    for await (const doc of PotionTimer.find()) {
-      if (doc.createdAt < Date.now() - doc.potionDuration) {
-        await doc.remove();
-      }
+      const potionTimer = await PotionTimer.find({ userId: decoded.userId });
+      res.send(potionTimer);
     }
   } catch (error) {
     res.send(error);

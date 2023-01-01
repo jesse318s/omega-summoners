@@ -468,7 +468,7 @@ function PlayerCreature({
       dropIngredients(1, dropAmount, Userfront);
       return;
     }
-    if (Math.random() <= 0.1) {
+    if (Math.random() <= 0.15) {
       const min = 2;
       const max = ingredientsList.length;
       const randomIngredientId = Math.floor(

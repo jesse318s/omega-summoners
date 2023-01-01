@@ -19,6 +19,16 @@ const recipeList = [
     ingredient2: 3,
     potionProductId: 2,
   },
+  {
+    id: 3,
+    name: "Potion of Restoration",
+    description:
+      "Creates 1 'Potion of Restoration'. Requires 1 'Green Mushroom' and 1 'Purple Mushroom', and adds 20 HP and MP for 12 minutes.",
+    imgPath: "img/recipe/recipe3.png",
+    ingredient1: 1,
+    ingredient2: 4,
+    potionProductId: 3,
+  },
 ];
 
 export default recipeList;

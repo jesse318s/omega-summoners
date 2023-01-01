@@ -19,14 +19,23 @@ export const potionsList = [
     hpMod: 0,
     mpMod: 50,
   },
+  {
+    id: 3,
+    name: "Potion of Restoration",
+    description:
+      "Adds 20 HP and MP for 12 minutes. (A creature may only have one active potion at a time, and if you reload you must regenerate your bonus)",
+    imgPath: "img/potion/potion3.png",
+    duration: 720000,
+    hpMod: 20,
+    mpMod: 20,
+  },
 ];
 
 export const ingredientsList = [
   {
     id: 1,
     name: "Green Mushroom",
-    description:
-      "Used in 'Potion of Health' and 'Potion of Mana'. (Chance to drop from non-boss enemies)",
+    description: "Used in many potions. (Chance to drop from non-boss enemies)",
     imgPath: "img/ingredient/ingredient1.png",
   },
   {
@@ -42,5 +51,12 @@ export const ingredientsList = [
     description:
       "Used in 'Potion of Mana'. (Small chance to drop from non-boss enemies)",
     imgPath: "img/ingredient/ingredient3.png",
+  },
+  {
+    id: 4,
+    name: "Purple Mushroom",
+    description:
+      "Used in 'Potion of Restoration'. (Small chance to drop from non-boss enemies)",
+    imgPath: "img/ingredient/ingredient4.png",
   },
 ];

@@ -557,6 +557,15 @@ function GameMenu({
                 ) : null}
               </Link>
               <br />
+              <Link to="/stage2">
+                <button className="game_button_small margin_small">
+                  Lvl. 10 | Stage II
+                  <br /> Countryside (Solo)
+                </button>
+                {window.location.pathname === "/stage2" ? (
+                  <span className="color_white">X</span>
+                ) : null}
+              </Link>
             </div>
           </>
         ) : null}

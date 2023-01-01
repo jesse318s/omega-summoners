@@ -35,13 +35,7 @@ router.post("/", async (req, res) => {
       generateFortifiedUserkey(decoded.userId);
     }
   } catch (error) {
-    const accessToken = req.headers.authorization.replace("Bearer ", "");
-    const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, {
-      algorithms: ["RS256"],
-    });
-
     res.send(error);
-    generateFortifiedUserkey(decoded.userId);
   }
 });
 

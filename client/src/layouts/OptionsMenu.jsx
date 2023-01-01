@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 
 Userfront.init("rbvqd5nd");
 
-function Options({
+function OptionsMenu({
   player,
   optionsMenuStatus,
   setOptionsMenuStatus,
@@ -77,6 +77,7 @@ function Options({
 
   return (
     <>
+      {/* if the options are being used */}
       {optionsMenuStatus.optionsStatus ? (
         <div className="color_white">
           {/* gameplay option menu */}
@@ -244,4 +245,4 @@ function Options({
   );
 }
 
-export default Options;
+export default OptionsMenu;

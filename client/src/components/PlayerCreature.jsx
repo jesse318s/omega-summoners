@@ -1,7 +1,8 @@
 import { useRef, useState } from "react";
 import Userfront from "@userfront/core";
+import { ingredientsList } from "../constants/items";
 import { updateUser } from "../services/userServices";
-import CommonPlayerCreaturePanel from "./CommonPlayerCreaturePanel";
+import CommonPlayerCreaturePanel from "../layouts/CommonPlayerCreaturePanel";
 import { useSelector, useDispatch } from "react-redux";
 import { disableBattleStatus } from "../store/actions/battleStatus.actions";
 import checkPotionTimer from "../utils/checkPotionTimer";
@@ -469,7 +470,7 @@ function PlayerCreature({
     }
     if (Math.random() <= 0.1) {
       const min = 2;
-      const max = 3;
+      const max = ingredientsList.length;
       const randomIngredientId = Math.floor(
         Math.random() * (max - min + 1) + min
       );

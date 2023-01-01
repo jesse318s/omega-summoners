@@ -5,7 +5,7 @@ import Userfront from "@userfront/core";
 import { useNavigate } from "react-router-dom";
 import { getUser } from "../services/userServices";
 import GameNav from "../layouts/GameNav";
-import Options from "../layouts/Options";
+import OptionsMenu from "../layouts/OptionsMenu";
 import MultiPlayerGameMenu from "../layouts/MultiPlayerGameMenu";
 import MultiPlayerCreature from "../components/MultiPlayerCreature";
 import MultiPlayerEnemyCreature from "../components/MultiPlayerEnemyCreature";
@@ -206,6 +206,48 @@ function Lobby1() {
     dispatch,
   ]);
 
+  // renders player details panel
+  const getPlayer = () => {
+    return (
+      <>
+        <div className="color_white">
+          <img
+            src={player.avatarPath}
+            alt={player.name}
+            className="player_avatar"
+            width="96"
+            height="96"
+          />
+          <h4>{player.name}</h4>
+          <h5>
+            Lvl. {Math.floor(Math.sqrt(player.experience) * 0.25)} |{" "}
+            {player.experience.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
+            XP
+            <div className="progress_bar_container">
+              <div
+                className="progress_bar"
+                style={{
+                  width:
+                    (
+                      Math.sqrt(player.experience) * 0.25 -
+                      Math.floor(Math.sqrt(player.experience) * 0.25)
+                    )
+                      .toFixed(2)
+                      .replace("0.", "") + "%",
+                }}
+              />
+            </div>
+          </h5>
+          <h5>
+            Drachmas:{" "}
+            {player.drachmas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
+            {"\u25C9"}
+          </h5>
+        </div>
+      </>
+    );
+  };
+
   // retrieves user data and updates player state
   const loadAsyncDataPlayer = async () => {
     try {
@@ -269,55 +311,19 @@ function Lobby1() {
             optionsMenuStatus={optionsMenuStatus}
             setOptionsMenuStatus={setOptionsMenuStatus}
           />
-        </header>
 
-        <main className="lobby1_game_section">
-          <Options
+          <OptionsMenu
             player={player}
             optionsMenuStatus={optionsMenuStatus}
             setOptionsMenuStatus={setOptionsMenuStatus}
             loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
           />
+        </header>
 
-          {/* player with player details panel */}
-          <div className="color_white">
-            <img
-              src={player.avatarPath}
-              alt={player.name}
-              className="player_avatar"
-              width="96"
-              height="96"
-            />
-            <h4>{player.name}</h4>
-            <h5>
-              Lvl. {Math.floor(Math.sqrt(player.experience) * 0.25)} |{" "}
-              {player.experience
-                .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
-              XP
-              <div className="progress_bar_container">
-                <div
-                  className="progress_bar"
-                  style={{
-                    width:
-                      (
-                        Math.sqrt(player.experience) * 0.25 -
-                        Math.floor(Math.sqrt(player.experience) * 0.25)
-                      )
-                        .toFixed(2)
-                        .replace("0.", "") + "%",
-                  }}
-                />
-              </div>
-            </h5>
-            <h5>
-              Drachmas:{" "}
-              {player.drachmas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
-              {"\u25C9"}
-            </h5>
-          </div>
+        <main className="lobby1_game_section">
+          {getPlayer()}
 
-          {/* game menu and creatures wrapped in options status check */}
+          {/* displays other menus and creatures if options menu isnt being used */}
           {Object.values(optionsMenuStatus).every(
             (value) => value === false
           ) ? (

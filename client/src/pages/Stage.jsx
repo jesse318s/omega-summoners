@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "../App.scss";
 import "./Stage.css";
 import Userfront from "@userfront/core";
@@ -6,22 +6,16 @@ import { useNavigate } from "react-router-dom";
 import { getUser } from "../services/userServices";
 import GameNav from "../layouts/GameNav";
 import OptionsMenu from "../layouts/OptionsMenu";
+import PlayerPanel from "../components/PlayerPanel";
 import GameMenu from "../layouts/GameMenu";
 import AlchemyMenu from "../layouts/AlchemyMenu";
 import PlayerCreature from "../components/PlayerCreature";
 import EnemyCreature from "../components/EnemyCreature";
 import creatures from "../constants/creatures";
 import relics from "../constants/relics";
-import { potionsList } from "../constants/items";
-import { ingredientsList } from "../constants/items";
-import { getItems } from "../services/itemServices";
 import { useSelector, useDispatch } from "react-redux";
 import { setPlayerCreatureValue } from "../store/actions/summon.actions";
 import { setEnemyCreatureValue } from "../store/actions/enemy.actions";
-import {
-  setIngredientsValue,
-  setPotionsValue,
-} from "../store/actions/alchemy.actions";
 import {
   setPlayerRelicsValue,
   setChosenRelicValue,
@@ -102,7 +96,7 @@ function Stage() {
 
   useEffect(() => {
     // retrieves user data and updates player state
-    const loadAsyncDataPlayer = async () => {
+    const initAsyncDataPlayer = async () => {
       try {
         const { data } = await getUser();
         setPlayer(data);
@@ -110,7 +104,7 @@ function Stage() {
         console.log(error);
       }
     };
-    loadAsyncDataPlayer();
+    initAsyncDataPlayer();
   }, []);
 
   useEffect(() => {
@@ -154,45 +148,6 @@ function Stage() {
       }
     }
   }, [player, relicsData, creatureData, dispatch]);
-
-  useEffect(() => {
-    // loads alchemy data
-    const loadAsyncDataAlchemy = async () => {
-      try {
-        const { data } = await getItems();
-        const playerPotionsData = data.filter(
-          (item) =>
-            item.type === "Potion" && item.userId === Userfront.user.userId
-        );
-        const playerPotions = potionsList.filter((potion) =>
-          playerPotionsData.some((item) => item.itemId === potion.id)
-        );
-
-        for (let i = 0; i < playerPotions.length; i++) {
-          playerPotions[i].itemQuantity = playerPotionsData.find(
-            (item) => item.itemId === playerPotions[i].id
-          ).itemQuantity;
-        }
-        dispatch(setPotionsValue(playerPotions));
-        const playerIngredientsData = data.filter(
-          (item) =>
-            item.type === "Ingredient" && item.userId === Userfront.user.userId
-        );
-        const playerIngredients = ingredientsList.filter((ingredient) =>
-          playerIngredientsData.some((item) => item.itemId === ingredient.id)
-        );
-        for (let i = 0; i < playerIngredients.length; i++) {
-          playerIngredients[i].itemQuantity = playerIngredientsData.find(
-            (item) => item.itemId === playerIngredients[i].id
-          ).itemQuantity;
-        }
-        dispatch(setIngredientsValue(playerIngredients));
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    loadAsyncDataAlchemy();
-  }, [gameMenuStatus.alchemyStatus, dispatch]);
 
   useEffect(() => {
     // detects combat changes
@@ -242,48 +197,6 @@ function Stage() {
     dispatch,
   ]);
 
-  // renders player details panel
-  const getPlayer = () => {
-    return (
-      <>
-        <div className="color_white">
-          <img
-            src={player.avatarPath}
-            alt={player.name}
-            className="player_avatar"
-            width="96"
-            height="96"
-          />
-          <h4>{player.name}</h4>
-          <h5>
-            Lvl. {Math.floor(Math.sqrt(player.experience) * 0.25)} |{" "}
-            {player.experience.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
-            XP
-            <div className="progress_bar_container">
-              <div
-                className="progress_bar"
-                style={{
-                  width:
-                    (
-                      Math.sqrt(player.experience) * 0.25 -
-                      Math.floor(Math.sqrt(player.experience) * 0.25)
-                    )
-                      .toFixed(2)
-                      .replace("0.", "") + "%",
-                }}
-              />
-            </div>
-          </h5>
-          <h5>
-            Drachmas:{" "}
-            {player.drachmas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
-            {"\u25C9"}
-          </h5>
-        </div>
-      </>
-    );
-  };
-
   // retrieves user data and updates player state
   const loadAsyncDataPlayer = async () => {
     try {
@@ -313,7 +226,7 @@ function Stage() {
         </header>
 
         <main className={stageBackground}>
-          {getPlayer()}
+          <PlayerPanel player={player} />
 
           {/* displays other menus and creatures if options menu isnt being used */}
           {Object.values(optionsMenuStatus).every(

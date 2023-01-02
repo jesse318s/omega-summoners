@@ -272,7 +272,6 @@ function AlchemyMenu({
               potionId: potion.id,
               potionDuration: potion.duration,
             });
-            await loadAsyncDataAlchemy();
             await checkPotionTimer(dispatch);
             setPlayerCreatureResources((playerCreatureResources) => {
               return {
@@ -347,6 +346,9 @@ function AlchemyMenu({
         <button
           className="game_button margin_small"
           onClick={() => {
+            if (!potionsStatus) {
+              loadAsyncDataAlchemy();
+            }
             setPotionsStatus(!potionsStatus);
             setIngredientsStatus(false);
             setRecipesStatus(false);
@@ -405,8 +407,8 @@ function AlchemyMenu({
           </div>
         ) : null}
 
-        {/* displays player potions if potions button is clicked */}
-        {potionsStatus ? (
+        {/* displays player potions if potions button is clicked and potions have loaded */}
+        {potionsStatus && potions[0].id ? (
           <div>
             <h4 className="margin_small">Player Potions</h4>
             <button
@@ -454,6 +456,9 @@ function AlchemyMenu({
         <button
           className="game_button margin_small"
           onClick={() => {
+            if (!ingredientsStatus) {
+              loadAsyncDataAlchemy();
+            }
             setIngredientsStatus(!ingredientsStatus);
             setPotionsStatus(false);
             setRecipesStatus(false);
@@ -463,8 +468,8 @@ function AlchemyMenu({
           Ingredients{" "}
         </button>
 
-        {/* displays player ingredients if ingredients button is clicked */}
-        {ingredientsStatus ? (
+        {/* displays player ingredients if ingredients button is clicked and ingredients have loaded */}
+        {ingredientsStatus && ingredients[0].id ? (
           <div>
             <h4 className="margin_small">Player Ingredients</h4>
             <button

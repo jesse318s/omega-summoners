@@ -3,7 +3,7 @@ import Userfront from "@userfront/core";
 import { updateUser } from "../services/userServices";
 import { getLobby, updateLobby } from "../services/lobbyServices";
 import { getConnections } from "../services/connectionServices";
-import CommonPlayerCreaturePanel from "../layouts/CommonPlayerCreaturePanel";
+import CommonPlayerCreaturePanel from "./CommonPlayerCreaturePanel";
 import { useSelector, useDispatch } from "react-redux";
 import { disableBattleStatus } from "../store/actions/battleStatus.actions";
 import {

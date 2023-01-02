@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import Userfront from "@userfront/core";
 import { ingredientsList } from "../constants/items";
 import { updateUser } from "../services/userServices";
-import CommonPlayerCreaturePanel from "../layouts/CommonPlayerCreaturePanel";
+import CommonPlayerCreaturePanel from "./CommonPlayerCreaturePanel";
 import { useSelector, useDispatch } from "react-redux";
 import { disableBattleStatus } from "../store/actions/battleStatus.actions";
 import checkPotionTimer from "../utils/checkPotionTimer";

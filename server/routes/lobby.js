@@ -2,9 +2,13 @@ const Lobby = require("../models/lobby");
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-const axios = require("axios");
+const {
+  verifyUserkey,
+  generateUserkey,
+  generateFortifiedUserkey,
+} = require("../libs/userkeyGeneratorAndVerifier.js");
 
-// retrieves lobby and restores enemy HP if enemy HP is 0
+// retrieves lobby and restores enemy HP if enemy is dead
 router.get("/:id", async (req, res) => {
   try {
     const accessToken = req.headers.authorization.replace("Bearer ", "");
@@ -15,7 +19,7 @@ router.get("/:id", async (req, res) => {
     if (decoded) {
       const lobby = await Lobby.findOne({ _id: req.params.id });
       if (lobby.enemyHP <= 0) {
-        await Lobby.findOneAndUpdate(
+        const restoredLobby = await Lobby.findOneAndUpdate(
           {
             _id: req.params.id,
           },
@@ -23,51 +27,53 @@ router.get("/:id", async (req, res) => {
             enemyHP: lobby.maxHP,
           }
         );
+        res.send(restoredLobby);
+      } else {
+        res.send(lobby);
       }
-      res.send(lobby);
     }
   } catch (error) {
     res.send(error);
   }
 });
 
-// updates lobby enemy HP and restores enemy HP if enemy HP is 0
+// updates lobby enemy HP/victors
 router.put("/:id", async (req, res) => {
   try {
-    const options = {
-      headers: {
-        Accept: "*/*",
-        Authorization: `Bearer ${process.env.USERFRONT_KEY}`,
-      },
-    };
-    const payload = {
-      data: {
-        userkey: Math.random().toString(36).substring(7),
-      },
-    };
-
-    function getUserkey() {
-      return axios
-        .get(
-          "https://api.userfront.com/v0/users/" + req.headers.userid,
-          options
-        )
-        .then((response) => {
-          return response.data;
-        })
-        .catch((err) => console.error(err));
-    }
-    const userkey = await getUserkey();
     const lobbyCheck = await Lobby.findOne({ _id: req.params.id });
     const accessToken = req.headers.authorization.replace("Bearer ", "");
     const decoded = jwt.verify(accessToken, process.env.PUBLIC_KEY, {
       algorithms: ["RS256"],
     });
-    if (
-      decoded &&
-      req.body.enemyHP < lobbyCheck.enemyHP &&
-      req.headers.userkey === userkey.data.userkey
-    ) {
+    const verifiedUserkey = await verifyUserkey(decoded, req.headers.userkey);
+
+    if (verifiedUserkey && lobbyCheck.enemyHP <= 0) {
+      let restoredLobby = await Lobby.findOneAndUpdate(
+        {
+          _id: req.params.id,
+        },
+        {
+          enemyHP: lobbyCheck.maxHP,
+        }
+      );
+      if (restoredLobby.victors.includes(decoded.userId)) {
+        const newVictors = lobbyCheck.victors.filter(
+          (victor) => victor !== decoded.userId
+        );
+        restoredLobby = await Lobby.findOneAndUpdate(
+          {
+            _id: req.params.id,
+          },
+          {
+            victors: [newVictors[0]],
+          }
+        );
+      }
+      res.send(restoredLobby);
+      generateUserkey(decoded.userId);
+      return;
+    }
+    if (verifiedUserkey && req.body.enemyHP < lobbyCheck.enemyHP) {
       if (req.body.victors !== undefined) {
         const lobby = await Lobby.findOneAndUpdate(
           {
@@ -90,11 +96,8 @@ router.put("/:id", async (req, res) => {
         );
         res.send(lobby);
       }
-    } else if (
-      req.body.victors !== undefined &&
-      decoded &&
-      req.headers.userkey === userkey.data.userkey
-    ) {
+      generateUserkey(decoded.userId);
+    } else if (verifiedUserkey && req.body.victors !== undefined) {
       const lobby = await Lobby.findOneAndUpdate(
         {
           _id: req.params.id,
@@ -104,19 +107,11 @@ router.put("/:id", async (req, res) => {
         }
       );
       res.send(lobby);
+      generateUserkey(decoded.userId);
     } else {
       res.send("Unauthorized");
+      generateFortifiedUserkey(decoded.userId);
     }
-    function putUserkey() {
-      return axios
-        .put(
-          "https://api.userfront.com/v0/users/" + req.headers.userid,
-          payload,
-          options
-        )
-        .catch((err) => console.error(err));
-    }
-    await putUserkey();
   } catch (error) {
     res.send(error);
   }

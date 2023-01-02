@@ -1,36 +1,37 @@
-import { useEffect, useRef, useState } from "react";
-import "./App.scss";
+import { useState, useEffect } from "react";
+import "../App.scss";
+import "./Stage.css";
 import Userfront from "@userfront/core";
 import { useNavigate } from "react-router-dom";
-import { getUser, addUser, updateUser } from "./services/userServices";
-import GameNav from "./layouts/GameNav";
-import OptionsMenu from "./layouts/OptionsMenu";
-import PlayerPanel from "./components/PlayerPanel";
-import GameMenu from "./layouts/GameMenu";
-import AlchemyMenu from "./layouts/AlchemyMenu";
-import PlayerCreature from "./components/PlayerCreature";
-import EnemyCreature from "./components/EnemyCreature";
-import creatures from "./constants/creatures";
-import relics from "./constants/relics";
-import { enemyCreaturesHome } from "./constants/enemyCreatures";
+import { getUser } from "../services/userServices";
+import GameNav from "../layouts/GameNav";
+import OptionsMenu from "../layouts/OptionsMenu";
+import PlayerPanel from "../components/PlayerPanel";
+import GameMenu from "../layouts/GameMenu";
+import AlchemyMenu from "../layouts/AlchemyMenu";
+import PlayerCreature from "../components/PlayerCreature";
+import EnemyCreature from "../components/EnemyCreature";
+import creatures from "../constants/creatures";
+import relics from "../constants/relics";
 import { useSelector, useDispatch } from "react-redux";
-import { setPlayerCreatureValue } from "./store/actions/summon.actions";
-import { setEnemyCreatureValue } from "./store/actions/enemy.actions";
+import { setPlayerCreatureValue } from "../store/actions/summon.actions";
+import { setEnemyCreatureValue } from "../store/actions/enemy.actions";
 import {
   setPlayerRelicsValue,
   setChosenRelicValue,
-} from "./store/actions/relics.actions";
+} from "../store/actions/relics.actions";
 import {
   enableCreatureStatsStatus,
   disableCreatureStatsStatus,
-} from "./store/actions/creatureStatsStatus.actions";
-import checkAuth from "./utils/checkAuth.js";
+} from "../store/actions/creatureStatsStatus.actions";
+import checkAuth from "../utils/checkAuth.js";
+import checkLevelPlayer from "../utils/checkLevelPlayer.js";
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
 
 // main app component
-function App() {
+function Stage() {
   // dispatch hook for redux
   const dispatch = useDispatch();
 
@@ -40,11 +41,17 @@ function App() {
   const enemyCreature = useSelector((state) => state.enemy.enemyCreature);
   // battle status combat state from redux store
   const battleStatus = useSelector((state) => state.battleStatus.battleStatus);
+  // stage level req state from redux store
+  const stageLevelReq = useSelector((state) => state.currentStage.levelReq);
+  // stage background state from redux store
+  const stageBackground = useSelector((state) => state.currentStage.background);
+  // stage enemy creatures state from redux store
+  const enemyCreatureData = useSelector(
+    (state) => state.currentStage.enemyCreatures
+  );
 
   // navigation hook
   const navigate = useNavigate();
-  // reference hook for tracking generated user data
-  const ref = useRef(false);
 
   // player option state
   const [player, setPlayer] = useState({});
@@ -63,7 +70,6 @@ function App() {
   });
   // creature and combat state
   const [creatureData] = useState(creatures);
-  const [enemyCreatureDataHome] = useState(enemyCreaturesHome);
   const [combatTextAndCombatStatus, setCombatTextAndCombatStatus] = useState({
     playerAttackStatus: false,
     enemyAttackStatus: false,
@@ -85,70 +91,25 @@ function App() {
 
   useEffect(() => {
     checkAuth(Userfront, navigate);
+    checkLevelPlayer(player, stageLevelReq, navigate);
   });
 
   useEffect(() => {
-    // checks for userkey and generates new player if needed
-    const genAsyncDataPlayer = async () => {
+    // retrieves user data and updates player state
+    const initAsyncDataPlayer = async () => {
       try {
-        if (
-          Userfront.user.data.userkey === undefined &&
-          ref.current === false
-        ) {
-          const newUser = {
-            userfrontId: Userfront.user.userId,
-            name: "New Player",
-            avatarPath: "img/avatar/placeholder_avatar.png",
-            experience: 0,
-            drachmas: 0,
-            relics: [1],
-            chosenRelic: 1,
-            creatureId: 0,
-            displayCreatureStats: false,
-            preferredSpecial: 1,
-          };
-          ref.current = true;
-          await addUser(newUser);
-          alert(
-            "Welcome to the game! You have been assigned a new account. Please log in again to continue."
-          );
-          await Userfront.logout();
-        } else {
-          const { data } = await getUser();
-          setPlayer(data);
-        }
+        const { data } = await getUser();
+        setPlayer(data);
       } catch (error) {
         console.log(error);
       }
     };
-    genAsyncDataPlayer();
+    initAsyncDataPlayer();
   }, []);
 
   useEffect(() => {
     // if there is a player
     if (player) {
-      // if needed, generates random creature from first 4 and updates player in database
-      const genAsyncPlayerCreature = async () => {
-        try {
-          if (player.creatureId === 0) {
-            const randomCreature =
-              creatureData[Math.floor(Math.random() * 4)].id;
-            Userfront.user.update({
-              data: {
-                userkey: Userfront.user.data.userkey,
-              },
-            });
-            await updateUser(player._id, {
-              userfrontId: Userfront.user.userId,
-              creatureId: randomCreature,
-            });
-            const { data } = await getUser();
-            setPlayer(data);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      };
       // loads player creature data and sets player creature state
       const loadAsyncDataPlayerCreature = async () => {
         try {
@@ -165,7 +126,6 @@ function App() {
           console.log(error);
         }
       };
-      genAsyncPlayerCreature();
       loadAsyncDataPlayerCreature();
       // if there are player relics
       if (player.relics) {
@@ -201,8 +161,8 @@ function App() {
             };
           });
           const enemyCreatureNew = [
-            enemyCreatureDataHome[
-              Math.floor(Math.random() * enemyCreatureDataHome.length)
+            enemyCreatureData[
+              Math.floor(Math.random() * enemyCreatureData.length)
             ],
           ];
           if (enemyCreatureNew !== enemyCreature) {
@@ -231,7 +191,7 @@ function App() {
     checkCombat();
   }, [
     enemyCreature,
-    enemyCreatureDataHome,
+    enemyCreatureData,
     combatTextAndCombatStatus.combatAlert,
     battleStatus,
     dispatch,
@@ -265,7 +225,7 @@ function App() {
           />
         </header>
 
-        <main className="home_game_section">
+        <main className={stageBackground}>
           <PlayerPanel player={player} />
 
           {/* displays other menus and creatures if options menu isnt being used */}
@@ -330,4 +290,4 @@ function App() {
   } else return null;
 }
 
-export default App;
+export default Stage;

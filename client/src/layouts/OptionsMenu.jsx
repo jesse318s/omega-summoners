@@ -1,14 +1,13 @@
+import Userfront from "@userfront/core";
 import { updateUser } from "../services/userServices";
 import { useSelector } from "react-redux";
 
-function Options({
-  Userfront,
+Userfront.init("rbvqd5nd");
+
+function OptionsMenu({
   player,
-  optionsStatus,
-  nameOptionStatus,
-  setNameOptionStatus,
-  avatarOptionStatus,
-  setAvatarOptionStatus,
+  optionsMenuStatus,
+  setOptionsMenuStatus,
   loadAsyncDataPlayer,
 }) {
   // display creature stats status state from redux store
@@ -78,7 +77,8 @@ function Options({
 
   return (
     <>
-      {optionsStatus ? (
+      {/* if the options are being used */}
+      {optionsMenuStatus.optionsStatus ? (
         <div className="color_white">
           {/* gameplay option menu */}
           <h3>Game Options</h3>
@@ -97,8 +97,11 @@ function Options({
           <button
             className="game_button margin_small"
             onClick={() => {
-              setAvatarOptionStatus(!avatarOptionStatus);
-              setNameOptionStatus(false);
+              setOptionsMenuStatus({
+                optionsStatus: true,
+                avatarOptionStatus: !optionsMenuStatus.avatarOptionStatus,
+                nameOptionStatus: false,
+              });
             }}
           >
             {" "}
@@ -108,15 +111,18 @@ function Options({
           <button
             className="game_button margin_small"
             onClick={() => {
-              setNameOptionStatus(!nameOptionStatus);
-              setAvatarOptionStatus(false);
+              setOptionsMenuStatus({
+                optionsStatus: true,
+                nameOptionStatus: !optionsMenuStatus.nameOptionStatus,
+                avatarOptionStatus: false,
+              });
             }}
           >
             Change Name
           </button>
 
           {/* displays player name selection on change name button click */}
-          {nameOptionStatus && !avatarOptionStatus ? (
+          {optionsMenuStatus.nameOptionStatus ? (
             <div>
               <label htmlFor="name">Player name:&nbsp;</label>
               <input
@@ -139,7 +145,7 @@ function Options({
           ) : null}
 
           {/* displays player avatar selection on change avatar button click */}
-          {avatarOptionStatus && !nameOptionStatus ? (
+          {optionsMenuStatus.avatarOptionStatus ? (
             <div>
               <div className="inline_flex">
                 <div
@@ -239,4 +245,4 @@ function Options({
   );
 }
 
-export default Options;
+export default OptionsMenu;

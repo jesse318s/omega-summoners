@@ -2,58 +2,70 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 function MultiPlayerEnemyCreature({
-  enemyCreature,
-  playerAttackStatus,
-  enemyAttackStatus,
-  critText,
-  combatText,
+  combatTextAndCombatStatus,
   spawnAnimation,
   lobby,
 }) {
+  // enemy creature state from redux store
+  const enemyCreature = useSelector((state) => state.enemy.enemyCreature);
   // battle status combat state from redux store
   const battleStatus = useSelector((state) => state.battleStatus.battleStatus);
 
-  // renders spawn portal, enemy combat text, and boss enemy creature with stats panel for multiplayer
   return (
     <>
+      {/* if there is a battle, displays enemy creature with spawn animation and creature info panel */}
       {battleStatus ? (
         <div className="enemy_creature">
+          {/* displays spawn animation */}
           <div className="special_effect_container">
             <div className={spawnAnimation} />
           </div>
 
           {/* displays player combat text */}
           <div className="special_effect_container">
-            <div className={critText}>{combatText}</div>
+            <div className={combatTextAndCombatStatus.critText}>
+              {combatTextAndCombatStatus.combatText}
+            </div>
           </div>
 
           {/* displays enemy based on attack state */}
-          {enemyAttackStatus ? (
-            <img
-              className="enemy_creature_img"
-              src={enemyCreature.imgPath.slice(0, -4) + "_attack.png"}
-              alt={enemyCreature.name}
-              width="256px"
-              height="256px"
-            />
-          ) : playerAttackStatus ? (
-            <img
-              className="enemy_creature_img"
-              src={enemyCreature.imgPath.slice(0, -4) + "_hurt.png"}
-              alt={enemyCreature.name}
-              width="256px"
-              height="256px"
-            />
-          ) : (
-            <img
-              className="enemy_creature_img"
-              src={enemyCreature.imgPath}
-              alt={enemyCreature.name}
-              width="256px"
-              height="256px"
-            />
-          )}
+          <img
+            className={
+              combatTextAndCombatStatus.playerAttackStatus ||
+              combatTextAndCombatStatus.enemyAttackStatus
+                ? "creature_hidden"
+                : "enemy_creature_img"
+            }
+            src={enemyCreature.imgPath}
+            alt={enemyCreature.name}
+            width="256px"
+            height="256px"
+          />
+          <img
+            className={
+              combatTextAndCombatStatus.enemyAttackStatus
+                ? "enemy_creature_img"
+                : "creature_hidden"
+            }
+            src={enemyCreature.imgPath.slice(0, -4) + "_attack.png"}
+            alt={enemyCreature.name}
+            width="256px"
+            height="256px"
+          />
+          <img
+            className={
+              combatTextAndCombatStatus.playerAttackStatus &&
+              !combatTextAndCombatStatus.enemyAttackStatus
+                ? "enemy_creature_img"
+                : "creature_hidden"
+            }
+            src={enemyCreature.imgPath.slice(0, -4) + "_hurt.png"}
+            alt={enemyCreature.name}
+            width="256px"
+            height="256px"
+          />
 
+          {/* creature panel */}
           <div className="creature_panel">
             <h4>Enemy {enemyCreature.name}</h4>
             <div className="progress_bar_container">
@@ -65,7 +77,7 @@ function MultiPlayerEnemyCreature({
               />
             </div>
             <h5>
-              HP: {lobby.enemyHP} / {enemyCreature.hp}
+              HP: {lobby.enemyHP}/{enemyCreature.hp}
             </h5>
           </div>
         </div>

@@ -1,36 +1,40 @@
-import { useEffect, useRef, useState } from "react";
-import "./App.scss";
+import { useState, useEffect } from "react";
+import "../App.scss";
+import "./Lobby.css";
 import Userfront from "@userfront/core";
 import { useNavigate } from "react-router-dom";
-import { getUser, addUser, updateUser } from "./services/userServices";
-import GameNav from "./layouts/GameNav";
-import OptionsMenu from "./layouts/OptionsMenu";
-import PlayerPanel from "./components/PlayerPanel";
-import GameMenu from "./layouts/GameMenu";
-import AlchemyMenu from "./layouts/AlchemyMenu";
-import PlayerCreature from "./components/PlayerCreature";
-import EnemyCreature from "./components/EnemyCreature";
-import creatures from "./constants/creatures";
-import relics from "./constants/relics";
-import { enemyCreaturesHome } from "./constants/enemyCreatures";
+import { getUser } from "../services/userServices";
+import GameNav from "../layouts/GameNav";
+import OptionsMenu from "../layouts/OptionsMenu";
+import PlayerPanel from "../components/PlayerPanel";
+import MultiPlayerGameMenu from "../layouts/MultiPlayerGameMenu";
+import MultiPlayerCreature from "../components/MultiPlayerCreature";
+import MultiPlayerEnemyCreature from "../components/MultiPlayerEnemyCreature";
+import creatures from "../constants/creatures";
+import relics from "../constants/relics";
+import { enemyCreatureLobby1 } from "../constants/enemyCreatures";
+import { lobby1 } from "../constants/lobbies";
+import { getLobby } from "../services/lobbyServices";
+import { getConnections, addConnection } from "../services/connectionServices";
 import { useSelector, useDispatch } from "react-redux";
-import { setPlayerCreatureValue } from "./store/actions/summon.actions";
-import { setEnemyCreatureValue } from "./store/actions/enemy.actions";
+import { setPlayerCreatureValue } from "../store/actions/summon.actions";
+import { setEnemyCreatureValue } from "../store/actions/enemy.actions";
 import {
   setPlayerRelicsValue,
   setChosenRelicValue,
-} from "./store/actions/relics.actions";
+} from "../store/actions/relics.actions";
 import {
   enableCreatureStatsStatus,
   disableCreatureStatsStatus,
-} from "./store/actions/creatureStatsStatus.actions";
-import checkAuth from "./utils/checkAuth.js";
+} from "../store/actions/creatureStatsStatus.actions";
+import checkAuth from "../utils/checkAuth.js";
+import checkLevelPlayer from "../utils/checkLevelPlayer.js";
 
 // initialize Userfront
 Userfront.init("rbvqd5nd");
 
 // main app component
-function App() {
+function Lobby() {
   // dispatch hook for redux
   const dispatch = useDispatch();
 
@@ -43,8 +47,6 @@ function App() {
 
   // navigation hook
   const navigate = useNavigate();
-  // reference hook for tracking generated user data
-  const ref = useRef(false);
 
   // player option state
   const [player, setPlayer] = useState({});
@@ -59,11 +61,10 @@ function App() {
     templeStatus: false,
     summonsStatus: false,
     stagesStatus: false,
-    alchemyStatus: false,
   });
   // creature and combat state
   const [creatureData] = useState(creatures);
-  const [enemyCreatureDataHome] = useState(enemyCreaturesHome);
+  const [enemyCreatureDataLobby] = useState(enemyCreatureLobby1);
   const [combatTextAndCombatStatus, setCombatTextAndCombatStatus] = useState({
     playerAttackStatus: false,
     enemyAttackStatus: false,
@@ -78,77 +79,54 @@ function App() {
     playerCreatureHP: 0,
     playerCreatureMP: 0,
   });
-  const [enemyCreatureHP, setEnemyCreatureHP] = useState(0);
   const [spawnAnimation, setSpawnAnimation] = useState("");
   // relics state
   const [relicsData] = useState(relics);
+  // lobby state
+  const [lobby, setLobby] = useState({});
+  const [connections, setConnections] = useState([{}]);
 
   useEffect(() => {
     checkAuth(Userfront, navigate);
+    checkLevelPlayer(player, 8, navigate);
   });
 
   useEffect(() => {
-    // checks for userkey and generates new player if needed
-    const genAsyncDataPlayer = async () => {
-      try {
-        if (
-          Userfront.user.data.userkey === undefined &&
-          ref.current === false
-        ) {
-          const newUser = {
-            userfrontId: Userfront.user.userId,
-            name: "New Player",
-            avatarPath: "img/avatar/placeholder_avatar.png",
-            experience: 0,
-            drachmas: 0,
-            relics: [1],
-            chosenRelic: 1,
-            creatureId: 0,
-            displayCreatureStats: false,
-            preferredSpecial: 1,
-          };
-          ref.current = true;
-          await addUser(newUser);
-          alert(
-            "Welcome to the game! You have been assigned a new account. Please log in again to continue."
-          );
-          await Userfront.logout();
-        } else {
-          const { data } = await getUser();
-          setPlayer(data);
+    // retrieves lobby data and updates lobby state, also updates connections
+    const initAsyncDataLobby = async () => {
+      // retrieves connection data and updates connections
+      const initAsyncDataConnections = async () => {
+        try {
+          const { data } = await getConnections();
+          setConnections(data);
+        } catch (error) {
+          console.log(error);
         }
+      };
+      initAsyncDataConnections();
+      try {
+        const { data } = await getLobby(lobby1);
+        setLobby(data);
       } catch (error) {
         console.log(error);
       }
     };
-    genAsyncDataPlayer();
+    // retrieves user data and updates player state
+    const initAsyncDataPlayer = async () => {
+      try {
+        const { data } = await getUser();
+        setPlayer(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    initAsyncDataLobby();
+    initAsyncDataPlayer();
   }, []);
 
   useEffect(() => {
     // if there is a player
     if (player) {
-      // if needed, generates random creature from first 4 and updates player in database
-      const genAsyncPlayerCreature = async () => {
-        try {
-          if (player.creatureId === 0) {
-            const randomCreature =
-              creatureData[Math.floor(Math.random() * 4)].id;
-            Userfront.user.update({
-              data: {
-                userkey: Userfront.user.data.userkey,
-              },
-            });
-            await updateUser(player._id, {
-              userfrontId: Userfront.user.userId,
-              creatureId: randomCreature,
-            });
-            const { data } = await getUser();
-            setPlayer(data);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      };
       // loads player creature data and sets player creature state
       const loadAsyncDataPlayerCreature = async () => {
         try {
@@ -165,7 +143,6 @@ function App() {
           console.log(error);
         }
       };
-      genAsyncPlayerCreature();
       loadAsyncDataPlayerCreature();
       // if there are player relics
       if (player.relics) {
@@ -200,16 +177,9 @@ function App() {
               combatAlert: "",
             };
           });
-          const enemyCreatureNew = [
-            enemyCreatureDataHome[
-              Math.floor(Math.random() * enemyCreatureDataHome.length)
-            ],
-          ];
+          const enemyCreatureNew = enemyCreatureDataLobby[0];
           if (enemyCreatureNew !== enemyCreature) {
-            dispatch(setEnemyCreatureValue(enemyCreatureNew[0]));
-            setEnemyCreatureHP(enemyCreatureNew[0].hp);
-          } else {
-            setEnemyCreatureHP(enemyCreature[0].hp);
+            dispatch(setEnemyCreatureValue(enemyCreatureNew));
           }
         }
         if (combatTextAndCombatStatus.combatAlert === "" && battleStatus) {
@@ -231,7 +201,7 @@ function App() {
     checkCombat();
   }, [
     enemyCreature,
-    enemyCreatureDataHome,
+    enemyCreatureDataLobby,
     combatTextAndCombatStatus.combatAlert,
     battleStatus,
     dispatch,
@@ -242,6 +212,50 @@ function App() {
     try {
       const { data } = await getUser();
       setPlayer(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // retrieves lobby data and updates lobby state, also updates connections, and generates new connection if needed
+  const loadAsyncDataLobby = async () => {
+    // retrieves connection data and updates connections
+    const loadAsyncDataConnections = async () => {
+      try {
+        const { data } = await getConnections();
+        setConnections(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    // checks connections and generates new connection if needed
+    const genAsyncDataConnection = async () => {
+      try {
+        if (connections.length < 3) {
+          const newConnection = {
+            userId: Userfront.user.userId,
+            name: player.name,
+          };
+          await addConnection(newConnection);
+        } else if (
+          connections.filter(
+            (connection) => connection.userId === Userfront.user.userId
+          ).length === 0
+        ) {
+          alert(
+            "There cannot be more than 3 summoners in this battle. Please try again later."
+          );
+          window.location.reload(false);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    loadAsyncDataConnections();
+    genAsyncDataConnection();
+    try {
+      const { data } = await getLobby(lobby1);
+      setLobby(data);
     } catch (error) {
       console.log(error);
     }
@@ -265,7 +279,7 @@ function App() {
           />
         </header>
 
-        <main className="home_game_section">
+        <main className="lobby1_game_section">
           <PlayerPanel player={player} />
 
           {/* displays other menus and creatures if options menu isnt being used */}
@@ -273,54 +287,65 @@ function App() {
             (value) => value === false
           ) ? (
             <>
-              <GameMenu
+              <MultiPlayerGameMenu
                 player={player}
                 gameMenuStatus={gameMenuStatus}
                 setGameMenuStatus={setGameMenuStatus}
                 loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
                 setPlayerCreatureResources={setPlayerCreatureResources}
+                connections={connections}
+                loadAsyncDataLobby={() => loadAsyncDataLobby()}
               />
 
-              {/* displays alchemy menu if alchemy button is clicked */}
-              {gameMenuStatus.alchemyStatus ? (
-                <AlchemyMenu
-                  player={player}
-                  gameMenuStatus={gameMenuStatus}
-                  setGameMenuStatus={setGameMenuStatus}
-                  playerCreature={playerCreature}
-                  setPlayerCreatureResources={setPlayerCreatureResources}
-                />
-              ) : null}
-
-              {/* displays the combat alert if there is combat */}
-              {battleStatus ? (
-                <div>
-                  <p className="combat_alert">
-                    {combatTextAndCombatStatus.combatAlert}
-                  </p>
-                </div>
-              ) : null}
-
-              {/* displays player creature if game menu isn't being used */}
+              {/* if game menu isn't being used */}
               {Object.values(gameMenuStatus).every(
                 (value) => value === false
               ) ? (
-                <PlayerCreature
-                  combatTextAndCombatStatus={combatTextAndCombatStatus}
-                  setCombatTextAndCombatStatus={setCombatTextAndCombatStatus}
-                  player={player}
-                  playerCreatureResources={playerCreatureResources}
-                  setPlayerCreatureResources={setPlayerCreatureResources}
-                  enemyCreatureHP={enemyCreatureHP}
-                  setEnemyCreatureHP={setEnemyCreatureHP}
-                  loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
-                />
+                <>
+                  {/* displays allies that are online and fighting */}
+                  <h4 className="margin_small color_white">Allies online:</h4>
+                  {connections.length > 0 &&
+                  connections[0].userId &&
+                  connections.length < 4 ? (
+                    <>
+                      {connections.map((ally) => (
+                        <div className="color_white" key={ally.userId}>
+                          {ally.userId !== player.userfrontId
+                            ? ally.name
+                            : null}
+                        </div>
+                      ))}
+                    </>
+                  ) : null}
+
+                  {/* displays the combat alert if there is combat */}
+                  {battleStatus ? (
+                    <div>
+                      <p className="combat_alert">
+                        {combatTextAndCombatStatus.combatAlert}
+                      </p>
+                    </div>
+                  ) : null}
+
+                  {/* displays player creature */}
+                  <MultiPlayerCreature
+                    combatTextAndCombatStatus={combatTextAndCombatStatus}
+                    setCombatTextAndCombatStatus={setCombatTextAndCombatStatus}
+                    player={player}
+                    playerCreatureResources={playerCreatureResources}
+                    setPlayerCreatureResources={setPlayerCreatureResources}
+                    loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
+                    connections={connections}
+                    lobby={lobby}
+                    loadAsyncDataLobby={() => loadAsyncDataLobby()}
+                  />
+                </>
               ) : null}
 
-              <EnemyCreature
+              <MultiPlayerEnemyCreature
                 combatTextAndCombatStatus={combatTextAndCombatStatus}
-                enemyCreatureHP={enemyCreatureHP}
                 spawnAnimation={spawnAnimation}
+                lobby={lobby}
               />
             </>
           ) : null}
@@ -330,4 +355,4 @@ function App() {
   } else return null;
 }
 
-export default App;
+export default Lobby;

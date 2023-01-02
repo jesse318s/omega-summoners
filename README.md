@@ -30,6 +30,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
   - #### `pages` - This holds our components that are routed to as pages
   - #### `services` - Holds all of our services
   - #### `store` - This holds our Redux state actions and reducers
+  - #### `utils` - This holds our utility functions
   - #### `App.jsx` - This is what renders the primary MERN app, should not change
   - #### `index.js` - This is what renders all of our browser routes
   - #### `reportWebVitals.js` - The built-in tool for measuring our app performance
@@ -40,6 +41,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 #### `server` - Holds the server application
 
 - #### `.env` - This holds our configuration files, like mongoDB uri
+- #### `libs` - This holds our custom libraries/modules
 - #### `models` - This holds all of our data models
 - #### `routes` - This holds all of our HTTP to URL path associations for each unique url
 - #### `db.js` - Establishes the database connection with MongoDB

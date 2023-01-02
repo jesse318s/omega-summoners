@@ -1,5 +1,5 @@
-function Player({ player }) {
-  // render player with player details panel
+function PlayerPanel({ player }) {
+  // renders player details panel
   return (
     <div className="color_white">
       <img
@@ -10,7 +10,6 @@ function Player({ player }) {
         height="96"
       />
       <h4>{player.name}</h4>
-
       <h5>
         Lvl. {Math.floor(Math.sqrt(player.experience) * 0.25)} |{" "}
         {player.experience.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} XP
@@ -29,7 +28,6 @@ function Player({ player }) {
           />
         </div>
       </h5>
-
       <h5>
         Drachmas:{" "}
         {player.drachmas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
@@ -39,4 +37,4 @@ function Player({ player }) {
   );
 }
 
-export default Player;
+export default PlayerPanel;

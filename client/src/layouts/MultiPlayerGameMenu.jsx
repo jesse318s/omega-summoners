@@ -1,33 +1,27 @@
 import { Link } from "react-router-dom";
+import Userfront from "@userfront/core";
 import { updateUser } from "../services/userServices";
-import { getPotionTimer } from "../services/potionTimerServices";
 import { useState } from "react";
 import creatures from "../constants/creatures";
 import relics from "../constants/relics";
-import { potionsList } from "../constants/items";
+import {
+  enemyCreaturesStage1,
+  enemyCreaturesStage2,
+} from "../constants/enemyCreatures";
 import { useSelector, useDispatch } from "react-redux";
 import { enableBattleStatus } from "../store/actions/battleStatus.actions";
-import {
-  setSummonHPBonusAmount,
-  setSummonMPBonusAmount,
-} from "../store/actions/alchemy.actions";
+import checkPotionTimer from "../utils/checkPotionTimer";
+import changeStage from "../utils/changeStage";
 
-function Menu({
-  Userfront,
+Userfront.init("rbvqd5nd");
+
+function MultiPlayerGameMenu({
   player,
   gameMenuStatus,
   setGameMenuStatus,
-  enemyCreatureData,
-  combatAlert,
-  setCombatAlert,
   loadAsyncDataPlayer,
-  setPlayerCreatureHP,
-  setPlayerCreatureMP,
-  setEnemyCreature,
-  setEnemyCreatureHP,
-  setBattleUndecided,
-  setSpawnAnimation,
-  loadDataAlchemy,
+  setPlayerCreatureResources,
+  loadAsyncDataLobby,
 }) {
   // dispatch hook for redux
   const dispatch = useDispatch();
@@ -42,6 +36,8 @@ function Menu({
   // alchemy state from redux store
   const summonHPBonus = useSelector((state) => state.alchemy.summonHPBonus);
   const summonMPBonus = useSelector((state) => state.alchemy.summonMPBonus);
+  // lobby timer state from redux store
+  const lobbyTimer = useSelector((state) => state.lobbyTimer.lobbyTimer);
 
   // creature state
   const [creatureData] = useState(creatures);
@@ -128,7 +124,6 @@ function Menu({
   // updates player relics in database
   const buyRelic = async (relicId, relicPrice) => {
     try {
-      // if the player can afford the relic and doesn't own it
       if (player.drachmas >= relicPrice && !player.relics.includes(relicId)) {
         if (
           window.confirm(
@@ -155,10 +150,38 @@ function Menu({
     }
   };
 
+  // sells a player relic and updates their relics in database
+  const sellRelic = async (relicId, relicPrice) => {
+    try {
+      if (
+        window.confirm(
+          `Are you sure you want to sell this relic? You will gain ${relicPrice} drachmas.`
+        )
+      ) {
+        const oldRelicIndex = player.relics.indexOf(relicId);
+        let newRelics = player.relics;
+
+        newRelics.splice(oldRelicIndex, 1);
+        await Userfront.user.update({
+          data: {
+            userkey: Userfront.user.data.userkey,
+          },
+        });
+        await updateUser(player._id, {
+          userfrontId: Userfront.user.userId,
+          drachmas: player.drachmas + relicPrice,
+          relics: newRelics,
+        });
+        await loadAsyncDataPlayer();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   // swaps player creature in database
   const swapCreature = async (creatureId, creaturePrice) => {
     try {
-      // if the player can afford the creature and isn't already using it
       if (
         player.experience >= creaturePrice &&
         player.creatureId !== creatureId
@@ -189,52 +212,26 @@ function Menu({
     }
   };
 
-  // displays enemy spawn animation
-  const displaySpawnAnimation = async () => {
+  // begins a battle
+  const beginBattle = async () => {
     try {
-      setSpawnAnimation("spawn_effect");
-      setTimeout(() => {
-        setSpawnAnimation("");
-      }, 200);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // loads battle data
-  const loadDataBattle = async () => {
-    try {
-      // checks potion timer
-      const potionTimer = await getPotionTimer();
-      if (potionTimer.data.length > 0) {
-        const playerPotion = potionsList.find(
-          (potion) => potion.id === potionTimer.data[0].potionId
-        );
-        const playerMPBonus = playerPotion.mpMod;
-        const playerHPBonus = playerPotion.hpMod;
-        dispatch(setSummonMPBonusAmount(playerMPBonus));
-        dispatch(setSummonHPBonusAmount(playerHPBonus));
-      }
-      if (potionTimer.data.length === 0) {
-        dispatch(setSummonMPBonusAmount(0));
-        dispatch(setSummonHPBonusAmount(0));
-      }
-
-      setPlayerCreatureMP(
-        playerCreature.mp + chosenRelic.mpMod + summonMPBonus
-      );
-      setPlayerCreatureHP(
-        playerCreature.hp + chosenRelic.hpMod + summonHPBonus
-      );
-      displaySpawnAnimation();
-      const enemyCreature = [
-        enemyCreatureData[Math.floor(Math.random() * enemyCreatureData.length)],
-      ];
-      setEnemyCreature(enemyCreature[0]);
-      setEnemyCreatureHP(enemyCreature[0].hp);
-      setCombatAlert("The battle has begun!");
+      await checkPotionTimer(dispatch);
+      setPlayerCreatureResources((playerCreatureResources) => {
+        return {
+          ...playerCreatureResources,
+          playerCreatureMP:
+            playerCreature.mp + chosenRelic.mpMod + summonMPBonus,
+        };
+      });
+      setPlayerCreatureResources((playerCreatureResources) => {
+        return {
+          ...playerCreatureResources,
+          playerCreatureHP:
+            playerCreature.hp + chosenRelic.hpMod + summonHPBonus,
+        };
+      });
+      await loadAsyncDataLobby();
       dispatch(enableBattleStatus());
-      setBattleUndecided(true);
       await loadAsyncDataPlayer();
     } catch (error) {
       console.log(error);
@@ -245,7 +242,7 @@ function Menu({
     <>
       <div className="color_white">
         {/* if there is no battle, displays buttons for selecting temple or relics from menu to display */}
-        {!battleStatus && !gameMenuStatus.alchemyStatus ? (
+        {!battleStatus ? (
           <div>
             <div className="inline_flex">
               <button
@@ -256,7 +253,6 @@ function Menu({
                     summonsStatus: false,
                     templeStatus: false,
                     stagesStatus: false,
-                    alchemyStatus: false,
                   });
                 }}
               >
@@ -271,20 +267,12 @@ function Menu({
                     summonsStatus: false,
                     relicsStatus: false,
                     stagesStatus: false,
-                    alchemyStatus: false,
                   });
                 }}
               >
                 Temple
               </button>
             </div>
-          </div>
-        ) : null}
-
-        {/* displays the combat alert if there is a battle */}
-        {battleStatus ? (
-          <div>
-            <p className="combat_alert">{combatAlert}</p>
           </div>
         ) : null}
 
@@ -352,14 +340,25 @@ function Menu({
             </button>
             {relicsData.slice(indexC, indexD).map((relic) => (
               <div className="relic_option" key={relic.id}>
-                <button
-                  className="game_button_small"
-                  onClick={() => {
-                    buyRelic(relic.id, relic.price);
-                  }}
-                >
-                  Buy
-                </button>
+                {player.relics.includes(relic.id) ? (
+                  <button
+                    className="game_button_small"
+                    onClick={() => {
+                      sellRelic(relic.id, relic.price);
+                    }}
+                  >
+                    Sell
+                  </button>
+                ) : (
+                  <button
+                    className="game_button_small"
+                    onClick={() => {
+                      buyRelic(relic.id, relic.price);
+                    }}
+                  >
+                    Buy
+                  </button>
+                )}
                 <img
                   onClick={() => alert(relic.description)}
                   className="relic_option_img"
@@ -383,7 +382,7 @@ function Menu({
         ) : null}
 
         {/* if there is no battle, displays buttons for selecting summons or stages from menu to display */}
-        {!battleStatus && !gameMenuStatus.alchemyStatus ? (
+        {!battleStatus ? (
           <>
             <button
               className="game_button margin_small"
@@ -393,7 +392,6 @@ function Menu({
                   templeStatus: false,
                   relicsStatus: false,
                   stagesStatus: false,
-                  alchemyStatus: false,
                 });
               }}
             >
@@ -408,7 +406,6 @@ function Menu({
                   summonsStatus: false,
                   templeStatus: false,
                   relicsStatus: false,
-                  alchemyStatus: false,
                 });
               }}
             >
@@ -538,51 +535,57 @@ function Menu({
             <h4>Battle Stages</h4>
             <div className="stage_options">
               <Link to="/app">
-                <button className="game_button_small margin_small">
+                <button
+                  className="game_button_small margin_small"
+                  onClick={() => changeStage(0, 0, [{}], dispatch)}
+                >
                   Lvl. 0 | Home
                   <br /> The Bridge (Solo)
                 </button>
-                {window.location.pathname === "/app" ? (
-                  <span className="color_white">X</span>
-                ) : null}
               </Link>
               <br />
-              <Link to="/stage1">
-                <button className="game_button_small margin_small">
+              <Link to="/stage">
+                <button
+                  className="game_button_small margin_small"
+                  onClick={() =>
+                    changeStage(5, 1, enemyCreaturesStage1, dispatch)
+                  }
+                >
                   Lvl. 5 | Stage I<br /> Mount Olympus (Solo)
                 </button>
-                {window.location.pathname === "/stage1" ? (
-                  <span className="color_white">X</span>
-                ) : null}
               </Link>
               <br />
-              <Link to="/lobby1">
+              <Link to="/lobby">
                 <button className="game_button_small margin_small">
-                  Lvl. 8 | Stage I<br /> (Multiplayer)
+                  Lvl. 8 | Lobby I<br /> Ruins (Multiplayer)
                 </button>
-                {window.location.pathname === "/lobby1" ? (
+                {window.location.pathname === "/lobby" ? (
                   <span className="color_white">X</span>
                 ) : null}
               </Link>
               <br />
+              <Link to="/stage">
+                <button
+                  className="game_button_small margin_small"
+                  onClick={() =>
+                    changeStage(10, 2, enemyCreaturesStage2, dispatch)
+                  }
+                >
+                  Lvl. 10 | Stage II
+                  <br /> Countryside (Solo)
+                </button>
+              </Link>
             </div>
           </>
         ) : null}
 
-        {/* if there is no battle, displays button for selecting alchemy from menu to display */}
-        {!battleStatus && !gameMenuStatus.alchemyStatus ? (
+        {/* if there is no battle, displays button for attempting to select alchemy from menu, but alerts user instead */}
+        {!battleStatus ? (
           <>
             <button
               className="game_button margin_small"
               onClick={() => {
-                loadDataAlchemy();
-                setGameMenuStatus({
-                  templeStatus: false,
-                  relicsStatus: false,
-                  summonsStatus: false,
-                  stagesStatus: false,
-                  alchemyStatus: true,
-                });
+                alert("Alchemy cannot be performed here. (Multiplayer stage)");
               }}
             >
               Alchemy
@@ -591,23 +594,30 @@ function Menu({
         ) : null}
 
         {/* if there is no battle, displays a button to start a battle at the current stage */}
-        {!battleStatus && !gameMenuStatus.alchemyStatus ? (
+        {!battleStatus ? (
           <>
             <button
               className="game_button margin_small"
-              onClick={() => {
-                loadDataBattle();
-                setGameMenuStatus({
-                  templeStatus: false,
-                  relicsStatus: false,
-                  summonsStatus: false,
-                  stagesStatus: false,
-                  alchemyStatus: false,
-                });
-              }}
+              onClick={
+                lobbyTimer
+                  ? () => {
+                      alert(
+                        "Multiplayer cooldown is active. Please try again in a few seconds."
+                      );
+                    }
+                  : () => {
+                      beginBattle();
+                      setGameMenuStatus({
+                        templeStatus: false,
+                        relicsStatus: false,
+                        summonsStatus: false,
+                        stagesStatus: false,
+                      });
+                    }
+              }
             >
               Battle
-            </button>{" "}
+            </button>
           </>
         ) : null}
       </div>
@@ -615,4 +625,4 @@ function Menu({
   );
 }
 
-export default Menu;
+export default MultiPlayerGameMenu;

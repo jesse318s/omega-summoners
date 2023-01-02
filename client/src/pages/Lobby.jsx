@@ -1,28 +1,23 @@
 import React, { useState, useEffect } from "react";
 import "../App.scss";
-import "./Stage2.css";
+import "./Lobby.css";
 import Userfront from "@userfront/core";
 import { useNavigate } from "react-router-dom";
 import { getUser } from "../services/userServices";
 import GameNav from "../layouts/GameNav";
 import OptionsMenu from "../layouts/OptionsMenu";
-import GameMenu from "../layouts/GameMenu";
-import AlchemyMenu from "../layouts/AlchemyMenu";
-import PlayerCreature from "../components/PlayerCreature";
-import EnemyCreature from "../components/EnemyCreature";
+import MultiPlayerGameMenu from "../layouts/MultiPlayerGameMenu";
+import MultiPlayerCreature from "../components/MultiPlayerCreature";
+import MultiPlayerEnemyCreature from "../components/MultiPlayerEnemyCreature";
 import creatures from "../constants/creatures";
 import relics from "../constants/relics";
-import { potionsList } from "../constants/items";
-import { ingredientsList } from "../constants/items";
-import { getItems } from "../services/itemServices";
-import { enemyCreaturesStage2 } from "../constants/enemyCreatures";
+import { enemyCreatureLobby1 } from "../constants/enemyCreatures";
+import { lobby1 } from "../constants/lobbies";
+import { getLobby } from "../services/lobbyServices";
+import { getConnections, addConnection } from "../services/connectionServices";
 import { useSelector, useDispatch } from "react-redux";
 import { setPlayerCreatureValue } from "../store/actions/summon.actions";
 import { setEnemyCreatureValue } from "../store/actions/enemy.actions";
-import {
-  setIngredientsValue,
-  setPotionsValue,
-} from "../store/actions/alchemy.actions";
 import {
   setPlayerRelicsValue,
   setChosenRelicValue,
@@ -38,7 +33,7 @@ import checkLevelPlayer from "../utils/checkLevelPlayer.js";
 Userfront.init("rbvqd5nd");
 
 // main app component
-function Stage2() {
+function Lobby() {
   // dispatch hook for redux
   const dispatch = useDispatch();
 
@@ -65,11 +60,10 @@ function Stage2() {
     templeStatus: false,
     summonsStatus: false,
     stagesStatus: false,
-    alchemyStatus: false,
   });
   // creature and combat state
   const [creatureData] = useState(creatures);
-  const [enemyCreatureData] = useState(enemyCreaturesStage2);
+  const [enemyCreatureDataLobby] = useState(enemyCreatureLobby1);
   const [combatTextAndCombatStatus, setCombatTextAndCombatStatus] = useState({
     playerAttackStatus: false,
     enemyAttackStatus: false,
@@ -84,17 +78,38 @@ function Stage2() {
     playerCreatureHP: 0,
     playerCreatureMP: 0,
   });
-  const [enemyCreatureHP, setEnemyCreatureHP] = useState(0);
   const [spawnAnimation, setSpawnAnimation] = useState("");
   // relics state
   const [relicsData] = useState(relics);
+  // lobby state
+  const [lobby, setLobby] = useState({});
+  const [connections, setConnections] = useState([{}]);
 
   useEffect(() => {
     checkAuth(Userfront, navigate);
-    checkLevelPlayer(player, 10, navigate);
+    checkLevelPlayer(player, 8, navigate);
   });
 
   useEffect(() => {
+    // retrieves lobby data and updates lobby state, also updates connections
+    const initAsyncDataLobby = async () => {
+      // retrieves connection data and updates connections
+      const loadAsyncDataConnections = async () => {
+        try {
+          const { data } = await getConnections();
+          setConnections(data);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      loadAsyncDataConnections();
+      try {
+        const { data } = await getLobby(lobby1);
+        setLobby(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     // retrieves user data and updates player state
     const loadAsyncDataPlayer = async () => {
       try {
@@ -104,6 +119,7 @@ function Stage2() {
         console.log(error);
       }
     };
+    initAsyncDataLobby();
     loadAsyncDataPlayer();
   }, []);
 
@@ -150,45 +166,6 @@ function Stage2() {
   }, [player, relicsData, creatureData, dispatch]);
 
   useEffect(() => {
-    // loads alchemy data
-    const loadAsyncDataAlchemy = async () => {
-      try {
-        const { data } = await getItems();
-        const playerPotionsData = data.filter(
-          (item) =>
-            item.type === "Potion" && item.userId === Userfront.user.userId
-        );
-        const playerPotions = potionsList.filter((potion) =>
-          playerPotionsData.some((item) => item.itemId === potion.id)
-        );
-
-        for (let i = 0; i < playerPotions.length; i++) {
-          playerPotions[i].itemQuantity = playerPotionsData.find(
-            (item) => item.itemId === playerPotions[i].id
-          ).itemQuantity;
-        }
-        dispatch(setPotionsValue(playerPotions));
-        const playerIngredientsData = data.filter(
-          (item) =>
-            item.type === "Ingredient" && item.userId === Userfront.user.userId
-        );
-        const playerIngredients = ingredientsList.filter((ingredient) =>
-          playerIngredientsData.some((item) => item.itemId === ingredient.id)
-        );
-        for (let i = 0; i < playerIngredients.length; i++) {
-          playerIngredients[i].itemQuantity = playerIngredientsData.find(
-            (item) => item.itemId === playerIngredients[i].id
-          ).itemQuantity;
-        }
-        dispatch(setIngredientsValue(playerIngredients));
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    loadAsyncDataAlchemy();
-  }, [gameMenuStatus.alchemyStatus, dispatch]);
-
-  useEffect(() => {
     // detects combat changes
     const checkCombat = () => {
       try {
@@ -199,16 +176,9 @@ function Stage2() {
               combatAlert: "",
             };
           });
-          const enemyCreatureNew = [
-            enemyCreatureData[
-              Math.floor(Math.random() * enemyCreatureData.length)
-            ],
-          ];
+          const enemyCreatureNew = enemyCreatureDataLobby[0];
           if (enemyCreatureNew !== enemyCreature) {
-            dispatch(setEnemyCreatureValue(enemyCreatureNew[0]));
-            setEnemyCreatureHP(enemyCreatureNew[0].hp);
-          } else {
-            setEnemyCreatureHP(enemyCreature[0].hp);
+            dispatch(setEnemyCreatureValue(enemyCreatureNew));
           }
         }
         if (combatTextAndCombatStatus.combatAlert === "" && battleStatus) {
@@ -230,7 +200,7 @@ function Stage2() {
     checkCombat();
   }, [
     enemyCreature,
-    enemyCreatureData,
+    enemyCreatureDataLobby,
     combatTextAndCombatStatus.combatAlert,
     battleStatus,
     dispatch,
@@ -288,6 +258,50 @@ function Stage2() {
     }
   };
 
+  // retrieves lobby data and updates lobby state, also updates connections, and generates new connection if needed
+  const loadAsyncDataLobby = async () => {
+    // retrieves connection data and updates connections
+    const loadAsyncDataConnections = async () => {
+      try {
+        const { data } = await getConnections();
+        setConnections(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    // checks connections and generates new connection if needed
+    const genAsyncDataConnection = async () => {
+      try {
+        if (connections.length < 3) {
+          const newConnection = {
+            userId: Userfront.user.userId,
+            name: player.name,
+          };
+          await addConnection(newConnection);
+        } else if (
+          connections.filter(
+            (connection) => connection.userId === Userfront.user.userId
+          ).length === 0
+        ) {
+          alert(
+            "There cannot be more than 3 summoners in this battle. Please try again later."
+          );
+          window.location.reload(false);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    loadAsyncDataConnections();
+    genAsyncDataConnection();
+    try {
+      const { data } = await getLobby(lobby1);
+      setLobby(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   // renders if a player creature and relic is bestowed
   if (playerCreature && player.chosenRelic) {
     return (
@@ -306,7 +320,7 @@ function Stage2() {
           />
         </header>
 
-        <main className="stage2_game_section">
+        <main className="lobby1_game_section">
           {getPlayer()}
 
           {/* displays other menus and creatures if options menu isnt being used */}
@@ -314,54 +328,65 @@ function Stage2() {
             (value) => value === false
           ) ? (
             <>
-              <GameMenu
+              <MultiPlayerGameMenu
                 player={player}
                 gameMenuStatus={gameMenuStatus}
                 setGameMenuStatus={setGameMenuStatus}
                 loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
                 setPlayerCreatureResources={setPlayerCreatureResources}
+                connections={connections}
+                loadAsyncDataLobby={() => loadAsyncDataLobby()}
               />
 
-              {/* displays alchemy menu if alchemy button is clicked */}
-              {gameMenuStatus.alchemyStatus ? (
-                <AlchemyMenu
-                  player={player}
-                  gameMenuStatus={gameMenuStatus}
-                  setGameMenuStatus={setGameMenuStatus}
-                  playerCreature={playerCreature}
-                  setPlayerCreatureResources={setPlayerCreatureResources}
-                />
-              ) : null}
-
-              {/* displays the combat alert if there is combat */}
-              {battleStatus ? (
-                <div>
-                  <p className="combat_alert">
-                    {combatTextAndCombatStatus.combatAlert}
-                  </p>
-                </div>
-              ) : null}
-
-              {/* displays player creature if game menu isn't being used */}
+              {/* if game menu isn't being used */}
               {Object.values(gameMenuStatus).every(
                 (value) => value === false
               ) ? (
-                <PlayerCreature
-                  combatTextAndCombatStatus={combatTextAndCombatStatus}
-                  setCombatTextAndCombatStatus={setCombatTextAndCombatStatus}
-                  player={player}
-                  playerCreatureResources={playerCreatureResources}
-                  setPlayerCreatureResources={setPlayerCreatureResources}
-                  enemyCreatureHP={enemyCreatureHP}
-                  setEnemyCreatureHP={setEnemyCreatureHP}
-                  loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
-                />
+                <>
+                  {/* displays allies that are online and fighting */}
+                  <h4 className="margin_small color_white">Allies online:</h4>
+                  {connections.length > 0 &&
+                  connections[0].userId &&
+                  connections.length < 4 ? (
+                    <>
+                      {connections.map((ally) => (
+                        <div className="color_white" key={ally.userId}>
+                          {ally.userId !== player.userfrontId
+                            ? ally.name
+                            : null}
+                        </div>
+                      ))}
+                    </>
+                  ) : null}
+
+                  {/* displays the combat alert if there is combat */}
+                  {battleStatus ? (
+                    <div>
+                      <p className="combat_alert">
+                        {combatTextAndCombatStatus.combatAlert}
+                      </p>
+                    </div>
+                  ) : null}
+
+                  {/* displays player creature */}
+                  <MultiPlayerCreature
+                    combatTextAndCombatStatus={combatTextAndCombatStatus}
+                    setCombatTextAndCombatStatus={setCombatTextAndCombatStatus}
+                    player={player}
+                    playerCreatureResources={playerCreatureResources}
+                    setPlayerCreatureResources={setPlayerCreatureResources}
+                    loadAsyncDataPlayer={() => loadAsyncDataPlayer()}
+                    connections={connections}
+                    lobby={lobby}
+                    loadAsyncDataLobby={() => loadAsyncDataLobby()}
+                  />
+                </>
               ) : null}
 
-              <EnemyCreature
+              <MultiPlayerEnemyCreature
                 combatTextAndCombatStatus={combatTextAndCombatStatus}
-                enemyCreatureHP={enemyCreatureHP}
                 spawnAnimation={spawnAnimation}
+                lobby={lobby}
               />
             </>
           ) : null}
@@ -371,4 +396,4 @@ function Stage2() {
   } else return null;
 }
 
-export default Stage2;
+export default Lobby;

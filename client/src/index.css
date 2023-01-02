@@ -100,7 +100,7 @@ body {
   font-size: 32px;
 }
 
-.game_section {
+.home_game_section {
   background-image: url("assets/img_background/background0.webp");
   background-size: cover;
   min-height: 1200px;

@@ -4,9 +4,14 @@ import { updateUser } from "../services/userServices";
 import { useState } from "react";
 import creatures from "../constants/creatures";
 import relics from "../constants/relics";
+import {
+  enemyCreaturesStage1,
+  enemyCreaturesStage2,
+} from "../constants/enemyCreatures";
 import { useSelector, useDispatch } from "react-redux";
 import { enableBattleStatus } from "../store/actions/battleStatus.actions";
 import checkPotionTimer from "../utils/checkPotionTimer";
+import changeStage from "../utils/changeStage";
 
 Userfront.init("rbvqd5nd");
 
@@ -530,41 +535,45 @@ function MultiPlayerGameMenu({
             <h4>Battle Stages</h4>
             <div className="stage_options">
               <Link to="/app">
-                <button className="game_button_small margin_small">
+                <button
+                  className="game_button_small margin_small"
+                  onClick={() => changeStage(0, 0, [{}], dispatch)}
+                >
                   Lvl. 0 | Home
                   <br /> The Bridge (Solo)
                 </button>
-                {window.location.pathname === "/app" ? (
-                  <span className="color_white">X</span>
-                ) : null}
               </Link>
               <br />
-              <Link to="/stage1">
-                <button className="game_button_small margin_small">
+              <Link to="/stage">
+                <button
+                  className="game_button_small margin_small"
+                  onClick={() =>
+                    changeStage(5, 1, enemyCreaturesStage1, dispatch)
+                  }
+                >
                   Lvl. 5 | Stage I<br /> Mount Olympus (Solo)
                 </button>
-                {window.location.pathname === "/stage1" ? (
-                  <span className="color_white">X</span>
-                ) : null}
               </Link>
               <br />
-              <Link to="/lobby1">
+              <Link to="/lobby">
                 <button className="game_button_small margin_small">
-                  Lvl. 8 | Lobby I<br /> (Multiplayer)
+                  Lvl. 8 | Lobby I<br /> Ruins (Multiplayer)
                 </button>
-                {window.location.pathname === "/lobby1" ? (
+                {window.location.pathname === "/lobby" ? (
                   <span className="color_white">X</span>
                 ) : null}
               </Link>
               <br />
-              <Link to="/stage2">
-                <button className="game_button_small margin_small">
+              <Link to="/stage">
+                <button
+                  className="game_button_small margin_small"
+                  onClick={() =>
+                    changeStage(10, 2, enemyCreaturesStage2, dispatch)
+                  }
+                >
                   Lvl. 10 | Stage II
                   <br /> Countryside (Solo)
                 </button>
-                {window.location.pathname === "/stage2" ? (
-                  <span className="color_white">X</span>
-                ) : null}
               </Link>
             </div>
           </>

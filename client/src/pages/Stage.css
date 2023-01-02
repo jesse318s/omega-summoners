@@ -1,0 +1,19 @@
+/* styles */
+.stage1_game_section {
+  background-image: url("../assets/img_background/background1.webp");
+  background-size: cover;
+  min-height: 1200px;
+  height: 100vh;
+  width: 100vw;
+  padding-top: 5px;
+  content: "Stage 1";
+}
+
+.stage2_game_section {
+  background-image: url("../assets/img_background/background3.webp");
+  background-size: cover;
+  min-height: 1200px;
+  height: 100vh;
+  width: 100vw;
+  padding-top: 5px;
+}

@@ -52,7 +52,7 @@ export const enemyCreaturesStage1 = [
   },
 ];
 
-export const bossEnemyCreatureStage1 = [
+export const enemyCreatureLobby1 = [
   {
     id: 1,
     name: "Dragon",

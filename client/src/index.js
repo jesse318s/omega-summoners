@@ -10,10 +10,9 @@ import Reset from "./pages/Reset";
 import store from "./store/index";
 import { Provider } from "react-redux";
 
-// stages and lobbies (lazy loaded imports)
-const Stage1 = lazy(() => import("./pages/Stage1"));
-const Lobby1 = lazy(() => import("./pages/Lobby1"));
-const Stage2 = lazy(() => import("./pages/Stage2"));
+// stage and lobby (lazy loaded imports)
+const Stage = lazy(() => import("./pages/Stage"));
+const Lobby = lazy(() => import("./pages/Lobby"));
 
 // variables for root to render elements
 const container = document.getElementById("root");
@@ -31,9 +30,8 @@ root.render(
             <Route path="" element={<Home />} />
             <Route path="app" element={<App />} />
             <Route path="reset" element={<Reset />} />
-            <Route path="stage1" element={<Stage1 />} />
-            <Route path="lobby1" element={<Lobby1 />} />
-            <Route path="stage2" element={<Stage2 />} />
+            <Route path="stage" element={<Stage />} />
+            <Route path="lobby" element={<Lobby />} />
           </Routes>
         </Suspense>
       </BrowserRouter>

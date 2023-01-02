@@ -69,7 +69,7 @@ function App() {
   });
   // creature and combat state
   const [creatureData] = useState(creatures);
-  const [enemyCreatureData] = useState(enemyCreaturesHome);
+  const [enemyCreatureDataHome] = useState(enemyCreaturesHome);
   const [combatTextAndCombatStatus, setCombatTextAndCombatStatus] = useState({
     playerAttackStatus: false,
     enemyAttackStatus: false,
@@ -246,8 +246,8 @@ function App() {
             };
           });
           const enemyCreatureNew = [
-            enemyCreatureData[
-              Math.floor(Math.random() * enemyCreatureData.length)
+            enemyCreatureDataHome[
+              Math.floor(Math.random() * enemyCreatureDataHome.length)
             ],
           ];
           if (enemyCreatureNew !== enemyCreature) {
@@ -276,7 +276,7 @@ function App() {
     checkCombat();
   }, [
     enemyCreature,
-    enemyCreatureData,
+    enemyCreatureDataHome,
     combatTextAndCombatStatus.combatAlert,
     battleStatus,
     dispatch,
@@ -352,7 +352,7 @@ function App() {
           />
         </header>
 
-        <main className="game_section">
+        <main className="home_game_section">
           {getPlayer()}
 
           {/* displays other menus and creatures if options menu isnt being used */}

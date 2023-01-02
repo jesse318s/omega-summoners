@@ -95,7 +95,7 @@ function Lobby() {
     // retrieves lobby data and updates lobby state, also updates connections
     const initAsyncDataLobby = async () => {
       // retrieves connection data and updates connections
-      const loadAsyncDataConnections = async () => {
+      const initAsyncDataConnections = async () => {
         try {
           const { data } = await getConnections();
           setConnections(data);
@@ -103,7 +103,7 @@ function Lobby() {
           console.log(error);
         }
       };
-      loadAsyncDataConnections();
+      initAsyncDataConnections();
       try {
         const { data } = await getLobby(lobby1);
         setLobby(data);

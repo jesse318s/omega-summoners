@@ -1,4 +1,4 @@
-const recipeList = [
+const recipes = [
   {
     id: 1,
     name: "Potion of Health",
@@ -31,4 +31,4 @@ const recipeList = [
   },
 ];
 
-export default recipeList;
+export default recipes;

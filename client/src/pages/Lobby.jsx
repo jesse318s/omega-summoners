@@ -8,11 +8,10 @@ import GameNav from "../layouts/GameNav";
 import OptionsMenu from "../layouts/OptionsMenu";
 import PlayerPanel from "../components/PlayerPanel";
 import MultiPlayerGameMenu from "../layouts/MultiPlayerGameMenu";
-import MultiPlayerCreature from "../components/MultiPlayerCreature";
+import MultiPlayerPlayerCreature from "../components/MultiPlayerPlayerCreature";
 import MultiPlayerEnemyCreature from "../components/MultiPlayerEnemyCreature";
 import creatures from "../constants/creatures";
 import relics from "../constants/relics";
-import { enemyCreatureLobby1 } from "../constants/enemyCreatures";
 import { lobby1 } from "../constants/lobbies";
 import { getLobby } from "../services/lobbyServices";
 import { getConnections, addConnection } from "../services/connectionServices";
@@ -44,6 +43,14 @@ function Lobby() {
   const enemyCreature = useSelector((state) => state.enemy.enemyCreature);
   // battle status combat state from redux store
   const battleStatus = useSelector((state) => state.battleStatus.battleStatus);
+  // lobby level req state from redux store
+  const lobbyLevelReq = useSelector((state) => state.currentStage.levelReq);
+  // lobby background state from redux store
+  const lobbyBackground = useSelector((state) => state.currentStage.background);
+  // lobby enemy creatures state from redux store
+  const enemyCreatureData = useSelector(
+    (state) => state.currentStage.enemyCreatures
+  );
 
   // navigation hook
   const navigate = useNavigate();
@@ -64,7 +71,6 @@ function Lobby() {
   });
   // creature and combat state
   const [creatureData] = useState(creatures);
-  const [enemyCreatureDataLobby] = useState(enemyCreatureLobby1);
   const [combatTextAndCombatStatus, setCombatTextAndCombatStatus] = useState({
     playerAttackStatus: false,
     enemyAttackStatus: false,
@@ -88,7 +94,7 @@ function Lobby() {
 
   useEffect(() => {
     checkAuth(Userfront, navigate);
-    checkLevelPlayer(player, 8, navigate);
+    checkLevelPlayer(player, lobbyLevelReq, navigate);
   });
 
   useEffect(() => {
@@ -177,7 +183,7 @@ function Lobby() {
               combatAlert: "",
             };
           });
-          const enemyCreatureNew = enemyCreatureDataLobby[0];
+          const enemyCreatureNew = enemyCreatureData[0];
           if (enemyCreatureNew !== enemyCreature) {
             dispatch(setEnemyCreatureValue(enemyCreatureNew));
           }
@@ -201,7 +207,7 @@ function Lobby() {
     checkCombat();
   }, [
     enemyCreature,
-    enemyCreatureDataLobby,
+    enemyCreatureData,
     combatTextAndCombatStatus.combatAlert,
     battleStatus,
     dispatch,
@@ -279,7 +285,7 @@ function Lobby() {
           />
         </header>
 
-        <main className="lobby1_game_section">
+        <main className={lobbyBackground}>
           <PlayerPanel player={player} />
 
           {/* displays other menus and creatures if options menu isnt being used */}
@@ -328,7 +334,7 @@ function Lobby() {
                   ) : null}
 
                   {/* displays player creature */}
-                  <MultiPlayerCreature
+                  <MultiPlayerPlayerCreature
                     combatTextAndCombatStatus={combatTextAndCombatStatus}
                     setCombatTextAndCombatStatus={setCombatTextAndCombatStatus}
                     player={player}

@@ -4,14 +4,11 @@ import { updateUser } from "../services/userServices";
 import { useState } from "react";
 import creatures from "../constants/creatures";
 import relics from "../constants/relics";
-import {
-  enemyCreaturesStage1,
-  enemyCreaturesStage2,
-} from "../constants/enemyCreatures";
 import { useSelector, useDispatch } from "react-redux";
 import { enableBattleStatus } from "../store/actions/battleStatus.actions";
 import checkPotionTimer from "../utils/checkPotionTimer";
 import changeStage from "../utils/changeStage";
+import stages from "../constants/stages";
 
 Userfront.init("rbvqd5nd");
 
@@ -541,50 +538,60 @@ function GameMenu({
               <Link to="/app">
                 <button
                   className="game_button_small margin_small"
-                  onClick={() => changeStage(0, 0, [{}], dispatch)}
+                  onClick={() => {
+                    changeStage(0, "", [{}], dispatch);
+                  }}
                 >
-                  Lvl. 0 | Home
-                  <br /> The Bridge (Solo)
-                </button>
-                {window.location.pathname === "/app" ? (
-                  <span className="color_white">X</span>
-                ) : null}
-              </Link>
-              <br />
-              <Link to="/stage">
-                <button
-                  className="game_button_small margin_small"
-                  onClick={() =>
-                    changeStage(5, 1, enemyCreaturesStage1, dispatch)
-                  }
-                >
-                  Lvl. 5 | Stage I<br /> Mount Olympus (Solo)
-                </button>
-                {enemyCreatureData === enemyCreaturesStage1 ? (
-                  <span className="color_white">X</span>
-                ) : null}
-              </Link>
-              <br />
-              <Link to="/lobby">
-                <button className="game_button_small margin_small">
-                  Lvl. 8 | Lobby I<br /> Ruins (Multiplayer)
+                  Home | The Bridge (Solo)
                 </button>
               </Link>
-              <br />
-              <Link to="/stage">
-                <button
-                  className="game_button_small margin_small"
-                  onClick={() =>
-                    changeStage(10, 2, enemyCreaturesStage2, dispatch)
-                  }
-                >
-                  Lvl. 10 | Stage II
-                  <br /> Countryside (Solo)
-                </button>
-                {enemyCreatureData === enemyCreaturesStage2 ? (
-                  <span className="color_white">X</span>
-                ) : null}
-              </Link>
+              {window.location.pathname === "/app" ? (
+                <span className="color_white">X</span>
+              ) : null}
+              {stages.map((stage) => (
+                <div key={stage.id}>
+                  {stage.isLobby ? (
+                    <>
+                      <Link to="/lobby">
+                        <button
+                          className="game_button_small margin_small"
+                          onClick={() => {
+                            changeStage(
+                              stage.levelReq,
+                              stage.background,
+                              stage.enemyCreatures,
+                              dispatch
+                            );
+                          }}
+                        >
+                          {stage.id}. | {stage.name} (Multiplayer)
+                        </button>
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      <Link to="/stage">
+                        <button
+                          className="game_button_small margin_small"
+                          onClick={() => {
+                            changeStage(
+                              stage.levelReq,
+                              stage.background,
+                              stage.enemyCreatures,
+                              dispatch
+                            );
+                          }}
+                        >
+                          {stage.id}. | {stage.name} (Solo)
+                        </button>
+                      </Link>
+                      {enemyCreatureData === stage.enemyCreatures ? (
+                        <span className="color_white">X</span>
+                      ) : null}
+                    </>
+                  )}
+                </div>
+              ))}
             </div>
           </>
         ) : null}

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Userfront from "@userfront/core";
-import recipeList from "../constants/recipes";
+import recipes from "../constants/recipes";
 import { ingredientsList } from "../constants/items";
 import { potionsList } from "../constants/items";
 import { getItems, addItem } from "../services/itemServices";
@@ -55,7 +55,7 @@ function AlchemyMenu({
   // paginates recipes for alchemy menu
   const paginateRecipes = async (index1, direction) => {
     try {
-      if (direction === "next" && index1 < recipeList.length - 4) {
+      if (direction === "next" && index1 < recipes.length - 4) {
         setIndex1(index1 + 4);
         setIndex2(index2 + 4);
       } else if (direction === "previous" && index1 > 0) {
@@ -153,7 +153,7 @@ function AlchemyMenu({
         const playerIngredientData = data.filter(
           (item) => item.type === "Ingredient"
         );
-        const currentRecipe = recipeList.filter(
+        const currentRecipe = recipes.filter(
           (item) => item.potionProductId === potion.id
         )[0];
         // check if player has enough ingredients for recipe
@@ -375,7 +375,7 @@ function AlchemyMenu({
             >
               Next
             </button>
-            {recipeList.slice(index1, index2).map((recipe) => (
+            {recipes.slice(index1, index2).map((recipe) => (
               <div className="recipe_option" key={recipe.id}>
                 <button
                   className="game_button_small margin_small"

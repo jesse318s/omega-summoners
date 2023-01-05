@@ -35,10 +35,8 @@ function MultiPlayerGameMenu({
   const summonMPBonus = useSelector((state) => state.alchemy.summonMPBonus);
   // lobby timer state from redux store
   const lobbyTimer = useSelector((state) => state.lobbyTimer.lobbyTimer);
-  // stage enemy creatures state from redux store
-  const enemyCreatureData = useSelector(
-    (state) => state.currentStage.enemyCreatures
-  );
+  // current stage state from redux store
+  const currentStage = useSelector((state) => state.currentStage);
 
   // creature state
   const [creatureData] = useState(creatures);
@@ -47,6 +45,9 @@ function MultiPlayerGameMenu({
   // numbered index state (summons pagination)
   const [index1, setIndex1] = useState(0);
   const [index2, setIndex2] = useState(5);
+  // numbered index state (stages pagination)
+  const [index3, setIndex3] = useState(0);
+  const [index4, setIndex4] = useState(10);
   // lettered index state (relics pagination)
   const [indexA, setIndexA] = useState(0);
   const [indexB, setIndexB] = useState(7);
@@ -92,6 +93,21 @@ function MultiPlayerGameMenu({
       } else if (direction === "previous" && indexC > 0) {
         setIndexC(indexC - 7);
         setIndexD(indexD - 7);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // paginates stages
+  const paginateStages = async (index3, direction) => {
+    try {
+      if (direction === "next" && index3 < stages.length - 10) {
+        setIndex3(index3 + 10);
+        setIndex4(index4 + 10);
+      } else if (direction === "previous" && index3 > 0) {
+        setIndex3(index3 - 10);
+        setIndex4(index4 - 10);
       }
     } catch (error) {
       console.log(error);
@@ -534,21 +550,37 @@ function MultiPlayerGameMenu({
         {gameMenuStatus.stagesStatus ? (
           <>
             <h4>Battle Stages</h4>
+            <button
+              className="game_button_small margin_small"
+              onClick={() => paginateStages(index3, "previous")}
+            >
+              Previous
+            </button>
+            <button
+              className="game_button_small margin_small"
+              onClick={() => paginateStages(index3, "next")}
+            >
+              Next
+            </button>
             <div className="stage_options">
-              <Link to="/app">
-                <button
-                  className="game_button_small margin_small"
-                  onClick={() => {
-                    changeStage(0, "", [{}], dispatch);
-                  }}
-                >
-                  Home | The Bridge (Solo)
-                </button>
-              </Link>
-              {window.location.pathname === "/app" ? (
-                <span className="color_white">X</span>
+              {index3 === 0 ? (
+                <>
+                  <Link to="/app">
+                    <button
+                      className="game_button_small margin_small"
+                      onClick={() => {
+                        changeStage(0, "", [{}], dispatch);
+                      }}
+                    >
+                      Home | The Bridge (Solo)
+                    </button>
+                  </Link>
+                  {window.location.pathname === "/app" ? (
+                    <span className="color_white">X</span>
+                  ) : null}
+                </>
               ) : null}
-              {stages.map((stage) => (
+              {stages.slice(index3, index4).map((stage) => (
                 <div key={stage.id}>
                   {stage.isLobby ? (
                     <>
@@ -567,7 +599,8 @@ function MultiPlayerGameMenu({
                           {stage.id}. | {stage.name} (Multiplayer)
                         </button>
                       </Link>
-                      {enemyCreatureData === stage.enemyCreatures ? (
+                      {stage.levelReq === currentStage.levelReq &&
+                      stage.enemyCreatures === currentStage.enemyCreatures ? (
                         <span className="color_white">X</span>
                       ) : null}
                     </>

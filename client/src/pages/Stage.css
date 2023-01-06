@@ -9,8 +9,17 @@
   content: "Stage 1";
 }
 
-.stage2_game_section {
+.stage3_game_section {
   background-image: url("../assets/img_background/background3.webp");
+  background-size: cover;
+  min-height: 1200px;
+  height: 100vh;
+  width: 100vw;
+  padding-top: 5px;
+}
+
+.stage4_game_section {
+  background-image: url("../assets/img_background/background2.webp");
   background-size: cover;
   min-height: 1200px;
   height: 100vh;

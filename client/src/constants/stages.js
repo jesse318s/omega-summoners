@@ -1,7 +1,8 @@
 import {
-  enemyCreatureLobby1,
   enemyCreaturesStage1,
-  enemyCreaturesStage2,
+  enemyCreaturesStage3,
+  enemyCreaturesStage4,
+  enemyCreatureLobby1,
 } from "./enemyCreatures";
 
 const stages = [
@@ -17,17 +18,25 @@ const stages = [
     id: 2,
     name: "Ruins",
     background: "lobby1_game_section",
-    levelReq: 5,
+    levelReq: 8,
     isLobby: true,
     enemyCreatures: enemyCreatureLobby1,
   },
   {
     id: 3,
     name: "Countryside",
-    background: "stage2_game_section",
+    background: "stage3_game_section",
     levelReq: 10,
     isLobby: false,
-    enemyCreatures: enemyCreaturesStage2,
+    enemyCreatures: enemyCreaturesStage3,
+  },
+  {
+    id: 4,
+    name: "Pillaged Ruins",
+    background: "stage4_game_section",
+    levelReq: 12,
+    isLobby: false,
+    enemyCreatures: enemyCreaturesStage4,
   },
 ];
 

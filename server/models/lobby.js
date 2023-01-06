@@ -13,4 +13,4 @@ const lobbySchema = new Schema({
   },
 });
 
-module.exports = mongoose.model("lobby", lobbySchema);
+module.exports = mongoose.model("Lobby", lobbySchema);

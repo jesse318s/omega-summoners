@@ -1,4 +1,4 @@
-const Lobby = require("../models/lobby");
+const Lobby = require("../models/Lobby");
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");

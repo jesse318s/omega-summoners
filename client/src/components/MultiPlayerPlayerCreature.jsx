@@ -14,7 +14,7 @@ import checkPotionTimer from "../utils/checkPotionTimer";
 
 Userfront.init("rbvqd5nd");
 
-function MultiPlayerCreature({
+function MultiPlayerPlayerCreature({
   combatTextAndCombatStatus,
   setCombatTextAndCombatStatus,
   player,
@@ -999,4 +999,4 @@ function MultiPlayerCreature({
   );
 }
 
-export default MultiPlayerCreature;
+export default MultiPlayerPlayerCreature;

@@ -52,21 +52,6 @@ export const enemyCreaturesStage1 = [
   },
 ];
 
-export const enemyCreatureLobby1 = [
-  {
-    id: 1,
-    name: "Dragon",
-    imgPath: "img/creature/dragon_creature.png",
-    reward: 80,
-    hp: 1000,
-    attack: 50,
-    attackType: "Normal",
-    speed: 30,
-    defense: 20,
-    critical: 25,
-  },
-];
-
 export const enemyCreaturesStage2 = [
   {
     id: 1,
@@ -103,5 +88,20 @@ export const enemyCreaturesStage2 = [
     speed: 50,
     defense: 15,
     critical: 50,
+  },
+];
+
+export const enemyCreatureLobby1 = [
+  {
+    id: 1,
+    name: "Dragon",
+    imgPath: "img/creature/dragon_creature.png",
+    reward: 80,
+    hp: 1000,
+    attack: 50,
+    attackType: "Normal",
+    speed: 30,
+    defense: 20,
+    critical: 25,
   },
 ];

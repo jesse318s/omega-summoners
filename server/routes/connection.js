@@ -1,4 +1,4 @@
-const Connection = require("../models/connection");
+const Connection = require("../models/Connection");
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");

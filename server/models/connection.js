@@ -15,4 +15,4 @@ const connectionSchema = new Schema(
   }
 );
 
-module.exports = mongoose.model("connection", connectionSchema);
+module.exports = mongoose.model("Connection", connectionSchema);

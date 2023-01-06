@@ -18,4 +18,4 @@ const potionTimerSchema = new Schema(
   }
 );
 
-module.exports = mongoose.model("potionTimer", potionTimerSchema);
+module.exports = mongoose.model("PotionTimer", potionTimerSchema);

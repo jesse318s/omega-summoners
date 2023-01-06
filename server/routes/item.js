@@ -1,4 +1,4 @@
-const Item = require("../models/item");
+const Item = require("../models/Item");
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");

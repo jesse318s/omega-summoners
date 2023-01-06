@@ -1,4 +1,4 @@
-const PotionTimer = require("../models/potionTimer");
+const PotionTimer = require("../models/PotionTimer");
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");

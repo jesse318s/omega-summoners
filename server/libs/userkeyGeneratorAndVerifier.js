@@ -14,14 +14,14 @@ module.exports = {
   putUserkey(userId, payload) {
     return axios
       .put("https://api.userfront.com/v0/users/" + userId, payload, options)
-      .catch((err) => console.error(err));
+      .catch((error) => console.error(error));
   },
 
   // generates new userkey
   generateUserkey(userId) {
-    crypto.randomBytes(127, (err, buf) => {
-      if (err) {
-        console.log(err);
+    crypto.randomBytes(127, (error, buf) => {
+      if (error) {
+        console.error(error);
         return;
       }
       const payload = {
@@ -35,9 +35,9 @@ module.exports = {
 
   // generates new userkey with additional secure values included
   generateFortifiedUserkey(userId) {
-    crypto.randomBytes(127, (err, buf) => {
-      if (err) {
-        console.log(err);
+    crypto.randomBytes(127, (error, buf) => {
+      if (error) {
+        console.error(err);
         return;
       }
       const payload = {
@@ -60,7 +60,7 @@ module.exports = {
         .then((response) => {
           return response.data;
         })
-        .catch((err) => console.error(err));
+        .catch((error) => console.error(error));
 
       if (decodedUser && receivedUserkey === user.data.userkey) {
         return true;

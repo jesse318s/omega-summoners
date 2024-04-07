@@ -175,6 +175,10 @@ function GameMenu({
         const oldRelicIndex = player.relics.indexOf(relicId);
         let newRelics = player.relics;
 
+        if (player.chosenRelic === relicId) {
+          alert("You can't sell your chosen relic.");
+          return;
+        }
         newRelics.splice(oldRelicIndex, 1);
         await Userfront.user.update({
           data: {

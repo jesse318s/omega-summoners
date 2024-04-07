@@ -408,7 +408,7 @@ function AlchemyMenu({
         ) : null}
 
         {/* displays player potions if potions button is clicked and potions have loaded */}
-        {potionsStatus && potions[0].id ? (
+        {potionsStatus && potions[0]?.id ? (
           <div>
             <h4 className="margin_small">Player Potions</h4>
             <button
@@ -469,7 +469,7 @@ function AlchemyMenu({
         </button>
 
         {/* displays player ingredients if ingredients button is clicked and ingredients have loaded */}
-        {ingredientsStatus && ingredients[0].id ? (
+        {ingredientsStatus && ingredients[0]?.id ? (
           <div>
             <h4 className="margin_small">Player Ingredients</h4>
             <button

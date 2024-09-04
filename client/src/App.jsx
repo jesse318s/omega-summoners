@@ -26,7 +26,6 @@ import {
 } from "./store/actions/creatureStatsStatus.actions";
 import checkAuth from "./utils/checkAuth.js";
 
-// initialize Userfront
 Userfront.init("rbvqd5nd");
 
 // main app component
@@ -133,7 +132,7 @@ function App() {
           if (player.creatureId === 0) {
             const randomCreature =
               creatureData[Math.floor(Math.random() * 4)].id;
-            Userfront.user.update({
+            await Userfront.user.update({
               data: {
                 userkey: Userfront.user.data.userkey,
               },

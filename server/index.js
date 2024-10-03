@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const connection = require("./db");
 require("dotenv").config();
 const express = require("express");
@@ -9,6 +10,9 @@ const lobby = require("./routes/lobby");
 const connectionRecord = require("./routes/connection");
 const item = require("./routes/item");
 const potionTimer = require("./routes/potionTimer");
+
+// set strict query to false
+mongoose.set('strictQuery', false);
 
 // make connection
 connection();
